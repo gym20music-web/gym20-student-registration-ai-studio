@@ -701,7 +701,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با امکان کپی کد آماده برای گیت‌هاب -->
+<!-- مودال مدیریت هوشمند متصل به گیت‌هاب -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -836,15 +836,22 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:12px;">💾 ذخیره تغییرات (روی همین دستگاه)</button>
-        <button class="copy-btn" id="copyFullCodeBtn" style="background:rgba(0, 243, 255, 0.15); border:1px solid var(--neon-blue); color:var(--neon-blue); margin-top:6px;">📋 کپی کد کامل آپدیت‌شده برای گیت‌هاب</button>
+        <hr style="border-color:var(--border); margin:12px 0 8px;">
+
+        <!-- کادر کلید اتصال به گیت‌هاب -->
+        <div class="admin-input-group">
+            <label style="color:var(--neon-green); font-weight:bold;">🔑 کلید اتصال به گیت‌هاب (Token):</label>
+            <input type="password" id="editGhToken" placeholder="کدی که با ghp_ شروع می‌شود را اینجا پیست کنید">
+            <div style="font-size:0.67rem; color:var(--text-secondary); margin-top:2px;">این کلید فقط یک‌بار وارد می‌شود تا تمام تغییرات مستقیماً در سرور گیت‌هاب ثبت شوند.</div>
+        </div>
+
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.82rem; padding:10px; margin-top:8px;">🚀 ذخیره و انتشار خودکار در گیت‌هاب</button>
     </div>
 </div>
 
 <script>
-    // اطلاعات اصلی و اولیه دوره
     const defaultData = {
-        version: 3,
+        version: 4,
         brandTag: "آکادمی تخصصی ورزش GYM20",
         bannerTitle: "سلام، وقتتون بخیر 🌱",
         bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
@@ -891,7 +898,10 @@
         }
     };
 
-    // همگام‌سازی حافظه برای جلوگیری از کش قدیمی روی گوشی‌ها
+    const GH_OWNER = "gym20music-web";
+    const GH_REPO = "gym20-student-registration-ai-studio";
+    const GH_PATH = "index.html";
+
     let appData = defaultData;
     try {
         const saved = localStorage.getItem('sports_reg_data');
@@ -1091,6 +1101,8 @@
         document.getElementById('editMusicName').value = appData.musicChannel.name || '';
         document.getElementById('editMusicId').value = appData.musicChannel.id || '';
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
+
+        document.getElementById('editGhToken').value = localStorage.getItem('gh_access_token') || '';
     }
 
     function collectFormData() {
@@ -1125,33 +1137,85 @@
         };
     }
 
-    document.getElementById('saveAdminBtn').onclick = () => {
-        collectFormData();
-        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-        adminModal.style.display = 'none';
-        applyDataToUI();
-        calculatePrice();
-        alert('تغییرات روی این دستگاه ذخیره شد!\nبرای اینکه روی گوشی بقیه هم تغییر کند، دکمه "کپی کد کامل برای گیت‌هاب" را بزنید.');
-    };
+    function b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        }));
+    }
+    function b64DecodeUnicode(str) {
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
 
-    // دکمه تولید و کپی خودکار کدهای آپدیت‌شده برای گیت‌هاب
-    document.getElementById('copyFullCodeBtn').onclick = () => {
-        collectFormData();
-        appData.version = (appData.version || 3) + 1;
-        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-        applyDataToUI();
+    document.getElementById('autoCommitBtn').onclick = async () => {
+        const token = document.getElementById('editGhToken').value.trim();
+        if (!token) {
+            alert('لطفاً ابتدا کلید اتصال به گیت‌هاب (Token) را وارد کنید.');
+            return;
+        }
 
-        // ایجاد متن کامل فایل با تنظیمات جدید
-        let htmlSource = document.documentElement.outerHTML;
-        const newDefaultStr = 'const defaultData = ' + JSON.stringify(appData, null, 4) + ';';
-        htmlSource = htmlSource.replace(/const defaultData = \{[\s\S]*?\};/, newDefaultStr);
-        htmlSource = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n' + htmlSource.slice(htmlSource.indexOf('<head>'));
+        localStorage.setItem('gh_access_token', token);
 
-        navigator.clipboard.writeText(htmlSource).then(() => {
-            alert('✅ کدهای جدید با موفقیت کپی شدند!\nحالا وارد گیت‌هاب شوید و پیست کنید تا تغییرات برای تمام گوشی‌ها آنلاین شود.');
-        }).catch(() => {
-            alert('لطفاً اجازه دسترسی به کلیپ‌بورد را بدهید یا فایل را مستقیماً ادیت کنید.');
-        });
+        const btn = document.getElementById('autoCommitBtn');
+        const oldText = btn.innerText;
+        btn.innerText = '⏳ در حال ارسال و ذخیره در گیت‌هاب...';
+        btn.disabled = true;
+
+        try {
+            collectFormData();
+            appData.version = (appData.version || 4) + 1;
+
+            const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
+            });
+
+            if (!getRes.ok) {
+                throw new Error('کلید توکن اشتباه است یا دسترسی به مخزن ندارد.');
+            }
+
+            const fileData = await getRes.json();
+            const rawContent = fileData.content.replace(/\s/g, '');
+            const currentHtml = b64DecodeUnicode(rawContent);
+
+            const newDefaultStr = 'const defaultData = ' + JSON.stringify(appData, null, 4) + ';';
+            const updatedHtml = currentHtml.replace(/const defaultData = \{[\s\S]*?\};/, newDefaultStr);
+            const newBase64 = b64EncodeUnicode(updatedHtml);
+
+            const putRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: "بروزرسانی خودکار از پنل مدیریت",
+                    content: newBase64,
+                    sha: fileData.sha,
+                    branch: "main"
+                })
+            });
+
+            if (!putRes.ok) {
+                throw new Error('خطا در ذخیره‌سازی در سرور گیت‌هاب.');
+            }
+
+            localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+            applyDataToUI();
+            calculatePrice();
+            adminModal.style.display = 'none';
+            alert('🎉 با موفقیت در گیت‌هاب ثبت شد!\nحدود ۳۰ تا ۶۰ ثانیه دیگر روی تمام گوشی‌ها اعمال می‌شود.');
+
+        } catch (err) {
+            alert('❌ خطا: ' + err.message);
+        } finally {
+            btn.innerText = oldText;
+            btn.disabled = false;
+        }
     };
 
     function applyDataToUI() {
