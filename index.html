@@ -15,11 +15,11 @@
             --neon-blue: #00f3ff;
             --neon-purple: #bd00ff;
             --neon-green: #10b981;
-            --neon-shadow: 0 0 15px rgba(0, 243, 255, 0.25);
-            --neon-purple-shadow: 0 0 20px rgba(189, 0, 255, 0.25);
+            --neon-shadow: 0 0 12px rgba(0, 243, 255, 0.22);
+            --neon-purple-shadow: 0 0 15px rgba(189, 0, 255, 0.22);
             --btn-active: linear-gradient(135deg, #00f3ff, #bd00ff);
-            --radius-md: 14px;
-            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-sm: 7px;
         }
 
         [data-theme="light"] {
@@ -29,8 +29,8 @@
             --text-primary: #111827;
             --text-secondary: #4b5563;
             --border: rgba(0, 0, 0, 0.08);
-            --neon-shadow: 0 4px 15px rgba(0, 243, 255, 0.15);
-            --neon-purple-shadow: 0 4px 15px rgba(189, 0, 255, 0.15);
+            --neon-shadow: 0 3px 12px rgba(0, 243, 255, 0.15);
+            --neon-purple-shadow: 0 3px 12px rgba(189, 0, 255, 0.15);
         }
 
         * {
@@ -53,23 +53,24 @@
 
         .container {
             width: 100%;
-            max-width: 440px;
-            padding: 14px;
-            padding-bottom: 50px;
+            max-width: 420px;
+            padding: 10px;
+            padding-bottom: 40px;
         }
 
+        /* نوار بالای صفحه کوچک و مرتب */
         .top-nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         .brand-badge {
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             font-weight: 800;
-            padding: 5px 12px;
-            border-radius: 20px;
+            padding: 4px 10px;
+            border-radius: 16px;
             background: var(--surface);
             border: 1px solid var(--border);
             color: var(--neon-blue);
@@ -78,12 +79,12 @@
 
         .nav-actions {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .circle-btn {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             background: var(--surface);
             border: 1px solid var(--border);
@@ -92,29 +93,30 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
+            font-size: 0.85rem;
             transition: 0.2s;
         }
-        .circle-btn:active { transform: scale(0.92); }
+        .circle-btn:active { transform: scale(0.9); }
 
+        /* بنر فشرده و شیک */
         .hero-banner {
             position: relative;
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(189, 0, 255, 0.15)), var(--surface);
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.12), rgba(189, 0, 255, 0.12)), var(--surface);
             background-size: cover;
             background-position: center;
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 18px 14px;
+            padding: 12px 10px;
             text-align: center;
             overflow: hidden;
             box-shadow: var(--neon-purple-shadow);
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
 
         .hero-title {
-            font-size: 1.2rem;
+            font-size: 1.05rem;
             font-weight: 900;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
             background: linear-gradient(90deg, var(--neon-blue), #ffffff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -127,86 +129,45 @@
         }
 
         .hero-subtitle {
-            font-size: 0.8rem;
+            font-size: 0.72rem;
             color: var(--text-secondary);
-            line-height: 1.6;
+            line-height: 1.5;
         }
 
+        /* کارت بخش‌ها جمع‌وجور */
         .section-card {
             background: var(--surface);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
-            padding: 14px;
-            margin-bottom: 12px;
+            padding: 11px;
+            margin-bottom: 10px;
         }
 
         .section-header {
             display: flex;
             align-items: center;
-            gap: 8px;
-            margin-bottom: 12px;
-            font-size: 0.92rem;
+            gap: 6px;
+            margin-bottom: 8px;
+            font-size: 0.84rem;
             font-weight: 700;
             color: var(--neon-blue);
         }
 
-        .styles-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .style-item {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            padding: 10px 12px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.82rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .style-item.selected {
-            border-color: var(--neon-blue);
-            background: rgba(0, 243, 255, 0.1);
-            color: var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
-        }
-
-        .check-dot {
-            width: 14px;
-            height: 14px;
-            border-radius: 4px;
-            border: 1px solid var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.65rem;
-        }
-        .style-item.selected .check-dot {
-            background: var(--neon-blue);
-            border-color: var(--neon-blue);
-            color: #000;
-        }
-
+        /* دکمه‌های گزینشی کوچک */
         .pill-group {
             display: flex;
-            gap: 6px;
-            margin-bottom: 10px;
+            gap: 5px;
+            margin-bottom: 8px;
         }
 
         .pill-btn {
             flex: 1;
-            padding: 8px 4px;
+            padding: 6px 2px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            font-size: 0.78rem;
+            font-size: 0.74rem;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
@@ -220,23 +181,68 @@
             box-shadow: var(--neon-shadow);
         }
 
+        /* سبک‌ها */
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 6px;
+        }
+
+        .style-item {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            padding: 7px 9px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.76rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .style-item.selected {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.08);
+            color: var(--neon-blue);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.15);
+        }
+
+        .check-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 3px;
+            border: 1px solid var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+        }
+        .style-item.selected .check-dot {
+            background: var(--neon-blue);
+            border-color: var(--neon-blue);
+            color: #000;
+        }
+
+        /* باکس قیمت جمع‌وجور */
         .price-box {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(189, 0, 255, 0.08));
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.06), rgba(189, 0, 255, 0.06));
             border: 1px dashed var(--neon-blue);
             border-radius: var(--radius-md);
-            padding: 12px;
-            margin-top: 12px;
+            padding: 9px;
+            margin-top: 10px;
             text-align: center;
         }
 
         .price-details {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .total-price {
-            font-size: 1.35rem;
+            font-size: 1.25rem;
             font-weight: 900;
             color: var(--neon-blue);
             letter-spacing: -0.5px;
@@ -246,43 +252,45 @@
             color: #0284c7;
         }
 
+        /* باکس داینامیک قوانین */
         .dynamic-rules-box {
-            background: rgba(189, 0, 255, 0.07);
+            background: rgba(189, 0, 255, 0.06);
             border: 1px solid rgba(189, 0, 255, 0.25);
             border-radius: var(--radius-sm);
-            padding: 12px;
-            margin-bottom: 12px;
+            padding: 9px;
+            margin-bottom: 8px;
         }
 
         .dynamic-rule-badge {
             display: inline-block;
-            font-size: 0.7rem;
+            font-size: 0.66rem;
             font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 6px;
+            padding: 2px 7px;
+            border-radius: 5px;
             background: var(--neon-purple);
             color: #fff;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
 
         .dynamic-rule-text {
-            font-size: 0.8rem;
-            line-height: 1.8;
+            font-size: 0.74rem;
+            line-height: 1.7;
             color: var(--text-primary);
             white-space: pre-line;
         }
 
+        /* آکاردئون فشرده */
         .accordion-item {
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             overflow: hidden;
             background: var(--surface-card);
         }
 
         .accordion-header {
-            padding: 10px 12px;
-            font-size: 0.82rem;
+            padding: 8px 10px;
+            font-size: 0.76rem;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
@@ -291,50 +299,51 @@
         }
 
         .accordion-content {
-            padding: 0 12px;
+            padding: 0 10px;
             max-height: 0;
             overflow: hidden;
-            font-size: 0.78rem;
+            font-size: 0.73rem;
             color: var(--text-secondary);
-            line-height: 1.7;
+            line-height: 1.6;
             transition: max-height 0.3s ease, padding 0.3s ease;
             white-space: pre-line;
         }
 
         .accordion-item.open .accordion-content {
-            padding: 10px 12px 14px;
+            padding: 8px 10px 10px;
             max-height: 400px;
         }
 
+        /* تیک تأیید و واریز */
         .rule-agreement {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             cursor: pointer;
-            margin-top: 10px;
-            padding: 10px;
+            margin-top: 8px;
+            padding: 8px;
             border-radius: var(--radius-sm);
-            background: rgba(189, 0, 255, 0.08);
+            background: rgba(189, 0, 255, 0.06);
             border: 1px solid rgba(189, 0, 255, 0.2);
-            font-size: 0.8rem;
+            font-size: 0.74rem;
             font-weight: 600;
         }
 
         .rule-agreement input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             accent-color: var(--neon-purple);
             cursor: pointer;
         }
 
         .payment-reveal {
             display: none;
-            margin-top: 12px;
+            margin-top: 10px;
             animation: fadeIn 0.4s ease;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-8px); }
+            from { opacity: 0; transform: translateY(-6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -342,95 +351,95 @@
             background: linear-gradient(135deg, #1e1b4b, #311042);
             border: 1px solid rgba(189, 0, 255, 0.4);
             border-radius: var(--radius-md);
-            padding: 14px;
+            padding: 12px;
             color: #fff;
-            box-shadow: 0 8px 25px rgba(189, 0, 255, 0.2);
+            box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2);
         }
 
         .bank-name {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             opacity: 0.8;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex;
             justify-content: space-between;
         }
 
         .card-number {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             font-weight: 800;
             letter-spacing: 2px;
             direction: ltr;
             text-align: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-family: monospace;
             color: #00f3ff;
         }
 
         .card-owner {
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             font-weight: 600;
         }
 
         .copy-btn {
             width: 100%;
-            margin-top: 10px;
-            padding: 9px;
+            margin-top: 8px;
+            padding: 8px;
             border-radius: var(--radius-sm);
             border: none;
             background: var(--neon-blue);
             color: #000;
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             cursor: pointer;
         }
 
         .send-receipt-btn {
             display: block;
             width: 100%;
-            margin-top: 8px;
-            padding: 9px;
+            margin-top: 6px;
+            padding: 8px;
             border-radius: var(--radius-sm);
             border: 1px solid rgba(255, 255, 255, 0.2);
             background: transparent;
             color: #fff;
             text-align: center;
             text-decoration: none;
-            font-size: 0.78rem;
+            font-size: 0.73rem;
             font-weight: 600;
         }
 
         .social-links {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 10px;
+            gap: 6px;
+            margin-top: 8px;
         }
 
         .social-btn {
-            padding: 9px 4px;
+            padding: 8px 2px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-primary);
             text-decoration: none;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             font-weight: 600;
         }
 
-        /* کارت کانال موزیک - نمایش تصویر دائمی */
+        /* کارت کانال موزیک جمع‌وجور */
         .music-channel-card {
-            background: linear-gradient(135deg, rgba(189, 0, 255, 0.12), rgba(0, 243, 255, 0.08)), var(--surface);
-            border: 1px solid rgba(189, 0, 255, 0.4);
+            background: linear-gradient(135deg, rgba(189, 0, 255, 0.1), rgba(0, 243, 255, 0.06)), var(--surface);
+            border: 1px solid rgba(189, 0, 255, 0.35);
             border-radius: var(--radius-md);
-            padding: 12px 14px;
-            margin-top: 14px;
+            padding: 10px 12px;
+            margin-top: 10px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
             color: inherit;
-            box-shadow: 0 4px 20px rgba(189, 0, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(189, 0, 255, 0.16);
             transition: 0.2s ease;
         }
         .music-channel-card:active {
@@ -438,12 +447,12 @@
             border-color: var(--neon-blue);
         }
         .music-avatar {
-            width: 56px;
-            height: 56px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 10px rgba(189, 0, 255, 0.5);
+            box-shadow: 0 0 8px rgba(189, 0, 255, 0.4);
             flex-shrink: 0;
             background: #1f2937;
         }
@@ -452,16 +461,16 @@
             min-width: 0;
         }
         .music-title {
-            font-size: 0.88rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 6px;
-            margin-bottom: 3px;
+            gap: 4px;
+            margin-bottom: 2px;
         }
         .music-handle {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: var(--neon-blue);
             font-weight: 600;
             direction: ltr;
@@ -469,15 +478,14 @@
             display: inline-block;
         }
         .music-join-btn {
-            padding: 6px 12px;
-            border-radius: 20px;
+            padding: 5px 10px;
+            border-radius: 16px;
             background: var(--btn-active);
             color: #fff;
-            font-size: 0.72rem;
+            font-size: 0.68rem;
             font-weight: 800;
             border: none;
             white-space: nowrap;
-            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
         .toast {
@@ -487,9 +495,9 @@
             transform: translateX(-50%) translateY(100px);
             background: #10b981;
             color: #000;
-            padding: 8px 18px;
+            padding: 7px 16px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             font-weight: 700;
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
             transition: transform 0.3s ease;
@@ -497,7 +505,7 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* مودال ادمین */
+        /* مودال ادمین با تب‌های کامل */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -506,7 +514,7 @@
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 14px;
+            padding: 12px;
             z-index: 2000;
         }
         .admin-content {
@@ -514,30 +522,31 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             width: 100%;
-            max-width: 420px;
+            max-width: 410px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 16px;
+            padding: 14px;
         }
         
         .admin-tabs {
             display: flex;
-            gap: 6px;
-            margin-bottom: 14px;
+            gap: 4px;
+            margin-bottom: 12px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
         .admin-tab-btn {
             flex: 1;
-            padding: 8px 2px;
+            padding: 7px 2px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            font-size: 0.74rem;
+            font-size: 0.7rem;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
+            white-space: nowrap;
         }
         .admin-tab-btn.active {
             background: var(--neon-blue);
@@ -548,21 +557,21 @@
         .admin-panel-tab { display: none; }
         .admin-panel-tab.active { display: block; }
 
-        .admin-input-group { margin-bottom: 10px; }
+        .admin-input-group { margin-bottom: 9px; }
         .admin-input-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-secondary);
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .admin-input-group input, .admin-input-group textarea, .admin-select {
             width: 100%;
-            padding: 8px 10px;
+            padding: 7px 9px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            font-size: 0.82rem;
+            font-size: 0.78rem;
             outline: none;
         }
         .price-input-wrapper {
@@ -573,13 +582,13 @@
         .price-currency-tag {
             position: absolute;
             left: 10px;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--neon-blue);
             pointer-events: none;
             font-weight: 700;
         }
         .price-input-wrapper input {
-            padding-left: 50px;
+            padding-left: 45px;
             direction: ltr;
             text-align: right;
             font-weight: 700;
@@ -590,13 +599,14 @@
 
 <div class="container">
     <div class="top-nav">
-        <div class="brand-badge">آکادمی تخصصی ورزش و رزمی</div>
+        <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش و رزمی</div>
         <div class="nav-actions">
             <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
             <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
         </div>
     </div>
 
+    <!-- بنر فشرده -->
     <div class="hero-banner" id="heroBanner">
         <h1 class="hero-title" id="bannerTitle">سلام، وقتتون بخیر 🌱</h1>
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
@@ -611,7 +621,7 @@
             <button class="pill-btn" data-val="kids">کودکان</button>
         </div>
 
-        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 8px 0 4px;">نوع برگزاری کلاس:</div>
+        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">نوع برگزاری کلاس:</div>
         <div class="pill-group" id="classType">
             <button class="pill-btn active" data-val="normal">عمومی</button>
             <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
@@ -619,19 +629,19 @@
             <button class="pill-btn" data-val="vip">VIP 👑</button>
         </div>
 
-        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 8px 0 4px;">تعداد جلسات هر ترم:</div>
+        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
         <div class="pill-group" id="sessionsCount">
             <button class="pill-btn active" data-val="8">۸ جلسه</button>
             <button class="pill-btn" data-val="10">۱۰ جلسه</button>
             <button class="pill-btn" data-val="12">۱۲ جلسه</button>
         </div>
 
-        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 10px 0 6px;">سبک‌های مورد نظر را انتخاب کنید:</div>
+        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 8px 0 5px;">سبک‌های مورد نظر را انتخاب کنید:</div>
         <div class="styles-grid" id="stylesList"></div>
 
         <div class="price-box">
             <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
-            <div style="font-size: 0.8rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
             <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
         </div>
     </div>
@@ -643,10 +653,10 @@
         <div class="dynamic-rules-box" id="dynamicRulesBox">
             <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
             
-            <div style="font-weight:700; font-size:0.8rem; color:var(--neon-purple); margin-bottom:4px;">شرایط نوع کلاس:</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--neon-purple); margin-bottom:3px;">شرایط نوع کلاس:</div>
             <div class="dynamic-rule-text" id="classTypeRuleText"></div>
 
-            <div style="font-weight:700; font-size:0.8rem; color:var(--neon-blue); margin:8px 0 4px;">شرایط تعداد جلسات ترم:</div>
+            <div style="font-weight:700; font-size:0.75rem; color:var(--neon-blue); margin:6px 0 3px;">شرایط تعداد جلسات ترم:</div>
             <div class="dynamic-rule-text" id="sessionRuleText"></div>
         </div>
 
@@ -686,7 +696,7 @@
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
 
-        <!-- کارت اختصاصی کانال موزیک - متصل به فایل music.jpg -->
+        <!-- کارت کانال موزیک -->
         <a href="https://t.me/GYM20MUSIC" target="_blank" class="music-channel-card" id="musicCardLink">
             <img src="music.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
             <div class="music-info">
@@ -703,18 +713,19 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت -->
+<!-- مودال مدیریت هوشمند با ۴ تب کامل -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="font-size:0.95rem; color:var(--neon-blue);">⚙️ پنل مدیریت هوشمند</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h3 style="font-size:0.9rem; color:var(--neon-blue);">⚙️ پنل مدیریت هوشمند</h3>
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت، تماس و موزیک</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و تماس</button>
         </div>
 
         <!-- تب ۱: قوانین -->
@@ -734,7 +745,7 @@
             </div>
             <div class="admin-input-group">
                 <label id="activeRuleLabel">متن قانون:</label>
-                <textarea rows="6" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
+                <textarea rows="5" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
             </div>
         </div>
 
@@ -777,7 +788,27 @@
             </div>
         </div>
 
-        <!-- تب ۳: کارت، تماس و موزیک -->
+        <!-- تب ۳: بنر و عناوین بالای صفحه -->
+        <div class="admin-panel-tab" id="bannerTab">
+            <div class="admin-input-group">
+                <label>متن برچسب بالای صفحه (لوگو):</label>
+                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش و رزمی">
+            </div>
+            <div class="admin-input-group">
+                <label>عنوان اصلی بنر:</label>
+                <input type="text" id="editBannerTitle" placeholder="سلام، وقتتون بخیر 🌱">
+            </div>
+            <div class="admin-input-group">
+                <label>زیرعنوان بنر:</label>
+                <textarea rows="3" id="editBannerSubtitle" placeholder="شرایط برگزاری کلاس‌های ورزشی تخصصی..."></textarea>
+            </div>
+            <div class="admin-input-group">
+                <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
+                <input type="text" id="editBannerBg" placeholder="https://...">
+            </div>
+        </div>
+
+        <!-- تب ۴: کارت، تماس و موزیک -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
                 <label>شماره کارت واریز:</label>
@@ -800,8 +831,8 @@
                 <input type="text" id="editTele">
             </div>
 
-            <hr style="border-color:var(--border); margin:12px 0;">
-            <div style="color:var(--neon-purple); font-size:0.8rem; font-weight:bold; margin-bottom:8px;">🎵 تنظیمات کانال موزیک:</div>
+            <hr style="border-color:var(--border); margin:10px 0;">
+            <div style="color:var(--neon-purple); font-size:0.75rem; font-weight:bold; margin-bottom:6px;">🎵 تنظیمات کانال موزیک:</div>
 
             <div class="admin-input-group">
                 <label>نام کانال موزیک:</label>
@@ -817,12 +848,16 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:14px;">💾 ذخیره تغییرات</button>
+        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:12px;">💾 ذخیره تغییرات</button>
     </div>
 </div>
 
 <script>
     const defaultData = {
+        brandTag: "آکادمی تخصصی ورزش و رزمی",
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
         kidsBase: 1500000,
         adultBase: 2000000,
         extraStylePrice: 500000,
@@ -868,8 +903,9 @@
     let appData = JSON.parse(localStorage.getItem('sports_reg_data')) || defaultData;
     if (!appData.rules) appData.rules = defaultData.rules;
     if (!appData.musicChannel) appData.musicChannel = defaultData.musicChannel;
-    // اطمینان از خواندن فایل اصلی تصویر
-    appData.musicChannel.avatar = "music.jpg";
+    if (!appData.brandTag) appData.brandTag = defaultData.brandTag;
+    if (!appData.bannerTitle) appData.bannerTitle = defaultData.bannerTitle;
+    if (!appData.bannerSubtitle) appData.bannerSubtitle = defaultData.bannerSubtitle;
 
     let currentAge = "adult";
     let currentClassType = "normal";
@@ -1046,6 +1082,11 @@
         document.getElementById('editInsta').value = appData.contact.instagram;
         document.getElementById('editTele').value = appData.contact.telegram;
 
+        document.getElementById('editBrandTag').value = appData.brandTag || '';
+        document.getElementById('editBannerTitle').value = appData.bannerTitle || '';
+        document.getElementById('editBannerSubtitle').value = appData.bannerSubtitle || '';
+        document.getElementById('editBannerBg').value = appData.bannerBg || '';
+
         document.getElementById('editMusicName').value = appData.musicChannel.name || '';
         document.getElementById('editMusicId').value = appData.musicChannel.id || '';
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
@@ -1061,6 +1102,11 @@
         appData.multipliers.semi = Number(document.getElementById('editSemiFactor').value);
         appData.multipliers.private = Number(document.getElementById('editPrivateFactor').value);
         appData.multipliers.vip = Number(document.getElementById('editVipFactor').value);
+
+        appData.brandTag = document.getElementById('editBrandTag').value;
+        appData.bannerTitle = document.getElementById('editBannerTitle').value;
+        appData.bannerSubtitle = document.getElementById('editBannerSubtitle').value;
+        appData.bannerBg = document.getElementById('editBannerBg').value;
         
         const rawCard = document.getElementById('editCardNum').value.replace(/\D/g, '');
         appData.card.cleanNumber = rawCard;
@@ -1081,10 +1127,18 @@
         adminModal.style.display = 'none';
         applyDataToUI();
         calculatePrice();
-        alert('تنظیمات با موفقیت ذخیره شد!');
+        alert('تمام تغییرات بنر، عناوین و تنظیمات ذخیره شدند!');
     };
 
     function applyDataToUI() {
+        document.getElementById('brandTag').innerText = appData.brandTag;
+        document.getElementById('bannerTitle').innerText = appData.bannerTitle;
+        document.getElementById('bannerSubtitle').innerText = appData.bannerSubtitle;
+
+        if (appData.bannerBg) {
+            document.getElementById('heroBanner').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('${appData.bannerBg}')`;
+        }
+
         document.getElementById('cardNumberText').innerText = appData.card.number;
         document.getElementById('cardOwnerText').innerText = appData.card.owner;
         document.getElementById('instaLink').href = appData.contact.instagram;
