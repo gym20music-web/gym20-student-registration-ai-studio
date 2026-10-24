@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>شرایط و ثبت‌نام کلاس‌های ورزشی</title>
+    <title>آکادمی تخصصی ورزش GYM20</title>
     <style>
         :root {
             --bg: #0b0f19;
@@ -58,7 +58,6 @@
             padding-bottom: 40px;
         }
 
-        /* نوار بالای صفحه کوچک و مرتب */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -67,7 +66,7 @@
         }
 
         .brand-badge {
-            font-size: 0.72rem;
+            font-size: 0.74rem;
             font-weight: 800;
             padding: 4px 10px;
             border-radius: 16px;
@@ -98,7 +97,6 @@
         }
         .circle-btn:active { transform: scale(0.9); }
 
-        /* بنر فشرده و شیک */
         .hero-banner {
             position: relative;
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.12), rgba(189, 0, 255, 0.12)), var(--surface);
@@ -134,7 +132,6 @@
             line-height: 1.5;
         }
 
-        /* کارت بخش‌ها جمع‌وجور */
         .section-card {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -153,7 +150,6 @@
             color: var(--neon-blue);
         }
 
-        /* دکمه‌های گزینشی کوچک */
         .pill-group {
             display: flex;
             gap: 5px;
@@ -181,7 +177,6 @@
             box-shadow: var(--neon-shadow);
         }
 
-        /* سبک‌ها */
         .styles-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -225,7 +220,6 @@
             color: #000;
         }
 
-        /* باکس قیمت جمع‌وجور */
         .price-box {
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.06), rgba(189, 0, 255, 0.06));
             border: 1px dashed var(--neon-blue);
@@ -252,7 +246,6 @@
             color: #0284c7;
         }
 
-        /* باکس داینامیک قوانین */
         .dynamic-rules-box {
             background: rgba(189, 0, 255, 0.06);
             border: 1px solid rgba(189, 0, 255, 0.25);
@@ -279,7 +272,6 @@
             white-space: pre-line;
         }
 
-        /* آکاردئون فشرده */
         .accordion-item {
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -314,7 +306,6 @@
             max-height: 400px;
         }
 
-        /* تیک تأیید و واریز */
         .rule-agreement {
             display: flex;
             align-items: center;
@@ -427,7 +418,6 @@
             font-weight: 600;
         }
 
-        /* کارت کانال موزیک جمع‌وجور */
         .music-channel-card {
             background: linear-gradient(135deg, rgba(189, 0, 255, 0.1), rgba(0, 243, 255, 0.06)), var(--surface);
             border: 1px solid rgba(189, 0, 255, 0.35);
@@ -505,7 +495,6 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* مودال ادمین با تب‌های کامل */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -599,14 +588,13 @@
 
 <div class="container">
     <div class="top-nav">
-        <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش و رزمی</div>
+        <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش GYM20</div>
         <div class="nav-actions">
             <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
             <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
         </div>
     </div>
 
-    <!-- بنر فشرده -->
     <div class="hero-banner" id="heroBanner">
         <h1 class="hero-title" id="bannerTitle">سلام، وقتتون بخیر 🌱</h1>
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
@@ -713,7 +701,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با ۴ تب کامل -->
+<!-- مودال مدیریت هوشمند با امکان کپی کد آماده برای گیت‌هاب -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -788,11 +776,11 @@
             </div>
         </div>
 
-        <!-- تب ۳: بنر و عناوین بالای صفحه -->
+        <!-- تب ۳: بنر و عناوین -->
         <div class="admin-panel-tab" id="bannerTab">
             <div class="admin-input-group">
                 <label>متن برچسب بالای صفحه (لوگو):</label>
-                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش و رزمی">
+                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20">
             </div>
             <div class="admin-input-group">
                 <label>عنوان اصلی بنر:</label>
@@ -808,7 +796,7 @@
             </div>
         </div>
 
-        <!-- تب ۴: کارت، تماس و موزیک -->
+        <!-- تب ۴: کارت و تماس -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
                 <label>شماره کارت واریز:</label>
@@ -848,13 +836,16 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:12px;">💾 ذخیره تغییرات</button>
+        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:12px;">💾 ذخیره تغییرات (روی همین دستگاه)</button>
+        <button class="copy-btn" id="copyFullCodeBtn" style="background:rgba(0, 243, 255, 0.15); border:1px solid var(--neon-blue); color:var(--neon-blue); margin-top:6px;">📋 کپی کد کامل آپدیت‌شده برای گیت‌هاب</button>
     </div>
 </div>
 
 <script>
+    // اطلاعات اصلی و اولیه دوره
     const defaultData = {
-        brandTag: "آکادمی تخصصی ورزش و رزمی",
+        version: 3,
+        brandTag: "آکادمی تخصصی ورزش GYM20",
         bannerTitle: "سلام، وقتتون بخیر 🌱",
         bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
         bannerBg: "",
@@ -900,12 +891,22 @@
         }
     };
 
-    let appData = JSON.parse(localStorage.getItem('sports_reg_data')) || defaultData;
-    if (!appData.rules) appData.rules = defaultData.rules;
-    if (!appData.musicChannel) appData.musicChannel = defaultData.musicChannel;
-    if (!appData.brandTag) appData.brandTag = defaultData.brandTag;
-    if (!appData.bannerTitle) appData.bannerTitle = defaultData.bannerTitle;
-    if (!appData.bannerSubtitle) appData.bannerSubtitle = defaultData.bannerSubtitle;
+    // همگام‌سازی حافظه برای جلوگیری از کش قدیمی روی گوشی‌ها
+    let appData = defaultData;
+    try {
+        const saved = localStorage.getItem('sports_reg_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed.version === defaultData.version) {
+                appData = parsed;
+            } else {
+                appData = defaultData;
+                localStorage.setItem('sports_reg_data', JSON.stringify(defaultData));
+            }
+        }
+    } catch(e) {
+        appData = defaultData;
+    }
 
     let currentAge = "adult";
     let currentClassType = "normal";
@@ -1092,7 +1093,7 @@
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
     }
 
-    document.getElementById('saveAdminBtn').onclick = () => {
+    function collectFormData() {
         appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
         appData.kidsBase = parsePureNumber(document.getElementById('editKidsPrice').value);
@@ -1122,12 +1123,35 @@
             link: document.getElementById('editMusicLink').value || 'https://t.me/GYM20MUSIC',
             avatar: "music.jpg"
         };
+    }
 
+    document.getElementById('saveAdminBtn').onclick = () => {
+        collectFormData();
         localStorage.setItem('sports_reg_data', JSON.stringify(appData));
         adminModal.style.display = 'none';
         applyDataToUI();
         calculatePrice();
-        alert('تمام تغییرات بنر، عناوین و تنظیمات ذخیره شدند!');
+        alert('تغییرات روی این دستگاه ذخیره شد!\nبرای اینکه روی گوشی بقیه هم تغییر کند، دکمه "کپی کد کامل برای گیت‌هاب" را بزنید.');
+    };
+
+    // دکمه تولید و کپی خودکار کدهای آپدیت‌شده برای گیت‌هاب
+    document.getElementById('copyFullCodeBtn').onclick = () => {
+        collectFormData();
+        appData.version = (appData.version || 3) + 1;
+        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+        applyDataToUI();
+
+        // ایجاد متن کامل فایل با تنظیمات جدید
+        let htmlSource = document.documentElement.outerHTML;
+        const newDefaultStr = 'const defaultData = ' + JSON.stringify(appData, null, 4) + ';';
+        htmlSource = htmlSource.replace(/const defaultData = \{[\s\S]*?\};/, newDefaultStr);
+        htmlSource = '<!DOCTYPE html>\n<html lang="fa" dir="rtl">\n' + htmlSource.slice(htmlSource.indexOf('<head>'));
+
+        navigator.clipboard.writeText(htmlSource).then(() => {
+            alert('✅ کدهای جدید با موفقیت کپی شدند!\nحالا وارد گیت‌هاب شوید و پیست کنید تا تغییرات برای تمام گوشی‌ها آنلاین شود.');
+        }).catch(() => {
+            alert('لطفاً اجازه دسترسی به کلیپ‌بورد را بدهید یا فایل را مستقیماً ادیت کنید.');
+        });
     };
 
     function applyDataToUI() {
