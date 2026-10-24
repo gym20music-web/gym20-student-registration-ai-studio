@@ -98,7 +98,7 @@
         }
         .circle-btn:active { transform: scale(0.92); }
 
-        /* بنر معرفی */
+        /* بنر */
         .hero-banner {
             position: relative;
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(189, 0, 255, 0.15)), var(--surface);
@@ -197,7 +197,7 @@
             color: #000;
         }
 
-        /* دکمه‌های انتخابی */
+        /* دکمه‌های گزینشی */
         .pill-group {
             display: flex;
             gap: 6px;
@@ -245,13 +245,14 @@
             font-size: 1.35rem;
             font-weight: 900;
             color: var(--neon-blue);
+            letter-spacing: -0.5px;
         }
 
         [data-theme="light"] .total-price {
             color: #0284c7;
         }
 
-        /* باکس داینامیک قوانین */
+        /* باکس هوشمند قوانین */
         .dynamic-rules-box {
             background: rgba(189, 0, 255, 0.07);
             border: 1px solid rgba(189, 0, 255, 0.25);
@@ -443,7 +444,7 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* مودال ادمین خلوت و تب‌بندی شده */
+        /* مودال ادمین */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -464,7 +465,6 @@
             padding: 16px;
         }
         
-        /* تب‌های پنل ادمین */
         .admin-tabs {
             display: flex;
             gap: 6px;
@@ -507,8 +507,27 @@
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            font-size: 0.8rem;
+            font-size: 0.82rem;
             outline: none;
+        }
+        .price-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .price-currency-tag {
+            position: absolute;
+            left: 10px;
+            font-size: 0.72rem;
+            color: var(--neon-blue);
+            pointer-events: none;
+            font-weight: 700;
+        }
+        .price-input-wrapper input {
+            padding-left: 50px;
+            direction: ltr;
+            text-align: right;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -616,7 +635,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت بازطراحی‌شده و خلوت -->
+<!-- مودال مدیریت هوشمند با جداسازی ۳ رقمی قیمت‌ها -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -624,14 +643,14 @@
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
-        <!-- تب‌های انتخاب بخش -->
+        <!-- تب‌های پنل -->
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و تماس</button>
         </div>
 
-        <!-- تب ۱: قوانین (کاملاً خلوت با یک منوی کشویی) -->
+        <!-- تب ۱: قوانین خلوت -->
         <div class="admin-panel-tab active" id="rulesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple); font-weight:700;">انتخاب قانون برای ویرایش:</label>
@@ -650,22 +669,30 @@
                 <label id="activeRuleLabel">متن قانون:</label>
                 <textarea rows="6" id="activeRuleTextarea" placeholder="متن قانون مورد نظر را اینجا بنویسید..."></textarea>
             </div>
-            <div style="font-size:0.7rem; color:var(--text-secondary);">💡 هر قانونی را از منوی بالا انتخاب کنید، متن آن لود شده و می‌توانید آن را تغییر دهید.</div>
         </div>
 
-        <!-- تب ۲: شهریه‌ها -->
+        <!-- تب ۲: شهریه‌ها (با جداسازی ۳ رقمی هنگام تایپ) -->
         <div class="admin-panel-tab" id="pricesTab">
             <div class="admin-input-group">
-                <label>شهریه کودکان (۸ جلسه - تومان):</label>
-                <input type="number" id="editKidsPrice">
+                <label>شهریه کودکان (۸ جلسه):</label>
+                <div class="price-input-wrapper">
+                    <input type="text" id="editKidsPrice" placeholder="۱,۵۰۰,۰۰۰">
+                    <span class="price-currency-tag">تومان</span>
+                </div>
             </div>
             <div class="admin-input-group">
-                <label>شهریه بزرگسالان (۸ جلسه - تومان):</label>
-                <input type="number" id="editAdultPrice">
+                <label>شهریه بزرگسالان (۸ جلسه):</label>
+                <div class="price-input-wrapper">
+                    <input type="text" id="editAdultPrice" placeholder="۲,۰۰۰,۰۰۰">
+                    <span class="price-currency-tag">تومان</span>
+                </div>
             </div>
             <div class="admin-input-group">
-                <label>اضافه شدن هر سبک بیشتر (تومان):</label>
-                <input type="number" id="editExtraPrice">
+                <label>اضافه شدن هر سبک بیشتر:</label>
+                <div class="price-input-wrapper">
+                    <input type="text" id="editExtraPrice" placeholder="۵۰۰,۰۰۰">
+                    <span class="price-currency-tag">تومان</span>
+                </div>
             </div>
             <div style="display:flex; gap:6px;">
                 <div class="admin-input-group" style="flex:1;">
@@ -765,6 +792,36 @@
     const paymentSectionEl = document.getElementById('paymentSection');
     const toastEl = document.getElementById('toast');
 
+    // تابع فرمت ۳ رقمی فارسی به تومان
+    function formatTomanPersian(num) {
+        if (!num) return "۰ تومان";
+        const parts = Number(num).toLocaleString('en-US');
+        const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+        const farsiNum = parts.replace(/\d/g, d => persianDigits[d]);
+        return farsiNum + ' تومان';
+    }
+
+    // تابع تبدیل عدد به ۳ رقمی انگلیسی برای فیلدهای ادمین
+    function formatNumberEn(num) {
+        if (!num) return "";
+        const clean = num.toString().replace(/\D/g, "");
+        return Number(clean).toLocaleString('en-US');
+    }
+
+    // تابع استخراج عدد خالص از رشته با کاما
+    function parsePureNumber(str) {
+        return Number(str.toString().replace(/\D/g, "")) || 0;
+    }
+
+    // اتصال فرمت ۳ رقمی زنده به کادرهای قیمت ادمین
+    ['editKidsPrice', 'editAdultPrice', 'editExtraPrice'].forEach(id => {
+        const input = document.getElementById(id);
+        input.addEventListener('input', (e) => {
+            const cursorPosition = e.target.selectionStart;
+            e.target.value = formatNumberEn(e.target.value);
+        });
+    });
+
     function renderStyles() {
         stylesListEl.innerHTML = "";
         appData.styles.forEach(st => {
@@ -804,7 +861,7 @@
         let sessionFactor = appData.sessionRates[currentSessions] || 1.0;
 
         let total = Math.round(subTotal * classFactor * sessionFactor);
-        finalPriceEl.innerText = Number(total).toLocaleString('fa-IR') + ' تومان';
+        finalPriceEl.innerText = formatTomanPersian(total);
 
         const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP' };
         const ageNames = { adult: 'بزرگسال', kids: 'کودک' };
@@ -855,7 +912,6 @@
         }
     };
 
-    /* مدیریت تب‌های پنل ادمین */
     function switchAdminTab(tabId) {
         document.querySelectorAll('.admin-panel-tab').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
@@ -863,13 +919,10 @@
         event.target.classList.add('active');
     }
 
-    /* تغییر قانون در منوی کشویی */
     function onRuleSelectorChange() {
         const textarea = document.getElementById('activeRuleTextarea');
-        // ابتدا تغییرات قانون قبلی را ذخیره می‌کنیم
         appData.rules[currentEditingRuleKey] = textarea.value;
 
-        // قانون جدید انتخاب شده را لود می‌کنیم
         const selector = document.getElementById('ruleSelector');
         currentEditingRuleKey = selector.value;
         textarea.value = appData.rules[currentEditingRuleKey] || '';
@@ -895,9 +948,11 @@
         currentEditingRuleKey = document.getElementById('ruleSelector').value;
         document.getElementById('activeRuleTextarea').value = appData.rules[currentEditingRuleKey] || '';
 
-        document.getElementById('editKidsPrice').value = appData.kidsBase;
-        document.getElementById('editAdultPrice').value = appData.adultBase;
-        document.getElementById('editExtraPrice').value = appData.extraStylePrice;
+        // لود مقادیر قیمت با فرمت ۳ رقمی در فیلدها
+        document.getElementById('editKidsPrice').value = formatNumberEn(appData.kidsBase);
+        document.getElementById('editAdultPrice').value = formatNumberEn(appData.adultBase);
+        document.getElementById('editExtraPrice').value = formatNumberEn(appData.extraStylePrice);
+
         document.getElementById('editSemiFactor').value = appData.multipliers.semi;
         document.getElementById('editPrivateFactor').value = appData.multipliers.private;
         document.getElementById('editVipFactor').value = appData.multipliers.vip;
@@ -909,12 +964,13 @@
     }
 
     document.getElementById('saveAdminBtn').onclick = () => {
-        // ذخیره آخرین متنی که داخل کادر قوانین باز است
         appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
-        appData.kidsBase = Number(document.getElementById('editKidsPrice').value);
-        appData.adultBase = Number(document.getElementById('editAdultPrice').value);
-        appData.extraStylePrice = Number(document.getElementById('editExtraPrice').value);
+        // پارس کردن صحیح قیمت‌ها بدون کاما
+        appData.kidsBase = parsePureNumber(document.getElementById('editKidsPrice').value);
+        appData.adultBase = parsePureNumber(document.getElementById('editAdultPrice').value);
+        appData.extraStylePrice = parsePureNumber(document.getElementById('editExtraPrice').value);
+
         appData.multipliers.semi = Number(document.getElementById('editSemiFactor').value);
         appData.multipliers.private = Number(document.getElementById('editPrivateFactor').value);
         appData.multipliers.vip = Number(document.getElementById('editVipFactor').value);
