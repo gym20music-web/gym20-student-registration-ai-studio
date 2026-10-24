@@ -1,3 +1,20 @@
+سه دکمه بخش پرداخت کاملاً بازطراحی شدند و اکنون در یک ردیف، هم‌اندازه و بسیار
+جمع‌وجور و مرتب کنار یکدیگر قرار گرفته‌اند:
+
+۱. 💳 پرداخت آنلاین (با گرادیان نئونی سبز/آبی)
+۲. 📋 کپی کارت (برای کپی سریع شماره کارت)
+۳. 📩 ارسال فیش (ارسال آنی پیامک فیش به مربی)
+
+مراحل جایگزینی در گیت‌هاب (فقط ۱ دقیقه):
+
+1.  روی این لینک کلیک کنید تا صفحه ویرایش باز شود:
+    👉 ویرایش مستقیم index.html در گیت‌هاب
+2.  کل کدهای داخل کادر را با Ctrl + A انتخاب و پاک کنید.
+3.  کل کدهای داخل کادر زیر را کپی و در آنجا پیست کرده و دکمه سبز رنگ Commit
+    changes... را بزنید.
+
+کدهای کامل با ردیف دکمه‌های هم‌اندازه و مرتب:
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
@@ -338,40 +355,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* کارت پرداخت با ۳ دکمه هم‌اندازه کنار هم */
         .bank-card {
             background: linear-gradient(135deg, #1e1b4b, #311042);
             border: 1px solid rgba(189, 0, 255, 0.4);
             border-radius: var(--radius-md);
-            padding: 14px;
+            padding: 13px 11px;
             color: #fff;
             box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2);
-        }
-
-        .gateway-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            padding: 11px;
-            border-radius: var(--radius-sm);
-            border: none;
-            background: linear-gradient(135deg, #10b981, #00f3ff);
-            color: #000;
-            font-weight: 900;
-            font-size: 0.85rem;
-            text-decoration: none;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-            margin-bottom: 10px;
-            transition: 0.2s;
-        }
-        .gateway-btn:active { transform: scale(0.97); }
-
-        .divider-text {
-            text-align: center;
-            font-size: 0.68rem;
-            color: var(--text-secondary);
-            margin: 6px 0;
         }
 
         .bank-name {
@@ -396,34 +387,52 @@
         .card-owner {
             font-size: 0.76rem;
             font-weight: 600;
+            margin-bottom: 10px;
+            text-align: center;
         }
 
-        .copy-btn {
-            width: 100%;
-            margin-top: 8px;
-            padding: 8px;
+        /* ردیف ۳ تایی دکمه‌های هم‌اندازه */
+        .payment-actions-row {
+            display: flex;
+            gap: 5px;
+            margin-top: 6px;
+        }
+
+        .pay-action-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 8px 2px;
             border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
             border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            transition: 0.2s;
+            line-height: 1.2;
+        }
+        .pay-action-btn:active { transform: scale(0.94); }
+
+        .online-pay-btn {
+            background: linear-gradient(135deg, #10b981, #00f3ff);
+            color: #000;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+        }
+
+        .copy-card-btn {
             background: var(--neon-blue);
             color: #000;
-            font-weight: 800;
-            font-size: 0.76rem;
-            cursor: pointer;
         }
 
         .send-receipt-btn {
-            display: block;
-            width: 100%;
-            margin-top: 6px;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             color: #fff;
-            text-align: center;
-            text-decoration: none;
-            font-size: 0.73rem;
-            font-weight: 600;
         }
 
         .social-links {
@@ -522,7 +531,7 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* استایل پنل مدیریت کاملاً منظم، تمیز و یکدست */
+        /* استایل پنل مدیریت منظم و یکدست */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -623,7 +632,6 @@
             font-weight: 700;
         }
 
-        /* استایل اختصاصی تب سبک‌ها برای حفظ یکدستی کامل تم */
         .admin-style-row {
             display: flex;
             gap: 5px;
@@ -738,23 +746,28 @@
             <span>قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
         </label>
 
-        <!-- بخش پرداخت با دو روش درگاه آنلاین و شماره کارت -->
+        <!-- بخش پرداخت با ۳ دکمه در یک ردیف و هم‌اندازه -->
         <div class="payment-reveal" id="paymentSection">
             <div class="bank-card">
-                <a href="#" target="_blank" class="gateway-btn" id="onlineGatewayBtn">
-                    <span>💳 پرداخت آنلاین شهریه (درگاه شتاب)</span>
-                </a>
-
-                <div class="divider-text">── یا کارت‌به‌کارت مستقیم ──</div>
-
                 <div class="bank-name">
                     <span id="bankNameText">بانک سامان</span>
-                    <span>شماره کارت واریز شهریه</span>
+                    <span>اطلاعات واریز شهریه</span>
                 </div>
                 <div class="card-number" id="cardNumberText">۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸</div>
                 <div class="card-owner" id="cardOwnerText">به نام: مربی ورزشی</div>
-                <button class="copy-btn" id="copyCardBtn">📋 کپی شماره کارت</button>
-                <a href="#" class="send-receipt-btn" id="sendReceiptBtn">ارسال تصویر فیش به مربی (پیامک)</a>
+
+                <!-- ردیف سه دکمه هم‌اندازه و مرتب -->
+                <div class="payment-actions-row">
+                    <a href="#" target="_blank" class="pay-action-btn online-pay-btn" id="onlineGatewayBtn">
+                        💳 پرداخت آنلاین
+                    </a>
+                    <button type="button" class="pay-action-btn copy-card-btn" id="copyCardBtn">
+                        📋 کپی کارت
+                    </button>
+                    <a href="#" class="pay-action-btn send-receipt-btn" id="sendReceiptBtn">
+                        📩 ارسال فیش
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -785,7 +798,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند، فوق‌العاده مرتب و خوش‌دست -->
+<!-- مودال مدیریت -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -861,7 +874,7 @@
             </div>
         </div>
 
-        <!-- تب ۳: مدیریت سبک‌ها با تم تاریک و یکدست -->
+        <!-- تب ۳: مدیریت سبک‌ها -->
         <div class="admin-panel-tab" id="stylesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
@@ -940,7 +953,6 @@
             </div>
         </div>
 
-        <!-- دکمه تک‌کلمه‌ای ساده برای ذخیره قطعی -->
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره</button>
     </div>
 </div>
@@ -949,85 +961,57 @@
     const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 
     const defaultData = {
-    "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
-    "bannerTitle": "سلام، وقتتون بخیر 🌱",
-    "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-    "bannerBg": "",
-    "kidsBase": 1500000,
-    "adultBase": 2000000,
-    "extraStylePrice": 500000,
-    "multipliers": {
-        "normal": 1,
-        "semi": 1.4,
-        "private": 2,
-        "vip": 3
-    },
-    "sessionRates": {
-        "8": 1,
-        "10": 1.25,
-        "12": 1.5
-    },
-    "card": {
-        "bank": "بانک سامان",
-        "number": "6219-8610-2234-5678",
-        "cleanNumber": "6219861022345678",
-        "owner": "به نام: مربی ورزشی",
-        "gatewayLink": "https://zarinp.al/"
-    },
-    "contact": {
-        "phone": "09059293060",
-        "instagram": "https://instagram.com/",
-        "telegram": "https://t.me/Uptodate55"
-    },
-    "musicChannel": {
-        "name": "کانال موزیک GYM20MUSIC",
-        "id": "@GYM20MUSIC",
-        "link": "https://t.me/GYM20MUSIC",
-        "avatar": "music.jpg"
-    },
-    "styles": [
-        {
-            "id": "ninjutsu",
-            "name": "نینجوتسو 🥋"
+        brandTag: "آکادمی تخصصی ورزش GYM20🤸",
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
+        kidsBase: 1500000,
+        adultBase: 2000000,
+        extraStylePrice: 500000,
+        multipliers: { normal: 1.0, semi: 1.4, private: 2.0, vip: 3.0 },
+        sessionRates: { "8": 1.0, "10": 1.25, "12": 1.5 },
+        card: {
+            bank: "بانک سامان",
+            number: "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+            cleanNumber: "6219861022345678",
+            owner: "به نام: مربی ورزشی",
+            gatewayLink: "https://zarinp.al/"
         },
-        {
-            "id": "parkour",
-            "name": "پارکور 🏃‍♂️"
+        contact: {
+            phone: "09120000000",
+            instagram: "https://instagram.com/",
+            telegram: "https://t.me/"
         },
-        {
-            "id": "calisthenics",
-            "name": "کلیستنیکس 🤸‍♂️"
+        musicChannel: {
+            name: "کانال موزیک GYM20MUSIC",
+            id: "@GYM20MUSIC",
+            link: "https://t.me/GYM20MUSIC",
+            avatar: "music.jpg"
         },
-        {
-            "id": "breakdance",
-            "name": "بریک‌دنس (پاورموو) ⚡"
-        },
-        {
-            "id": "boxing",
-            "name": "بوکس خیابانی 🥊"
-        },
-        {
-            "id": "kyokushin",
-            "name": "کیوکوشین 🥋"
+        styles: [
+            { id: "ninjutsu", name: "نینجوتسو 🥋" },
+            { id: "parkour", name: "پارکور 🏃‍♂️" },
+            { id: "calisthenics", name: "کلیستنیکس 🤸‍♂️" },
+            { id: "breakdance", name: "بریک‌دنس (پاورموو) ⚡" },
+            { id: "boxing", name: "بوکس خیابانی 🥊" },
+            { id: "kyokushin", name: "کیوکوشین 🥋" }
+        ],
+        rules: {
+            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
+            semi: "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
+            private: "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
+            vip: "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
+            s8: "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
+            s10: "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
+            s12: "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
+            general: "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
-    ],
-    "rules": {
-        "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
-        "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
-        "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
-        "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-        "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
-        "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
-        "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-        "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
-    }
-};
+    };
 
     const GH_OWNER = "gym20music-web";
     const GH_REPO = "gym20-student-registration-ai-studio";
     const GH_PATH = "index.html";
 
-    // سیستم ادغام هوشمند حافظه برای جلوگیری از پاک شدن تغییرات قبلی شما
     let appData = defaultData;
     try {
         const saved = localStorage.getItem('sports_reg_data');
@@ -1333,7 +1317,7 @@
         }).join(''));
     }
 
-    // ذخیره آنی و قطعی بدون کلمات اضافه
+    // ذخیره آنی و قطعی
     document.getElementById('autoCommitBtn').onclick = async () => {
         const token = BUILTIN_TOKEN;
         const btn = document.getElementById('autoCommitBtn');
@@ -1438,3 +1422,6 @@
 </script>
 </body>
 </html>
+
+این کد را جایگزین کنید؛ اکنون کارت پرداخت شما دارای ۳ دکمه کاملاً هم‌اندازه و
+شیک در یک ردیف است و در صفحه موبایل بسیار منظم و چشم‌نواز نمایش داده می‌شود.
