@@ -1,9 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- کدهای جلوگیری قطعی از کش شدن در مرورگرها -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>آکادمی تخصصی ورزش GYM20🤸</title>
     <style>
         :root {
@@ -515,7 +518,6 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* استایل پنل مدیریت منظم و یکدست */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -943,97 +945,73 @@
 
 <script>
     const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
+    const CURRENT_CACHE_VERSION = 12; // نسخه اختصاصی برای تازه‌سازی قطعی کش مرورگرها
 
     const defaultData = {
-    "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
-    "bannerTitle": "سلام، وقتتون بخیر 🌱",
-    "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-    "bannerBg": "",
-    "kidsBase": 1500000,
-    "adultBase": 2000000,
-    "extraStylePrice": 500000,
-    "multipliers": {
-        "normal": 1,
-        "semi": 1.4,
-        "private": 2,
-        "vip": 3
-    },
-    "sessionRates": {
-        "8": 1,
-        "10": 1.25,
-        "12": 1.5
-    },
-    "card": {
-        "bank": "بانک سامان",
-        "number": "6219-8610-2234-5678",
-        "cleanNumber": "6219861022345678",
-        "owner": "به نام: مربی ورزشی",
-        "gatewayLink": "https://zarinp.al/"
-    },
-    "contact": {
-        "phone": "09059293060",
-        "instagram": "https://instagram.com/",
-        "telegram": "https://t.me/"
-    },
-    "musicChannel": {
-        "name": "کانال موزیک GYM20MUSIC",
-        "id": "@GYM20MUSIC",
-        "link": "https://t.me/GYM20MUSIC",
-        "avatar": "music.jpg"
-    },
-    "styles": [
-        {
-            "id": "ninjutsu",
-            "name": "نینجوتسو 🥋"
+        cacheVersion: CURRENT_CACHE_VERSION,
+        brandTag: "آکادمی تخصصی ورزش GYM20🤸",
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
+        kidsBase: 1500000,
+        adultBase: 2000000,
+        extraStylePrice: 500000,
+        multipliers: { normal: 1.0, semi: 1.4, private: 2.0, vip: 3.0 },
+        sessionRates: { "8": 1.0, "10": 1.25, "12": 1.5 },
+        card: {
+            bank: "بانک سامان",
+            number: "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+            cleanNumber: "6219861022345678",
+            owner: "به نام: مربی ورزشی",
+            gatewayLink: "https://zarinp.al/"
         },
-        {
-            "id": "parkour",
-            "name": "پارکور 🏃‍♂️"
+        contact: {
+            phone: "09120000000",
+            instagram: "https://instagram.com/",
+            telegram: "https://t.me/"
         },
-        {
-            "id": "calisthenics",
-            "name": "کلیستنیکس 🤸‍♂️"
+        musicChannel: {
+            name: "کانال موزیک GYM20MUSIC",
+            id: "@GYM20MUSIC",
+            link: "https://t.me/GYM20MUSIC",
+            avatar: "music.jpg"
         },
-        {
-            "id": "breakdance",
-            "name": "بریک‌دنس (پاورموو) ⚡"
-        },
-        {
-            "id": "boxing",
-            "name": "بوکس خیابانی 🥊"
-        },
-        {
-            "id": "kyokushin",
-            "name": "کیوکوشین 🥋"
+        styles: [
+            { id: "ninjutsu", name: "نینجوتسو 🥋" },
+            { id: "parkour", name: "پارکور 🏃‍♂️" },
+            { id: "calisthenics", name: "کلیستنیکس 🤸‍♂️" },
+            { id: "breakdance", name: "بریک‌دنس (پاورموو) ⚡" },
+            { id: "boxing", name: "بوکس خیابانی 🥊" },
+            { id: "kyokushin", name: "کیوکوشین 🥋" }
+        ],
+        rules: {
+            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
+            semi: "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
+            private: "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
+            vip: "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
+            s8: "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
+            s10: "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
+            s12: "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
+            general: "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
-    ],
-    "rules": {
-        "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
-        "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
-        "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
-        "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-        "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
-        "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
-        "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-        "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
-    }
-};
+    };
 
     const GH_OWNER = "gym20music-web";
     const GH_REPO = "gym20-student-registration-ai-studio";
     const GH_PATH = "index.html";
 
+    // پاک‌سازی خودکار کش‌های قدیمی و جایگزینی آنی نسخه جدید
     let appData = defaultData;
     try {
         const saved = localStorage.getItem('sports_reg_data');
         if (saved) {
             const parsed = JSON.parse(saved);
-            appData = { ...defaultData, ...parsed };
-            if (parsed.rules) appData.rules = { ...defaultData.rules, ...parsed.rules };
-            if (parsed.card) appData.card = { ...defaultData.card, ...parsed.card };
-            if (parsed.contact) appData.contact = { ...defaultData.contact, ...parsed.contact };
-            if (parsed.musicChannel) appData.musicChannel = { ...defaultData.musicChannel, ...parsed.musicChannel };
-            if (parsed.styles && parsed.styles.length > 0) appData.styles = parsed.styles;
+            if (parsed.cacheVersion === CURRENT_CACHE_VERSION) {
+                appData = { ...defaultData, ...parsed };
+            } else {
+                localStorage.removeItem('sports_reg_data');
+                appData = defaultData;
+            }
         }
     } catch(e) {
         appData = defaultData;
@@ -1328,7 +1306,6 @@
         }).join(''));
     }
 
-    // ذخیره آنی و قطعی
     document.getElementById('autoCommitBtn').onclick = async () => {
         const token = BUILTIN_TOKEN;
         const btn = document.getElementById('autoCommitBtn');
@@ -1423,7 +1400,6 @@
             document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
         }
 
-        renderStyles();
         updateDynamicRules();
     }
 
