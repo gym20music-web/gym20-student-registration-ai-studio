@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>آکادمی تخصصی ورزش GYM20</title>
+    <title>آکادمی تخصصی ورزش GYM20🤸</title>
     <style>
         :root {
             --bg: #0b0f19;
@@ -353,25 +353,25 @@
             justify-content: center;
             gap: 6px;
             width: 100%;
-            padding: 12px;
+            padding: 11px;
             border-radius: var(--radius-sm);
             border: none;
             background: linear-gradient(135deg, #10b981, #00f3ff);
             color: #000;
             font-weight: 900;
-            font-size: 0.88rem;
+            font-size: 0.85rem;
             text-decoration: none;
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             transition: 0.2s;
         }
         .gateway-btn:active { transform: scale(0.97); }
 
         .divider-text {
             text-align: center;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: var(--text-secondary);
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .bank-name {
@@ -522,15 +522,16 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
+        /* استایل پنل مدیریت کاملاً منظم، تمیز و یکدست */
         .admin-modal {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(6px);
             display: none;
             align-items: center;
             justify-content: center;
-            padding: 12px;
+            padding: 10px;
             z-index: 2000;
         }
         .admin-content {
@@ -538,18 +539,19 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             width: 100%;
-            max-width: 410px;
-            max-height: 90vh;
+            max-width: 390px;
+            max-height: 88vh;
             overflow-y: auto;
-            padding: 14px;
+            padding: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
         }
         
         .admin-tabs {
             display: flex;
             gap: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
+            padding-bottom: 6px;
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
@@ -558,16 +560,17 @@
 
         .admin-tab-btn {
             flex: none;
-            padding: 7px 10px;
+            padding: 6px 9px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
             white-space: nowrap;
+            transition: 0.2s;
         }
         .admin-tab-btn.active {
             background: var(--neon-blue);
@@ -578,22 +581,27 @@
         .admin-panel-tab { display: none; }
         .admin-panel-tab.active { display: block; }
 
-        .admin-input-group { margin-bottom: 9px; }
+        .admin-input-group { margin-bottom: 8px; }
         .admin-input-group label {
             display: block;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: var(--text-secondary);
             margin-bottom: 3px;
+            font-weight: 600;
         }
         .admin-input-group input, .admin-input-group textarea, .admin-select {
             width: 100%;
-            padding: 7px 9px;
+            padding: 6px 8px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-primary);
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             outline: none;
+            transition: border-color 0.2s;
+        }
+        .admin-input-group input:focus, .admin-input-group textarea:focus, .admin-select:focus {
+            border-color: var(--neon-blue);
         }
         .price-input-wrapper {
             position: relative;
@@ -602,25 +610,62 @@
         }
         .price-currency-tag {
             position: absolute;
-            left: 10px;
-            font-size: 0.7rem;
+            left: 8px;
+            font-size: 0.68rem;
             color: var(--neon-blue);
             pointer-events: none;
             font-weight: 700;
         }
         .price-input-wrapper input {
-            padding-left: 45px;
+            padding-left: 42px;
             direction: ltr;
             text-align: right;
             font-weight: 700;
         }
+
+        /* استایل اختصاصی تب سبک‌ها برای حفظ یکدستی کامل تم */
+        .admin-style-row {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        .admin-style-row input {
+            flex: 1;
+            padding: 6px 8px;
+            font-size: 0.75rem;
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            border-radius: var(--radius-sm);
+            outline: none;
+        }
+        .admin-style-row input:focus {
+            border-color: var(--neon-blue);
+        }
+        .delete-style-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            border-radius: var(--radius-sm);
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            flex: none;
+            transition: 0.2s;
+        }
+        .delete-style-btn:active { transform: scale(0.92); }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="top-nav">
-        <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش GYM20</div>
+        <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش GYM20🤸</div>
         <div class="nav-actions">
             <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
             <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
@@ -740,11 +785,11 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با تب جدید سبک‌ها -->
+<!-- مودال مدیریت هوشمند، فوق‌العاده مرتب و خوش‌دست -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h3 style="font-size:0.9rem; color:var(--neon-blue);">⚙️ پنل مدیریت هوشمند</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h3 style="font-size:0.85rem; color:var(--neon-blue);">⚙️ پنل مدیریت آکادمی</h3>
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
@@ -759,7 +804,7 @@
         <!-- تب ۱: قوانین -->
         <div class="admin-panel-tab active" id="rulesTab">
             <div class="admin-input-group">
-                <label style="color:var(--neon-purple); font-weight:700;">انتخاب قانون برای ویرایش:</label>
+                <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
                 <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
                     <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
                     <option value="normal">شرایط کلاس عمومی</option>
@@ -800,7 +845,7 @@
                     <span class="price-currency-tag">تومان</span>
                 </div>
             </div>
-            <div style="display:flex; gap:6px;">
+            <div style="display:flex; gap:5px;">
                 <div class="admin-input-group" style="flex:1;">
                     <label>ضریب نیمه‌خصوصی:</label>
                     <input type="number" step="0.1" id="editSemiFactor">
@@ -816,24 +861,25 @@
             </div>
         </div>
 
-        <!-- تب ۳: مدیریت سبک‌ها (افزودن، ویرایش، حذف) -->
+        <!-- تب ۳: مدیریت سبک‌ها با تم تاریک و یکدست -->
         <div class="admin-panel-tab" id="stylesTab">
-            <div style="font-size:0.75rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن سبک جدید:</div>
-            <div style="display:flex; gap:6px; margin-bottom:12px;">
-                <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
-                <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+            <div class="admin-input-group">
+                <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
+                    <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+                </div>
             </div>
 
-            <div style="font-size:0.75rem; color:var(--neon-purple); font-weight:bold; margin-bottom:6px;">لیست سبک‌ها (ویرایش یا حذف):</div>
-            <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; padding-left:2px;"></div>
-            <div style="font-size:0.67rem; color:var(--text-secondary); margin-top:6px;">💡 نام هر سبک را مستقیماً داخل کادر ویرایش کنید یا با زدن 🗑️ آن را حذف کنید.</div>
+            <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
+            <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
         </div>
 
         <!-- تب ۴: بنر و عناوین -->
         <div class="admin-panel-tab" id="bannerTab">
             <div class="admin-input-group">
                 <label>متن برچسب بالای صفحه (لوگو):</label>
-                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20">
+                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20🤸">
             </div>
             <div class="admin-input-group">
                 <label>عنوان اصلی بنر:</label>
@@ -852,7 +898,7 @@
         <!-- تب ۵: کارت، پرداخت و تماس -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
-                <label style="color:var(--neon-green); font-weight:bold;">🔗 لینک مستقیم درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
+                <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
                 <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
             </div>
 
@@ -877,8 +923,8 @@
                 <input type="text" id="editTele">
             </div>
 
-            <hr style="border-color:var(--border); margin:10px 0;">
-            <div style="color:var(--neon-purple); font-size:0.75rem; font-weight:bold; margin-bottom:6px;">🎵 تنظیمات کانال موزیک:</div>
+            <hr style="border-color:var(--border); margin:8px 0;">
+            <div style="color:var(--neon-purple); font-size:0.72rem; font-weight:bold; margin-bottom:4px;">🎵 تنظیمات کانال موزیک:</div>
 
             <div class="admin-input-group">
                 <label>نام کانال موزیک:</label>
@@ -894,7 +940,8 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:12px; margin-top:14px;">🚀 ذخیره و انتشار خودکار در گیت‌هاب</button>
+        <!-- دکمه تک‌کلمه‌ای ساده برای ذخیره قطعی -->
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره</button>
     </div>
 </div>
 
@@ -902,8 +949,7 @@
     const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 
     const defaultData = {
-        version: 8,
-        brandTag: "آکادمی تخصصی ورزش GYM20",
+        brandTag: "آکادمی تخصصی ورزش GYM20🤸",
         bannerTitle: "سلام، وقتتون بخیر 🌱",
         bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
         bannerBg: "",
@@ -920,9 +966,9 @@
             gatewayLink: "https://zarinp.al/"
         },
         contact: {
-            phone: "09120000000",
+            phone: "09059293060",
             instagram: "https://instagram.com/",
-            telegram: "https://t.me/"
+            telegram: "https://t.me/Uptodate55"
         },
         musicChannel: {
             name: "کانال موزیک GYM20MUSIC",
@@ -954,17 +1000,18 @@
     const GH_REPO = "gym20-student-registration-ai-studio";
     const GH_PATH = "index.html";
 
+    // سیستم ادغام هوشمند حافظه برای جلوگیری از پاک شدن تغییرات قبلی شما
     let appData = defaultData;
     try {
         const saved = localStorage.getItem('sports_reg_data');
         if (saved) {
             const parsed = JSON.parse(saved);
-            if (parsed.version === defaultData.version) {
-                appData = parsed;
-            } else {
-                appData = defaultData;
-                localStorage.setItem('sports_reg_data', JSON.stringify(defaultData));
-            }
+            appData = { ...defaultData, ...parsed };
+            if (parsed.rules) appData.rules = { ...defaultData.rules, ...parsed.rules };
+            if (parsed.card) appData.card = { ...defaultData.card, ...parsed.card };
+            if (parsed.contact) appData.contact = { ...defaultData.contact, ...parsed.contact };
+            if (parsed.musicChannel) appData.musicChannel = { ...defaultData.musicChannel, ...parsed.musicChannel };
+            if (parsed.styles && parsed.styles.length > 0) appData.styles = parsed.styles;
         }
     } catch(e) {
         appData = defaultData;
@@ -1006,7 +1053,6 @@
         });
     });
 
-    // رندر سبک‌ها در صفحه اصلی
     function renderStyles() {
         stylesListEl.innerHTML = "";
         appData.styles.forEach(st => {
@@ -1029,16 +1075,15 @@
         calculatePrice();
     }
 
-    // مدیریت تب سبک‌ها در پنل ادمین
     function renderAdminStylesList() {
         const container = document.getElementById('adminStylesListContainer');
         container.innerHTML = "";
         appData.styles.forEach(st => {
             const row = document.createElement('div');
-            row.style.cssText = "display:flex; gap:6px; align-items:center;";
+            row.className = 'admin-style-row';
             row.innerHTML = `
-                <input type="text" value="${st.name}" oninput="updateStyleName('${st.id}', this.value)" style="flex:1; padding:6px 8px; font-size:0.78rem;">
-                <button type="button" onclick="deleteStyle('${st.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid #ef4444; color:#ef4444; border-radius:var(--radius-sm); width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;" title="حذف سبک">🗑️</button>
+                <input type="text" value="${st.name}" oninput="updateStyleName('${st.id}', this.value)">
+                <button type="button" class="delete-style-btn" onclick="deleteStyle('${st.id}')" title="حذف سبک">🗑️</button>
             `;
             container.appendChild(row);
         });
@@ -1261,16 +1306,16 @@
         }).join(''));
     }
 
+    // ذخیره آنی و قطعی بدون کلمات اضافه
     document.getElementById('autoCommitBtn').onclick = async () => {
         const token = BUILTIN_TOKEN;
         const btn = document.getElementById('autoCommitBtn');
         const oldText = btn.innerText;
-        btn.innerText = '⏳ در حال ارسال و ذخیره در سرور گیت‌هاب...';
+        btn.innerText = '⏳ در حال ذخیره...';
         btn.disabled = true;
 
         try {
             collectFormData();
-            appData.version = (appData.version || 8) + 1;
 
             const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
                 headers: {
@@ -1280,7 +1325,7 @@
             });
 
             if (!getRes.ok) {
-                throw new Error('عدم دسترسی به مخزن گیت‌هاب.');
+                throw new Error('خطا در برقراری ارتباط.');
             }
 
             const fileData = await getRes.json();
@@ -1299,7 +1344,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: "بروزرسانی خودکار از پنل مدیریت",
+                    message: "به‌روزرسانی اطلاعات",
                     content: newBase64,
                     sha: fileData.sha,
                     branch: "main"
@@ -1307,14 +1352,14 @@
             });
 
             if (!putRes.ok) {
-                throw new Error('خطا در ذخیره‌سازی در سرور گیت‌هاب.');
+                throw new Error('خطا در ثبت نهایی اطلاعات.');
             }
 
             localStorage.setItem('sports_reg_data', JSON.stringify(appData));
             applyDataToUI();
             calculatePrice();
             adminModal.style.display = 'none';
-            alert('🎉 با موفقیت در سرور گیت‌هاب ذخیره شد!\nتا حدود ۳۰ ثانیه دیگر برای تمام گوشی‌ها و تمام شاگردان آپدیت می‌شود.');
+            alert('🎉 با موفقیت ذخیره شد!\nتا لحظاتی دیگر برای تمام هنرجویان اعمال می‌شود.');
 
         } catch (err) {
             alert('❌ خطا: ' + err.message);
