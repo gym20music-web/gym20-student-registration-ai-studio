@@ -252,7 +252,7 @@
             color: #0284c7;
         }
 
-        /* باکس هوشمند قوانین */
+        /* باکس داینامیک قوانین */
         .dynamic-rules-box {
             background: rgba(189, 0, 255, 0.07);
             border: 1px solid rgba(189, 0, 255, 0.25);
@@ -427,6 +427,69 @@
             font-weight: 600;
         }
 
+        /* کارت اختصاصی کانال موزیک */
+        .music-channel-card {
+            background: linear-gradient(135deg, rgba(189, 0, 255, 0.12), rgba(0, 243, 255, 0.08)), var(--surface);
+            border: 1px solid rgba(189, 0, 255, 0.35);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 20px rgba(189, 0, 255, 0.18);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .music-channel-card:active {
+            transform: scale(0.98);
+            border-color: var(--neon-blue);
+        }
+        .music-avatar {
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-purple);
+            box-shadow: 0 0 10px rgba(189, 0, 255, 0.4);
+            flex-shrink: 0;
+        }
+        .music-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .music-title {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 3px;
+        }
+        .music-handle {
+            font-size: 0.75rem;
+            color: var(--neon-blue);
+            font-weight: 600;
+            direction: ltr;
+            text-align: right;
+            display: inline-block;
+        }
+        .music-join-btn {
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: var(--btn-active);
+            color: #fff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            border: none;
+            white-space: nowrap;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
         .toast {
             position: fixed;
             bottom: 20px;
@@ -479,7 +542,7 @@
             background: var(--surface-card);
             border: 1px solid var(--border);
             color: var(--text-secondary);
-            font-size: 0.76rem;
+            font-size: 0.74rem;
             font-weight: 700;
             cursor: pointer;
             text-align: center;
@@ -630,12 +693,25 @@
             <a href="#" target="_blank" class="social-btn" id="teleLink">✈️ تلگرام / ایتا</a>
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
+
+        <!-- کارت اختصاصی کانال موزیک -->
+        <a href="#" target="_blank" class="music-channel-card" id="musicCardLink">
+            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80" alt="Music Channel" class="music-avatar" id="musicAvatarImg">
+            <div class="music-info">
+                <div class="music-title">
+                    <span id="musicTitleText">کانال موزیک تمرین و باشگاه</span>
+                    <span>🎧</span>
+                </div>
+                <div class="music-handle" id="musicHandleText">@gym20music</div>
+            </div>
+            <button class="music-join-btn" type="button">عضویت 🎵</button>
+        </a>
     </div>
 </div>
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با جداسازی ۳ رقمی قیمت‌ها -->
+<!-- مودال مدیریت هوشمند -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
@@ -647,10 +723,10 @@
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و تماس</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت، تماس و موزیک</button>
         </div>
 
-        <!-- تب ۱: قوانین خلوت -->
+        <!-- تب ۱: قوانین -->
         <div class="admin-panel-tab active" id="rulesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple); font-weight:700;">انتخاب قانون برای ویرایش:</label>
@@ -667,11 +743,11 @@
             </div>
             <div class="admin-input-group">
                 <label id="activeRuleLabel">متن قانون:</label>
-                <textarea rows="6" id="activeRuleTextarea" placeholder="متن قانون مورد نظر را اینجا بنویسید..."></textarea>
+                <textarea rows="6" id="activeRuleTextarea" placeholder="متن قانون را اینجا بنویسید..."></textarea>
             </div>
         </div>
 
-        <!-- تب ۲: شهریه‌ها (با جداسازی ۳ رقمی هنگام تایپ) -->
+        <!-- تب ۲: شهریه‌ها -->
         <div class="admin-panel-tab" id="pricesTab">
             <div class="admin-input-group">
                 <label>شهریه کودکان (۸ جلسه):</label>
@@ -710,7 +786,7 @@
             </div>
         </div>
 
-        <!-- تب ۳: کارت بانکی و تماس -->
+        <!-- تب ۳: کارت بانکی، تماس و کانال موزیک -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
                 <label>شماره کارت واریز:</label>
@@ -729,8 +805,28 @@
                 <input type="text" id="editInsta">
             </div>
             <div class="admin-input-group">
-                <label>لینک تلگرام / ایتا:</label>
+                <label>لینک تلگرام / ایتا مربی:</label>
                 <input type="text" id="editTele">
+            </div>
+
+            <hr style="border-color:var(--border); margin:12px 0;">
+            <div style="color:var(--neon-purple); font-size:0.8rem; font-weight:bold; margin-bottom:8px;">🎵 تنظیمات کانال موزیک:</div>
+
+            <div class="admin-input-group">
+                <label>نام کانال موزیک:</label>
+                <input type="text" id="editMusicName" placeholder="کانال موزیک تمرین و باشگاه">
+            </div>
+            <div class="admin-input-group">
+                <label>آیدی کانال (همراه با @):</label>
+                <input type="text" id="editMusicId" placeholder="@gym20music">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک ورود مستقیم به کانال:</label>
+                <input type="text" id="editMusicLink" placeholder="https://t.me/gym20music">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک عکس پروفایل کانال:</label>
+                <input type="text" id="editMusicAvatar" placeholder="https://example.com/photo.jpg">
             </div>
         </div>
 
@@ -756,6 +852,12 @@
             instagram: "https://instagram.com/",
             telegram: "https://t.me/"
         },
+        musicChannel: {
+            name: "کانال موزیک تمرین و باشگاه",
+            id: "@gym20music",
+            link: "https://t.me/gym20music",
+            avatar: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80"
+        },
         styles: [
             { id: "ninjutsu", name: "نینجوتسو 🥋" },
             { id: "parkour", name: "پارکور 🏃‍♂️" },
@@ -778,6 +880,7 @@
 
     let appData = JSON.parse(localStorage.getItem('sports_reg_data')) || defaultData;
     if (!appData.rules) appData.rules = defaultData.rules;
+    if (!appData.musicChannel) appData.musicChannel = defaultData.musicChannel;
 
     let currentAge = "adult";
     let currentClassType = "normal";
@@ -792,32 +895,26 @@
     const paymentSectionEl = document.getElementById('paymentSection');
     const toastEl = document.getElementById('toast');
 
-    // تابع فرمت ۳ رقمی فارسی به تومان
     function formatTomanPersian(num) {
         if (!num) return "۰ تومان";
         const parts = Number(num).toLocaleString('en-US');
         const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
-        const farsiNum = parts.replace(/\d/g, d => persianDigits[d]);
-        return farsiNum + ' تومان';
+        return parts.replace(/\d/g, d => persianDigits[d]) + ' تومان';
     }
 
-    // تابع تبدیل عدد به ۳ رقمی انگلیسی برای فیلدهای ادمین
     function formatNumberEn(num) {
         if (!num) return "";
         const clean = num.toString().replace(/\D/g, "");
         return Number(clean).toLocaleString('en-US');
     }
 
-    // تابع استخراج عدد خالص از رشته با کاما
     function parsePureNumber(str) {
         return Number(str.toString().replace(/\D/g, "")) || 0;
     }
 
-    // اتصال فرمت ۳ رقمی زنده به کادرهای قیمت ادمین
     ['editKidsPrice', 'editAdultPrice', 'editExtraPrice'].forEach(id => {
         const input = document.getElementById(id);
         input.addEventListener('input', (e) => {
-            const cursorPosition = e.target.selectionStart;
             e.target.value = formatNumberEn(e.target.value);
         });
     });
@@ -948,7 +1045,6 @@
         currentEditingRuleKey = document.getElementById('ruleSelector').value;
         document.getElementById('activeRuleTextarea').value = appData.rules[currentEditingRuleKey] || '';
 
-        // لود مقادیر قیمت با فرمت ۳ رقمی در فیلدها
         document.getElementById('editKidsPrice').value = formatNumberEn(appData.kidsBase);
         document.getElementById('editAdultPrice').value = formatNumberEn(appData.adultBase);
         document.getElementById('editExtraPrice').value = formatNumberEn(appData.extraStylePrice);
@@ -961,12 +1057,17 @@
         document.getElementById('editPhone').value = appData.contact.phone;
         document.getElementById('editInsta').value = appData.contact.instagram;
         document.getElementById('editTele').value = appData.contact.telegram;
+
+        // بارگذاری اطلاعات کانال موزیک در ادمین
+        document.getElementById('editMusicName').value = appData.musicChannel.name || '';
+        document.getElementById('editMusicId').value = appData.musicChannel.id || '';
+        document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
+        document.getElementById('editMusicAvatar').value = appData.musicChannel.avatar || '';
     }
 
     document.getElementById('saveAdminBtn').onclick = () => {
         appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
-        // پارس کردن صحیح قیمت‌ها بدون کاما
         appData.kidsBase = parsePureNumber(document.getElementById('editKidsPrice').value);
         appData.adultBase = parsePureNumber(document.getElementById('editAdultPrice').value);
         appData.extraStylePrice = parsePureNumber(document.getElementById('editExtraPrice').value);
@@ -983,6 +1084,14 @@
         appData.contact.instagram = document.getElementById('editInsta').value;
         appData.contact.telegram = document.getElementById('editTele').value;
 
+        // ذخیره اطلاعات جدید کانال موزیک
+        appData.musicChannel = {
+            name: document.getElementById('editMusicName').value || 'کانال موزیک تمرین و باشگاه',
+            id: document.getElementById('editMusicId').value || '@gym20music',
+            link: document.getElementById('editMusicLink').value || '#',
+            avatar: document.getElementById('editMusicAvatar').value || 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'
+        };
+
         localStorage.setItem('sports_reg_data', JSON.stringify(appData));
         adminModal.style.display = 'none';
         applyDataToUI();
@@ -997,6 +1106,17 @@
         document.getElementById('teleLink').href = appData.contact.telegram;
         document.getElementById('phoneLink').href = 'tel:' + appData.contact.phone;
         document.getElementById('sendReceiptBtn').href = 'sms:' + appData.contact.phone + '?body=سلام استاد، فیش واریزی ارسال شد.';
+        
+        // اعمال اطلاعات کانال موزیک روی کارت
+        if(appData.musicChannel) {
+            document.getElementById('musicTitleText').innerText = appData.musicChannel.name;
+            document.getElementById('musicHandleText').innerText = appData.musicChannel.id;
+            document.getElementById('musicCardLink').href = appData.musicChannel.link;
+            if(appData.musicChannel.avatar) {
+                document.getElementById('musicAvatarImg').src = appData.musicChannel.avatar;
+            }
+        }
+
         updateDynamicRules();
     }
 
