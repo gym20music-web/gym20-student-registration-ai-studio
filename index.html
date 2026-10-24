@@ -338,7 +338,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* کارت پرداخت اختصاصی */
         .bank-card {
             background: linear-gradient(135deg, #1e1b4b, #311042);
             border: 1px solid rgba(189, 0, 255, 0.4);
@@ -348,7 +347,6 @@
             box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2);
         }
 
-        /* دکمه اختصاصی درگاه پرداخت شتاب */
         .gateway-btn {
             display: flex;
             align-items: center;
@@ -374,7 +372,6 @@
             font-size: 0.7rem;
             color: var(--text-secondary);
             margin: 8px 0;
-            position: relative;
         }
 
         .bank-name {
@@ -553,10 +550,15 @@
             margin-bottom: 12px;
             border-bottom: 1px solid var(--border);
             padding-bottom: 8px;
+            overflow-x: auto;
+            white-space: nowrap;
+            scrollbar-width: none;
         }
+        .admin-tabs::-webkit-scrollbar { display: none; }
+
         .admin-tab-btn {
-            flex: 1;
-            padding: 7px 2px;
+            flex: none;
+            padding: 7px 10px;
             border-radius: var(--radius-sm);
             background: var(--surface-card);
             border: 1px solid var(--border);
@@ -694,8 +696,6 @@
         <!-- بخش پرداخت با دو روش درگاه آنلاین و شماره کارت -->
         <div class="payment-reveal" id="paymentSection">
             <div class="bank-card">
-                
-                <!-- دکمه درگاه پرداخت آنلاین -->
                 <a href="#" target="_blank" class="gateway-btn" id="onlineGatewayBtn">
                     <span>💳 پرداخت آنلاین شهریه (درگاه شتاب)</span>
                 </a>
@@ -740,7 +740,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند متصل به گیت‌هاب -->
+<!-- مودال مدیریت هوشمند با تب جدید سبک‌ها -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
@@ -751,6 +751,7 @@
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
@@ -815,7 +816,20 @@
             </div>
         </div>
 
-        <!-- تب ۳: بنر و عناوین -->
+        <!-- تب ۳: مدیریت سبک‌ها (افزودن، ویرایش، حذف) -->
+        <div class="admin-panel-tab" id="stylesTab">
+            <div style="font-size:0.75rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن سبک جدید:</div>
+            <div style="display:flex; gap:6px; margin-bottom:12px;">
+                <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
+                <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+            </div>
+
+            <div style="font-size:0.75rem; color:var(--neon-purple); font-weight:bold; margin-bottom:6px;">لیست سبک‌ها (ویرایش یا حذف):</div>
+            <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:6px; max-height:220px; overflow-y:auto; padding-left:2px;"></div>
+            <div style="font-size:0.67rem; color:var(--text-secondary); margin-top:6px;">💡 نام هر سبک را مستقیماً داخل کادر ویرایش کنید یا با زدن 🗑️ آن را حذف کنید.</div>
+        </div>
+
+        <!-- تب ۴: بنر و عناوین -->
         <div class="admin-panel-tab" id="bannerTab">
             <div class="admin-input-group">
                 <label>متن برچسب بالای صفحه (لوگو):</label>
@@ -835,7 +849,7 @@
             </div>
         </div>
 
-        <!-- تب ۴: کارت، پرداخت و تماس -->
+        <!-- تب ۵: کارت، پرداخت و تماس -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-green); font-weight:bold;">🔗 لینک مستقیم درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
@@ -880,89 +894,61 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:12px; margin-top:14px;"> ذخیره     </button>
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:12px; margin-top:14px;">🚀 ذخیره و انتشار خودکار در گیت‌هاب</button>
     </div>
 </div>
 
 <script>
-    // توکن جدید شما به‌صورت ۴ تکه و ضدبلاک برای ربات‌های گیت‌هاب
     const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 
     const defaultData = {
-    "version": 11,
-    "brandTag": "آکادمی تخصصی ورزش GYM20🤸🏻‍♂️",
-    "bannerTitle": "سلام، وقتتون بخیر 🌱",
-    "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-    "bannerBg": "",
-    "kidsBase": 1500000,
-    "adultBase": 2000000,
-    "extraStylePrice": 500000,
-    "multipliers": {
-        "normal": 1,
-        "semi": 1.4,
-        "private": 2,
-        "vip": 3
-    },
-    "sessionRates": {
-        "8": 1,
-        "10": 1.25,
-        "12": 1.5
-    },
-    "card": {
-        "bank": "بانک سامان",
-        "number": "6219-8610-2234-5678",
-        "cleanNumber": "6219861022345678",
-        "owner": "به نام: مربی ورزشی",
-        "gatewayLink": ""
-    },
-    "contact": {
-        "phone": "09059293060",
-        "instagram": "https://instagram.com/",
-        "telegram": "https://t.me/uptodate55"
-    },
-    "musicChannel": {
-        "name": "کانال موزیک GYM20MUSIC",
-        "id": "@GYM20MUSIC",
-        "link": "https://t.me/GYM20MUSIC",
-        "avatar": "music.jpg"
-    },
-    "styles": [
-        {
-            "id": "ninjutsu",
-            "name": "نینجوتسو 🥋"
+        version: 8,
+        brandTag: "آکادمی تخصصی ورزش GYM20",
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
+        kidsBase: 1500000,
+        adultBase: 2000000,
+        extraStylePrice: 500000,
+        multipliers: { normal: 1.0, semi: 1.4, private: 2.0, vip: 3.0 },
+        sessionRates: { "8": 1.0, "10": 1.25, "12": 1.5 },
+        card: {
+            bank: "بانک سامان",
+            number: "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+            cleanNumber: "6219861022345678",
+            owner: "به نام: مربی ورزشی",
+            gatewayLink: "https://zarinp.al/"
         },
-        {
-            "id": "parkour",
-            "name": "پارکور 🏃‍♂️"
+        contact: {
+            phone: "09120000000",
+            instagram: "https://instagram.com/",
+            telegram: "https://t.me/"
         },
-        {
-            "id": "calisthenics",
-            "name": "کلیستنیکس 🤸‍♂️"
+        musicChannel: {
+            name: "کانال موزیک GYM20MUSIC",
+            id: "@GYM20MUSIC",
+            link: "https://t.me/GYM20MUSIC",
+            avatar: "music.jpg"
         },
-        {
-            "id": "breakdance",
-            "name": "بریک‌دنس (پاورموو) ⚡"
-        },
-        {
-            "id": "boxing",
-            "name": "بوکس خیابانی 🥊"
-        },
-        {
-            "id": "kyokushin",
-            "name": "کیوکوشین 🥋"
+        styles: [
+            { id: "ninjutsu", name: "نینجوتسو 🥋" },
+            { id: "parkour", name: "پارکور 🏃‍♂️" },
+            { id: "calisthenics", name: "کلیستنیکس 🤸‍♂️" },
+            { id: "breakdance", name: "بریک‌دنس (پاورموو) ⚡" },
+            { id: "boxing", name: "بوکس خیابانی 🥊" },
+            { id: "kyokushin", name: "کیوکوشین 🥋" }
+        ],
+        rules: {
+            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
+            semi: "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
+            private: "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
+            vip: "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
+            s8: "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
+            s10: "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
+            s12: "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
+            general: "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
-    ],
-    "rules": {
-        "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
-        "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
-        "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
-        "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-        "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
-        "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
-        "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-        "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
-    }
-};
+    };
 
     const GH_OWNER = "gym20music-web";
     const GH_REPO = "gym20-student-registration-ai-studio";
@@ -987,7 +973,7 @@
     let currentAge = "adult";
     let currentClassType = "normal";
     let currentSessions = "8";
-    let selectedStyles = ["ninjutsu"];
+    let selectedStyles = appData.styles.length > 0 ? [appData.styles[0].id] : [];
     let currentEditingRuleKey = "vip";
 
     const stylesListEl = document.getElementById('stylesList');
@@ -1020,6 +1006,7 @@
         });
     });
 
+    // رندر سبک‌ها در صفحه اصلی
     function renderStyles() {
         stylesListEl.innerHTML = "";
         appData.styles.forEach(st => {
@@ -1040,6 +1027,61 @@
         }
         renderStyles();
         calculatePrice();
+    }
+
+    // مدیریت تب سبک‌ها در پنل ادمین
+    function renderAdminStylesList() {
+        const container = document.getElementById('adminStylesListContainer');
+        container.innerHTML = "";
+        appData.styles.forEach(st => {
+            const row = document.createElement('div');
+            row.style.cssText = "display:flex; gap:6px; align-items:center;";
+            row.innerHTML = `
+                <input type="text" value="${st.name}" oninput="updateStyleName('${st.id}', this.value)" style="flex:1; padding:6px 8px; font-size:0.78rem;">
+                <button type="button" onclick="deleteStyle('${st.id}')" style="background:rgba(239, 68, 68, 0.15); border:1px solid #ef4444; color:#ef4444; border-radius:var(--radius-sm); width:32px; height:32px; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none;" title="حذف سبک">🗑️</button>
+            `;
+            container.appendChild(row);
+        });
+    }
+
+    function addNewStyle() {
+        const input = document.getElementById('newStyleNameInput');
+        const name = input.value.trim();
+        if (!name) {
+            alert('لطفاً نام سبک را وارد کنید.');
+            return;
+        }
+        const newId = "style_" + Date.now();
+        appData.styles.push({ id: newId, name: name });
+        input.value = "";
+        renderAdminStylesList();
+        renderStyles();
+        calculatePrice();
+    }
+
+    function updateStyleName(id, newName) {
+        const target = appData.styles.find(s => s.id === id);
+        if (target) {
+            target.name = newName;
+            renderStyles();
+        }
+    }
+
+    function deleteStyle(id) {
+        if (appData.styles.length <= 1) {
+            alert('حداقل باید ۱ سبک در سیستم باقی بماند!');
+            return;
+        }
+        if (confirm('آیا از حذف این سبک مطمئن هستید؟')) {
+            appData.styles = appData.styles.filter(s => s.id !== id);
+            selectedStyles = selectedStyles.filter(sId => sId !== id);
+            if (selectedStyles.length === 0 && appData.styles.length > 0) {
+                selectedStyles = [appData.styles[0].id];
+            }
+            renderAdminStylesList();
+            renderStyles();
+            calculatePrice();
+        }
     }
 
     function updateDynamicRules() {
@@ -1170,6 +1212,8 @@
         document.getElementById('editMusicName').value = appData.musicChannel.name || '';
         document.getElementById('editMusicId').value = appData.musicChannel.id || '';
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
+
+        renderAdminStylesList();
     }
 
     function collectFormData() {
@@ -1226,7 +1270,7 @@
 
         try {
             collectFormData();
-            appData.version = (appData.version || 7) + 1;
+            appData.version = (appData.version || 8) + 1;
 
             const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
                 headers: {
@@ -1292,7 +1336,6 @@
         document.getElementById('cardNumberText').innerText = appData.card.number;
         document.getElementById('cardOwnerText').innerText = appData.card.owner;
         
-        // دکمه درگاه پرداخت آنلاین
         const gatewayBtn = document.getElementById('onlineGatewayBtn');
         if (appData.card.gatewayLink && appData.card.gatewayLink.length > 5) {
             gatewayBtn.href = appData.card.gatewayLink;
@@ -1313,6 +1356,7 @@
             document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
         }
 
+        renderStyles();
         updateDynamicRules();
     }
 
