@@ -418,7 +418,7 @@
             font-weight: 600;
         }
 
-        /* کارت اختصاصی کانال موزیک */
+        /* کارت کانال موزیک - نمایش تصویر دائمی */
         .music-channel-card {
             background: linear-gradient(135deg, rgba(189, 0, 255, 0.12), rgba(0, 243, 255, 0.08)), var(--surface);
             border: 1px solid rgba(189, 0, 255, 0.4);
@@ -438,8 +438,8 @@
             border-color: var(--neon-blue);
         }
         .music-avatar {
-            width: 54px;
-            height: 54px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
             object-fit: cover;
             border: 2px solid var(--neon-purple);
@@ -584,20 +584,6 @@
             text-align: right;
             font-weight: 700;
         }
-        .upload-file-btn {
-            display: block;
-            width: 100%;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            background: rgba(189, 0, 255, 0.15);
-            border: 1px dashed var(--neon-purple);
-            color: #fff;
-            font-size: 0.76rem;
-            font-weight: 700;
-            text-align: center;
-            cursor: pointer;
-            margin-top: 4px;
-        }
     </style>
 </head>
 <body>
@@ -700,9 +686,9 @@
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
 
-        <!-- کارت اختصاصی کانال موزیک -->
+        <!-- کارت اختصاصی کانال موزیک - متصل به فایل music.jpg -->
         <a href="https://t.me/GYM20MUSIC" target="_blank" class="music-channel-card" id="musicCardLink">
-            <img src="https://t.me/i/userpic/320/GYM20MUSIC.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="Music Channel" class="music-avatar" id="musicAvatarImg">
+            <img src="music.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
             <div class="music-info">
                 <div class="music-title">
                     <span id="musicTitleText">کانال موزیک GYM20MUSIC</span>
@@ -829,12 +815,6 @@
                 <label>لینک مستقیم کانال:</label>
                 <input type="text" id="editMusicLink" value="https://t.me/GYM20MUSIC">
             </div>
-            <div class="admin-input-group">
-                <label>عکس پروفایل کانال:</label>
-                <input type="file" id="musicFilePicker" accept="image/*" style="display:none;">
-                <button type="button" class="upload-file-btn" onclick="document.getElementById('musicFilePicker').click()">📁 انتخاب عکس کانال از گالری گوشی</button>
-                <input type="text" id="editMusicAvatar" placeholder="یا لینک مستقیم عکس..." style="margin-top:6px; font-size:0.75rem;">
-            </div>
         </div>
 
         <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:14px;">💾 ذخیره تغییرات</button>
@@ -863,7 +843,7 @@
             name: "کانال موزیک GYM20MUSIC",
             id: "@GYM20MUSIC",
             link: "https://t.me/GYM20MUSIC",
-            avatar: "https://t.me/i/userpic/320/GYM20MUSIC.jpg"
+            avatar: "music.jpg"
         },
         styles: [
             { id: "ninjutsu", name: "نینجوتسو 🥋" },
@@ -888,6 +868,8 @@
     let appData = JSON.parse(localStorage.getItem('sports_reg_data')) || defaultData;
     if (!appData.rules) appData.rules = defaultData.rules;
     if (!appData.musicChannel) appData.musicChannel = defaultData.musicChannel;
+    // اطمینان از خواندن فایل اصلی تصویر
+    appData.musicChannel.avatar = "music.jpg";
 
     let currentAge = "adult";
     let currentClassType = "normal";
@@ -923,19 +905,6 @@
         input.addEventListener('input', (e) => {
             e.target.value = formatNumberEn(e.target.value);
         });
-    });
-
-    // آپلود عکس از گالری گوشی
-    document.getElementById('musicFilePicker').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                document.getElementById('editMusicAvatar').value = evt.target.result;
-                alert('عکس کانال با موفقیت از گالری انتخاب شد! حالا دکمه ذخیره تغییرات را بزنید.');
-            };
-            reader.readAsDataURL(file);
-        }
     });
 
     function renderStyles() {
@@ -1080,7 +1049,6 @@
         document.getElementById('editMusicName').value = appData.musicChannel.name || '';
         document.getElementById('editMusicId').value = appData.musicChannel.id || '';
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
-        document.getElementById('editMusicAvatar').value = appData.musicChannel.avatar || '';
     }
 
     document.getElementById('saveAdminBtn').onclick = () => {
@@ -1106,14 +1074,14 @@
             name: document.getElementById('editMusicName').value || 'کانال موزیک GYM20MUSIC',
             id: document.getElementById('editMusicId').value || '@GYM20MUSIC',
             link: document.getElementById('editMusicLink').value || 'https://t.me/GYM20MUSIC',
-            avatar: document.getElementById('editMusicAvatar').value || 'https://t.me/i/userpic/320/GYM20MUSIC.jpg'
+            avatar: "music.jpg"
         };
 
         localStorage.setItem('sports_reg_data', JSON.stringify(appData));
         adminModal.style.display = 'none';
         applyDataToUI();
         calculatePrice();
-        alert('تنظیمات و عکس کانال با موفقیت ذخیره شد!');
+        alert('تنظیمات با موفقیت ذخیره شد!');
     };
 
     function applyDataToUI() {
@@ -1128,9 +1096,7 @@
             document.getElementById('musicTitleText').innerText = appData.musicChannel.name;
             document.getElementById('musicHandleText').innerText = appData.musicChannel.id;
             document.getElementById('musicCardLink').href = appData.musicChannel.link;
-            if(appData.musicChannel.avatar) {
-                document.getElementById('musicAvatarImg').src = appData.musicChannel.avatar;
-            }
+            document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
         }
 
         updateDynamicRules();
