@@ -338,13 +338,43 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* کارت پرداخت اختصاصی */
         .bank-card {
             background: linear-gradient(135deg, #1e1b4b, #311042);
             border: 1px solid rgba(189, 0, 255, 0.4);
             border-radius: var(--radius-md);
-            padding: 12px;
+            padding: 14px;
             color: #fff;
             box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2);
+        }
+
+        /* دکمه اختصاصی درگاه پرداخت شتاب */
+        .gateway-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: linear-gradient(135deg, #10b981, #00f3ff);
+            color: #000;
+            font-weight: 900;
+            font-size: 0.88rem;
+            text-decoration: none;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+            margin-bottom: 12px;
+            transition: 0.2s;
+        }
+        .gateway-btn:active { transform: scale(0.97); }
+
+        .divider-text {
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin: 8px 0;
+            position: relative;
         }
 
         .bank-name {
@@ -661,8 +691,17 @@
             <span>قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
         </label>
 
+        <!-- بخش پرداخت با دو روش درگاه آنلاین و شماره کارت -->
         <div class="payment-reveal" id="paymentSection">
             <div class="bank-card">
+                
+                <!-- دکمه درگاه پرداخت آنلاین -->
+                <a href="#" target="_blank" class="gateway-btn" id="onlineGatewayBtn">
+                    <span>💳 پرداخت آنلاین شهریه (درگاه شتاب)</span>
+                </a>
+
+                <div class="divider-text">── یا کارت‌به‌کارت مستقیم ──</div>
+
                 <div class="bank-name">
                     <span id="bankNameText">بانک سامان</span>
                     <span>شماره کارت واریز شهریه</span>
@@ -713,7 +752,7 @@
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و تماس</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
         <!-- تب ۱: قوانین -->
@@ -796,8 +835,13 @@
             </div>
         </div>
 
-        <!-- تب ۴: کارت و تماس -->
+        <!-- تب ۴: کارت، پرداخت و تماس -->
         <div class="admin-panel-tab" id="infoTab">
+            <div class="admin-input-group">
+                <label style="color:var(--neon-green); font-weight:bold;">🔗 لینک مستقیم درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
+                <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
+            </div>
+
             <div class="admin-input-group">
                 <label>شماره کارت واریز:</label>
                 <input type="text" id="editCardNum">
@@ -845,79 +889,53 @@
     const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 
     const defaultData = {
-    "version": 7,
-    "brandTag": "آکادمی تخصصی ورزش GYM20000",
-    "bannerTitle": "سلام، وقتتون بخیر 🌱",
-    "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-    "bannerBg": "",
-    "kidsBase": 1500000,
-    "adultBase": 2000000,
-    "extraStylePrice": 500000,
-    "multipliers": {
-        "normal": 1,
-        "semi": 1.4,
-        "private": 2,
-        "vip": 3
-    },
-    "sessionRates": {
-        "8": 1,
-        "10": 1.25,
-        "12": 1.5
-    },
-    "card": {
-        "bank": "بانک سامان",
-        "number": "6219-8610-2234-5678",
-        "cleanNumber": "6219861022345678",
-        "owner": "به نام: مربی ورزشی"
-    },
-    "contact": {
-        "phone": "09120000000",
-        "instagram": "https://instagram.com/",
-        "telegram": "https://t.me/"
-    },
-    "musicChannel": {
-        "name": "کانال موزیک GYM20MUSIC",
-        "id": "@GYM20MUSIC",
-        "link": "https://t.me/GYM20MUSIC",
-        "avatar": "music.jpg"
-    },
-    "styles": [
-        {
-            "id": "ninjutsu",
-            "name": "نینجوتسو 🥋"
+        version: 7,
+        brandTag: "آکادمی تخصصی ورزش GYM20",
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
+        kidsBase: 1500000,
+        adultBase: 2000000,
+        extraStylePrice: 500000,
+        multipliers: { normal: 1.0, semi: 1.4, private: 2.0, vip: 3.0 },
+        sessionRates: { "8": 1.0, "10": 1.25, "12": 1.5 },
+        card: {
+            bank: "بانک سامان",
+            number: "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+            cleanNumber: "6219861022345678",
+            owner: "به نام: مربی ورزشی",
+            gatewayLink: "https://zarinp.al/"
         },
-        {
-            "id": "parkour",
-            "name": "پارکور 🏃‍♂️"
+        contact: {
+            phone: "09120000000",
+            instagram: "https://instagram.com/",
+            telegram: "https://t.me/"
         },
-        {
-            "id": "calisthenics",
-            "name": "کلیستنیکس 🤸‍♂️"
+        musicChannel: {
+            name: "کانال موزیک GYM20MUSIC",
+            id: "@GYM20MUSIC",
+            link: "https://t.me/GYM20MUSIC",
+            avatar: "music.jpg"
         },
-        {
-            "id": "breakdance",
-            "name": "بریک‌دنس (پاورموو) ⚡"
-        },
-        {
-            "id": "boxing",
-            "name": "بوکس خیابانی 🥊"
-        },
-        {
-            "id": "kyokushin",
-            "name": "کیوکوشین 🥋"
+        styles: [
+            { id: "ninjutsu", name: "نینجوتسو 🥋" },
+            { id: "parkour", name: "پارکور 🏃‍♂️" },
+            { id: "calisthenics", name: "کلیستنیکس 🤸‍♂️" },
+            { id: "breakdance", name: "بریک‌دنس (پاورموو) ⚡" },
+            { id: "boxing", name: "بوکس خیابانی 🥊" },
+            { id: "kyokushin", name: "کیوکوشین 🥋" }
+        ],
+        rules: {
+            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
+            semi: "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
+            private: "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
+            vip: "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
+            s8: "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
+            s10: "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
+            s12: "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
+            general: "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
-    ],
-    "rules": {
-        "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
-        "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
-        "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
-        "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-        "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
-        "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
-        "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-        "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
-    }
-};
+    };
 
     const GH_OWNER = "gym20music-web";
     const GH_REPO = "gym20-student-registration-ai-studio";
@@ -1108,8 +1126,11 @@
         document.getElementById('editSemiFactor').value = appData.multipliers.semi;
         document.getElementById('editPrivateFactor').value = appData.multipliers.private;
         document.getElementById('editVipFactor').value = appData.multipliers.vip;
+        
         document.getElementById('editCardNum').value = appData.card.cleanNumber;
         document.getElementById('editCardOwner').value = appData.card.owner;
+        document.getElementById('editGatewayLink').value = appData.card.gatewayLink || '';
+        
         document.getElementById('editPhone').value = appData.contact.phone;
         document.getElementById('editInsta').value = appData.contact.instagram;
         document.getElementById('editTele').value = appData.contact.telegram;
@@ -1144,6 +1165,8 @@
         appData.card.cleanNumber = rawCard;
         appData.card.number = rawCard.replace(/(\d{4})/g, '$1-').slice(0, 19);
         appData.card.owner = document.getElementById('editCardOwner').value;
+        appData.card.gatewayLink = document.getElementById('editGatewayLink').value.trim();
+
         appData.contact.phone = document.getElementById('editPhone').value;
         appData.contact.instagram = document.getElementById('editInsta').value;
         appData.contact.telegram = document.getElementById('editTele').value;
@@ -1167,8 +1190,8 @@
         }).join(''));
     }
 
-    // ارسال و انتشار مستقیم به سرور گیت‌هاب بدون نیاز به وارد کردن توکن
     document.getElementById('autoCommitBtn').onclick = async () => {
+        const token = BUILTIN_TOKEN;
         const btn = document.getElementById('autoCommitBtn');
         const oldText = btn.innerText;
         btn.innerText = '⏳ در حال ارسال و ذخیره در سرور گیت‌هاب...';
@@ -1176,11 +1199,11 @@
 
         try {
             collectFormData();
-            appData.version = (appData.version || 6) + 1;
+            appData.version = (appData.version || 7) + 1;
 
             const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
                 headers: {
-                    'Authorization': `Bearer ${BUILTIN_TOKEN}`,
+                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/vnd.github.v3+json'
                 }
             });
@@ -1200,7 +1223,7 @@
             const putRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${BUILTIN_TOKEN}`,
+                    'Authorization': `Bearer ${token}`,
                     'Accept': 'application/vnd.github.v3+json',
                     'Content-Type': 'application/json'
                 },
@@ -1241,6 +1264,16 @@
 
         document.getElementById('cardNumberText').innerText = appData.card.number;
         document.getElementById('cardOwnerText').innerText = appData.card.owner;
+        
+        // دکمه درگاه پرداخت آنلاین
+        const gatewayBtn = document.getElementById('onlineGatewayBtn');
+        if (appData.card.gatewayLink && appData.card.gatewayLink.length > 5) {
+            gatewayBtn.href = appData.card.gatewayLink;
+            gatewayBtn.style.display = 'flex';
+        } else {
+            gatewayBtn.style.display = 'none';
+        }
+
         document.getElementById('instaLink').href = appData.contact.instagram;
         document.getElementById('teleLink').href = appData.contact.telegram;
         document.getElementById('phoneLink').href = 'tel:' + appData.contact.phone;
