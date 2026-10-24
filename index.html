@@ -1,1 +1,854 @@
 
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>شرایط و ثبت‌نام کلاس‌های ورزشی</title>
+    <style>
+        :root {
+            --bg: #0b0f19;
+            --surface: #111827;
+            --surface-card: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #00f3ff;
+            --neon-purple: #bd00ff;
+            --neon-green: #10b981;
+            --neon-shadow: 0 0 15px rgba(0, 243, 255, 0.25);
+            --neon-purple-shadow: 0 0 20px rgba(189, 0, 255, 0.25);
+            --btn-active: linear-gradient(135deg, #00f3ff, #bd00ff);
+            --radius-md: 14px;
+            --radius-sm: 8px;
+        }
+
+        [data-theme="light"] {
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --surface-card: #ffffff;
+            --text-primary: #111827;
+            --text-secondary: #4b5563;
+            --border: rgba(0, 0, 0, 0.08);
+            --neon-shadow: 0 4px 15px rgba(0, 243, 255, 0.15);
+            --neon-purple-shadow: 0 4px 15px rgba(189, 0, 255, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 440px;
+            padding: 14px;
+            padding-bottom: 50px;
+        }
+
+        /* نوار بالای صفحه */
+        .top-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .brand-badge {
+            font-size: 0.8rem;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--neon-blue);
+            box-shadow: var(--neon-shadow);
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .circle-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .circle-btn:active { transform: scale(0.92); }
+
+        /* بنر معرفی */
+        .hero-banner {
+            position: relative;
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(189, 0, 255, 0.15)), var(--surface);
+            background-size: cover;
+            background-position: center;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 18px 14px;
+            text-align: center;
+            overflow: hidden;
+            box-shadow: var(--neon-purple-shadow);
+            margin-bottom: 14px;
+        }
+
+        .hero-title {
+            font-size: 1.2rem;
+            font-weight: 900;
+            margin-bottom: 6px;
+            background: linear-gradient(90deg, var(--neon-blue), #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        [data-theme="light"] .hero-title {
+            background: linear-gradient(90deg, #0284c7, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* کارت بخش‌ها */
+        .section-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--neon-blue);
+        }
+
+        /* دکمه‌های کوچک سبک‌ها */
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .style-item {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.82rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .style-item.selected {
+            border-color: var(--neon-blue);
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+        }
+
+        .check-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            border: 1px solid var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+        }
+        .style-item.selected .check-dot {
+            background: var(--neon-blue);
+            border-color: var(--neon-blue);
+            color: #000;
+        }
+
+        /* دکمه‌های انتخابی */
+        .pill-group {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .pill-btn {
+            flex: 1;
+            padding: 8px 4px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.2s;
+        }
+
+        .pill-btn.active {
+            background: var(--btn-active);
+            color: #fff;
+            border-color: transparent;
+            box-shadow: var(--neon-shadow);
+        }
+
+        /* باکس نمایش هوشمند قیمت */
+        .price-box {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(189, 0, 255, 0.08));
+            border: 1px dashed var(--neon-blue);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            margin-top: 12px;
+            text-align: center;
+        }
+
+        .price-details {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .total-price {
+            font-size: 1.35rem;
+            font-weight: 900;
+            color: var(--neon-blue);
+        }
+
+        [data-theme="light"] .total-price {
+            color: #0284c7;
+        }
+
+        /* آکاردئون قوانین */
+        .accordion-item {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            overflow: hidden;
+            background: var(--surface-card);
+        }
+
+        .accordion-header {
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .accordion-content {
+            padding: 0 12px;
+            max-height: 0;
+            overflow: hidden;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+
+        .accordion-item.open .accordion-content {
+            padding: 10px 12px 14px;
+            max-height: 350px;
+        }
+
+        /* تیک تأیید قوانین */
+        .rule-agreement {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background: rgba(189, 0, 255, 0.08);
+            border: 1px solid rgba(189, 0, 255, 0.2);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .rule-agreement input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--neon-purple);
+            cursor: pointer;
+        }
+
+        .payment-reveal {
+            display: none;
+            margin-top: 12px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bank-card {
+            background: linear-gradient(135deg, #1e1b4b, #311042);
+            border: 1px solid rgba(189, 0, 255, 0.4);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(189, 0, 255, 0.2);
+        }
+
+        .bank-name {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .card-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            direction: ltr;
+            text-align: center;
+            margin-bottom: 8px;
+            font-family: monospace;
+            color: #00f3ff;
+        }
+
+        .card-owner {
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .copy-btn {
+            width: 100%;
+            margin-top: 10px;
+            padding: 9px;
+            border-radius: var(--radius-sm);
+            border: none;
+            background: var(--neon-blue);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .send-receipt-btn {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            padding: 9px;
+            border-radius: var(--radius-sm);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            color: #fff;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        /* شبکه‌های اجتماعی */
+        .social-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .social-btn {
+            padding: 9px 4px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            text-decoration: none;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* پیام توست کپی شد */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: #000;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* مودال ادمین */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            z-index: 2000;
+        }
+        .admin-content {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            width: 100%;
+            max-width: 420px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 16px;
+        }
+        .admin-input-group { margin-bottom: 10px; }
+        .admin-input-group label {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .admin-input-group input, .admin-input-group textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="top-nav">
+        <div class="brand-badge">آکادمی تخصصی ورزش و رزمی</div>
+        <div class="nav-actions">
+            <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
+            <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
+        </div>
+    </div>
+
+    <div class="hero-banner" id="heroBanner">
+        <h1 class="hero-title" id="bannerTitle">سلام، وقتتون بخیر 🌱</h1>
+        <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
+    </div>
+
+    <!-- بخش انتخاب‌ها و سبک‌ها -->
+    <div class="section-card">
+        <div class="section-header">🥋 ۱. انتخاب رده سنی و سبک‌ها</div>
+        
+        <div class="pill-group" id="ageGroup">
+            <button class="pill-btn active" data-val="adult">بزرگسالان</button>
+            <button class="pill-btn" data-val="kids">کودکان</button>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 8px 0 4px;">نوع برگزاری کلاس:</div>
+        <div class="pill-group" id="classType">
+            <button class="pill-btn active" data-val="normal">عمومی</button>
+            <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
+            <button class="pill-btn" data-val="private">خصوصی</button>
+            <button class="pill-btn" data-val="vip">VIP</button>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 8px 0 4px;">تعداد جلسات ترم:</div>
+        <div class="pill-group" id="sessionsCount">
+            <button class="pill-btn active" data-val="8">۸ جلسه</button>
+            <button class="pill-btn" data-val="10">۱۰ جلسه</button>
+            <button class="pill-btn" data-val="12">۱۲ جلسه</button>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--text-secondary); margin: 10px 0 6px;">سبک‌های مورد نظر را انتخاب کنید:</div>
+        <div class="styles-grid" id="stylesList"></div>
+
+        <div class="price-box">
+            <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
+            <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
+        </div>
+    </div>
+
+    <!-- بخش شرایط و قوانین -->
+    <div class="section-card">
+        <div class="section-header">📌 ۲. شرایط برگزاری و قوانین</div>
+
+        <div class="accordion-item open">
+            <div class="accordion-header">
+                <span>شرایط برگزاری کلاس‌ها</span>
+                <span>▾</span>
+            </div>
+            <div class="accordion-content">
+                • هر ترم شامل ۸ الی ۱۲ جلسه است.<br>
+                • جلسات هفته‌ای ۲ بار برگزار می‌شوند.<br>
+                • مدت زمان هر جلسه ۱ ساعت کامل است.<br>
+                • هماهنگی نهایی روزها و ساعت کلاس در ابتدای هر ماه انجام می‌شود.
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <div class="accordion-header">
+                <span>قوانین غیبت و انضباطی</span>
+                <span>▾</span>
+            </div>
+            <div class="accordion-content">
+                • حضور به موقع در کلاس الزامی است.<br>
+                • غیبت از سمت هنرجو به منزله سوخت جلسه است مگر با هماهنگی قبلی مربی.<br>
+                • داشتن لباس ورزشی مناسب سبک انتخابی ضروری است.
+            </div>
+        </div>
+
+        <label class="rule-agreement">
+            <input type="checkbox" id="acceptRules">
+            <span>قوانین و شرایط کلاس‌ها را مطالعه کردم و می‌پذیرم.</span>
+        </label>
+
+        <div class="payment-reveal" id="paymentSection">
+            <div class="bank-card">
+                <div class="bank-name">
+                    <span id="bankNameText">بانک سامان</span>
+                    <span>شماره کارت واریز شهریه</span>
+                </div>
+                <div class="card-number" id="cardNumberText">۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸</div>
+                <div class="card-owner" id="cardOwnerText">به نام: مربی ورزشی</div>
+                <button class="copy-btn" id="copyCardBtn">📋 کپی شماره کارت</button>
+                <a href="#" class="send-receipt-btn" id="sendReceiptBtn">ارسال تصویر فیش به مربی (پیامک)</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- بخش شبکه‌های ارتباطی -->
+    <div class="section-card">
+        <div class="section-header">💬 ۳. راه‌های ارتباطی با مربی</div>
+        <div class="social-links">
+            <a href="#" target="_blank" class="social-btn" id="instaLink">📸 اینستاگرام</a>
+            <a href="#" target="_blank" class="social-btn" id="teleLink">✈️ تلگرام</a>
+            <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
+
+<!-- مودال مدیریت -->
+<div class="admin-modal" id="adminModal">
+    <div class="admin-content">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <h3 style="font-size:0.95rem; color:var(--neon-blue);">⚙️ پنل مدیریت اطلاعات</h3>
+            <button class="circle-btn" id="closeAdmin">✕</button>
+        </div>
+
+        <div class="admin-input-group">
+            <label>عنوان بنر بالای صفحه:</label>
+            <input type="text" id="editBannerTitle">
+        </div>
+        <div class="admin-input-group">
+            <label>زیرعنوان بنر:</label>
+            <textarea rows="2" id="editBannerSubtitle"></textarea>
+        </div>
+        <div class="admin-input-group">
+            <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
+            <input type="text" id="editBannerBg" placeholder="https://...">
+        </div>
+
+        <hr style="border-color:var(--border); margin:10px 0;">
+
+        <div class="admin-input-group">
+            <label>شهریه کودکان (۸ جلسه - تومان):</label>
+            <input type="number" id="editKidsPrice" value="1500000">
+        </div>
+        <div class="admin-input-group">
+            <label>شهریه بزرگسالان (۸ جلسه - تومان):</label>
+            <input type="number" id="editAdultPrice" value="2000000">
+        </div>
+        <div class="admin-input-group">
+            <label>اضافه شدن هر سبک بیشتر (تومان):</label>
+            <input type="number" id="editExtraPrice" value="500000">
+        </div>
+
+        <div class="admin-input-group">
+            <label>ضریب کلاس نیمه‌خصوصی:</label>
+            <input type="number" step="0.1" id="editSemiFactor" value="1.4">
+        </div>
+        <div class="admin-input-group">
+            <label>ضریب کلاس خصوصی:</label>
+            <input type="number" step="0.1" id="editPrivateFactor" value="2.0">
+        </div>
+        <div class="admin-input-group">
+            <label>ضریب کلاس VIP:</label>
+            <input type="number" step="0.1" id="editVipFactor" value="3.0">
+        </div>
+
+        <hr style="border-color:var(--border); margin:10px 0;">
+
+        <div class="admin-input-group">
+            <label>شماره کارت واریز:</label>
+            <input type="text" id="editCardNum" value="6219861022345678">
+        </div>
+        <div class="admin-input-group">
+            <label>نام صاحب حساب و بانک:</label>
+            <input type="text" id="editCardOwner" value="بانک سامان - به نام مربی">
+        </div>
+        <div class="admin-input-group">
+            <label>شماره تماس مربی:</label>
+            <input type="text" id="editPhone" value="09120000000">
+        </div>
+        <div class="admin-input-group">
+            <label>لینک اینستاگرام:</label>
+            <input type="text" id="editInsta" placeholder="https://instagram.com/">
+        </div>
+        <div class="admin-input-group">
+            <label>لینک تلگرام / ایتا:</label>
+            <input type="text" id="editTele" placeholder="https://t.me/">
+        </div>
+
+        <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff;">💾 ذخیره تغییرات</button>
+    </div>
+</div>
+
+<script>
+    const defaultData = {
+        bannerTitle: "سلام، وقتتون بخیر 🌱",
+        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        bannerBg: "",
+        kidsBase: 1500000,
+        adultBase: 2000000,
+        extraStylePrice: 500000,
+        multipliers: { normal: 1.0, semi: 1.4, private: 2.0, vip: 3.0 },
+        sessionRates: { "8": 1.0, "10": 1.25, "12": 1.5 },
+        card: {
+            bank: "بانک سامان",
+            number: "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+            cleanNumber: "6219861022345678",
+            owner: "به نام: مربی ورزشی"
+        },
+        contact: {
+            phone: "09120000000",
+            instagram: "https://instagram.com/",
+            telegram: "https://t.me/"
+        },
+        styles: [
+            { id: "ninjutsu", name: "نینجوتسو 🥋" },
+            { id: "parkour", name: "پارکور 🏃‍♂️" },
+            { id: "calisthenics", name: "کلیستنیکس 🤸‍♂️" },
+            { id: "breakdance", name: "بریک‌دنس (پاورموو) ⚡" },
+            { id: "boxing", name: "بوکس خیابانی 🥊" },
+            { id: "kyokushin", name: "کیوکوشین 🥋" }
+        ]
+    };
+
+    let appData = JSON.parse(localStorage.getItem('sports_reg_data')) || defaultData;
+    let currentAge = "adult";
+    let currentClassType = "normal";
+    let currentSessions = "8";
+    let selectedStyles = ["ninjutsu"];
+
+    const stylesListEl = document.getElementById('stylesList');
+    const finalPriceEl = document.getElementById('finalPrice');
+    const priceBreakdownEl = document.getElementById('priceBreakdown');
+    const acceptRulesEl = document.getElementById('acceptRules');
+    const paymentSectionEl = document.getElementById('paymentSection');
+    const toastEl = document.getElementById('toast');
+
+    function renderStyles() {
+        stylesListEl.innerHTML = "";
+        appData.styles.forEach(st => {
+            const isSelected = selectedStyles.includes(st.id);
+            const item = document.createElement('div');
+            item.className = `style-item ${isSelected ? 'selected' : ''}`;
+            item.innerHTML = `<span>${st.name}</span><span class="check-dot">${isSelected ? '✓' : ''}</span>`;
+            item.onclick = () => toggleStyle(st.id);
+            stylesListEl.appendChild(item);
+        });
+    }
+
+    function toggleStyle(id) {
+        if (selectedStyles.includes(id)) {
+            if (selectedStyles.length > 1) {
+                selectedStyles = selectedStyles.filter(s => s !== id);
+            }
+        } else {
+            selectedStyles.push(id);
+        }
+        renderStyles();
+        calculatePrice();
+    }
+
+    function calculatePrice() {
+        let base = (currentAge === "adult") ? appData.adultBase : appData.kidsBase;
+        let count = selectedStyles.length;
+        let styleAddon = (count - 1) * appData.extraStylePrice;
+        let subTotal = base + styleAddon;
+        let classFactor = appData.multipliers[currentClassType] || 1.0;
+        let sessionFactor = appData.sessionRates[currentSessions] || 1.0;
+
+        let total = Math.round(subTotal * classFactor * sessionFactor);
+        finalPriceEl.innerText = Number(total).toLocaleString('fa-IR') + ' تومان';
+
+        const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP' };
+        const ageNames = { adult: 'بزرگسال', kids: 'کودک' };
+        priceBreakdownEl.innerText = `${count} سبک انتخاب شده (${ageNames[currentAge]} - ${classNames[currentClassType]} - ${currentSessions} جلسه)`;
+    }
+
+    function setupPills(containerId, callback) {
+        const container = document.getElementById(containerId);
+        container.querySelectorAll('.pill-btn').forEach(btn => {
+            btn.onclick = () => {
+                container.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                callback(btn.getAttribute('data-val'));
+            };
+        });
+    }
+
+    setupPills('ageGroup', val => { currentAge = val; calculatePrice(); });
+    setupPills('classType', val => { currentClassType = val; calculatePrice(); });
+    setupPills('sessionsCount', val => { currentSessions = val; calculatePrice(); });
+
+    document.querySelectorAll('.accordion-header').forEach(header => {
+        header.onclick = () => header.parentElement.classList.toggle('open');
+    });
+
+    acceptRulesEl.onchange = (e) => {
+        paymentSectionEl.style.display = e.target.checked ? 'block' : 'none';
+        if(e.target.checked) paymentSectionEl.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    document.getElementById('copyCardBtn').onclick = () => {
+        navigator.clipboard.writeText(appData.card.cleanNumber).then(() => {
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 2200);
+        });
+    };
+
+    const themeBtn = document.getElementById('themeBtn');
+    themeBtn.onclick = () => {
+        const isLight = document.body.getAttribute('data-theme') === 'light';
+        if (isLight) {
+            document.body.removeAttribute('data-theme');
+            themeBtn.innerText = '🌙';
+        } else {
+            document.body.setAttribute('data-theme', 'light');
+            themeBtn.innerText = '☀️';
+        }
+    };
+
+    const adminBtn = document.getElementById('adminBtn');
+    const adminModal = document.getElementById('adminModal');
+    const closeAdmin = document.getElementById('closeAdmin');
+
+    adminBtn.onclick = () => {
+        const pass = prompt('رمز عبور پنل مدیر را وارد کنید:');
+        if (pass === '1234') {
+            loadAdminForm();
+            adminModal.style.display = 'flex';
+        } else if (pass !== null) {
+            alert('رمز عبور اشتباه است!');
+        }
+    };
+
+    closeAdmin.onclick = () => adminModal.style.display = 'none';
+
+    function loadAdminForm() {
+        document.getElementById('editBannerTitle').value = appData.bannerTitle;
+        document.getElementById('editBannerSubtitle').value = appData.bannerSubtitle;
+        document.getElementById('editBannerBg').value = appData.bannerBg || '';
+        document.getElementById('editKidsPrice').value = appData.kidsBase;
+        document.getElementById('editAdultPrice').value = appData.adultBase;
+        document.getElementById('editExtraPrice').value = appData.extraStylePrice;
+        document.getElementById('editSemiFactor').value = appData.multipliers.semi;
+        document.getElementById('editPrivateFactor').value = appData.multipliers.private;
+        document.getElementById('editVipFactor').value = appData.multipliers.vip;
+        document.getElementById('editCardNum').value = appData.card.cleanNumber;
+        document.getElementById('editCardOwner').value = appData.card.owner;
+        document.getElementById('editPhone').value = appData.contact.phone;
+        document.getElementById('editInsta').value = appData.contact.instagram;
+        document.getElementById('editTele').value = appData.contact.telegram;
+    }
+
+    document.getElementById('saveAdminBtn').onclick = () => {
+        appData.bannerTitle = document.getElementById('editBannerTitle').value;
+        appData.bannerSubtitle = document.getElementById('editBannerSubtitle').value;
+        appData.bannerBg = document.getElementById('editBannerBg').value;
+        appData.kidsBase = Number(document.getElementById('editKidsPrice').value);
+        appData.adultBase = Number(document.getElementById('editAdultPrice').value);
+        appData.extraStylePrice = Number(document.getElementById('editExtraPrice').value);
+        appData.multipliers.semi = Number(document.getElementById('editSemiFactor').value);
+        appData.multipliers.private = Number(document.getElementById('editPrivateFactor').value);
+        appData.multipliers.vip = Number(document.getElementById('editVipFactor').value);
+        
+        const rawCard = document.getElementById('editCardNum').value.replace(/\D/g, '');
+        appData.card.cleanNumber = rawCard;
+        appData.card.number = rawCard.replace(/(\d{4})/g, '$1-').slice(0, 19);
+        appData.card.owner = document.getElementById('editCardOwner').value;
+        appData.contact.phone = document.getElementById('editPhone').value;
+        appData.contact.instagram = document.getElementById('editInsta').value;
+        appData.contact.telegram = document.getElementById('editTele').value;
+
+        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+        adminModal.style.display = 'none';
+        applyDataToUI();
+        calculatePrice();
+        alert('تنظیمات با موفقیت ذخیره شد!');
+    };
+
+    function applyDataToUI() {
+        document.getElementById('bannerTitle').innerText = appData.bannerTitle;
+        document.getElementById('bannerSubtitle').innerText = appData.bannerSubtitle;
+        if(appData.bannerBg) {
+            document.getElementById('heroBanner').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${appData.bannerBg}')`;
+        }
+        document.getElementById('cardNumberText').innerText = appData.card.number;
+        document.getElementById('cardOwnerText').innerText = appData.card.owner;
+        document.getElementById('instaLink').href = appData.contact.instagram;
+        document.getElementById('teleLink').href = appData.contact.telegram;
+        document.getElementById('phoneLink').href = 'tel:' + appData.contact.phone;
+        document.getElementById('sendReceiptBtn').href = 'sms:' + appData.contact.phone + '?body=سلام استاد، فیش واریزی ارسال شد.';
+    }
+
+    renderStyles();
+    applyDataToUI();
+    calculatePrice();
+</script>
+</body>
+</html>
