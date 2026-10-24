@@ -153,7 +153,7 @@
             color: var(--neon-blue);
         }
 
-        /* دکمه‌های کوچک سبک‌ها */
+        /* سبک‌ها */
         .styles-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -197,7 +197,7 @@
             color: #000;
         }
 
-        /* دکمه‌های گزینشی */
+        /* دکمه‌های انتخابی */
         .pill-group {
             display: flex;
             gap: 6px;
@@ -225,7 +225,7 @@
             box-shadow: var(--neon-shadow);
         }
 
-        /* باکس نمایش هوشمند قیمت */
+        /* باکس نمایش قیمت */
         .price-box {
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(189, 0, 255, 0.08));
             border: 1px dashed var(--neon-blue);
@@ -251,14 +251,13 @@
             color: #0284c7;
         }
 
-        /* باکس هوشمند و متغیر شرایط دوره بر اساس انتخاب */
+        /* باکس داینامیک قوانین */
         .dynamic-rules-box {
             background: rgba(189, 0, 255, 0.07);
             border: 1px solid rgba(189, 0, 255, 0.25);
             border-radius: var(--radius-sm);
             padding: 12px;
             margin-bottom: 12px;
-            animation: fadeIn 0.3s ease;
         }
 
         .dynamic-rule-badge {
@@ -279,7 +278,7 @@
             white-space: pre-line;
         }
 
-        /* آکاردئون قوانین */
+        /* آکاردئون */
         .accordion-item {
             border: 1px solid var(--border);
             border-radius: var(--radius-sm);
@@ -314,7 +313,7 @@
             max-height: 400px;
         }
 
-        /* تیک تأیید قوانین */
+        /* تیک تأیید و واریز */
         .rule-agreement {
             display: flex;
             align-items: center;
@@ -408,7 +407,6 @@
             font-weight: 600;
         }
 
-        /* شبکه‌های اجتماعی */
         .social-links {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -445,7 +443,7 @@
         }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
-        /* مودال ادمین */
+        /* مودال ادمین خلوت و تب‌بندی شده */
         .admin-modal {
             position: fixed;
             inset: 0;
@@ -462,11 +460,39 @@
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             width: 100%;
-            max-width: 430px;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 420px;
             padding: 16px;
         }
+        
+        /* تب‌های پنل ادمین */
+        .admin-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+        .admin-tab-btn {
+            flex: 1;
+            padding: 8px 2px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+        .admin-tab-btn.active {
+            background: var(--neon-blue);
+            color: #000;
+            border-color: var(--neon-blue);
+        }
+
+        .admin-panel-tab { display: none; }
+        .admin-panel-tab.active { display: block; }
+
         .admin-input-group { margin-bottom: 10px; }
         .admin-input-group label {
             display: block;
@@ -474,7 +500,7 @@
             color: var(--text-secondary);
             margin-bottom: 4px;
         }
-        .admin-input-group input, .admin-input-group textarea {
+        .admin-input-group input, .admin-input-group textarea, .admin-select {
             width: 100%;
             padding: 8px 10px;
             border-radius: var(--radius-sm);
@@ -483,12 +509,6 @@
             color: var(--text-primary);
             font-size: 0.8rem;
             outline: none;
-        }
-        .admin-badge-title {
-            color: var(--neon-blue);
-            font-size: 0.82rem;
-            font-weight: bold;
-            margin: 12px 0 6px;
         }
     </style>
 </head>
@@ -542,11 +562,10 @@
         </div>
     </div>
 
-    <!-- بخش ۲: شرایط کلاس‌ها با نمایش زنده قوانین مربوطه -->
+    <!-- بخش ۲: شرایط کلاس‌ها -->
     <div class="section-card">
         <div class="section-header">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
 
-        <!-- باکس هوشمند قوانین که با هر کلیک تغییر می‌کند -->
         <div class="dynamic-rules-box" id="dynamicRulesBox">
             <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
             
@@ -584,7 +603,7 @@
         </div>
     </div>
 
-    <!-- بخش شبکه‌های اجتماعی -->
+    <!-- بخش ۳: شبکه‌های ارتباطی -->
     <div class="section-card">
         <div class="section-header">💬 ۳. راه‌های ارتباطی با مربی</div>
         <div class="social-links">
@@ -597,104 +616,95 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت -->
+<!-- مودال مدیریت بازطراحی‌شده و خلوت -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-            <h3 style="font-size:0.95rem; color:var(--neon-blue);">⚙️ پنل مدیریت اطلاعات و قوانین</h3>
+            <h3 style="font-size:0.95rem; color:var(--neon-blue);">⚙️ پنل مدیریت هوشمند</h3>
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
-        <!-- تنظیمات قوانین اختصاصی هر کلاس -->
-        <div class="admin-badge-title">📋 قوانین اختصاصی انواع کلاس‌ها:</div>
-        <div class="admin-input-group">
-            <label>قوانین کلاس عمومی:</label>
-            <textarea rows="2" id="editRuleNormal"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین کلاس نیمه‌خصوصی:</label>
-            <textarea rows="2" id="editRuleSemi"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین کلاس خصوصی:</label>
-            <textarea rows="2" id="editRulePrivate"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین کلاس VIP 👑:</label>
-            <textarea rows="3" id="editRuleVip"></textarea>
+        <!-- تب‌های انتخاب بخش -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و تماس</button>
         </div>
 
-        <!-- تنظیمات قوانین تعداد جلسات -->
-        <div class="admin-badge-title">⏳ قوانین مربوط به تعداد جلسات ترم:</div>
-        <div class="admin-input-group">
-            <label>قوانین ترم ۸ جلسه:</label>
-            <textarea rows="2" id="editRule8"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین ترم ۱۰ جلسه:</label>
-            <textarea rows="2" id="editRule10"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین ترم ۱۲ جلسه:</label>
-            <textarea rows="2" id="editRule12"></textarea>
-        </div>
-        <div class="admin-input-group">
-            <label>قوانین عمومی و انضباطی ثابت:</label>
-            <textarea rows="2" id="editRuleGeneral"></textarea>
-        </div>
-
-        <hr style="border-color:var(--border); margin:12px 0;">
-
-        <!-- تنظیمات قیمت‌ها -->
-        <div class="admin-badge-title">💰 تنظیم شهریه‌ها:</div>
-        <div class="admin-input-group">
-            <label>شهریه کودکان (۸ جلسه - تومان):</label>
-            <input type="number" id="editKidsPrice" value="1500000">
-        </div>
-        <div class="admin-input-group">
-            <label>شهریه بزرگسالان (۸ جلسه - تومان):</label>
-            <input type="number" id="editAdultPrice" value="2000000">
-        </div>
-        <div class="admin-input-group">
-            <label>اضافه شدن هر سبک بیشتر (تومان):</label>
-            <input type="number" id="editExtraPrice" value="500000">
-        </div>
-        <div class="admin-input-group">
-            <label>ضریب کلاس نیمه‌خصوصی:</label>
-            <input type="number" step="0.1" id="editSemiFactor" value="1.4">
-        </div>
-        <div class="admin-input-group">
-            <label>ضریب کلاس خصوصی:</label>
-            <input type="number" step="0.1" id="editPrivateFactor" value="2.0">
-        </div>
-        <div class="admin-input-group">
-            <label>ضریب کلاس VIP:</label>
-            <input type="number" step="0.1" id="editVipFactor" value="3.0">
+        <!-- تب ۱: قوانین (کاملاً خلوت با یک منوی کشویی) -->
+        <div class="admin-panel-tab active" id="rulesTab">
+            <div class="admin-input-group">
+                <label style="color:var(--neon-purple); font-weight:700;">انتخاب قانون برای ویرایش:</label>
+                <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
+                    <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
+                    <option value="normal">شرایط کلاس عمومی</option>
+                    <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
+                    <option value="private">شرایط کلاس خصوصی</option>
+                    <option value="s8">شرایط ترم ۸ جلسه</option>
+                    <option value="s10">شرایط ترم ۱۰ جلسه</option>
+                    <option value="s12">شرایط ترم ۱۲ جلسه</option>
+                    <option value="general">قوانین عمومی و انضباطی آکادمی</option>
+                </select>
+            </div>
+            <div class="admin-input-group">
+                <label id="activeRuleLabel">متن قانون:</label>
+                <textarea rows="6" id="activeRuleTextarea" placeholder="متن قانون مورد نظر را اینجا بنویسید..."></textarea>
+            </div>
+            <div style="font-size:0.7rem; color:var(--text-secondary);">💡 هر قانونی را از منوی بالا انتخاب کنید، متن آن لود شده و می‌توانید آن را تغییر دهید.</div>
         </div>
 
-        <hr style="border-color:var(--border); margin:12px 0;">
+        <!-- تب ۲: شهریه‌ها -->
+        <div class="admin-panel-tab" id="pricesTab">
+            <div class="admin-input-group">
+                <label>شهریه کودکان (۸ جلسه - تومان):</label>
+                <input type="number" id="editKidsPrice">
+            </div>
+            <div class="admin-input-group">
+                <label>شهریه بزرگسالان (۸ جلسه - تومان):</label>
+                <input type="number" id="editAdultPrice">
+            </div>
+            <div class="admin-input-group">
+                <label>اضافه شدن هر سبک بیشتر (تومان):</label>
+                <input type="number" id="editExtraPrice">
+            </div>
+            <div style="display:flex; gap:6px;">
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب نیمه‌خصوصی:</label>
+                    <input type="number" step="0.1" id="editSemiFactor">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب خصوصی:</label>
+                    <input type="number" step="0.1" id="editPrivateFactor">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب VIP:</label>
+                    <input type="number" step="0.1" id="editVipFactor">
+                </div>
+            </div>
+        </div>
 
-        <!-- مشخصات کارت و تماس -->
-        <div class="admin-badge-title">💳 کارت بانکی و تماس:</div>
-        <div class="admin-input-group">
-            <label>شماره کارت واریز:</label>
-            <input type="text" id="editCardNum">
-        </div>
-        <div class="admin-input-group">
-            <label>نام صاحب حساب و بانک:</label>
-            <input type="text" id="editCardOwner">
-        </div>
-        <div class="admin-input-group">
-            <label>شماره تماس مربی:</label>
-            <input type="text" id="editPhone">
-        </div>
-        <div class="admin-input-group">
-            <label>لینک اینستاگرام:</label>
-            <input type="text" id="editInsta">
-        </div>
-        <div class="admin-input-group">
-            <label>لینک تلگرام / ایتا:</label>
-            <input type="text" id="editTele">
+        <!-- تب ۳: کارت بانکی و تماس -->
+        <div class="admin-panel-tab" id="infoTab">
+            <div class="admin-input-group">
+                <label>شماره کارت واریز:</label>
+                <input type="text" id="editCardNum">
+            </div>
+            <div class="admin-input-group">
+                <label>نام صاحب حساب و بانک:</label>
+                <input type="text" id="editCardOwner">
+            </div>
+            <div class="admin-input-group">
+                <label>شماره تماس مربی:</label>
+                <input type="text" id="editPhone">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک اینستاگرام:</label>
+                <input type="text" id="editInsta">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک تلگرام / ایتا:</label>
+                <input type="text" id="editTele">
+            </div>
         </div>
 
         <button class="copy-btn" id="saveAdminBtn" style="background:var(--btn-active); color:#fff; margin-top:14px;">💾 ذخیره تغییرات</button>
@@ -703,9 +713,6 @@
 
 <script>
     const defaultData = {
-        bannerTitle: "سلام، وقتتون بخیر 🌱",
-        bannerSubtitle: "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-        bannerBg: "",
         kidsBase: 1500000,
         adultBase: 2000000,
         extraStylePrice: 500000,
@@ -730,17 +737,14 @@
             { id: "boxing", name: "بوکس خیابانی 🥊" },
             { id: "kyokushin", name: "کیوکوشین 🥋" }
         ],
-        // قوانین داینامیک اختصاصی
         rules: {
-            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن زمان سالن.",
+            normal: "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
             semi: "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
             private: "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
             vip: "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-            
             s8: "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
             s10: "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
             s12: "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-            
             general: "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
     };
@@ -752,6 +756,7 @@
     let currentClassType = "normal";
     let currentSessions = "8";
     let selectedStyles = ["ninjutsu"];
+    let currentEditingRuleKey = "vip";
 
     const stylesListEl = document.getElementById('stylesList');
     const finalPriceEl = document.getElementById('finalPrice');
@@ -774,9 +779,7 @@
 
     function toggleStyle(id) {
         if (selectedStyles.includes(id)) {
-            if (selectedStyles.length > 1) {
-                selectedStyles = selectedStyles.filter(s => s !== id);
-            }
+            if (selectedStyles.length > 1) selectedStyles = selectedStyles.filter(s => s !== id);
         } else {
             selectedStyles.push(id);
         }
@@ -787,14 +790,8 @@
     function updateDynamicRules() {
         const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP 👑' };
         document.getElementById('activeRuleBadge').innerText = `شرایط انتخابی: کلاس ${classNames[currentClassType]} - ترم ${currentSessions} جلسه`;
-        
-        // نمایش متن شرایط مربوط به نوع کلاس انتخاب شده
         document.getElementById('classTypeRuleText').innerText = appData.rules[currentClassType] || '';
-        
-        // نمایش متن شرایط مربوط به تعداد جلسه انتخاب شده
-        const sessionKey = 's' + currentSessions;
-        document.getElementById('sessionRuleText').innerText = appData.rules[sessionKey] || '';
-
+        document.getElementById('sessionRuleText').innerText = appData.rules['s' + currentSessions] || '';
         document.getElementById('generalRuleText').innerText = appData.rules.general || '';
     }
 
@@ -812,7 +809,6 @@
         const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP' };
         const ageNames = { adult: 'بزرگسال', kids: 'کودک' };
         priceBreakdownEl.innerText = `${count} سبک انتخاب شده (${ageNames[currentAge]} - ${classNames[currentClassType]} - ${currentSessions} جلسه)`;
-
         updateDynamicRules();
     }
 
@@ -859,6 +855,26 @@
         }
     };
 
+    /* مدیریت تب‌های پنل ادمین */
+    function switchAdminTab(tabId) {
+        document.querySelectorAll('.admin-panel-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    /* تغییر قانون در منوی کشویی */
+    function onRuleSelectorChange() {
+        const textarea = document.getElementById('activeRuleTextarea');
+        // ابتدا تغییرات قانون قبلی را ذخیره می‌کنیم
+        appData.rules[currentEditingRuleKey] = textarea.value;
+
+        // قانون جدید انتخاب شده را لود می‌کنیم
+        const selector = document.getElementById('ruleSelector');
+        currentEditingRuleKey = selector.value;
+        textarea.value = appData.rules[currentEditingRuleKey] || '';
+    }
+
     const adminBtn = document.getElementById('adminBtn');
     const adminModal = document.getElementById('adminModal');
     const closeAdmin = document.getElementById('closeAdmin');
@@ -876,15 +892,8 @@
     closeAdmin.onclick = () => adminModal.style.display = 'none';
 
     function loadAdminForm() {
-        document.getElementById('editRuleNormal').value = appData.rules.normal;
-        document.getElementById('editRuleSemi').value = appData.rules.semi;
-        document.getElementById('editRulePrivate').value = appData.rules.private;
-        document.getElementById('editRuleVip').value = appData.rules.vip;
-
-        document.getElementById('editRule8').value = appData.rules.s8;
-        document.getElementById('editRule10').value = appData.rules.s10;
-        document.getElementById('editRule12').value = appData.rules.s12;
-        document.getElementById('editRuleGeneral').value = appData.rules.general;
+        currentEditingRuleKey = document.getElementById('ruleSelector').value;
+        document.getElementById('activeRuleTextarea').value = appData.rules[currentEditingRuleKey] || '';
 
         document.getElementById('editKidsPrice').value = appData.kidsBase;
         document.getElementById('editAdultPrice').value = appData.adultBase;
@@ -900,15 +909,8 @@
     }
 
     document.getElementById('saveAdminBtn').onclick = () => {
-        appData.rules.normal = document.getElementById('editRuleNormal').value;
-        appData.rules.semi = document.getElementById('editRuleSemi').value;
-        appData.rules.private = document.getElementById('editRulePrivate').value;
-        appData.rules.vip = document.getElementById('editRuleVip').value;
-
-        appData.rules.s8 = document.getElementById('editRule8').value;
-        appData.rules.s10 = document.getElementById('editRule10').value;
-        appData.rules.s12 = document.getElementById('editRule12').value;
-        appData.rules.general = document.getElementById('editRuleGeneral').value;
+        // ذخیره آخرین متنی که داخل کادر قوانین باز است
+        appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
         appData.kidsBase = Number(document.getElementById('editKidsPrice').value);
         appData.adultBase = Number(document.getElementById('editAdultPrice').value);
@@ -929,7 +931,7 @@
         adminModal.style.display = 'none';
         applyDataToUI();
         calculatePrice();
-        alert('تمام قوانین و تغییرات با موفقیت ذخیره شدند!');
+        alert('تنظیمات با موفقیت ذخیره شد!');
     };
 
     function applyDataToUI() {
