@@ -47,6 +47,8 @@
         onStatus: status,
         onAuthorized: ({ user }) => status('ورود مدیر تأیید شد: ' + user.email + ' — این صفحه فعلاً فقط ورود را آزمایش می‌کند.')
       });
+      // پس از بازگشت از لینک ایمیل، نشست موجود را بررسی می‌کنیم.
+      auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
     }
   } catch (e) {
     status(e.message || 'راه‌اندازی ورود ناموفق بود.', true);
