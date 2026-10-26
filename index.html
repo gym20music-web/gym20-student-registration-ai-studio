@@ -1155,7 +1155,12 @@
             const isSelected = selectedStyles.includes(st.id);
             const item = document.createElement('div');
             item.className = `style-item ${isSelected ? 'selected' : ''}`;
-            item.innerHTML = `<span>${st.name}</span><span class="check-dot">${isSelected ? '✓' : ''}</span>`;
+            const name = document.createElement('span');
+            name.textContent = String(st.name || '');
+            const check = document.createElement('span');
+            check.className = 'check-dot';
+            check.textContent = isSelected ? '✓' : '';
+            item.append(name, check);
             item.onclick = () => toggleStyle(st.id);
             stylesListEl.appendChild(item);
         });
@@ -1178,10 +1183,19 @@
         appData.styles.forEach(st => {
             const row = document.createElement('div');
             row.className = 'admin-style-row';
-            row.innerHTML = `
-                <input type="text" value="${st.name}" oninput="updateStyleName('${st.id}', this.value)">
-                <button type="button" class="delete-style-btn" onclick="deleteStyle('${st.id}')" title="حذف سبک">🗑️</button>
-            `;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = String(st.name || '');
+            input.setAttribute('aria-label', 'نام سبک');
+            input.addEventListener('input', () => updateStyleName(st.id, input.value));
+            const remove = document.createElement('button');
+            remove.type = 'button';
+            remove.className = 'delete-style-btn';
+            remove.title = 'حذف سبک';
+            remove.setAttribute('aria-label', 'حذف سبک');
+            remove.textContent = '🗑️';
+            remove.addEventListener('click', () => deleteStyle(st.id));
+            row.append(input, remove);
             container.appendChild(row);
         });
     }
