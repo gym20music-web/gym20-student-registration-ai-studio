@@ -834,12 +834,25 @@
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
+        <div id="adminLoginPanel">
+            <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.8;margin:8px 0 12px;">برای ورود، با حساب مالک فعال در Supabase وارد شوید. اطلاعات ورود در کد سایت ذخیره نمی‌شود.</p>
+            <div class="admin-input-group"><label for="adminEmail">ایمیل مدیر</label><input id="adminEmail" type="email" autocomplete="username" placeholder="ایمیل حساب Supabase" dir="ltr"></div>
+            <div class="admin-input-group"><label for="adminPassword">رمز عبور</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="رمز عبور حساب Supabase" dir="ltr"></div>
+            <button type="button" class="copy-btn" id="adminLoginBtn" style="width:100%;margin-top:8px;">🔐 ورود امن</button>
+            <div id="adminLoginStatus" role="status" style="font-size:.75rem;margin-top:8px;line-height:1.8;"></div>
+        </div>
+        <div id="adminEditor" style="display:none;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px;">
+                <span id="adminSignedInAs" style="font-size:.7rem;color:var(--text-secondary);overflow-wrap:anywhere;"></span>
+                <button type="button" class="pill-btn" id="adminLogoutBtn" style="font-size:.7rem;padding:5px 9px;">خروج</button>
+            </div>
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('jsonTab')">🧩 همه کلیدها</button>
         </div>
 
         <!-- تب ۱: قوانین -->
@@ -981,16 +994,23 @@
             </div>
         </div>
 
-        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره</button>
+        <div class="admin-panel-tab" id="jsonTab">
+            <div style="font-size:.75rem;color:var(--text-secondary);line-height:1.9;margin-bottom:8px;">ویرایش پیشرفته تمام تنظیمات ذخیره‌شده (عنوان‌ها، متن‌ها، کلیدها، قیمت‌ها، سبک‌ها، قوانین و لینک‌ها). ساختار JSON را معتبر نگه دارید؛ تغییرات پس از ذخیره برای همه بازدیدکنندگان اعمال می‌شود.</div>
+            <textarea id="adminJsonEditor" rows="16" spellcheck="false" dir="ltr" style="width:100%;box-sizing:border-box;font:12px/1.7 monospace;padding:10px;border-radius:8px;background:var(--surface-card);color:var(--text-primary);border:1px solid var(--border);"></textarea>
+            <button type="button" class="pill-btn" id="refreshAdminJsonBtn" style="margin-top:8px;">بارگذاری دوباره از فرم</button>
+            <div id="adminJsonStatus" style="font-size:.72rem;margin-top:6px;"></div>
+        </div>
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره در بک‌اند</button>
+        </div>
     </div>
 </div>
 
 <script>
     // GitHub credentials must never be embedded in public client-side code.
-    const CURRENT_CACHE_VERSION = 12; // نسخه اختصاصی برای تازه‌سازی قطعی کش مرورگرها
+    const CURRENT_CACHE_VERSION = 13; // نسخه اختصاصی برای تازه‌سازی قطعی کش مرورگرها
 
     const defaultData = {
-    "cacheVersion": 12,
+    "cacheVersion": 13,
     "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
     "bannerTitle": "سلام، وقتتون بخیر 🌱",
     "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
@@ -1299,11 +1319,98 @@
     const adminModal = document.getElementById('adminModal');
     const closeAdmin = document.getElementById('closeAdmin');
 
+    let adminAccessToken = null;
+    let adminUserEmail = '';
+    const adminLoginPanel = document.getElementById('adminLoginPanel');
+    const adminEditor = document.getElementById('adminEditor');
+    const adminLoginStatus = document.getElementById('adminLoginStatus');
+    const adminLoginBtn = document.getElementById('adminLoginBtn');
+
+    function setAdminStatus(message, isError = false) {
+        adminLoginStatus.textContent = message;
+        adminLoginStatus.style.color = isError ? '#ef4444' : 'var(--neon-green)';
+    }
+
+    function setAdminView(isLoggedIn) {
+        adminLoginPanel.style.display = isLoggedIn ? 'none' : 'block';
+        adminEditor.style.display = isLoggedIn ? 'block' : 'none';
+        document.getElementById('adminSignedInAs').textContent = isLoggedIn ? ('واردشده: ' + adminUserEmail) : '';
+    }
+
+    async function adminRequest(path, options = {}) {
+        const token = options.useAdminToken && adminAccessToken ? adminAccessToken : GYM20_SUPABASE_ANON_KEY;
+        const headers = {
+            'apikey': GYM20_SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + token,
+            ...(options.headers || {})
+        };
+        return fetch(GYM20_SUPABASE_URL + path, {...options, headers});
+    }
+
+    async function adminLogin() {
+        const email = document.getElementById('adminEmail').value.trim();
+        const password = document.getElementById('adminPassword').value;
+        if (!email || !password) { setAdminStatus('ایمیل و رمز عبور را وارد کنید.', true); return; }
+        adminLoginBtn.disabled = true;
+        adminLoginBtn.textContent = 'در حال بررسی…';
+        setAdminStatus('');
+        try {
+            const response = await adminRequest('/auth/v1/token?grant_type=password', {
+                method: 'POST',
+                headers: {'Content-Type':'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            const auth = await response.json().catch(() => ({}));
+            if (!response.ok || !auth.access_token || !auth.user) throw new Error(auth.msg || auth.message || 'ورود ناموفق بود؛ ایمیل و رمز عبور را بررسی کنید.');
+            adminAccessToken = auth.access_token;
+            adminUserEmail = auth.user.email || email;
+            const profileResponse = await adminRequest('/rest/v1/profiles?id=eq.' + encodeURIComponent(auth.user.id) + '&select=id,role,is_active', {
+                method:'GET',
+                useAdminToken:true,
+                headers:{'Accept-Profile':'gym20'}
+            });
+            const profiles = await profileResponse.json().catch(() => []);
+            if (!profileResponse.ok || !Array.isArray(profiles) || !profiles.some(p => p.role === 'owner' && p.is_active === true)) {
+                await adminRequest('/auth/v1/logout', {method:'POST',useAdminToken:true});
+                adminAccessToken = null;
+                adminUserEmail = '';
+                throw new Error('این حساب مالک فعال نیست؛ دسترسی پنل مدیریت داده نشد.');
+            }
+            document.getElementById('adminPassword').value = '';
+            setAdminView(true);
+            loadAdminForm();
+            setAdminStatus('');
+            await loadPublicSettings(true);
+            loadAdminForm();
+            document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
+        } catch (error) {
+            setAdminStatus(error.message || 'خطا در ورود به پنل مدیریت.', true);
+        } finally {
+            adminLoginBtn.disabled = false;
+            adminLoginBtn.textContent = '🔐 ورود امن';
+        }
+    }
+
+    async function adminLogout() {
+        try {
+            if (adminAccessToken) await adminRequest('/auth/v1/logout', {method:'POST',useAdminToken:true});
+        } catch (_) {}
+        adminAccessToken = null;
+        adminUserEmail = '';
+        setAdminView(false);
+        setAdminStatus('از پنل مدیریت خارج شدید.');
+    }
+
+    adminLoginBtn.onclick = adminLogin;
+    document.getElementById('adminPassword').addEventListener('keydown', e => { if (e.key === 'Enter') adminLogin(); });
+    document.getElementById('adminLogoutBtn').onclick = adminLogout;
+
     adminBtn.onclick = () => {
-        alert('پنل مدیریت موقتاً غیرفعال است تا ورود امن Supabase متصل شود. رمز عبور داخل کد عمومی امن نیست.');
+        adminModal.style.display = 'flex';
+        if (!adminAccessToken) setAdminView(false);
     };
 
-    closeAdmin.onclick = () => adminModal.style.display = 'none';
+    closeAdmin.onclick = () => { adminModal.style.display = 'none'; };
 
     function loadAdminForm() {
         currentEditingRuleKey = document.getElementById('ruleSelector').value;
@@ -1382,8 +1489,62 @@
         }).join(''));
     }
 
-    document.getElementById('autoCommitBtn').onclick = () => {
-        alert('ذخیره آنلاین موقتاً غیرفعال است. اتصال امن به Supabase باید قبل از فعال‌سازی ذخیره‌سازی انجام شود.');
+    document.getElementById('refreshAdminJsonBtn').onclick = () => {
+        document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
+        document.getElementById('adminJsonStatus').textContent = 'ویرایشگر با تنظیمات فعلی فرم هماهنگ شد.';
+    };
+
+    document.getElementById('autoCommitBtn').onclick = async () => {
+        if (!adminAccessToken) { setAdminStatus('ابتدا با حساب مالک وارد شوید.', true); return; }
+        const jsonMode = document.getElementById('jsonTab').classList.contains('active');
+        if (jsonMode) {
+            try {
+                const parsed = JSON.parse(document.getElementById('adminJsonEditor').value);
+                if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('ریشه تنظیمات باید یک شیء JSON باشد.');
+                if (!Array.isArray(parsed.styles) || !parsed.rules || !parsed.card || !parsed.contact || !parsed.musicChannel || !parsed.multipliers || !parsed.sessionRates) {
+                    throw new Error('کلیدهای ضروری styles، rules، card، contact، musicChannel، multipliers و sessionRates باید موجود باشند.');
+                }
+                appData = {...parsed, cacheVersion: CURRENT_CACHE_VERSION};
+            } catch (error) {
+                document.getElementById('adminJsonStatus').textContent = 'JSON نامعتبر: ' + error.message;
+                document.getElementById('adminJsonStatus').style.color = '#ef4444';
+                return;
+            }
+        } else {
+            collectFormData();
+        }
+        const saveButton = document.getElementById('autoCommitBtn');
+        saveButton.disabled = true;
+        saveButton.textContent = 'در حال ذخیره در بک‌اند…';
+        try {
+            const response = await adminRequest('/rest/v1/site_settings?on_conflict=key', {
+                method:'POST',
+                useAdminToken:true,
+                headers:{
+                    'Content-Type':'application/json',
+                    'Content-Profile':'gym20',
+                    'Prefer':'resolution=merge-duplicates,return=minimal'
+                },
+                body:JSON.stringify([{key:'public_site_config', value:appData}])
+            });
+            if (!response.ok) {
+                const detail = await response.text();
+                throw new Error(detail || ('HTTP ' + response.status));
+            }
+            applyDataToUI();
+            renderStyles();
+            calculatePrice();
+            loadAdminForm();
+            document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
+            document.getElementById('adminJsonStatus').textContent = 'تنظیمات با موفقیت در بک‌اند ذخیره شد.';
+            document.getElementById('adminJsonStatus').style.color = 'var(--neon-green)';
+            alert('تنظیمات با موفقیت ذخیره شد و برای بازدیدکنندگان اعمال می‌شود.');
+        } catch (error) {
+            alert('ذخیره انجام نشد: ' + (error.message || 'خطای ارتباط با Supabase'));
+        } finally {
+            saveButton.disabled = false;
+            saveButton.textContent = '💾 ذخیره در بک‌اند';
+        }
     };
 
     function applyDataToUI() {
@@ -1511,9 +1672,41 @@
         }
     });
 
-    renderStyles();
-    applyDataToUI();
-    calculatePrice();
+    async function loadPublicSettings(useAdmin = false) {
+        try {
+            const response = await adminRequest('/rest/v1/site_settings?key=eq.public_site_config&select=value', {
+                method:'GET',
+                useAdminToken:useAdmin,
+                headers:{'Accept-Profile':'gym20'}
+            });
+            if (!response.ok) return false;
+            const rows = await response.json();
+            if (Array.isArray(rows) && rows[0] && rows[0].value && typeof rows[0].value === 'object') {
+                appData = {...defaultData, ...rows[0].value, cacheVersion:CURRENT_CACHE_VERSION};
+                appData.card = {...defaultData.card, ...(rows[0].value.card || {})};
+                appData.contact = {...defaultData.contact, ...(rows[0].value.contact || {})};
+                appData.musicChannel = {...defaultData.musicChannel, ...(rows[0].value.musicChannel || {})};
+                appData.multipliers = {...defaultData.multipliers, ...(rows[0].value.multipliers || {})};
+                appData.sessionRates = {...defaultData.sessionRates, ...(rows[0].value.sessionRates || {})};
+                appData.rules = {...defaultData.rules, ...(rows[0].value.rules || {})};
+                if (!Array.isArray(appData.styles) || !appData.styles.length) appData.styles = defaultData.styles;
+                selectedStyles = appData.styles.length ? [appData.styles[0].id] : [];
+                return true;
+            }
+        } catch (error) {
+            console.warn('Public site settings could not be loaded.', error);
+        }
+        return false;
+    }
+
+    async function initializeApp() {
+        await loadPublicSettings(false);
+        renderStyles();
+        applyDataToUI();
+        calculatePrice();
+    }
+
+    initializeApp();
 </script>
 </body>
 </html>
