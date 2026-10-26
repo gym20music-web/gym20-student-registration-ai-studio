@@ -944,7 +944,7 @@
 </div>
 
 <script>
-    const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
+    // GitHub credentials must never be embedded in public client-side code.
     const CURRENT_CACHE_VERSION = 12; // نسخه اختصاصی برای تازه‌سازی قطعی کش مرورگرها
 
     const defaultData = {
@@ -1245,13 +1245,7 @@
     const closeAdmin = document.getElementById('closeAdmin');
 
     adminBtn.onclick = () => {
-        const pass = prompt('رمز عبور پنل مدیر را وارد کنید:');
-        if (pass === '1234') {
-            loadAdminForm();
-            adminModal.style.display = 'flex';
-        } else if (pass !== null) {
-            alert('رمز عبور اشتباه است!');
-        }
+        alert('پنل مدیریت موقتاً غیرفعال است تا ورود امن Supabase متصل شود. رمز عبور داخل کد عمومی امن نیست.');
     };
 
     closeAdmin.onclick = () => adminModal.style.display = 'none';
@@ -1333,66 +1327,8 @@
         }).join(''));
     }
 
-    document.getElementById('autoCommitBtn').onclick = async () => {
-        const token = BUILTIN_TOKEN;
-        const btn = document.getElementById('autoCommitBtn');
-        const oldText = btn.innerText;
-        btn.innerText = '⏳ در حال ذخیره...';
-        btn.disabled = true;
-
-        try {
-            collectFormData();
-
-            const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                }
-            });
-
-            if (!getRes.ok) {
-                throw new Error('خطا در برقراری ارتباط.');
-            }
-
-            const fileData = await getRes.json();
-            const rawContent = fileData.content.replace(/\s/g, '');
-            const currentHtml = b64DecodeUnicode(rawContent);
-
-            const newDefaultStr = 'const defaultData = ' + JSON.stringify(appData, null, 4) + ';';
-            const updatedHtml = currentHtml.replace(/const defaultData = \{[\s\S]*?\};/, newDefaultStr);
-            const newBase64 = b64EncodeUnicode(updatedHtml);
-
-            const putRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
-                method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    message: "به‌روزرسانی اطلاعات",
-                    content: newBase64,
-                    sha: fileData.sha,
-                    branch: "main"
-                })
-            });
-
-            if (!putRes.ok) {
-                throw new Error('خطا در ثبت نهایی اطلاعات.');
-            }
-
-            localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-            applyDataToUI();
-            calculatePrice();
-            adminModal.style.display = 'none';
-            alert('🎉 با موفقیت ذخیره شد!\nتا لحظاتی دیگر برای تمام هنرجویان اعمال می‌شود.');
-
-        } catch (err) {
-            alert('❌ خطا: ' + err.message);
-        } finally {
-            btn.innerText = oldText;
-            btn.disabled = false;
-        }
+    document.getElementById('autoCommitBtn').onclick = () => {
+        alert('ذخیره آنلاین موقتاً غیرفعال است. اتصال امن به Supabase باید قبل از فعال‌سازی ذخیره‌سازی انجام شود.');
     };
 
     function applyDataToUI() {
