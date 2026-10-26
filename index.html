@@ -693,14 +693,14 @@
 
     <!-- بخش ۱: انتخاب‌ها و سبک‌ها -->
     <div class="section-card">
-        <div class="section-header">🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها</div>
+        <div class="section-header" data-page-text="stylesSectionTitle">🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها</div>
         
         <div class="pill-group" id="ageGroup">
             <button class="pill-btn active" data-val="adult">بزرگسالان</button>
             <button class="pill-btn" data-val="kids">کودکان</button>
         </div>
 
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">نوع برگزاری کلاس:</div>
+        <div data-page-text="classTypeLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">نوع برگزاری کلاس:</div>
         <div class="pill-group" id="classType">
             <button class="pill-btn active" data-val="normal">عمومی</button>
             <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
@@ -708,19 +708,19 @@
             <button class="pill-btn" data-val="vip">VIP 👑</button>
         </div>
 
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
+        <div data-page-text="sessionCountLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
         <div class="pill-group" id="sessionsCount">
             <button class="pill-btn active" data-val="8">۸ جلسه</button>
             <button class="pill-btn" data-val="10">۱۰ جلسه</button>
             <button class="pill-btn" data-val="12">۱۲ جلسه</button>
         </div>
 
-        <div style="font-size: 0.7rem; color: var(--text-secondary); margin: 8px 0 5px;">سبک‌های مورد نظر را انتخاب کنید:</div>
+        <div data-page-text="stylesChoiceLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 8px 0 5px;">سبک‌های مورد نظر را انتخاب کنید:</div>
         <div class="styles-grid" id="stylesList"></div>
 
         <div class="price-box">
             <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
-            <div style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
+            <div data-page-text="tuitionLabel" style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
             <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
         </div>
     </div>
@@ -728,15 +728,15 @@
 
     <!-- فرم ثبت‌نام با استفاده از سبک‌های انتخاب‌شده در بخش اصلی -->
     <div class="section-card" id="publicRegistrationCard">
-        <div class="section-header">📝 فرم ثبت‌نام هنرجو</div>
-        <p style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
+        <div class="section-header" data-page-text="registrationTitle">📝 فرم ثبت‌نام هنرجو</div>
+        <p data-page-text="registrationIntro" style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
             اطلاعات تماس را وارد کنید؛ سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.
         </p>
         <form id="publicRegistrationForm" class="registration-form">
-            <div><label for="regFullName">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
-            <div><label for="regPhone">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
-            <div><label for="regBirthDate">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
-            <div class="form-wide"><label for="regNotes">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید"></textarea></div>
+            <div><label for="regFullName" data-page-text="fullNameLabel">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
+            <div><label for="regPhone" data-page-text="phoneLabel">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
+            <div><label for="regBirthDate" data-page-text="birthDateLabel">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
+            <div class="form-wide"><label for="regNotes" data-page-text="notesLabel">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید" data-page-placeholder="notesPlaceholder"></textarea></div>
             <div class="selected-styles-summary form-wide" id="selectedStylesSummary" aria-live="polite"></div>
             <div id="regStatus" class="registration-status form-wide" role="status" aria-live="polite"></div>
         </form>
@@ -744,21 +744,21 @@
 
     <!-- بخش ۲: شرایط کلاس‌ها -->
     <div class="section-card">
-        <div class="section-header">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
+        <div class="section-header" data-page-text="rulesSectionTitle">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
 
         <div class="dynamic-rules-box" id="dynamicRulesBox">
             <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
             
-            <div style="font-weight:700; font-size:0.75rem; color:var(--neon-purple); margin-bottom:3px;">شرایط نوع کلاس:</div>
+            <div data-page-text="classRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-purple); margin-bottom:3px;">شرایط نوع کلاس:</div>
             <div class="dynamic-rule-text" id="classTypeRuleText"></div>
 
-            <div style="font-weight:700; font-size:0.75rem; color:var(--neon-blue); margin:6px 0 3px;">شرایط تعداد جلسات ترم:</div>
+            <div data-page-text="sessionRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-blue); margin:6px 0 3px;">شرایط تعداد جلسات ترم:</div>
             <div class="dynamic-rule-text" id="sessionRuleText"></div>
         </div>
 
         <div class="accordion-item">
             <div class="accordion-header">
-                <span>قوانین عمومی و انضباطی آکادمی</span>
+                <span data-page-text="generalRulesTitle">قوانین عمومی و انضباطی آکادمی</span>
                 <span>▾</span>
             </div>
             <div class="accordion-content" id="generalRuleText"></div>
@@ -766,7 +766,7 @@
 
         <label class="rule-agreement">
             <input type="checkbox" id="acceptRules">
-            <span>قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
+            <span data-page-text="rulesAgreementText">قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
         </label>
 
         <!-- بخش پرداخت با ۳ دکمه در یک ردیف و هم‌اندازه -->
@@ -774,7 +774,7 @@
             <div class="bank-card">
                 <div class="bank-name">
                     <span id="bankNameText">بانک سامان</span>
-                    <span>اطلاعات واریز شهریه</span>
+                    <span data-page-text="bankInfoTitle">اطلاعات واریز شهریه</span>
                 </div>
                 <div class="card-number" id="cardNumberText">۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸</div>
                 <div class="card-owner" id="cardOwnerText">به نام: مربی ورزشی</div>
@@ -782,31 +782,31 @@
                 <!-- ردیف سه دکمه هم‌اندازه و مرتب -->
                 <div class="payment-actions-row">
                     <a href="#" target="_blank" class="pay-action-btn online-pay-btn" id="onlineGatewayBtn">
-                        💳 پرداخت آنلاین
+                        <span data-page-text="onlinePayLabel">💳 پرداخت آنلاین</span>
                     </a>
-                    <button type="button" class="pay-action-btn copy-card-btn" id="copyCardBtn">
+                    <button type="button" class="pay-action-btn copy-card-btn" id="copyCardBtn" data-page-text="copyCardLabel">
                         📋 کپی کارت
                     </button>
                     <a href="#" class="pay-action-btn send-receipt-btn" id="sendReceiptBtn">
-                        📩 ارسال فیش
+                        <span data-page-text="sendReceiptLabel">📩 ارسال فیش</span>
                     </a>
                 </div>
                 <label class="payment-confirm-row" for="regPaymentConfirmed">
                     <input type="checkbox" id="regPaymentConfirmed">
-                    <span>پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.</span>
+                    <span data-page-text="paymentConfirmedLabel">پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.</span>
                 </label>
-                <button class="registration-submit" id="regSubmitBtn" type="submit" form="publicRegistrationForm" disabled>ارسال درخواست ثبت‌نام</button>
+                <button class="registration-submit" id="regSubmitBtn" type="submit" form="publicRegistrationForm" disabled data-page-text="submitLabel">ارسال درخواست ثبت‌نام</button>
             </div>
         </div>
     </div>
 
     <!-- بخش ۳: شبکه‌های ارتباطی -->
     <div class="section-card">
-        <div class="section-header">💬 ۳. راه‌های ارتباطی با مربی</div>
+        <div class="section-header" data-page-text="contactsSectionTitle">💬 ۳. راه‌های ارتباطی با مربی</div>
         <div class="social-links">
-            <a href="#" target="_blank" class="social-btn" id="instaLink">📸 اینستاگرام</a>
-            <a href="#" target="_blank" class="social-btn" id="teleLink">✈️ تلگرام / ایتا</a>
-            <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
+            <a href="#" target="_blank" class="social-btn" id="instaLink" data-page-text="instagramLabel">📸 اینستاگرام</a>
+            <a href="#" target="_blank" class="social-btn" id="teleLink" data-page-text="telegramLabel">✈️ تلگرام / ایتا</a>
+            <a href="#" class="social-btn" id="phoneLink" data-page-text="phoneButtonLabel">📞 تماس تلفنی</a>
         </div>
 
         <!-- کارت کانال موزیک -->
@@ -819,7 +819,7 @@
                 </div>
                 <div class="music-handle" id="musicHandleText">@GYM20MUSIC</div>
             </div>
-            <button class="music-join-btn" type="button">عضویت 🎵</button>
+            <button class="music-join-btn" type="button" data-page-text="musicJoinLabel">عضویت 🎵</button>
         </a>
     </div>
 </div>
@@ -1014,6 +1014,36 @@
     "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
     "bannerTitle": "سلام، وقتتون بخیر 🌱",
     "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+    "pageTexts": {
+        "stylesSectionTitle": "🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها",
+        "classTypeLabel": "نوع برگزاری کلاس:",
+        "sessionCountLabel": "تعداد جلسات هر ترم:",
+        "stylesChoiceLabel": "سبک‌های مورد نظر را انتخاب کنید:",
+        "tuitionLabel": "شهریه نهایی ترم:",
+        "registrationTitle": "📝 فرم ثبت‌نام هنرجو",
+        "registrationIntro": "اطلاعات تماس را وارد کنید؛ سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.",
+        "fullNameLabel": "نام و نام خانوادگی *",
+        "phoneLabel": "شماره موبایل *",
+        "birthDateLabel": "تاریخ تولد (اختیاری)",
+        "notesLabel": "توضیحات (اختیاری)",
+        "notesPlaceholder": "در صورت نیاز توضیحی بنویسید",
+        "rulesSectionTitle": "📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره",
+        "classRulesLabel": "شرایط نوع کلاس:",
+        "sessionRulesLabel": "شرایط تعداد جلسات ترم:",
+        "generalRulesTitle": "قوانین عمومی و انضباطی آکادمی",
+        "rulesAgreementText": "قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.",
+        "bankInfoTitle": "اطلاعات واریز شهریه",
+        "onlinePayLabel": "💳 پرداخت آنلاین",
+        "copyCardLabel": "📋 کپی کارت",
+        "sendReceiptLabel": "📩 ارسال فیش",
+        "paymentConfirmedLabel": "پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.",
+        "submitLabel": "ارسال درخواست ثبت‌نام",
+        "contactsSectionTitle": "💬 ۳. راه‌های ارتباطی با مربی",
+        "instagramLabel": "📸 اینستاگرام",
+        "telegramLabel": "✈️ تلگرام / ایتا",
+        "phoneButtonLabel": "📞 تماس تلفنی",
+        "musicJoinLabel": "عضویت 🎵"
+    },
     "bannerBg": "",
     "kidsBase": 1500000,
     "adultBase": 2000000,
@@ -1596,6 +1626,15 @@
         }
 
         updateDynamicRules();
+        const pageTexts = appData.pageTexts || {};
+        document.querySelectorAll('[data-page-text]').forEach(el => {
+            const key = el.getAttribute('data-page-text');
+            el.textContent = Object.prototype.hasOwnProperty.call(pageTexts, key) ? String(pageTexts[key] ?? '') : '';
+        });
+        document.querySelectorAll('[data-page-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-page-placeholder');
+            el.placeholder = Object.prototype.hasOwnProperty.call(pageTexts, key) ? String(pageTexts[key] ?? '') : '';
+        });
     }
 
 
