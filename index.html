@@ -653,6 +653,21 @@
             transition: 0.2s;
         }
         .delete-style-btn:active { transform: scale(0.92); }
+    
+        .registration-form { display: grid; gap: 9px; margin-top: 8px; }
+        .registration-form label { display: block; color: var(--text-secondary); font-size: .74rem; margin-bottom: 4px; }
+        .registration-form input, .registration-form select, .registration-form textarea {
+            width: 100%; padding: 10px; border-radius: var(--radius-sm);
+            background: var(--surface-card); border: 1px solid var(--border);
+            color: var(--text-primary); font-size: .85rem; outline: none;
+        }
+        .registration-form input:focus, .registration-form select:focus, .registration-form textarea:focus { border-color: var(--neon-blue); }
+        .registration-submit { border: 0; border-radius: var(--radius-sm); padding: 11px; font-size: .86rem; font-weight: 800; cursor: pointer; background: var(--btn-active); color: #fff; }
+        .registration-submit:disabled { opacity: .55; cursor: not-allowed; }
+        .registration-status { font-size: .78rem; line-height: 1.7; white-space: pre-line; }
+        .registration-status.error { color: #f87171; }
+        .registration-status.success { color: #10b981; }
+
     </style>
 </head>
 <body>
@@ -703,6 +718,24 @@
             <div style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
             <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
         </div>
+    </div>
+
+
+    <!-- ثبت درخواست ثبت‌نام عمومی؛ بدون نیاز به ساخت حساب -->
+    <div class="section-card" id="publicRegistrationCard">
+        <div class="section-header">📝 ۳. فرم ثبت‌نام هنرجو</div>
+        <p style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
+            اطلاعات زیر را وارد کنید. ارسال فرم به معنی ثبت درخواست است و تأیید نهایی پس از بررسی مدیریت انجام می‌شود.
+        </p>
+        <form id="publicRegistrationForm" class="registration-form">
+            <div><label for="regFullName">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
+            <div><label for="regPhone">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
+            <div><label for="regBirthDate">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
+            <div><label for="regCourse">دوره موردنظر *</label><select id="regCourse" name="course_id" required><option value="">در حال دریافت دوره‌های فعال…</option></select></div>
+            <div><label for="regNotes">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="3" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید"></textarea></div>
+            <button class="registration-submit" id="regSubmitBtn" type="submit">ارسال درخواست ثبت‌نام</button>
+            <div id="regStatus" class="registration-status" role="status" aria-live="polite"></div>
+        </form>
     </div>
 
     <!-- بخش ۲: شرایط کلاس‌ها -->
@@ -1365,6 +1398,108 @@
 
         updateDynamicRules();
     }
+
+
+    // Public registration uses only the public anon key. Never place the service_role key in this file.
+    const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co";
+    const GYM20_SUPABASE_ANON_KEY = "PASTE_SUPABASE_PUBLISHABLE_OR_ANON_KEY_HERE";
+    const registrationForm = document.getElementById('publicRegistrationForm');
+    const registrationCourse = document.getElementById('regCourse');
+    const registrationStatus = document.getElementById('regStatus');
+    const registrationSubmit = document.getElementById('regSubmitBtn');
+
+    function setRegistrationStatus(message, type = '') {
+        registrationStatus.textContent = message;
+        registrationStatus.className = 'registration-status' + (type ? ' ' + type : '');
+    }
+
+    async function loadRegistrationCourses() {
+        if (!GYM20_SUPABASE_ANON_KEY || GYM20_SUPABASE_ANON_KEY.includes('PASTE_')) {
+            registrationCourse.innerHTML = '<option value="">تنظیم اتصال دیتابیس لازم است</option>';
+            registrationCourse.disabled = true;
+            registrationSubmit.disabled = true;
+            setRegistrationStatus('اتصال Supabase هنوز پیکربندی نشده است. کلید عمومی پروژه باید در تنظیمات سایت قرار بگیرد.', 'error');
+            return;
+        }
+        try {
+            const response = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/public_registration_courses', {
+                method: 'POST',
+                headers: {
+                    'apikey': GYM20_SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            });
+            if (!response.ok) throw new Error('دریافت دوره‌ها انجام نشد (HTTP ' + response.status + ').');
+            const courses = await response.json();
+            registrationCourse.innerHTML = '<option value="">یک دوره انتخاب کنید</option>';
+            courses.forEach(course => {
+                const option = document.createElement('option');
+                option.value = course.id;
+                option.textContent = course.name + (course.description ? ' — ' + course.description : '');
+                registrationCourse.appendChild(option);
+            });
+            if (!courses.length) setRegistrationStatus('در حال حاضر دوره فعالی برای ثبت‌نام وجود ندارد.', 'error');
+        } catch (error) {
+            registrationCourse.innerHTML = '<option value="">بارگذاری دوره‌ها ناموفق بود</option>';
+            setRegistrationStatus(error.message || 'ارتباط با سرور برقرار نشد.', 'error');
+        }
+    }
+
+    registrationForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (GYM20_SUPABASE_ANON_KEY.includes('PASTE_')) {
+            setRegistrationStatus('اتصال Supabase هنوز پیکربندی نشده است.', 'error');
+            return;
+        }
+        const fullName = document.getElementById('regFullName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const birthDate = document.getElementById('regBirthDate').value || null;
+        const notes = document.getElementById('regNotes').value.trim() || null;
+        const courseId = registrationCourse.value;
+        if (fullName.length < 2 || !phone || !courseId) {
+            setRegistrationStatus('نام، شماره موبایل و دوره را کامل کنید.', 'error');
+            return;
+        }
+
+        registrationSubmit.disabled = true;
+        registrationSubmit.textContent = 'در حال ارسال…';
+        setRegistrationStatus('');
+        try {
+            const response = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/submit_public_registration', {
+                method: 'POST',
+                headers: {
+                    'apikey': GYM20_SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    p_full_name: fullName,
+                    p_phone: phone,
+                    p_birth_date: birthDate,
+                    p_notes: notes,
+                    p_course_id: courseId,
+                    p_class_type: currentClassType,
+                    p_total_sessions: Number(currentSessions)
+                })
+            });
+            const result = await response.json().catch(() => null);
+            if (!response.ok) {
+                const message = result && (result.message || result.details || result.hint);
+                throw new Error(message || 'ارسال درخواست ناموفق بود (HTTP ' + response.status + ').');
+            }
+            registrationForm.reset();
+            setRegistrationStatus('درخواست ثبت‌نام شما با موفقیت ثبت شد. برای تأیید نهایی با شما تماس گرفته می‌شود.', 'success');
+        } catch (error) {
+            setRegistrationStatus(error.message || 'ارسال درخواست ناموفق بود. دوباره تلاش کنید.', 'error');
+        } finally {
+            registrationSubmit.disabled = false;
+            registrationSubmit.textContent = 'ارسال درخواست ثبت‌نام';
+        }
+    });
+
+    loadRegistrationCourses();
 
     renderStyles();
     applyDataToUI();
