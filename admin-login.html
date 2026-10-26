@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ورود مدیر | GYM20</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0f19;color:#f9fafb;font-family:Tahoma,Arial,sans-serif;padding:20px}
+    main{width:min(100%,420px);background:#111827;border:1px solid #374151;border-radius:18px;padding:24px;box-shadow:0 20px 60px #0005}
+    h1{font-size:1.2rem;margin:0 0 8px}p{color:#cbd5e1;font-size:.9rem;line-height:1.8}
+    label{display:block;margin:16px 0 7px;font-size:.9rem}input{width:100%;padding:12px;border:1px solid #4b5563;border-radius:9px;background:#0b0f19;color:#fff;font-size:1rem}
+    button{width:100%;padding:12px;margin-top:16px;border:0;border-radius:9px;background:#2563eb;color:white;font-weight:bold;font-size:1rem;cursor:pointer}
+    button:disabled{opacity:.6;cursor:wait}#status{min-height:48px;font-size:.85rem;overflow-wrap:anywhere}.hint{font-size:.78rem;color:#9ca3af}
+  </style>
+</head>
+<body>
+<main>
+  <h1>ورود مدیر آکادمی GYM20</h1>
+  <p>برای امنیت، لینک ورود یک‌بارمصرف به ایمیل حساب مدیر ارسال می‌شود.</p>
+  <label for="email">ایمیل مدیر</label>
+  <input id="email" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر">
+  <button id="send" type="button">ارسال لینک ورود</button>
+  <p id="status" role="status" aria-live="polite"></p>
+  <p class="hint">این صفحه فقط ورود و بررسی نقش مدیر را آزمایش می‌کند؛ هنوز تنظیمات سایت را ذخیره یا تغییر نمی‌دهد.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-auth.js"></script>
+<script>
+  const PROJECT_URL = 'https://iqjujumhoawlugrmjvyj.supabase.co';
+  const PUBLISHABLE_KEY = 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE';
+  const statusEl = document.getElementById('status');
+  const button = document.getElementById('send');
+  let auth;
+
+  function status(message, isError = false) {
+    statusEl.textContent = message;
+    statusEl.style.color = isError ? '#f87171' : '#cbd5e1';
+  }
+
+  try {
+    if (PUBLISHABLE_KEY === 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE') {
+      status('برای فعال‌سازی، در این فایل باید کلید Publishable پروژه وارد شود. از کلید Secret یا service_role استفاده نکنید.', true);
+    } else {
+      auth = window.GYM20AdminAuth.init({
+        url: PROJECT_URL,
+        publishableKey: PUBLISHABLE_KEY,
+        onStatus: status,
+        onAuthorized: ({ user }) => status('ورود مدیر تأیید شد: ' + user.email + ' — این صفحه فعلاً فقط ورود را آزمایش می‌کند.')
+      });
+    }
+  } catch (e) {
+    status(e.message || 'راه‌اندازی ورود ناموفق بود.', true);
+  }
+
+  button.addEventListener('click', async () => {
+    if (!auth) {
+      status('ابتدا کلید Publishable را در فایل admin-login.html تنظیم کنید.', true);
+      return;
+    }
+    button.disabled = true;
+    try {
+      await auth.sendMagicLink(document.getElementById('email').value.trim(), window.location.href);
+    } catch (e) {
+      status(e.message || 'ارسال لینک ورود ناموفق بود.', true);
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
