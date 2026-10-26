@@ -17,9 +17,12 @@
 <main>
   <h1>ورود مدیر آکادمی GYM20</h1>
   <p>برای امنیت، لینک ورود یک‌بارمصرف به ایمیل حساب مدیر ارسال می‌شود.</p>
+  <label for="publishableKey">کلید عمومی Publishable پروژه</label>
+  <input id="publishableKey" type="password" autocomplete="off" placeholder="sb_publishable_..." spellcheck="false">
+  <p class="hint">این کلید فقط در همین صفحه وارد می‌شود و در گیت‌هاب ذخیره نمی‌شود. کلید Secret یا service_role را وارد نکنید.</p>
   <label for="email">ایمیل مدیر</label>
   <input id="email" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر">
-  <button id="send" type="button">ارسال لینک ورود</button>
+  <button id="send" type="button">اتصال و ارسال لینک ورود</button>
   <p id="status" role="status" aria-live="polite"></p>
   <p class="hint">این صفحه فقط ورود و بررسی نقش مدیر را آزمایش می‌کند؛ هنوز تنظیمات سایت را ذخیره یا تغییر نمی‌دهد.</p>
 </main>
@@ -27,7 +30,6 @@
 <script src="./supabase-auth.js"></script>
 <script>
   const PROJECT_URL = 'https://iqjujumhoawlugrmjvyj.supabase.co';
-  const PUBLISHABLE_KEY = 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE';
   const statusEl = document.getElementById('status');
   const button = document.getElementById('send');
   let auth;
@@ -37,33 +39,29 @@
     statusEl.style.color = isError ? '#f87171' : '#cbd5e1';
   }
 
-  try {
-    if (PUBLISHABLE_KEY === 'PASTE_SUPABASE_PUBLISHABLE_KEY_HERE') {
-      status('برای فعال‌سازی، در این فایل باید کلید Publishable پروژه وارد شود. از کلید Secret یا service_role استفاده نکنید.', true);
-    } else {
-      auth = window.GYM20AdminAuth.init({
-        url: PROJECT_URL,
-        publishableKey: PUBLISHABLE_KEY,
-        onStatus: status,
-        onAuthorized: ({ user }) => status('ورود مدیر تأیید شد: ' + user.email + ' — این صفحه فعلاً فقط ورود را آزمایش می‌کند.')
-      });
-      // پس از بازگشت از لینک ایمیل، نشست موجود را بررسی می‌کنیم.
-      auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
-    }
-  } catch (e) {
-    status(e.message || 'راه‌اندازی ورود ناموفق بود.', true);
+  function connect() {
+    const key = document.getElementById('publishableKey').value.trim();
+    if (!key) throw new Error('کلید عمومی Publishable را وارد کنید.');
+    if (/service_role|sb_secret_/i.test(key)) throw new Error('این نوع کلید برای مرورگر ممنوع است؛ فقط Publishable key مجاز است.');
+    auth = window.GYM20AdminAuth.init({
+      url: PROJECT_URL,
+      publishableKey: key,
+      onStatus: status,
+      onAuthorized: ({ user }) => status('ورود مدیر تأیید شد: ' + user.email + ' — این صفحه فعلاً فقط ورود را آزمایش می‌کند.')
+    });
+    document.getElementById('publishableKey').disabled = true;
+    auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
+    return auth;
   }
 
   button.addEventListener('click', async () => {
-    if (!auth) {
-      status('ابتدا کلید Publishable را در فایل admin-login.html تنظیم کنید.', true);
-      return;
-    }
     button.disabled = true;
     try {
+      if (!auth) connect();
       await auth.sendMagicLink(document.getElementById('email').value.trim(), window.location.href);
     } catch (e) {
-      status(e.message || 'ارسال لینک ورود ناموفق بود.', true);
+      status(e.message || 'اتصال یا ارسال لینک ورود ناموفق بود.', true);
+      if (!auth) document.getElementById('publishableKey').disabled = false;
     } finally {
       button.disabled = false;
     }
