@@ -1427,7 +1427,9 @@
                 headers: {
                     'apikey': GYM20_SUPABASE_ANON_KEY,
                     'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept-Profile': 'gym20',
+                    'Content-Profile': 'gym20'
                 },
                 body: '{}'
             });
@@ -1472,7 +1474,9 @@
                 headers: {
                     'apikey': GYM20_SUPABASE_ANON_KEY,
                     'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Accept-Profile': 'gym20',
+                    'Content-Profile': 'gym20'
                 },
                 body: JSON.stringify({
                     p_full_name: fullName,
