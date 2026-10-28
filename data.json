@@ -141,7 +141,11 @@
     "semi": {
       "enabled": true,
       "statusText": "",
-      "allowedStyles": []
+      "allowedStyles": [
+        "ninjutsu",
+        "calisthenics",
+        "boxing"
+      ]
     },
     "private": {
       "enabled": true,
