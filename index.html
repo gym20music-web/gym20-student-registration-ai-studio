@@ -154,6 +154,30 @@
             color: var(--neon-blue);
         }
 
+        .region-select-box {
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--neon-blue);
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            outline: none;
+            box-shadow: var(--neon-shadow);
+            cursor: pointer;
+        }
+        .region-select-box option {
+            background: var(--surface);
+            color: var(--text-primary);
+        }
+
+        /* بخش محتوای وابسته به انتخاب منطقه */
+        #regionDependentContent {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
         .pill-group {
             display: flex;
             gap: 5px;
@@ -653,6 +677,32 @@
             transition: 0.2s;
         }
         .delete-style-btn:active { transform: scale(0.92); }
+
+        /* کارت منطقه در پنل ادمین */
+        .admin-region-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            margin-bottom: 8px;
+        }
+        .admin-region-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .admin-region-prices {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+        }
+        @media (max-width: 480px) {
+            .admin-region-prices {
+                grid-template-columns: 1fr;
+            }
+        }
     
         .registration-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
         .registration-form label { display: block; color: var(--text-secondary); font-size: .72rem; margin-bottom: 3px; }
@@ -691,117 +741,129 @@
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
     </div>
 
-    <!-- بخش ۱: انتخاب‌ها و سبک‌ها -->
-    <div class="section-card">
-        <div class="section-header" data-page-text="stylesSectionTitle">🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها</div>
-        
-        <div class="pill-group" id="ageGroup">
-            <button class="pill-btn active" data-val="adult">بزرگسالان</button>
-            <button class="pill-btn" data-val="kids">کودکان</button>
-        </div>
-
-        <div data-page-text="classTypeLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">نوع برگزاری کلاس:</div>
-        <div class="pill-group" id="classType">
-            <button class="pill-btn active" data-val="normal">عمومی</button>
-            <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
-            <button class="pill-btn" data-val="private">خصوصی</button>
-            <button class="pill-btn" data-val="vip">VIP 👑</button>
-        </div>
-
-        <div data-page-text="sessionCountLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
-        <div class="pill-group" id="sessionsCount">
-            <button class="pill-btn active" data-val="8">۸ جلسه</button>
-            <button class="pill-btn" data-val="10">۱۰ جلسه</button>
-            <button class="pill-btn" data-val="12">۱۲ جلسه</button>
-        </div>
-
-        <div data-page-text="stylesChoiceLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 8px 0 5px;">سبک‌های مورد نظر را انتخاب کنید:</div>
-        <div class="styles-grid" id="stylesList"></div>
-
-        <div class="price-box">
-            <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
-            <div data-page-text="tuitionLabel" style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
-            <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
-        </div>
-    </div>
-
-
-    <!-- فرم ثبت‌نام با استفاده از سبک‌های انتخاب‌شده در بخش اصلی -->
-    <div class="section-card" id="publicRegistrationCard">
-        <div class="section-header" data-page-text="registrationTitle">📝 فرم ثبت‌نام هنرجو</div>
-        <p data-page-text="registrationIntro" style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
-            اطلاعات تماس را وارد کنید؛ سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.
+    <!-- گام اول: انتخاب منطقه در تهران (همیشه نمایش داده می‌شود) -->
+    <div class="section-card" id="regionSelectionCard">
+        <div class="section-header" data-page-text="regionSectionTitle">📍 مرحله اول: انتخاب منطقه در تهران</div>
+        <p data-page-text="regionSelectIntro" style="font-size:0.72rem; color:var(--text-secondary); margin-bottom:8px; line-height:1.6;">
+            برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه، لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:
         </p>
-        <form id="publicRegistrationForm" class="registration-form">
-            <div><label for="regFullName" data-page-text="fullNameLabel">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
-            <div><label for="regPhone" data-page-text="phoneLabel">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
-            <div><label for="regBirthDate" data-page-text="birthDateLabel">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
-            <div class="form-wide"><label for="regNotes" data-page-text="notesLabel">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید" data-page-placeholder="notesPlaceholder"></textarea></div>
-            <div class="selected-styles-summary form-wide" id="selectedStylesSummary" aria-live="polite"></div>
-            <div id="regStatus" class="registration-status form-wide" role="status" aria-live="polite"></div>
-        </form>
+        <select id="regionSelect" class="region-select-box">
+            <option value="">-- لطفاً منطقه کلاس را انتخاب کنید --</option>
+        </select>
     </div>
 
-    <!-- بخش ۲: شرایط کلاس‌ها -->
-    <div class="section-card">
-        <div class="section-header" data-page-text="rulesSectionTitle">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
-
-        <div class="dynamic-rules-box" id="dynamicRulesBox">
-            <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
+    <!-- این کانتینر فقط پس از انتخاب منطقه توسط هنرجو نمایان می‌شود -->
+    <div id="regionDependentContent">
+        <!-- بخش ۱: انتخاب‌ها و سبک‌ها -->
+        <div class="section-card">
+            <div class="section-header" data-page-text="stylesSectionTitle">🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها</div>
             
-            <div data-page-text="classRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-purple); margin-bottom:3px;">شرایط نوع کلاس:</div>
-            <div class="dynamic-rule-text" id="classTypeRuleText"></div>
-
-            <div data-page-text="sessionRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-blue); margin:6px 0 3px;">شرایط تعداد جلسات ترم:</div>
-            <div class="dynamic-rule-text" id="sessionRuleText"></div>
-        </div>
-
-        <div class="accordion-item">
-            <div class="accordion-header">
-                <span data-page-text="generalRulesTitle">قوانین عمومی و انضباطی آکادمی</span>
-                <span>▾</span>
+            <div class="pill-group" id="ageGroup">
+                <button class="pill-btn active" data-val="adult">بزرگسالان</button>
+                <button class="pill-btn" data-val="kids">کودکان</button>
             </div>
-            <div class="accordion-content" id="generalRuleText"></div>
+
+            <div data-page-text="classTypeLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">نوع برگزاری کلاس:</div>
+            <div class="pill-group" id="classType">
+                <button class="pill-btn active" data-val="normal">عمومی</button>
+                <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
+                <button class="pill-btn" data-val="private">خصوصی</button>
+                <button class="pill-btn" data-val="vip">VIP 👑</button>
+            </div>
+
+            <div data-page-text="sessionCountLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
+            <div class="pill-group" id="sessionsCount">
+                <button class="pill-btn active" data-val="8">۸ جلسه</button>
+                <button class="pill-btn" data-val="10">۱۰ جلسه</button>
+                <button class="pill-btn" data-val="12">۱۲ جلسه</button>
+            </div>
+
+            <div data-page-text="stylesChoiceLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 8px 0 5px;">سبک‌های مورد نظر را انتخاب کنید:</div>
+            <div class="styles-grid" id="stylesList"></div>
+
+            <div class="price-box">
+                <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
+                <div data-page-text="tuitionLabel" style="font-size: 0.75rem; color: var(--text-secondary);">شهریه نهایی ترم:</div>
+                <div class="total-price" id="finalPrice">۲,۰۰۰,۰۰۰ تومان</div>
+            </div>
         </div>
 
-        <label class="rule-agreement">
-            <input type="checkbox" id="acceptRules">
-            <span data-page-text="rulesAgreementText">قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
-        </label>
+        <!-- فرم ثبت‌نام -->
+        <div class="section-card" id="publicRegistrationCard">
+            <div class="section-header" data-page-text="registrationTitle">📝 فرم ثبت‌نام هنرجو</div>
+            <p data-page-text="registrationIntro" style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
+                اطلاعات تماس را وارد کنید؛ منطقه، سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.
+            </p>
+            <form id="publicRegistrationForm" class="registration-form">
+                <div><label for="regFullName" data-page-text="fullNameLabel">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
+                <div><label for="regPhone" data-page-text="phoneLabel">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
+                <div><label for="regBirthDate" data-page-text="birthDateLabel">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
+                <div class="form-wide"><label for="regNotes" data-page-text="notesLabel">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید" data-page-placeholder="notesPlaceholder"></textarea></div>
+                <div class="selected-styles-summary form-wide" id="selectedStylesSummary" aria-live="polite"></div>
+                <div id="regStatus" class="registration-status form-wide" role="status" aria-live="polite"></div>
+            </form>
+        </div>
 
-        <!-- بخش پرداخت با ۳ دکمه در یک ردیف و هم‌اندازه -->
-        <div class="payment-reveal" id="paymentSection">
-            <div class="bank-card">
-                <div class="bank-name">
-                    <span id="bankNameText">بانک سامان</span>
-                    <span data-page-text="bankInfoTitle">اطلاعات واریز شهریه</span>
-                </div>
-                <div class="card-number" id="cardNumberText">۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸</div>
-                <div class="card-owner" id="cardOwnerText">به نام: مربی ورزشی</div>
+        <!-- بخش ۲: شرایط کلاس‌ها -->
+        <div class="section-card">
+            <div class="section-header" data-page-text="rulesSectionTitle">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
 
-                <!-- ردیف سه دکمه هم‌اندازه و مرتب -->
-                <div class="payment-actions-row">
-                    <a href="#" target="_blank" class="pay-action-btn online-pay-btn" id="onlineGatewayBtn">
-                        <span data-page-text="onlinePayLabel">💳 پرداخت آنلاین</span>
-                    </a>
-                    <button type="button" class="pay-action-btn copy-card-btn" id="copyCardBtn" data-page-text="copyCardLabel">
-                        📋 کپی کارت
-                    </button>
-                    <a href="#" class="pay-action-btn send-receipt-btn" id="sendReceiptBtn">
-                        <span data-page-text="sendReceiptLabel">📩 ارسال فیش</span>
-                    </a>
+            <div class="dynamic-rules-box" id="dynamicRulesBox">
+                <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
+                
+                <div data-page-text="classRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-purple); margin-bottom:3px;">شرایط نوع کلاس:</div>
+                <div class="dynamic-rule-text" id="classTypeRuleText"></div>
+
+                <div data-page-text="sessionRulesLabel" style="font-weight:700; font-size:0.75rem; color:var(--neon-blue); margin:6px 0 3px;">شرایط تعداد جلسات ترم:</div>
+                <div class="dynamic-rule-text" id="sessionRuleText"></div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span data-page-text="generalRulesTitle">قوانین عمومی و انضباطی آکادمی</span>
+                    <span>▾</span>
                 </div>
-                <label class="payment-confirm-row" for="regPaymentConfirmed">
-                    <input type="checkbox" id="regPaymentConfirmed">
-                    <span data-page-text="paymentConfirmedLabel">پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.</span>
-                </label>
-                <button class="registration-submit" id="regSubmitBtn" type="submit" form="publicRegistrationForm" disabled data-page-text="submitLabel">ارسال درخواست ثبت‌نام</button>
+                <div class="accordion-content" id="generalRuleText"></div>
+            </div>
+
+            <label class="rule-agreement">
+                <input type="checkbox" id="acceptRules">
+                <span data-page-text="rulesAgreementText">قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
+            </label>
+
+            <!-- بخش پرداخت با ۳ دکمه در یک ردیف و هم‌اندازه -->
+            <div class="payment-reveal" id="paymentSection">
+                <div class="bank-card">
+                    <div class="bank-name">
+                        <span id="bankNameText">بانک سامان</span>
+                        <span data-page-text="bankInfoTitle">اطلاعات واریز شهریه</span>
+                    </div>
+                    <div class="card-number" id="cardNumberText">۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸</div>
+                    <div class="card-owner" id="cardOwnerText">به نام: مربی ورزشی</div>
+
+                    <div class="payment-actions-row">
+                        <a href="#" target="_blank" class="pay-action-btn online-pay-btn" id="onlineGatewayBtn">
+                            <span data-page-text="onlinePayLabel">💳 پرداخت آنلاین</span>
+                        </a>
+                        <button type="button" class="pay-action-btn copy-card-btn" id="copyCardBtn" data-page-text="copyCardLabel">
+                            📋 کپی کارت
+                        </button>
+                        <a href="#" class="pay-action-btn send-receipt-btn" id="sendReceiptBtn">
+                            <span data-page-text="sendReceiptLabel">📩 ارسال فیش</span>
+                        </a>
+                    </div>
+                    <label class="payment-confirm-row" for="regPaymentConfirmed">
+                        <input type="checkbox" id="regPaymentConfirmed">
+                        <span data-page-text="paymentConfirmedLabel">پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.</span>
+                    </label>
+                    <button class="registration-submit" id="regSubmitBtn" type="submit" form="publicRegistrationForm" disabled data-page-text="submitLabel">ارسال درخواست ثبت‌نام</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- بخش ۳: شبکه‌های ارتباطی -->
-    <div class="section-card">
+    <!-- بخش ۳: شبکه‌های ارتباطی و کانال موزیک (همیشه در صفحه ثابت و نمایان است) -->
+    <div class="section-card" id="contactsAndMusicSection">
         <div class="section-header" data-page-text="contactsSectionTitle">💬 ۳. راه‌های ارتباطی با مربی</div>
         <div class="social-links">
             <a href="#" target="_blank" class="social-btn" id="instaLink" data-page-text="instagramLabel">📸 اینستاگرام</a>
@@ -841,307 +903,334 @@
             <button type="button" class="copy-btn" id="adminLoginBtn" style="width:100%;margin-top:8px;">🔐 ورود امن</button>
             <div id="adminLoginStatus" role="status" style="font-size:.75rem;margin-top:8px;line-height:1.8;"></div>
         </div>
+
         <div id="adminEditor" style="display:none;">
             <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px;">
                 <span id="adminSignedInAs" style="font-size:.7rem;color:var(--text-secondary);overflow-wrap:anywhere;"></span>
                 <button type="button" class="pill-btn" id="adminLogoutBtn" style="font-size:.7rem;padding:5px 9px;">خروج</button>
             </div>
-        <div class="admin-tabs">
-            <button class="admin-tab-btn active" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 شهریه‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('jsonTab')">🧩 همه کلیدها</button>
-        </div>
+            <div class="admin-tabs">
+                <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
+                <button class="admin-tab-btn" onclick="switchAdminTab('jsonTab')">🧩 همه کلیدها</button>
+            </div>
 
-        <!-- تب ۱: قوانین -->
-        <div class="admin-panel-tab active" id="rulesTab">
-            <div class="admin-input-group">
-                <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
-                <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
-                    <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
-                    <option value="normal">شرایط کلاس عمومی</option>
-                    <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
-                    <option value="private">شرایط کلاس خصوصی</option>
-                    <option value="s8">شرایط ترم ۸ جلسه</option>
-                    <option value="s10">شرایط ترم ۱۰ جلسه</option>
-                    <option value="s12">شرایط ترم ۱۲ جلسه</option>
-                    <option value="general">قوانین عمومی و انضباطی آکادمی</option>
-                </select>
-            </div>
-            <div class="admin-input-group">
-                <label id="activeRuleLabel">متن قانون:</label>
-                <textarea rows="5" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
-            </div>
-        </div>
+            <!-- تب ۱: مدیریت مناطق تهران و قیمت‌گذاری اختصاصی هر منطقه -->
+            <div class="admin-panel-tab active" id="regionsTab">
+                <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
+                <div class="admin-region-card">
+                    <div class="admin-input-group">
+                        <label>نام منطقه (مثلاً: منطقه ۲ - سعادت‌آباد و شهرک غرب):</label>
+                        <input type="text" id="newRegionNameInput" placeholder="نام منطقه">
+                    </div>
+                    <div class="admin-region-prices">
+                        <div class="admin-input-group">
+                            <label>شهریه کودکان (۸ جلسه):</label>
+                            <input type="text" id="newRegionKidsPrice" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                        </div>
+                        <div class="admin-input-group">
+                            <label>شهریه بزرگسالان (۸ جلسه):</label>
+                            <input type="text" id="newRegionAdultPrice" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                        </div>
+                        <div class="admin-input-group">
+                            <label>هزینه هر سبک اضافه:</label>
+                            <input type="text" id="newRegionExtraPrice" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                        </div>
+                    </div>
+                    <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:7px; font-size:0.75rem; margin-top:4px;">➕ افزودن این منطقه</button>
+                </div>
 
-        <!-- تب ۲: شهریه‌ها -->
-        <div class="admin-panel-tab" id="pricesTab">
-            <div class="admin-input-group">
-                <label>شهریه کودکان (۸ جلسه):</label>
-                <div class="price-input-wrapper">
-                    <input type="text" id="editKidsPrice" placeholder="۱,۵۰۰,۰۰۰">
-                    <span class="price-currency-tag">تومان</span>
-                </div>
+                <div style="font-size:0.74rem; color:var(--neon-purple); font-weight:bold; margin:10px 0 6px;">لیست مناطق تهران و قیمت‌های اختصاصی:</div>
+                <div id="adminRegionsListContainer" style="max-height:240px; overflow-y:auto;"></div>
             </div>
-            <div class="admin-input-group">
-                <label>شهریه بزرگسالان (۸ جلسه):</label>
-                <div class="price-input-wrapper">
-                    <input type="text" id="editAdultPrice" placeholder="۲,۰۰۰,۰۰۰">
-                    <span class="price-currency-tag">تومان</span>
-                </div>
-            </div>
-            <div class="admin-input-group">
-                <label>اضافه شدن هر سبک بیشتر:</label>
-                <div class="price-input-wrapper">
-                    <input type="text" id="editExtraPrice" placeholder="۵۰۰,۰۰۰">
-                    <span class="price-currency-tag">تومان</span>
-                </div>
-            </div>
-            <div style="display:flex; gap:5px;">
-                <div class="admin-input-group" style="flex:1;">
-                    <label>ضریب نیمه‌خصوصی:</label>
-                    <input type="number" step="0.1" id="editSemiFactor">
-                </div>
-                <div class="admin-input-group" style="flex:1;">
-                    <label>ضریب خصوصی:</label>
-                    <input type="number" step="0.1" id="editPrivateFactor">
-                </div>
-                <div class="admin-input-group" style="flex:1;">
-                    <label>ضریب VIP:</label>
-                    <input type="number" step="0.1" id="editVipFactor">
-                </div>
-            </div>
-        </div>
 
-        <!-- تب ۳: مدیریت سبک‌ها -->
-        <div class="admin-panel-tab" id="stylesTab">
-            <div class="admin-input-group">
-                <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
+            <!-- تب ۲: قوانین -->
+            <div class="admin-panel-tab" id="rulesTab">
+                <div class="admin-input-group">
+                    <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
+                    <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
+                        <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
+                        <option value="normal">شرایط کلاس عمومی</option>
+                        <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
+                        <option value="private">شرایط کلاس خصوصی</option>
+                        <option value="s8">شرایط ترم ۸ جلسه</option>
+                        <option value="s10">شرایط ترم ۱۰ جلسه</option>
+                        <option value="s12">شرایط ترم ۱۲ جلسه</option>
+                        <option value="general">قوانین عمومی و انضباطی آکادمی</option>
+                    </select>
+                </div>
+                <div class="admin-input-group">
+                    <label id="activeRuleLabel">متن قانون:</label>
+                    <textarea rows="5" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
+                </div>
+            </div>
+
+            <!-- تب ۳: ضرایب نوع کلاس و نرخ جلسات -->
+            <div class="admin-panel-tab" id="pricesTab">
+                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.7; margin-bottom:8px;">
+                    قیمت‌های پایه در تب «📍 مناطق تهران» تعیین می‌شوند. در این بخش می‌توانید ضرایب افزایش شهریه برای انواع کلاس و تعداد جلسات را تنظیم کنید:
+                </div>
+                <div style="display:flex; gap:5px; margin-bottom:10px;">
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>ضریب نیمه‌خصوصی:</label>
+                        <input type="number" step="0.1" id="editSemiFactor">
+                    </div>
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>ضریب خصوصی:</label>
+                        <input type="number" step="0.1" id="editPrivateFactor">
+                    </div>
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>ضریب VIP:</label>
+                        <input type="number" step="0.1" id="editVipFactor">
+                    </div>
+                </div>
+
+                <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">ضرایب تعداد جلسات ترم:</div>
                 <div style="display:flex; gap:5px;">
-                    <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
-                    <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>نرخ ۸ جلسه (پایه):</label>
+                        <input type="number" step="0.05" id="editRate8" value="1.0">
+                    </div>
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>نرخ ۱۰ جلسه:</label>
+                        <input type="number" step="0.05" id="editRate10" value="1.25">
+                    </div>
+                    <div class="admin-input-group" style="flex:1;">
+                        <label>نرخ ۱۲ جلسه:</label>
+                        <input type="number" step="0.05" id="editRate12" value="1.5">
+                    </div>
                 </div>
             </div>
 
-            <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
-            <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
-        </div>
+            <!-- تب ۴: مدیریت سبک‌ها -->
+            <div class="admin-panel-tab" id="stylesTab">
+                <div class="admin-input-group">
+                    <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
+                    <div style="display:flex; gap:5px;">
+                        <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
+                        <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+                    </div>
+                </div>
 
-        <!-- تب ۴: بنر و عناوین -->
-        <div class="admin-panel-tab" id="bannerTab">
-            <div class="admin-input-group">
-                <label>متن برچسب بالای صفحه (لوگو):</label>
-                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20🤸">
-            </div>
-            <div class="admin-input-group">
-                <label>عنوان اصلی بنر:</label>
-                <input type="text" id="editBannerTitle" placeholder="سلام، وقتتون بخیر 🌱">
-            </div>
-            <div class="admin-input-group">
-                <label>زیرعنوان بنر:</label>
-                <textarea rows="3" id="editBannerSubtitle" placeholder="شرایط برگزاری کلاس‌های ورزشی تخصصی..."></textarea>
-            </div>
-            <div class="admin-input-group">
-                <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
-                <input type="text" id="editBannerBg" placeholder="https://...">
-            </div>
-        </div>
-
-        <!-- تب ۵: کارت، پرداخت و تماس -->
-        <div class="admin-panel-tab" id="infoTab">
-            <div class="admin-input-group">
-                <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
-                <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
+                <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
+                <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
             </div>
 
-            <div class="admin-input-group">
-                <label>شماره کارت واریز:</label>
-                <input type="text" id="editCardNum">
-            </div>
-            <div class="admin-input-group">
-                <label>نام صاحب حساب و بانک:</label>
-                <input type="text" id="editCardOwner">
-            </div>
-            <div class="admin-input-group">
-                <label>شماره تماس مربی:</label>
-                <input type="text" id="editPhone">
-            </div>
-            <div class="admin-input-group">
-                <label>لینک اینستاگرام:</label>
-                <input type="text" id="editInsta">
-            </div>
-            <div class="admin-input-group">
-                <label>لینک تلگرام / ایتا مربی:</label>
-                <input type="text" id="editTele">
+            <!-- تب ۵: بنر و عناوین -->
+            <div class="admin-panel-tab" id="bannerTab">
+                <div class="admin-input-group">
+                    <label>متن برچسب بالای صفحه (لوگو):</label>
+                    <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20🤸">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان اصلی بنر:</label>
+                    <input type="text" id="editBannerTitle" placeholder="سلام، وقتتون بخیر 🌱">
+                </div>
+                <div class="admin-input-group">
+                    <label>زیرعنوان بنر:</label>
+                    <textarea rows="3" id="editBannerSubtitle" placeholder="شرایط برگزاری کلاس‌های ورزشی تخصصی..."></textarea>
+                </div>
+                <div class="admin-input-group">
+                    <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
+                    <input type="text" id="editBannerBg" placeholder="https://...">
+                </div>
             </div>
 
-            <hr style="border-color:var(--border); margin:8px 0;">
-            <div style="color:var(--neon-purple); font-size:0.72rem; font-weight:bold; margin-bottom:4px;">🎵 تنظیمات کانال موزیک:</div>
+            <!-- تب ۶: کارت، پرداخت و تماس -->
+            <div class="admin-panel-tab" id="infoTab">
+                <div class="admin-input-group">
+                    <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
+                    <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
+                </div>
 
-            <div class="admin-input-group">
-                <label>نام کانال موزیک:</label>
-                <input type="text" id="editMusicName" value="کانال موزیک GYM20MUSIC">
-            </div>
-            <div class="admin-input-group">
-                <label>آیدی کانال (با @):</label>
-                <input type="text" id="editMusicId" value="@GYM20MUSIC">
-            </div>
-            <div class="admin-input-group">
-                <label>لینک مستقیم کانال:</label>
-                <input type="text" id="editMusicLink" value="https://t.me/GYM20MUSIC">
-            </div>
-        </div>
+                <div class="admin-input-group">
+                    <label>شماره کارت واریز:</label>
+                    <input type="text" id="editCardNum">
+                </div>
+                <div class="admin-input-group">
+                    <label>نام صاحب حساب و بانک:</label>
+                    <input type="text" id="editCardOwner">
+                </div>
+                <div class="admin-input-group">
+                    <label>شماره تماس مربی:</label>
+                    <input type="text" id="editPhone">
+                </div>
+                <div class="admin-input-group">
+                    <label>لینک اینستاگرام:</label>
+                    <input type="text" id="editInsta">
+                </div>
+                <div class="admin-input-group">
+                    <label>لینک تلگرام / ایتا مربی:</label>
+                    <input type="text" id="editTele">
+                </div>
 
-        <div class="admin-panel-tab" id="jsonTab">
-            <div style="font-size:.75rem;color:var(--text-secondary);line-height:1.9;margin-bottom:8px;">ویرایش پیشرفته تمام تنظیمات ذخیره‌شده (عنوان‌ها، متن‌ها، کلیدها، قیمت‌ها، سبک‌ها، قوانین و لینک‌ها). ساختار JSON را معتبر نگه دارید؛ تغییرات پس از ذخیره برای همه بازدیدکنندگان اعمال می‌شود.</div>
-            <textarea id="adminJsonEditor" rows="16" spellcheck="false" dir="ltr" style="width:100%;box-sizing:border-box;font:12px/1.7 monospace;padding:10px;border-radius:8px;background:var(--surface-card);color:var(--text-primary);border:1px solid var(--border);"></textarea>
-            <button type="button" class="pill-btn" id="refreshAdminJsonBtn" style="margin-top:8px;">بارگذاری دوباره از فرم</button>
-            <div id="adminJsonStatus" style="font-size:.72rem;margin-top:6px;"></div>
-        </div>
-        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره در بک‌اند</button>
+                <hr style="border-color:var(--border); margin:8px 0;">
+                <div style="color:var(--neon-purple); font-size:0.72rem; font-weight:bold; margin-bottom:4px;">🎵 تنظیمات کانال موزیک:</div>
+
+                <div class="admin-input-group">
+                    <label>نام کانال موزیک:</label>
+                    <input type="text" id="editMusicName" value="کانال موزیک GYM20MUSIC">
+                </div>
+                <div class="admin-input-group">
+                    <label>آیدی کانال (با @):</label>
+                    <input type="text" id="editMusicId" value="@GYM20MUSIC">
+                </div>
+                <div class="admin-input-group">
+                    <label>لینک مستقیم کانال:</label>
+                    <input type="text" id="editMusicLink" value="https://t.me/GYM20MUSIC">
+                </div>
+            </div>
+
+            <!-- تب ۷: همه کلیدها (JSON) -->
+            <div class="admin-panel-tab" id="jsonTab">
+                <div style="font-size:.75rem;color:var(--text-secondary);line-height:1.9;margin-bottom:8px;">ویرایش پیشرفته تمام تنظیمات ذخیره‌شده (مناطق، عنوان‌ها، متن‌ها، قیمت‌ها، سبک‌ها، قوانین و لینک‌ها). ساختار JSON را معتبر نگه دارید.</div>
+                <textarea id="adminJsonEditor" rows="16" spellcheck="false" dir="ltr" style="width:100%;box-sizing:border-box;font:12px/1.7 monospace;padding:10px;border-radius:8px;background:var(--surface-card);color:var(--text-primary);border:1px solid var(--border);"></textarea>
+                <button type="button" class="pill-btn" id="refreshAdminJsonBtn" style="margin-top:8px;">بارگذاری دوباره از فرم</button>
+                <div id="adminJsonStatus" style="font-size:.72rem;margin-top:6px;"></div>
+            </div>
+
+            <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره در بک‌اند</button>
         </div>
     </div>
 </div>
 
 <script>
-    // GitHub credentials must never be embedded in public client-side code.
-    const CURRENT_CACHE_VERSION = 13; // نسخه اختصاصی برای تازه‌سازی قطعی کش مرورگرها
+    const CURRENT_CACHE_VERSION = 14;
 
     const defaultData = {
-    "cacheVersion": 13,
-    "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
-    "bannerTitle": "سلام، وقتتون بخیر 🌱",
-    "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
-    "pageTexts": {
-        "stylesSectionTitle": "🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها",
-        "classTypeLabel": "نوع برگزاری کلاس:",
-        "sessionCountLabel": "تعداد جلسات هر ترم:",
-        "stylesChoiceLabel": "سبک‌های مورد نظر را انتخاب کنید:",
-        "tuitionLabel": "شهریه نهایی ترم:",
-        "registrationTitle": "📝 فرم ثبت‌نام هنرجو",
-        "registrationIntro": "اطلاعات تماس را وارد کنید؛ سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.",
-        "fullNameLabel": "نام و نام خانوادگی *",
-        "phoneLabel": "شماره موبایل *",
-        "birthDateLabel": "تاریخ تولد (اختیاری)",
-        "notesLabel": "توضیحات (اختیاری)",
-        "notesPlaceholder": "در صورت نیاز توضیحی بنویسید",
-        "rulesSectionTitle": "📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره",
-        "classRulesLabel": "شرایط نوع کلاس:",
-        "sessionRulesLabel": "شرایط تعداد جلسات ترم:",
-        "generalRulesTitle": "قوانین عمومی و انضباطی آکادمی",
-        "rulesAgreementText": "قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.",
-        "bankInfoTitle": "اطلاعات واریز شهریه",
-        "onlinePayLabel": "💳 پرداخت آنلاین",
-        "copyCardLabel": "📋 کپی کارت",
-        "sendReceiptLabel": "📩 ارسال فیش",
-        "paymentConfirmedLabel": "پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.",
-        "submitLabel": "ارسال درخواست ثبت‌نام",
-        "contactsSectionTitle": "💬 ۳. راه‌های ارتباطی با مربی",
-        "instagramLabel": "📸 اینستاگرام",
-        "telegramLabel": "✈️ تلگرام / ایتا",
-        "phoneButtonLabel": "📞 تماس تلفنی",
-        "musicJoinLabel": "عضویت 🎵"
-    },
-    "bannerBg": "",
-    "kidsBase": 1500000,
-    "adultBase": 2000000,
-    "extraStylePrice": 500000,
-    "multipliers": {
-        "normal": 1,
-        "semi": 1.4,
-        "private": 2,
-        "vip": 3
-    },
-    "sessionRates": {
-        "8": 1,
-        "10": 1.25,
-        "12": 1.5
-    },
-    "card": {
-        "bank": "بانک سامان",
-        "number": "6219-8610-2234-5678",
-        "cleanNumber": "6219861022345678",
-        "owner": "به نام: مربی ورزشی",
-        "gatewayLink": "https://zarinp.al/"
-    },
-    "contact": {
-        "phone": "09059293060",
-        "instagram": "https://instagram.com/",
-        "telegram": "https://t.me/"
-    },
-    "musicChannel": {
-        "name": "کانال موزیک GYM20MUSIC",
-        "id": "@GYM20MUSIC",
-        "link": "https://t.me/GYM20MUSIC",
-        "avatar": "music.jpg"
-    },
-    "styles": [
-        {
-            "id": "ninjutsu",
-            "name": "نینجوتسو 🥋"
+        "cacheVersion": 14,
+        "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
+        "bannerTitle": "سلام، وقتتون بخیر 🌱",
+        "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
+        "pageTexts": {
+            "regionSectionTitle": "📍 مرحله اول: انتخاب منطقه در تهران",
+            "regionSelectIntro": "برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه، لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:",
+            "stylesSectionTitle": "🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها",
+            "classTypeLabel": "نوع برگزاری کلاس:",
+            "sessionCountLabel": "تعداد جلسات هر ترم:",
+            "stylesChoiceLabel": "سبک‌های مورد نظر را انتخاب کنید:",
+            "tuitionLabel": "شهریه نهایی ترم:",
+            "registrationTitle": "📝 فرم ثبت‌نام هنرجو",
+            "registrationIntro": "اطلاعات تماس را وارد کنید؛ منطقه، سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.",
+            "fullNameLabel": "نام و نام خانوادگی *",
+            "phoneLabel": "شماره موبایل *",
+            "birthDateLabel": "تاریخ تولد (اختیاری)",
+            "notesLabel": "توضیحات (اختیاری)",
+            "notesPlaceholder": "در صورت نیاز توضیحی بنویسید",
+            "rulesSectionTitle": "📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره",
+            "classRulesLabel": "شرایط نوع کلاس:",
+            "sessionRulesLabel": "شرایط تعداد جلسات ترم:",
+            "generalRulesTitle": "قوانین عمومی و انضباطی آکادمی",
+            "rulesAgreementText": "قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.",
+            "bankInfoTitle": "اطلاعات واریز شهریه",
+            "onlinePayLabel": "💳 پرداخت آنلاین",
+            "copyCardLabel": "📋 کپی کارت",
+            "sendReceiptLabel": "📩 ارسال فیش",
+            "paymentConfirmedLabel": "پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.",
+            "submitLabel": "ارسال درخواست ثبت‌نام",
+            "contactsSectionTitle": "💬 ۳. راه‌های ارتباطی با مربی",
+            "instagramLabel": "📸 اینستاگرام",
+            "telegramLabel": "✈️ تلگرام / ایتا",
+            "phoneButtonLabel": "📞 تماس تلفنی",
+            "musicJoinLabel": "عضویت 🎵"
         },
-        {
-            "id": "parkour",
-            "name": "پارکور 🏃‍♂️"
-        },
-        {
-            "id": "calisthenics",
-            "name": "کلیستنیکس 🤸‍♂️"
-        },
-        {
-            "id": "breakdance",
-            "name": "بریک‌دنس (پاورموو) ⚡"
-        },
-        {
-            "id": "boxing",
-            "name": "بوکس خیابانی 🥊"
-        },
-        {
-            "id": "kyokushin",
-            "name": "کیوکوشین 🥋"
-        }
-    ],
-    "rules": {
-        "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
-        "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
-        "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
-        "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
-        "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
-        "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
-        "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
-        "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
-    }
-};
-
-    const GH_OWNER = "gym20music-web";
-    const GH_REPO = "gym20-student-registration-ai-studio";
-    const GH_PATH = "index.html";
-
-    // پاک‌سازی خودکار کش‌های قدیمی و جایگزینی آنی نسخه جدید
-    let appData = defaultData;
-    try {
-        const saved = localStorage.getItem('sports_reg_data');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed.cacheVersion === CURRENT_CACHE_VERSION) {
-                appData = { ...defaultData, ...parsed };
-            } else {
-                localStorage.removeItem('sports_reg_data');
-                appData = defaultData;
+        "bannerBg": "",
+        "kidsBase": 1500000,
+        "adultBase": 2000000,
+        "extraStylePrice": 500000,
+        "regions": [
+            {
+                "id": "reg_north",
+                "name": "منطقه ۱ و ۲ (شمال و شمال‌غرب: تجریش، نیاوران، سعادت‌آباد)",
+                "kidsBase": 2000000,
+                "adultBase": 2800000,
+                "extraStylePrice": 600000
+            },
+            {
+                "id": "reg_west",
+                "name": "منطقه ۵ و ۲۲ (غرب: صادقیه، پونک، جنت‌آباد، چیتگر)",
+                "kidsBase": 1600000,
+                "adultBase": 2200000,
+                "extraStylePrice": 500000
+            },
+            {
+                "id": "reg_center",
+                "name": "منطقه ۶ و ۷ (مرکز: یوسف‌آباد، مطهری، امیرآباد)",
+                "kidsBase": 1500000,
+                "adultBase": 2000000,
+                "extraStylePrice": 500000
+            },
+            {
+                "id": "reg_east",
+                "name": "منطقه ۴ و ۸ (شرق: تهرانپارس، نارمک، رسالت)",
+                "kidsBase": 1400000,
+                "adultBase": 1900000,
+                "extraStylePrice": 450000
             }
+        ],
+        "multipliers": {
+            "normal": 1,
+            "semi": 1.4,
+            "private": 2,
+            "vip": 3
+        },
+        "sessionRates": {
+            "8": 1,
+            "10": 1.25,
+            "12": 1.5
+        },
+        "card": {
+            "bank": "بانک سامان",
+            "number": "6219-8610-2234-5678",
+            "cleanNumber": "6219861022345678",
+            "owner": "به نام: مربی ورزشی",
+            "gatewayLink": "https://zarinp.al/"
+        },
+        "contact": {
+            "phone": "09059293060",
+            "instagram": "https://instagram.com/",
+            "telegram": "https://t.me/"
+        },
+        "musicChannel": {
+            "name": "کانال موزیک GYM20MUSIC",
+            "id": "@GYM20MUSIC",
+            "link": "https://t.me/GYM20MUSIC",
+            "avatar": "music.jpg"
+        },
+        "styles": [
+            { "id": "ninjutsu", "name": "نینجوتسو 🥋" },
+            { "id": "parkour", "name": "پارکور 🏃‍♂️" },
+            { "id": "calisthenics", "name": "کلیستنیکس 🤸‍♂️" },
+            { "id": "breakdance", "name": "بریک‌دنس (پاورموو) ⚡" },
+            { "id": "boxing", "name": "بوکس خیابانی 🥊" },
+            { "id": "kyokushin", "name": "کیوکوشین 🥋" }
+        ],
+        "rules": {
+            "normal": "• کلاس عمومی با ظرفیت استاندارد سالن برگزار می‌شود.\n• روزها و ساعت کلاس ابتدای هر ماه فیکس و هماهنگ می‌شود.\n• عدم امکان جابجایی جلسه به دلیل اشتراکی بودن تایم سالن.",
+            "semi": "• ظرفیت محدود (۳ تا ۵ نفر) با بازدهی و نظارت آموزشی بالاتر.\n• با هماهنگی سایر اعضا، ۱ جلسه در طول ترم امکان جابجایی ساعت دارد.",
+            "private": "• کلاس کاملاً اختصاصی و تک‌نفره متمرکز بر سرعت پیشرفت هنرجو.\n• امکان تغییر ساعت کلاس با هماهنگی قبلی (حداقل ۲۴ ساعت قبل).",
+            "vip": "👑 شرایط اختصاصی پکیج VIP:\n• تایم کاملاً منعطف و اولویت رزرو تایم‌های طلایی سالن.\n• ارائه برنامه تمرین مکمل و بدنسازی اختصاصی در منزل.\n• پشتیبانی و آنالیز ویدیویی تکنیک‌ها در پیام‌رسان توسط مربی.\n• امکان جبرانی ۲ جلسه غیبت موجه در طول دوره.",
+            "s8": "• ترم ۸ جلسه‌ای: هفته‌ای ۲ بار، مدت هر جلسه ۱ ساعت (مهلت استفاده: حداکثر ۳۰ روز).",
+            "s10": "• ترم ۱۰ جلسه‌ای: هفته‌ای ۲ الی ۳ جلسه (مهلت استفاده: حداکثر ۳۵ روز).",
+            "s12": "• ترم ۱۲ جلسه‌ای (فشرده/حرفه‌ای): هفته‌ای ۳ بار منظم (مهلت استفاده: حداکثر ۴۰ روز).",
+            "general": "• حضور ۱۰ دقیقه قبل از شروع کلاس الزامی است.\n• غیبت بدون اطلاع قبلی سوخت جلسه محسوب می‌شود.\n• همراه داشتن بطری آب و لباس مناسب الزامی است."
         }
-    } catch(e) {
-        appData = defaultData;
-    }
+    };
 
+    let appData = defaultData;
+    let currentRegionId = ""; // تا زمانی که هنرجو انتخاب نکند خالی است
     let currentAge = "adult";
     let currentClassType = "normal";
     let currentSessions = "8";
-    let selectedStyles = appData.styles.length > 0 ? [appData.styles[0].id] : [];
+    let selectedStyles = [];
     let currentEditingRuleKey = "vip";
 
+    const regionSelectEl = document.getElementById('regionSelect');
+    const regionDependentContentEl = document.getElementById('regionDependentContent');
     const stylesListEl = document.getElementById('stylesList');
     const finalPriceEl = document.getElementById('finalPrice');
     const priceBreakdownEl = document.getElementById('priceBreakdown');
@@ -1165,11 +1254,35 @@
         return Number(str.toString().replace(/\D/g, "")) || 0;
     }
 
-    ['editKidsPrice', 'editAdultPrice', 'editExtraPrice'].forEach(id => {
-        const input = document.getElementById(id);
-        input.addEventListener('input', (e) => {
-            e.target.value = formatNumberEn(e.target.value);
+    // رندر منوی انتخاب منطقه برای هنرجو
+    function renderRegionSelect() {
+        regionSelectEl.innerHTML = '<option value="">-- لطفاً منطقه کلاس را انتخاب کنید --</option>';
+        (appData.regions || []).forEach(reg => {
+            const opt = document.createElement('option');
+            opt.value = reg.id;
+            opt.textContent = reg.name;
+            if (reg.id === currentRegionId) opt.selected = true;
+            regionSelectEl.appendChild(opt);
         });
+        updateRegionDependentVisibility();
+    }
+
+    // کنترل نمایش بخش‌های وابسته فقط پس از انتخاب منطقه
+    function updateRegionDependentVisibility() {
+        if (currentRegionId) {
+            regionDependentContentEl.style.display = 'block';
+        } else {
+            regionDependentContentEl.style.display = 'none';
+        }
+    }
+
+    regionSelectEl.addEventListener('change', (e) => {
+        currentRegionId = e.target.value;
+        updateRegionDependentVisibility();
+        if (currentRegionId) {
+            calculatePrice();
+            regionDependentContentEl.scrollIntoView({ behavior: 'smooth' });
+        }
     });
 
     function updateSelectedStylesSummary() {
@@ -1207,6 +1320,97 @@
         calculatePrice();
     }
 
+    // رندر لیست مناطق در تب پنل ادمین
+    function renderAdminRegionsList() {
+        const container = document.getElementById('adminRegionsListContainer');
+        container.innerHTML = "";
+        (appData.regions || []).forEach(reg => {
+            const card = document.createElement('div');
+            card.className = 'admin-region-card';
+            card.innerHTML = `
+                <div class="admin-region-card-header">
+                    <input type="text" value="${reg.name}" oninput="updateRegionField('${reg.id}', 'name', this.value)" style="flex:1; padding:6px 8px; font-size:0.75rem; font-weight:bold; background:var(--surface); border:1px solid var(--border); color:var(--neon-blue); border-radius:var(--radius-sm);">
+                    <button type="button" class="delete-style-btn" onclick="deleteRegion('${reg.id}')" title="حذف منطقه">🗑️</button>
+                </div>
+                <div class="admin-region-prices">
+                    <div class="admin-input-group">
+                        <label>کودکان (تومان):</label>
+                        <input type="text" value="${formatNumberEn(reg.kidsBase)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'kidsBase', parsePureNumber(this.value))">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>بزرگسالان (تومان):</label>
+                        <input type="text" value="${formatNumberEn(reg.adultBase)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'adultBase', parsePureNumber(this.value))">
+                    </div>
+                    <div class="admin-input-group">
+                        <label>سبک اضافه (تومان):</label>
+                        <input type="text" value="${formatNumberEn(reg.extraStylePrice)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'extraStylePrice', parsePureNumber(this.value))">
+                    </div>
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function addNewRegion() {
+        const nameInput = document.getElementById('newRegionNameInput');
+        const kidsInput = document.getElementById('newRegionKidsPrice');
+        const adultInput = document.getElementById('newRegionAdultPrice');
+        const extraInput = document.getElementById('newRegionExtraPrice');
+
+        const name = nameInput.value.trim();
+        const kids = parsePureNumber(kidsInput.value);
+        const adult = parsePureNumber(adultInput.value);
+        const extra = parsePureNumber(extraInput.value);
+
+        if (!name || !kids || !adult) {
+            alert('لطفاً نام منطقه و قیمت‌های پایه کودکان و بزرگسالان را وارد کنید.');
+            return;
+        }
+
+        const newId = "reg_" + Date.now();
+        if (!Array.isArray(appData.regions)) appData.regions = [];
+        appData.regions.push({
+            id: newId,
+            name: name,
+            kidsBase: kids,
+            adultBase: adult,
+            extraStylePrice: extra || 500000
+        });
+
+        nameInput.value = "";
+        kidsInput.value = "";
+        adultInput.value = "";
+        extraInput.value = "";
+
+        renderAdminRegionsList();
+        renderRegionSelect();
+        calculatePrice();
+    }
+
+    function updateRegionField(id, field, value) {
+        const target = (appData.regions || []).find(r => r.id === id);
+        if (target) {
+            target[field] = value;
+            renderRegionSelect();
+            calculatePrice();
+        }
+    }
+
+    function deleteRegion(id) {
+        if (!appData.regions || appData.regions.length <= 1) {
+            alert('حداقل باید ۱ منطقه در سیستم فعال بماند!');
+            return;
+        }
+        if (confirm('آیا از حذف این منطقه مطمئن هستید؟')) {
+            appData.regions = appData.regions.filter(r => r.id !== id);
+            if (currentRegionId === id) currentRegionId = "";
+            renderAdminRegionsList();
+            renderRegionSelect();
+            calculatePrice();
+        }
+    }
+
+    // مدیریت لیست سبک‌ها در پنل ادمین
     function renderAdminStylesList() {
         const container = document.getElementById('adminStylesListContainer');
         container.innerHTML = "";
@@ -1278,10 +1482,16 @@
         document.getElementById('generalRuleText').innerText = appData.rules.general || '';
     }
 
+    // محاسبه قیمت بر اساس منطقه انتخابی هنرجو
     function calculatePrice() {
-        let base = (currentAge === "adult") ? appData.adultBase : appData.kidsBase;
+        let activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
+        let kidsBase = activeRegion ? activeRegion.kidsBase : (appData.kidsBase || 1500000);
+        let adultBase = activeRegion ? activeRegion.adultBase : (appData.adultBase || 2000000);
+        let extraStylePrice = activeRegion ? activeRegion.extraStylePrice : (appData.extraStylePrice || 500000);
+
+        let base = (currentAge === "adult") ? adultBase : kidsBase;
         let count = selectedStyles.length;
-        let styleAddon = (count - 1) * appData.extraStylePrice;
+        let styleAddon = (count - 1) * extraStylePrice;
         let subTotal = base + styleAddon;
         let classFactor = appData.multipliers[currentClassType] || 1.0;
         let sessionFactor = appData.sessionRates[currentSessions] || 1.0;
@@ -1291,7 +1501,8 @@
 
         const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP' };
         const ageNames = { adult: 'بزرگسال', kids: 'کودک' };
-        priceBreakdownEl.innerText = `${count} سبک انتخاب شده (${ageNames[currentAge]} - ${classNames[currentClassType]} - ${currentSessions} جلسه)`;
+        const regionPrefix = activeRegion ? (activeRegion.name + ' | ') : '';
+        priceBreakdownEl.innerText = `${regionPrefix}${count} سبک انتخاب شده (${ageNames[currentAge]} - ${classNames[currentClassType]} - ${currentSessions} جلسه)`;
         updateDynamicRules();
     }
 
@@ -1462,13 +1673,15 @@
         currentEditingRuleKey = document.getElementById('ruleSelector').value;
         document.getElementById('activeRuleTextarea').value = appData.rules[currentEditingRuleKey] || '';
 
-        document.getElementById('editKidsPrice').value = formatNumberEn(appData.kidsBase);
-        document.getElementById('editAdultPrice').value = formatNumberEn(appData.adultBase);
-        document.getElementById('editExtraPrice').value = formatNumberEn(appData.extraStylePrice);
-
         document.getElementById('editSemiFactor').value = appData.multipliers.semi;
         document.getElementById('editPrivateFactor').value = appData.multipliers.private;
         document.getElementById('editVipFactor').value = appData.multipliers.vip;
+
+        if (appData.sessionRates) {
+            document.getElementById('editRate8').value = appData.sessionRates["8"] || 1.0;
+            document.getElementById('editRate10').value = appData.sessionRates["10"] || 1.25;
+            document.getElementById('editRate12').value = appData.sessionRates["12"] || 1.5;
+        }
         
         document.getElementById('editCardNum').value = appData.card.cleanNumber;
         document.getElementById('editCardOwner').value = appData.card.owner;
@@ -1487,19 +1700,22 @@
         document.getElementById('editMusicId').value = appData.musicChannel.id || '';
         document.getElementById('editMusicLink').value = appData.musicChannel.link || '';
 
+        renderAdminRegionsList();
         renderAdminStylesList();
     }
 
     function collectFormData() {
         appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
-        appData.kidsBase = parsePureNumber(document.getElementById('editKidsPrice').value);
-        appData.adultBase = parsePureNumber(document.getElementById('editAdultPrice').value);
-        appData.extraStylePrice = parsePureNumber(document.getElementById('editExtraPrice').value);
-
         appData.multipliers.semi = Number(document.getElementById('editSemiFactor').value);
         appData.multipliers.private = Number(document.getElementById('editPrivateFactor').value);
         appData.multipliers.vip = Number(document.getElementById('editVipFactor').value);
+
+        appData.sessionRates = {
+            "8": Number(document.getElementById('editRate8').value) || 1.0,
+            "10": Number(document.getElementById('editRate10').value) || 1.25,
+            "12": Number(document.getElementById('editRate12').value) || 1.5
+        };
 
         appData.brandTag = document.getElementById('editBrandTag').value;
         appData.bannerTitle = document.getElementById('editBannerTitle').value;
@@ -1524,17 +1740,6 @@
         };
     }
 
-    function b64EncodeUnicode(str) {
-        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
-            return String.fromCharCode('0x' + p1);
-        }));
-    }
-    function b64DecodeUnicode(str) {
-        return decodeURIComponent(atob(str).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-    }
-
     document.getElementById('refreshAdminJsonBtn').onclick = () => {
         document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
         document.getElementById('adminJsonStatus').textContent = 'ویرایشگر با تنظیمات فعلی فرم هماهنگ شد.';
@@ -1547,8 +1752,8 @@
             try {
                 const parsed = JSON.parse(document.getElementById('adminJsonEditor').value);
                 if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('ریشه تنظیمات باید یک شیء JSON باشد.');
-                if (!Array.isArray(parsed.styles) || !parsed.rules || !parsed.card || !parsed.contact || !parsed.musicChannel || !parsed.multipliers || !parsed.sessionRates) {
-                    throw new Error('کلیدهای ضروری styles، rules، card، contact، musicChannel، multipliers و sessionRates باید موجود باشند.');
+                if (!Array.isArray(parsed.regions) || !Array.isArray(parsed.styles) || !parsed.rules || !parsed.card || !parsed.contact || !parsed.musicChannel || !parsed.multipliers || !parsed.sessionRates) {
+                    throw new Error('کلیدهای ضروری regions، styles، rules، card، contact، musicChannel، multipliers و sessionRates باید موجود باشند.');
                 }
                 appData = {...parsed, cacheVersion: CURRENT_CACHE_VERSION};
             } catch (error) {
@@ -1578,13 +1783,14 @@
                 throw new Error(detail || ('HTTP ' + response.status));
             }
             applyDataToUI();
+            renderRegionSelect();
             renderStyles();
             calculatePrice();
             loadAdminForm();
             document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
             document.getElementById('adminJsonStatus').textContent = 'تنظیمات با موفقیت در بک‌اند ذخیره شد.';
             document.getElementById('adminJsonStatus').style.color = 'var(--neon-green)';
-            alert('تنظیمات با موفقیت ذخیره شد و برای بازدیدکنندگان اعمال می‌شود.');
+            alert('تنظیمات با موفقیت ذخیره شد و برای همه بازدیدکنندگان اعمال می‌شود.');
         } catch (error) {
             alert('ذخیره انجام نشد: ' + (error.message || 'خطای ارتباط با Supabase'));
         } finally {
@@ -1637,8 +1843,6 @@
         });
     }
 
-
-    // Public registration uses only the public anon key. Never place the service_role key in this file.
     const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co";
     const GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
     const registrationForm = document.getElementById('publicRegistrationForm');
@@ -1652,13 +1856,17 @@
     }
 
     function updateRegistrationSubmitState() {
-        registrationSubmit.disabled = !(acceptRulesEl.checked && paymentConfirmedEl.checked);
+        registrationSubmit.disabled = !(acceptRulesEl.checked && paymentConfirmedEl.checked && currentRegionId);
     }
 
     paymentConfirmedEl.addEventListener('change', updateRegistrationSubmitState);
 
     registrationForm.addEventListener('submit', async (event) => {
         event.preventDefault();
+        if (!currentRegionId) {
+            setRegistrationStatus('لطفاً ابتدا منطقه کلاس در تهران را انتخاب کنید.', 'error');
+            return;
+        }
         if (!acceptRulesEl.checked) {
             setRegistrationStatus('ابتدا قوانین و شرایط کلاس را بپذیرید.', 'error');
             return;
@@ -1683,6 +1891,10 @@
             return;
         }
 
+        const activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
+        const regionTag = activeRegion ? `[منطقه کلاس: ${activeRegion.name}]\n` : '';
+        const combinedNotes = (regionTag + (notes || '')).trim() || null;
+
         registrationSubmit.disabled = true;
         registrationSubmit.textContent = 'در حال ارسال…';
         setRegistrationStatus('');
@@ -1700,7 +1912,7 @@
                     p_full_name: fullName,
                     p_phone: phone,
                     p_birth_date: birthDate,
-                    p_notes: notes,
+                    p_notes: combinedNotes,
                     p_selected_styles: styleNames,
                     p_age_group: currentAge,
                     p_class_type: currentClassType,
@@ -1737,13 +1949,15 @@
             if (!response.ok) return false;
             const rows = await response.json();
             if (Array.isArray(rows) && rows[0] && rows[0].value && typeof rows[0].value === 'object') {
-                appData = {...defaultData, ...rows[0].value, cacheVersion:CURRENT_CACHE_VERSION};
-                appData.card = {...defaultData.card, ...(rows[0].value.card || {})};
-                appData.contact = {...defaultData.contact, ...(rows[0].value.contact || {})};
-                appData.musicChannel = {...defaultData.musicChannel, ...(rows[0].value.musicChannel || {})};
-                appData.multipliers = {...defaultData.multipliers, ...(rows[0].value.multipliers || {})};
-                appData.sessionRates = {...defaultData.sessionRates, ...(rows[0].value.sessionRates || {})};
-                appData.rules = {...defaultData.rules, ...(rows[0].value.rules || {})};
+                const val = rows[0].value;
+                appData = {...defaultData, ...val, cacheVersion:CURRENT_CACHE_VERSION};
+                appData.card = {...defaultData.card, ...(val.card || {})};
+                appData.contact = {...defaultData.contact, ...(val.contact || {})};
+                appData.musicChannel = {...defaultData.musicChannel, ...(val.musicChannel || {})};
+                appData.multipliers = {...defaultData.multipliers, ...(val.multipliers || {})};
+                appData.sessionRates = {...defaultData.sessionRates, ...(val.sessionRates || {})};
+                appData.rules = {...defaultData.rules, ...(val.rules || {})};
+                appData.regions = (Array.isArray(val.regions) && val.regions.length) ? val.regions : defaultData.regions;
                 if (!Array.isArray(appData.styles) || !appData.styles.length) appData.styles = defaultData.styles;
                 selectedStyles = appData.styles.length ? [appData.styles[0].id] : [];
                 return true;
@@ -1756,6 +1970,7 @@
 
     async function initializeApp() {
         await loadPublicSettings(false);
+        renderRegionSelect();
         renderStyles();
         applyDataToUI();
         calculatePrice();
