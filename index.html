@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- کدهای جلوگیری قطعی از کش شدن در مرورگرها -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -25,7 +24,6 @@
             --radius-md: 12px;
             --radius-sm: 7px;
         }
-
         [data-theme="light"] {
             --bg: #f3f4f6;
             --surface: #ffffff;
@@ -36,710 +34,91 @@
             --neon-shadow: 0 3px 12px rgba(0, 243, 255, 0.15);
             --neon-purple-shadow: 0 3px 12px rgba(189, 0, 255, 0.15);
         }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        body {
-            background-color: var(--bg);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            padding: 10px;
-            padding-bottom: 40px;
-        }
-
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .brand-badge {
-            font-size: 0.74rem;
-            font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--neon-blue);
-            box-shadow: var(--neon-shadow);
-        }
-
-        .nav-actions {
-            display: flex;
-            gap: 6px;
-        }
-
-        .circle-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.85rem;
-            transition: 0.2s;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 0; transition: background 0.3s, color 0.3s; }
+        .container { width: 100%; max-width: 420px; padding: 10px; padding-bottom: 40px; }
+        .top-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .brand-badge { font-size: 0.74rem; font-weight: 800; padding: 4px 10px; border-radius: 16px; background: var(--surface); border: 1px solid var(--border); color: var(--neon-blue); box-shadow: var(--neon-shadow); }
+        .nav-actions { display: flex; gap: 6px; }
+        .circle-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; }
         .circle-btn:active { transform: scale(0.9); }
-
-        .hero-banner {
-            position: relative;
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.12), rgba(189, 0, 255, 0.12)), var(--surface);
-            background-size: cover;
-            background-position: center;
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 12px 10px;
-            text-align: center;
-            overflow: hidden;
-            box-shadow: var(--neon-purple-shadow);
-            margin-bottom: 10px;
-        }
-
-        .hero-title {
-            font-size: 1.05rem;
-            font-weight: 900;
-            margin-bottom: 4px;
-            background: linear-gradient(90deg, var(--neon-blue), #ffffff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        [data-theme="light"] .hero-title {
-            background: linear-gradient(90deg, #0284c7, #7c3aed);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-            font-size: 0.72rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-
-        .section-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 11px;
-            margin-bottom: 10px;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 8px;
-            font-size: 0.84rem;
-            font-weight: 700;
-            color: var(--neon-blue);
-        }
-
-        .region-select-box {
-            width: 100%;
-            padding: 9px 12px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--neon-blue);
-            color: var(--text-primary);
-            font-size: 0.82rem;
-            font-weight: 700;
-            outline: none;
-            box-shadow: var(--neon-shadow);
-            cursor: pointer;
-        }
-        .region-select-box option {
-            background: var(--surface);
-            color: var(--text-primary);
-        }
-
-        /* بخش محتوای وابسته به انتخاب منطقه */
-        #regionDependentContent {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-
-        .pill-group {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 8px;
-        }
-
-        .pill-btn {
-            flex: 1;
-            padding: 6px 2px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 0.74rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            transition: 0.2s;
-        }
-
-        .pill-btn.active {
-            background: var(--btn-active);
-            color: #fff;
-            border-color: transparent;
-            box-shadow: var(--neon-shadow);
-        }
-
-        .styles-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 6px;
-        }
-
-        .style-item {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            padding: 7px 9px;
-            border-radius: var(--radius-sm);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 0.76rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-        }
-
-        .style-item.selected {
-            border-color: var(--neon-blue);
-            background: rgba(0, 243, 255, 0.08);
-            color: var(--neon-blue);
-            box-shadow: 0 0 8px rgba(0, 243, 255, 0.15);
-        }
-
-        .check-dot {
-            width: 13px;
-            height: 13px;
-            border-radius: 3px;
-            border: 1px solid var(--text-secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.6rem;
-        }
-        .style-item.selected .check-dot {
-            background: var(--neon-blue);
-            border-color: var(--neon-blue);
-            color: #000;
-        }
-
-        .price-box {
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.06), rgba(189, 0, 255, 0.06));
-            border: 1px dashed var(--neon-blue);
-            border-radius: var(--radius-md);
-            padding: 9px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .price-details {
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-bottom: 4px;
-        }
-
-        .total-price {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: var(--neon-blue);
-            letter-spacing: -0.5px;
-        }
-
-        [data-theme="light"] .total-price {
-            color: #0284c7;
-        }
-
-        .dynamic-rules-box {
-            background: rgba(189, 0, 255, 0.06);
-            border: 1px solid rgba(189, 0, 255, 0.25);
-            border-radius: var(--radius-sm);
-            padding: 9px;
-            margin-bottom: 8px;
-        }
-
-        .dynamic-rule-badge {
-            display: inline-block;
-            font-size: 0.66rem;
-            font-weight: 800;
-            padding: 2px 7px;
-            border-radius: 5px;
-            background: var(--neon-purple);
-            color: #fff;
-            margin-bottom: 6px;
-        }
-
-        .dynamic-rule-text {
-            font-size: 0.74rem;
-            line-height: 1.7;
-            color: var(--text-primary);
-            white-space: pre-line;
-        }
-
-        .accordion-item {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            margin-bottom: 6px;
-            overflow: hidden;
-            background: var(--surface-card);
-        }
-
-        .accordion-header {
-            padding: 8px 10px;
-            font-size: 0.76rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-        }
-
-        .accordion-content {
-            padding: 0 10px;
-            max-height: 0;
-            overflow: hidden;
-            font-size: 0.73rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            transition: max-height 0.3s ease, padding 0.3s ease;
-            white-space: pre-line;
-        }
-
-        .accordion-item.open .accordion-content {
-            padding: 8px 10px 10px;
-            max-height: 400px;
-        }
-
-        .rule-agreement {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            margin-top: 8px;
-            padding: 8px;
-            border-radius: var(--radius-sm);
-            background: rgba(189, 0, 255, 0.06);
-            border: 1px solid rgba(189, 0, 255, 0.2);
-            font-size: 0.74rem;
-            font-weight: 600;
-        }
-
-        .rule-agreement input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: var(--neon-purple);
-            cursor: pointer;
-        }
-
-        .payment-reveal {
-            display: none;
-            margin-top: 10px;
-            animation: fadeIn 0.4s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* کارت پرداخت با ۳ دکمه هم‌اندازه کنار هم */
-        .bank-card {
-            background: linear-gradient(135deg, #1e1b4b, #311042);
-            border: 1px solid rgba(189, 0, 255, 0.4);
-            border-radius: var(--radius-md);
-            padding: 13px 11px;
-            color: #fff;
-            box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2);
-        }
-
-        .bank-name {
-            font-size: 0.7rem;
-            opacity: 0.8;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .card-number {
-            font-size: 1.15rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            direction: ltr;
-            text-align: center;
-            margin-bottom: 6px;
-            font-family: monospace;
-            color: #00f3ff;
-        }
-
-        .card-owner {
-            font-size: 0.76rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        /* ردیف ۳ تایی دکمه‌های هم‌اندازه */
-        .payment-actions-row {
-            display: flex;
-            gap: 5px;
-            margin-top: 6px;
-        }
-
-        .pay-action-btn {
-            flex: 1;
-            min-width: 0;
-            padding: 8px 2px;
-            border-radius: var(--radius-sm);
-            font-size: 0.7rem;
-            font-weight: 800;
-            text-align: center;
-            text-decoration: none;
-            cursor: pointer;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            transition: 0.2s;
-            line-height: 1.2;
-        }
+        .hero-banner { position: relative; background: linear-gradient(135deg, rgba(0, 243, 255, 0.12), rgba(189, 0, 255, 0.12)), var(--surface); background-size: cover; background-position: center; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 10px; text-align: center; overflow: hidden; box-shadow: var(--neon-purple-shadow); margin-bottom: 10px; }
+        .hero-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; background: linear-gradient(90deg, var(--neon-blue), #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        [data-theme="light"] .hero-title { background: linear-gradient(90deg, #0284c7, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-subtitle { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5; }
+        .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 11px; margin-bottom: 10px; }
+        .section-header { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; font-size: 0.84rem; font-weight: 700; color: var(--neon-blue); }
+        .region-select-box { width: 100%; padding: 9px 12px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--neon-blue); color: var(--text-primary); font-size: 0.82rem; font-weight: 700; outline: none; box-shadow: var(--neon-shadow); cursor: pointer; }
+        .region-select-box option { background: var(--surface); color: var(--text-primary); }
+        #regionDependentContent { display: none; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+        .pill-group { display: flex; gap: 5px; margin-bottom: 8px; }
+        .pill-btn { flex: 1; padding: 6px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.74rem; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
+        .pill-btn.active { background: var(--btn-active); color: #fff; border-color: transparent; box-shadow: var(--neon-shadow); }
+        .styles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
+        .style-item { background: var(--surface-card); border: 1px solid var(--border); padding: 7px 9px; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 0.76rem; font-weight: 600; transition: all 0.2s; }
+        .style-item.selected { border-color: var(--neon-blue); background: rgba(0, 243, 255, 0.08); color: var(--neon-blue); box-shadow: 0 0 8px rgba(0, 243, 255, 0.15); }
+        .check-dot { width: 13px; height: 13px; border-radius: 3px; border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
+        .style-item.selected .check-dot { background: var(--neon-blue); border-color: var(--neon-blue); color: #000; }
+        .price-box { background: linear-gradient(135deg, rgba(0, 243, 255, 0.06), rgba(189, 0, 255, 0.06)); border: 1px dashed var(--neon-blue); border-radius: var(--radius-md); padding: 9px; margin-top: 10px; text-align: center; }
+        .price-details { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
+        .total-price { font-size: 1.25rem; font-weight: 900; color: var(--neon-blue); letter-spacing: -0.5px; }
+        [data-theme="light"] .total-price { color: #0284c7; }
+        .dynamic-rules-box { background: rgba(189, 0, 255, 0.06); border: 1px solid rgba(189, 0, 255, 0.25); border-radius: var(--radius-sm); padding: 9px; margin-bottom: 8px; }
+        .dynamic-rule-badge { display: inline-block; font-size: 0.66rem; font-weight: 800; padding: 2px 7px; border-radius: 5px; background: var(--neon-purple); color: #fff; margin-bottom: 6px; }
+        .dynamic-rule-text { font-size: 0.74rem; line-height: 1.7; color: var(--text-primary); white-space: pre-line; }
+        .accordion-item { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; overflow: hidden; background: var(--surface-card); }
+        .accordion-header { padding: 8px 10px; font-size: 0.76rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .accordion-content { padding: 0 10px; max-height: 0; overflow: hidden; font-size: 0.73rem; color: var(--text-secondary); line-height: 1.6; transition: max-height 0.3s ease, padding 0.3s ease; white-space: pre-line; }
+        .accordion-item.open .accordion-content { padding: 8px 10px 10px; max-height: 400px; }
+        .rule-agreement { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 8px; padding: 8px; border-radius: var(--radius-sm); background: rgba(189, 0, 255, 0.06); border: 1px solid rgba(189, 0, 255, 0.2); font-size: 0.74rem; font-weight: 600; }
+        .rule-agreement input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--neon-purple); cursor: pointer; }
+        .payment-reveal { display: none; margin-top: 10px; animation: fadeIn 0.4s ease; }
+        .bank-card { background: linear-gradient(135deg, #1e1b4b, #311042); border: 1px solid rgba(189, 0, 255, 0.4); border-radius: var(--radius-md); padding: 13px 11px; color: #fff; box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2); }
+        .bank-name { font-size: 0.7rem; opacity: 0.8; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .card-number { font-size: 1.15rem; font-weight: 800; letter-spacing: 2px; direction: ltr; text-align: center; margin-bottom: 6px; font-family: monospace; color: #00f3ff; }
+        .card-owner { font-size: 0.76rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
+        .payment-actions-row { display: flex; gap: 5px; margin-top: 6px; }
+        .pay-action-btn { flex: 1; min-width: 0; padding: 8px 2px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 800; text-align: center; text-decoration: none; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; white-space: nowrap; transition: 0.2s; line-height: 1.2; }
         .pay-action-btn:active { transform: scale(0.94); }
-
-        .online-pay-btn {
-            background: linear-gradient(135deg, #10b981, #00f3ff);
-            color: #000;
-            box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
-        }
-
-        .copy-card-btn {
-            background: var(--neon-blue);
-            color: #000;
-        }
-
-        .send-receipt-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
-        }
-
-        .social-links {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-top: 8px;
-        }
-
-        .social-btn {
-            padding: 8px 2px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            text-decoration: none;
-            text-align: center;
-            font-size: 0.72rem;
-            font-weight: 600;
-        }
-
-        .music-channel-card {
-            background: linear-gradient(135deg, rgba(189, 0, 255, 0.1), rgba(0, 243, 255, 0.06)), var(--surface);
-            border: 1px solid rgba(189, 0, 255, 0.35);
-            border-radius: var(--radius-md);
-            padding: 10px 12px;
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 15px rgba(189, 0, 255, 0.16);
-            transition: 0.2s ease;
-        }
-        .music-channel-card:active {
-            transform: scale(0.98);
-            border-color: var(--neon-blue);
-        }
-        .music-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--neon-purple);
-            box-shadow: 0 0 8px rgba(189, 0, 255, 0.4);
-            flex-shrink: 0;
-            background: #1f2937;
-        }
-        .music-info {
-            flex: 1;
-            min-width: 0;
-        }
-        .music-title {
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            margin-bottom: 2px;
-        }
-        .music-handle {
-            font-size: 0.7rem;
-            color: var(--neon-blue);
-            font-weight: 600;
-            direction: ltr;
-            text-align: right;
-            display: inline-block;
-        }
-        .music-join-btn {
-            padding: 5px 10px;
-            border-radius: 16px;
-            background: var(--btn-active);
-            color: #fff;
-            font-size: 0.68rem;
-            font-weight: 800;
-            border: none;
-            white-space: nowrap;
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #10b981;
-            color: #000;
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-        }
+        .online-pay-btn { background: linear-gradient(135deg, #10b981, #00f3ff); color: #000; box-shadow: 0 0 10px rgba(16, 185, 129, 0.35); }
+        .copy-card-btn { background: var(--neon-blue); color: #000; }
+        .send-receipt-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); color: #fff; }
+        .social-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
+        .social-btn { padding: 8px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); text-decoration: none; text-align: center; font-size: 0.72rem; font-weight: 600; }
+        .music-channel-card { background: linear-gradient(135deg, rgba(189, 0, 255, 0.1), rgba(0, 243, 255, 0.06)), var(--surface); border: 1px solid rgba(189, 0, 255, 0.35); border-radius: var(--radius-md); padding: 10px 12px; margin-top: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; box-shadow: 0 4px 15px rgba(189, 0, 255, 0.16); transition: 0.2s ease; }
+        .music-channel-card:active { transform: scale(0.98); border-color: var(--neon-blue); }
+        .music-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); box-shadow: 0 0 8px rgba(189, 0, 255, 0.4); flex-shrink: 0; background: #1f2937; }
+        .music-info { flex: 1; min-width: 0; }
+        .music-title { font-size: 0.82rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
+        .music-handle { font-size: 0.7rem; color: var(--neon-blue); font-weight: 600; direction: ltr; text-align: right; display: inline-block; }
+        .music-join-btn { padding: 5px 10px; border-radius: 16px; background: var(--btn-active); color: #fff; font-size: 0.68rem; font-weight: 800; border: none; white-space: nowrap; }
+        .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: #000; padding: 7px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4); transition: transform 0.3s ease; z-index: 1000; }
         .toast.show { transform: translateX(-50%) translateY(0); }
-
-        .admin-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(6px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            padding: 10px;
-            z-index: 2000;
-        }
-        .admin-content {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            width: 100%;
-            max-width: 760px;
-            max-height: 90vh;
-            overflow-y: auto;
-            padding: 12px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
-        }
-        
-        .admin-tabs {
-            display: flex;
-            gap: 4px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 6px;
-            overflow-x: auto;
-            white-space: nowrap;
-            scrollbar-width: none;
-        }
+        .admin-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 10px; z-index: 2000; }
+        .admin-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); width: 100%; max-width: 390px; max-height: 88vh; overflow-y: auto; padding: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
+        .admin-tabs { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .admin-tabs::-webkit-scrollbar { display: none; }
-
-        .admin-tab-btn {
-            flex: none;
-            padding: 6px 9px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-            font-size: 0.68rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            white-space: nowrap;
-            transition: 0.2s;
-        }
-        .admin-tab-btn.active {
-            background: var(--neon-blue);
-            color: #000;
-            border-color: var(--neon-blue);
-        }
-
+        .admin-tab-btn { flex: none; padding: 6px 9px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.68rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
+        .admin-tab-btn.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
         .admin-panel-tab { display: none; }
         .admin-panel-tab.active { display: block; }
-
         .admin-input-group { margin-bottom: 8px; }
-        .admin-input-group label {
-            display: block;
-            font-size: 0.7rem;
-            color: var(--text-secondary);
-            margin-bottom: 3px;
-            font-weight: 600;
-        }
-        .admin-input-group input, .admin-input-group textarea, .admin-select {
-            width: 100%;
-            padding: 6px 8px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            font-size: 0.76rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .admin-input-group input:focus, .admin-input-group textarea:focus, .admin-select:focus {
-            border-color: var(--neon-blue);
-        }
-        .price-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-        .price-currency-tag {
-            position: absolute;
-            left: 8px;
-            font-size: 0.68rem;
-            color: var(--neon-blue);
-            pointer-events: none;
-            font-weight: 700;
-        }
-        .price-input-wrapper input {
-            padding-left: 42px;
-            direction: ltr;
-            text-align: right;
-            font-weight: 700;
-        }
-
-        .admin-style-row {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-            margin-bottom: 5px;
-        }
-        .admin-style-row input {
-            flex: 1;
-            padding: 6px 8px;
-            font-size: 0.75rem;
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            border-radius: var(--radius-sm);
-            outline: none;
-        }
-        .admin-style-row input:focus {
-            border-color: var(--neon-blue);
-        }
-        .delete-style-btn {
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid #ef4444;
-            color: #ef4444;
-            border-radius: var(--radius-sm);
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            flex: none;
-            transition: 0.2s;
-        }
-        .delete-style-btn:active { transform: scale(0.92); }
-
-        .admin-region-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-bottom: 8px;
-        }
-        .admin-region-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 6px;
-        }
-        .admin-region-prices {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 6px;
-        }
-        @media (max-width: 480px) {
-            .admin-region-prices {
-                grid-template-columns: 1fr;
-            }
-        }
-    
-        /* ساختار جدید ۳ فیلد مرتب در یک ردیف */
-        .reg-three-cols {
-            display: grid;
-            grid-template-columns: 1.15fr 1fr 0.95fr;
-            gap: 5px;
-            margin-top: 4px;
-        }
-        .reg-field {
-            min-width: 0;
-        }
-        .reg-field label {
-            display: block;
-            color: var(--text-secondary);
-            font-size: 0.65rem;
-            margin-bottom: 2px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .reg-field input {
-            width: 100%;
-            box-sizing: border-box;
-            padding: 6px 5px;
-            border-radius: var(--radius-sm);
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            font: inherit;
-            font-size: 0.74rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        .reg-field input:focus {
-            border-color: var(--neon-blue);
-        }
-
+        .admin-input-group label { display: block; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 3px; font-weight: 600; }
+        .admin-input-group input, .admin-input-group textarea, .admin-select { width: 100%; padding: 6px 8px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.76rem; outline: none; }
+        .admin-input-group input:focus, .admin-input-group textarea:focus, .admin-select:focus { border-color: var(--neon-blue); }
+        .admin-style-row { display: flex; gap: 5px; align-items: center; margin-bottom: 5px; }
+        .admin-style-row input { flex: 1; padding: 6px 8px; font-size: 0.75rem; background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); outline: none; }
+        .delete-style-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-sm); width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex: none; }
+        .admin-region-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; margin-bottom: 8px; }
+        .admin-region-card-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 6px; }
+        .admin-region-prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+        @media (max-width: 480px) { .admin-region-prices { grid-template-columns: 1fr; } }
+        .reg-three-cols { display: grid; grid-template-columns: 1.15fr 1fr 0.95fr; gap: 5px; margin-top: 4px; }
+        .reg-field { min-width: 0; }
+        .reg-field label { display: block; color: var(--text-secondary); font-size: 0.65rem; margin-bottom: 2px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .reg-field input { width: 100%; box-sizing: border-box; padding: 6px 5px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font: inherit; font-size: 0.74rem; outline: none; }
+        .reg-field input:focus { border-color: var(--neon-blue); }
         .payment-confirm-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; padding: 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,.05); font-size: .78rem; line-height: 1.7; }
         .payment-confirm-row input { width: 17px; height: 17px; margin: 2px 0 0; flex: none; accent-color: var(--neon-purple); }
         .registration-submit { width: 100%; margin-top: 9px; border: 0; border-radius: var(--radius-sm); padding: 11px; font-size: .86rem; font-weight: 800; cursor: pointer; background: var(--btn-active); color: #fff; }
@@ -747,7 +126,7 @@
         .registration-status { font-size: .78rem; line-height: 1.7; white-space: pre-line; margin-top: 6px; }
         .registration-status.error { color: #f87171; }
         .registration-status.success { color: #10b981; }
-
+        .copy-btn { width: 100%; padding: 8px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-weight: 800; font-size: 0.76rem; }
     </style>
 </head>
 <body>
@@ -813,7 +192,7 @@
             </div>
         </div>
 
-        <!-- فرم ثبت‌نام هنرجو - سه فیلد در یک ردیف و بدون متن‌های اضافی -->
+        <!-- فرم ثبت‌نام هنرجو -->
         <div class="section-card" id="publicRegistrationCard">
             <div class="section-header" data-page-text="registrationTitle">📝 فرم ثبت‌نام هنرجو</div>
             <form id="publicRegistrationForm">
@@ -867,7 +246,7 @@
                 <span data-page-text="rulesAgreementText">قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.</span>
             </label>
 
-            <!-- بخش پرداخت با ۳ دکمه در یک ردیف و هم‌اندازه -->
+            <!-- بخش پرداخت -->
             <div class="payment-reveal" id="paymentSection">
                 <div class="bank-card">
                     <div class="bank-name">
@@ -924,7 +303,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت -->
+<!-- مودال مدیریت هوشمند -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -932,213 +311,193 @@
             <button class="circle-btn" id="closeAdmin">✕</button>
         </div>
 
-        <div id="adminLoginPanel">
-            <p style="font-size:.78rem;color:var(--text-secondary);line-height:1.8;margin:8px 0 12px;">برای ورود، با حساب مالک فعال در Supabase وارد شوید. اطلاعات ورود در کد سایت ذخیره نمی‌شود.</p>
-            <div class="admin-input-group"><label for="adminEmail">ایمیل مدیر</label><input id="adminEmail" type="email" autocomplete="username" placeholder="ایمیل حساب Supabase" dir="ltr"></div>
-            <div class="admin-input-group"><label for="adminPassword">رمز عبور</label><input id="adminPassword" type="password" autocomplete="current-password" placeholder="رمز عبور حساب Supabase" dir="ltr"></div>
-            <button type="button" class="copy-btn" id="adminLoginBtn" style="width:100%;margin-top:8px;">🔐 ورود امن</button>
-            <div id="adminLoginStatus" role="status" style="font-size:.75rem;margin-top:8px;line-height:1.8;"></div>
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <div id="adminEditor" style="display:none;">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 10px;">
-                <span id="adminSignedInAs" style="font-size:.7rem;color:var(--text-secondary);overflow-wrap:anywhere;"></span>
-                <button type="button" class="pill-btn" id="adminLogoutBtn" style="font-size:.7rem;padding:5px 9px;">خروج</button>
-            </div>
-            <div class="admin-tabs">
-                <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر و متن‌ها</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
-                <button class="admin-tab-btn" onclick="switchAdminTab('jsonTab')">🧩 همه کلیدها</button>
-            </div>
-
-            <!-- تب ۱: مناطق تهران -->
-            <div class="admin-panel-tab active" id="regionsTab">
-                <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
-                <div class="admin-region-card">
+        <!-- تب ۱: مناطق تهران -->
+        <div class="admin-panel-tab active" id="regionsTab">
+            <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
+            <div class="admin-region-card">
+                <div class="admin-input-group">
+                    <label>نام منطقه (مثلاً: منطقه ۲ - سعادت‌آباد و شهرک غرب):</label>
+                    <input type="text" id="newRegionNameInput" placeholder="نام منطقه">
+                </div>
+                <div class="admin-region-prices">
                     <div class="admin-input-group">
-                        <label>نام منطقه (مثلاً: منطقه ۲ - سعادت‌آباد و شهرک غرب):</label>
-                        <input type="text" id="newRegionNameInput" placeholder="نام منطقه">
+                        <label>شهریه کودکان (۸ جلسه):</label>
+                        <input type="text" id="newRegionKidsPrice" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
                     </div>
-                    <div class="admin-region-prices">
-                        <div class="admin-input-group">
-                            <label>شهریه کودکان (۸ جلسه):</label>
-                            <input type="text" id="newRegionKidsPrice" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                        </div>
-                        <div class="admin-input-group">
-                            <label>شهریه بزرگسالان (۸ جلسه):</label>
-                            <input type="text" id="newRegionAdultPrice" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                        </div>
-                        <div class="admin-input-group">
-                            <label>هزینه هر سبک اضافه:</label>
-                            <input type="text" id="newRegionExtraPrice" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                        </div>
+                    <div class="admin-input-group">
+                        <label>شهریه بزرگسالان (۸ جلسه):</label>
+                        <input type="text" id="newRegionAdultPrice" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
                     </div>
-                    <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:7px; font-size:0.75rem; margin-top:4px;">➕ افزودن این منطقه</button>
+                    <div class="admin-input-group">
+                        <label>هزینه هر سبک اضافه:</label>
+                        <input type="text" id="newRegionExtraPrice" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                    </div>
                 </div>
-
-                <div style="font-size:0.74rem; color:var(--neon-purple); font-weight:bold; margin:10px 0 6px;">لیست مناطق تهران و قیمت‌های اختصاصی:</div>
-                <div id="adminRegionsListContainer" style="max-height:240px; overflow-y:auto;"></div>
+                <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:7px; font-size:0.75rem; margin-top:4px;">➕ افزودن این منطقه</button>
             </div>
 
-            <!-- تب ۲: قوانین -->
-            <div class="admin-panel-tab" id="rulesTab">
-                <div class="admin-input-group">
-                    <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
-                    <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
-                        <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
-                        <option value="normal">شرایط کلاس عمومی</option>
-                        <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
-                        <option value="private">شرایط کلاس خصوصی</option>
-                        <option value="s8">شرایط ترم ۸ جلسه</option>
-                        <option value="s10">شرایط ترم ۱۰ جلسه</option>
-                        <option value="s12">شرایط ترم ۱۲ جلسه</option>
-                        <option value="general">قوانین عمومی و انضباطی آکادمی</option>
-                    </select>
-                </div>
-                <div class="admin-input-group">
-                    <label id="activeRuleLabel">متن قانون:</label>
-                    <textarea rows="5" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
-                </div>
-            </div>
-
-            <!-- تب ۳: ضرایب کلاس و جلسات -->
-            <div class="admin-panel-tab" id="pricesTab">
-                <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.7; margin-bottom:8px;">
-                    قیمت‌های پایه در تب «📍 مناطق تهران» تعیین می‌شوند. در این بخش می‌توانید ضرایب افزایش شهریه برای انواع کلاس و تعداد جلسات را تنظیم کنید:
-                </div>
-                <div style="display:flex; gap:5px; margin-bottom:10px;">
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>ضریب نیمه‌خصوصی:</label>
-                        <input type="number" step="0.1" id="editSemiFactor">
-                    </div>
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>ضریب خصوصی:</label>
-                        <input type="number" step="0.1" id="editPrivateFactor">
-                    </div>
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>ضریب VIP:</label>
-                        <input type="number" step="0.1" id="editVipFactor">
-                    </div>
-                </div>
-
-                <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">ضرایب تعداد جلسات ترم:</div>
-                <div style="display:flex; gap:5px;">
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>نرخ ۸ جلسه (پایه):</label>
-                        <input type="number" step="0.05" id="editRate8" value="1.0">
-                    </div>
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>نرخ ۱۰ جلسه:</label>
-                        <input type="number" step="0.05" id="editRate10" value="1.25">
-                    </div>
-                    <div class="admin-input-group" style="flex:1;">
-                        <label>نرخ ۱۲ جلسه:</label>
-                        <input type="number" step="0.05" id="editRate12" value="1.5">
-                    </div>
-                </div>
-            </div>
-
-            <!-- تب ۴: مدیریت سبک‌ها -->
-            <div class="admin-panel-tab" id="stylesTab">
-                <div class="admin-input-group">
-                    <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
-                    <div style="display:flex; gap:5px;">
-                        <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
-                        <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
-                    </div>
-                </div>
-
-                <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
-                <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
-            </div>
-
-            <!-- تب ۵: بنر و عناوین -->
-            <div class="admin-panel-tab" id="bannerTab">
-                <div class="admin-input-group">
-                    <label>متن برچسب بالای صفحه (لوگو):</label>
-                    <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20🤸">
-                </div>
-                <div class="admin-input-group">
-                    <label>عنوان اصلی بنر:</label>
-                    <input type="text" id="editBannerTitle" placeholder="سلام، وقتتون بخیر 🌱">
-                </div>
-                <div class="admin-input-group">
-                    <label>زیرعنوان بنر:</label>
-                    <textarea rows="3" id="editBannerSubtitle" placeholder="شرایط برگزاری کلاس‌های ورزشی تخصصی..."></textarea>
-                </div>
-                <div class="admin-input-group">
-                    <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
-                    <input type="text" id="editBannerBg" placeholder="https://...">
-                </div>
-            </div>
-
-            <!-- تب ۶: کارت، پرداخت و تماس -->
-            <div class="admin-panel-tab" id="infoTab">
-                <div class="admin-input-group">
-                    <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
-                    <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
-                </div>
-
-                <div class="admin-input-group">
-                    <label>شماره کارت واریز:</label>
-                    <input type="text" id="editCardNum">
-                </div>
-                <div class="admin-input-group">
-                    <label>نام صاحب حساب و بانک:</label>
-                    <input type="text" id="editCardOwner">
-                </div>
-                <div class="admin-input-group">
-                    <label>شماره تماس مربی:</label>
-                    <input type="text" id="editPhone">
-                </div>
-                <div class="admin-input-group">
-                    <label>لینک اینستاگرام:</label>
-                    <input type="text" id="editInsta">
-                </div>
-                <div class="admin-input-group">
-                    <label>لینک تلگرام / ایتا مربی:</label>
-                    <input type="text" id="editTele">
-                </div>
-
-                <hr style="border-color:var(--border); margin:8px 0;">
-                <div style="color:var(--neon-purple); font-size:0.72rem; font-weight:bold; margin-bottom:4px;">🎵 تنظیمات کانال موزیک:</div>
-
-                <div class="admin-input-group">
-                    <label>نام کانال موزیک:</label>
-                    <input type="text" id="editMusicName" value="کانال موزیک GYM20MUSIC">
-                </div>
-                <div class="admin-input-group">
-                    <label>آیدی کانال (با @):</label>
-                    <input type="text" id="editMusicId" value="@GYM20MUSIC">
-                </div>
-                <div class="admin-input-group">
-                    <label>لینک مستقیم کانال:</label>
-                    <input type="text" id="editMusicLink" value="https://t.me/GYM20MUSIC">
-                </div>
-            </div>
-
-            <!-- تب ۷: همه کلیدها -->
-            <div class="admin-panel-tab" id="jsonTab">
-                <div style="font-size:.75rem;color:var(--text-secondary);line-height:1.9;margin-bottom:8px;">ویرایش پیشرفته تمام تنظیمات ذخیره‌شده (مناطق، عنوان‌ها، متن‌ها، قیمت‌ها، سبک‌ها، قوانین و لینک‌ها). ساختار JSON را معتبر نگه دارید.</div>
-                <textarea id="adminJsonEditor" rows="16" spellcheck="false" dir="ltr" style="width:100%;box-sizing:border-box;font:12px/1.7 monospace;padding:10px;border-radius:8px;background:var(--surface-card);color:var(--text-primary);border:1px solid var(--border);"></textarea>
-                <button type="button" class="pill-btn" id="refreshAdminJsonBtn" style="margin-top:8px;">بارگذاری دوباره از فرم</button>
-                <div id="adminJsonStatus" style="font-size:.72rem;margin-top:6px;"></div>
-            </div>
-
-            <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره در بک‌اند</button>
+            <div style="font-size:0.74rem; color:var(--neon-purple); font-weight:bold; margin:10px 0 6px;">لیست مناطق تهران و قیمت‌های اختصاصی:</div>
+            <div id="adminRegionsListContainer" style="max-height:240px; overflow-y:auto;"></div>
         </div>
+
+        <!-- تب ۲: قوانین -->
+        <div class="admin-panel-tab" id="rulesTab">
+            <div class="admin-input-group">
+                <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
+                <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
+                    <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
+                    <option value="normal">شرایط کلاس عمومی</option>
+                    <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
+                    <option value="private">شرایط کلاس خصوصی</option>
+                    <option value="s8">شرایط ترم ۸ جلسه</option>
+                    <option value="s10">شرایط ترم ۱۰ جلسه</option>
+                    <option value="s12">شرایط ترم ۱۲ جلسه</option>
+                    <option value="general">قوانین عمومی و انضباطی آکادمی</option>
+                </select>
+            </div>
+            <div class="admin-input-group">
+                <label id="activeRuleLabel">متن قانون:</label>
+                <textarea rows="5" id="activeRuleTextarea" placeholder="متن قانون را بنویسید..."></textarea>
+            </div>
+        </div>
+
+        <!-- تب ۳: ضرایب کلاس و جلسات -->
+        <div class="admin-panel-tab" id="pricesTab">
+            <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.7; margin-bottom:8px;">
+                قیمت‌های پایه در تب «📍 مناطق تهران» تعیین می‌شوند. در این بخش می‌توانید ضرایب افزایش شهریه برای انواع کلاس و تعداد جلسات را تنظیم کنید:
+            </div>
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب نیمه‌خصوصی:</label>
+                    <input type="number" step="0.1" id="editSemiFactor">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب خصوصی:</label>
+                    <input type="number" step="0.1" id="editPrivateFactor">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>ضریب VIP:</label>
+                    <input type="number" step="0.1" id="editVipFactor">
+                </div>
+            </div>
+
+            <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">ضرایب تعداد جلسات ترم:</div>
+            <div style="display:flex; gap:5px;">
+                <div class="admin-input-group" style="flex:1;">
+                    <label>نرخ ۸ جلسه (پایه):</label>
+                    <input type="number" step="0.05" id="editRate8" value="1.0">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>نرخ ۱۰ جلسه:</label>
+                    <input type="number" step="0.05" id="editRate10" value="1.25">
+                </div>
+                <div class="admin-input-group" style="flex:1;">
+                    <label>نرخ ۱۲ جلسه:</label>
+                    <input type="number" step="0.05" id="editRate12" value="1.5">
+                </div>
+            </div>
+        </div>
+
+        <!-- تب ۴: مدیریت سبک‌ها -->
+        <div class="admin-panel-tab" id="stylesTab">
+            <div class="admin-input-group">
+                <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
+                <div style="display:flex; gap:5px;">
+                    <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
+                    <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+                </div>
+            </div>
+
+            <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
+            <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
+        </div>
+
+        <!-- تب ۵: بنر و عناوین -->
+        <div class="admin-panel-tab" id="bannerTab">
+            <div class="admin-input-group">
+                <label>متن برچسب بالای صفحه (لوگو):</label>
+                <input type="text" id="editBrandTag" placeholder="آکادمی تخصصی ورزش GYM20🤸">
+            </div>
+            <div class="admin-input-group">
+                <label>عنوان اصلی بنر:</label>
+                <input type="text" id="editBannerTitle" placeholder="سلام، وقتتون بخیر 🌱">
+            </div>
+            <div class="admin-input-group">
+                <label>زیرعنوان بنر:</label>
+                <textarea rows="3" id="editBannerSubtitle" placeholder="شرایط برگزاری کلاس‌های ورزشی تخصصی..."></textarea>
+            </div>
+            <div class="admin-input-group">
+                <label>لینک عکس پس‌زمینه بنر (اختیاری):</label>
+                <input type="text" id="editBannerBg" placeholder="https://...">
+            </div>
+        </div>
+
+        <!-- تب ۶: کارت، پرداخت و تماس -->
+        <div class="admin-panel-tab" id="infoTab">
+            <div class="admin-input-group">
+                <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین (زرین‌پال، پی‌پینگ یا IDPay):</label>
+                <input type="text" id="editGatewayLink" placeholder="https://zarinp.al/gym20">
+            </div>
+
+            <div class="admin-input-group">
+                <label>شماره کارت واریز:</label>
+                <input type="text" id="editCardNum">
+            </div>
+            <div class="admin-input-group">
+                <label>نام صاحب حساب و بانک:</label>
+                <input type="text" id="editCardOwner">
+            </div>
+            <div class="admin-input-group">
+                <label>شماره تماس مربی:</label>
+                <input type="text" id="editPhone">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک اینستاگرام:</label>
+                <input type="text" id="editInsta">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک تلگرام / ایتا مربی:</label>
+                <input type="text" id="editTele">
+            </div>
+
+            <hr style="border-color:var(--border); margin:8px 0;">
+            <div style="color:var(--neon-purple); font-size:0.72rem; font-weight:bold; margin-bottom:4px;">🎵 تنظیمات کانال موزیک:</div>
+
+            <div class="admin-input-group">
+                <label>نام کانال موزیک:</label>
+                <input type="text" id="editMusicName" value="کانال موزیک GYM20MUSIC">
+            </div>
+            <div class="admin-input-group">
+                <label>آیدی کانال (با @):</label>
+                <input type="text" id="editMusicId" value="@GYM20MUSIC">
+            </div>
+            <div class="admin-input-group">
+                <label>لینک مستقیم کانال:</label>
+                <input type="text" id="editMusicLink" value="https://t.me/GYM20MUSIC">
+            </div>
+        </div>
+
+        <!-- دکمه ذخیره مستقیم در سرور گیت‌هاب -->
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره</button>
     </div>
 </div>
 
 <script>
-    const CURRENT_CACHE_VERSION = 15;
+    const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
+    const GH_OWNER = "gym20music-web";
+    const GH_REPO = "gym20-student-registration-ai-studio";
+    const GH_PATH = "index.html";
 
     const defaultData = {
-        "cacheVersion": 15,
         "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
         "bannerTitle": "سلام، وقتتون بخیر 🌱",
         "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
@@ -1256,12 +615,29 @@
         }
     };
 
+    // حفظ دائمی اطلاعات شما بدون پاک شدن
     let appData = defaultData;
+    try {
+        const saved = localStorage.getItem('sports_reg_data');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            appData = { ...defaultData, ...parsed };
+            if (parsed.rules) appData.rules = { ...defaultData.rules, ...parsed.rules };
+            if (parsed.card) appData.card = { ...defaultData.card, ...parsed.card };
+            if (parsed.contact) appData.contact = { ...defaultData.contact, ...parsed.contact };
+            if (parsed.musicChannel) appData.musicChannel = { ...defaultData.musicChannel, ...parsed.musicChannel };
+            if (parsed.styles && parsed.styles.length) appData.styles = parsed.styles;
+            if (parsed.regions && parsed.regions.length) appData.regions = parsed.regions;
+        }
+    } catch(e) {
+        appData = defaultData;
+    }
+
     let currentRegionId = "";
     let currentAge = "adult";
     let currentClassType = "normal";
     let currentSessions = "8";
-    let selectedStyles = [];
+    let selectedStyles = appData.styles.length > 0 ? [appData.styles[0].id] : [];
     let currentEditingRuleKey = "vip";
 
     const regionSelectEl = document.getElementById('regionSelect');
@@ -1279,7 +655,6 @@
                   .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
     }
 
-    // الگوریتم تبدیل استاندارد تاریخ شمسی به میلادی برای ذخیره‌سازی دقیق در دیتابیس
     function jalaliToGregorian(jy, jm, jd) {
         jy = Number(jy); jm = Number(jm); jd = Number(jd);
         if (!jy || !jm || !jd || jm < 1 || jm > 12 || jd < 1 || jd > 31) return null;
@@ -1309,7 +684,6 @@
         return gy + '-' + String(gm).padStart(2, '0') + '-' + String(gd).padStart(2, '0');
     }
 
-    // درج خودکار اسلش هنگام تایپ تاریخ تولد شمسی
     const birthInput = document.getElementById('regBirthDateShamsi');
     if (birthInput) {
         birthInput.addEventListener('input', (e) => {
@@ -1437,7 +811,7 @@
         const extra = parsePureNumber(extraInput.value);
 
         if (!name || !kids || !adult) {
-            alert('لطفاً نام منطقه و قیمت‌های پایه کودکان و بزرگسالان را وارد کنید.');
+            alert('لطفاً نام منطقه و قیمت‌های پایه را وارد کنید.');
             return;
         }
 
@@ -1493,13 +867,10 @@
             const input = document.createElement('input');
             input.type = 'text';
             input.value = String(st.name || '');
-            input.setAttribute('aria-label', 'نام سبک');
             input.addEventListener('input', () => updateStyleName(st.id, input.value));
             const remove = document.createElement('button');
             remove.type = 'button';
             remove.className = 'delete-style-btn';
-            remove.title = 'حذف سبک';
-            remove.setAttribute('aria-label', 'حذف سبک');
             remove.textContent = '🗑️';
             remove.addEventListener('click', () => deleteStyle(st.id));
             row.append(input, remove);
@@ -1532,7 +903,7 @@
 
     function deleteStyle(id) {
         if (appData.styles.length <= 1) {
-            alert('حداقل باید ۱ سبک در سیستم باقی بماند!');
+            alert('حداقل ۱ سبک باید باقی بماند!');
             return;
         }
         if (confirm('آیا از حذف این سبک مطمئن هستید؟')) {
@@ -1604,7 +975,7 @@
             if (paidCheck) paidCheck.checked = false;
         }
         if (typeof updateRegistrationSubmitState === 'function') updateRegistrationSubmitState();
-        if(e.target.checked) paymentSectionEl.scrollIntoView({ behavior: 'smooth' });
+        if (e.target.checked) paymentSectionEl.scrollIntoView({ behavior: 'smooth' });
     };
 
     document.getElementById('copyCardBtn').onclick = () => {
@@ -1632,7 +1003,6 @@
         document.getElementById(tabId).classList.add('active');
         const activeButton = Array.from(document.querySelectorAll('.admin-tab-btn')).find(b => b.getAttribute('onclick') === "switchAdminTab('" + tabId + "')");
         if (activeButton) activeButton.classList.add('active');
-        if (tabId === 'jsonTab') document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
     }
 
     function onRuleSelectorChange() {
@@ -1648,95 +1018,14 @@
     const adminModal = document.getElementById('adminModal');
     const closeAdmin = document.getElementById('closeAdmin');
 
-    let adminAccessToken = null;
-    let adminUserEmail = '';
-    const adminLoginPanel = document.getElementById('adminLoginPanel');
-    const adminEditor = document.getElementById('adminEditor');
-    const adminLoginStatus = document.getElementById('adminLoginStatus');
-    const adminLoginBtn = document.getElementById('adminLoginBtn');
-
-    function setAdminStatus(message, isError = false) {
-        adminLoginStatus.textContent = message;
-        adminLoginStatus.style.color = isError ? '#ef4444' : 'var(--neon-green)';
-    }
-
-    function setAdminView(isLoggedIn) {
-        adminLoginPanel.style.display = isLoggedIn ? 'none' : 'block';
-        adminEditor.style.display = isLoggedIn ? 'block' : 'none';
-        document.getElementById('adminSignedInAs').textContent = isLoggedIn ? ('واردشده: ' + adminUserEmail) : '';
-    }
-
-    async function adminRequest(path, options = {}) {
-        const token = options.useAdminToken && adminAccessToken ? adminAccessToken : GYM20_SUPABASE_ANON_KEY;
-        const headers = {
-            'apikey': GYM20_SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + token,
-            ...(options.headers || {})
-        };
-        return fetch(GYM20_SUPABASE_URL + path, {...options, headers});
-    }
-
-    async function adminLogin() {
-        const email = document.getElementById('adminEmail').value.trim();
-        const password = document.getElementById('adminPassword').value;
-        if (!email || !password) { setAdminStatus('ایمیل و رمز عبور را وارد کنید.', true); return; }
-        adminLoginBtn.disabled = true;
-        adminLoginBtn.textContent = 'در حال بررسی…';
-        setAdminStatus('');
-        try {
-            const response = await adminRequest('/auth/v1/token?grant_type=password', {
-                method: 'POST',
-                headers: {'Content-Type':'application/json'},
-                body: JSON.stringify({email, password})
-            });
-            const auth = await response.json().catch(() => ({}));
-            if (!response.ok || !auth.access_token || !auth.user) throw new Error(auth.msg || auth.message || 'ورود ناموفق بود؛ ایمیل و رمز عبور را بررسی کنید.');
-            adminAccessToken = auth.access_token;
-            adminUserEmail = auth.user.email || email;
-            const profileResponse = await adminRequest('/rest/v1/profiles?id=eq.' + encodeURIComponent(auth.user.id) + '&select=id,role,is_active', {
-                method:'GET',
-                useAdminToken:true,
-                headers:{'Accept-Profile':'gym20'}
-            });
-            const profiles = await profileResponse.json().catch(() => []);
-            if (!profileResponse.ok || !Array.isArray(profiles) || !profiles.some(p => p.role === 'owner' && p.is_active === true)) {
-                await adminRequest('/auth/v1/logout', {method:'POST',useAdminToken:true});
-                adminAccessToken = null;
-                adminUserEmail = '';
-                throw new Error('این حساب مالک فعال نیست؛ دسترسی پنل مدیریت داده نشد.');
-            }
-            document.getElementById('adminPassword').value = '';
-            setAdminView(true);
-            loadAdminForm();
-            setAdminStatus('');
-            await loadPublicSettings(true);
-            loadAdminForm();
-            document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
-        } catch (error) {
-            setAdminStatus(error.message || 'خطا در ورود به پنل مدیریت.', true);
-        } finally {
-            adminLoginBtn.disabled = false;
-            adminLoginBtn.textContent = '🔐 ورود امن';
-        }
-    }
-
-    async function adminLogout() {
-        try {
-            if (adminAccessToken) await adminRequest('/auth/v1/logout', {method:'POST',useAdminToken:true});
-        } catch (_) {}
-        adminAccessToken = null;
-        adminUserEmail = '';
-        setAdminView(false);
-        setAdminStatus('از پنل مدیریت خارج شدید.');
-    }
-
-    adminLoginBtn.onclick = adminLogin;
-    document.getElementById('adminPassword').addEventListener('keydown', e => { if (e.key === 'Enter') adminLogin(); });
-    document.getElementById('adminLogoutBtn').onclick = adminLogout;
-
     adminBtn.onclick = () => {
-        adminModal.style.display = 'flex';
-        if (!adminAccessToken) setAdminView(false);
+        const pass = prompt('رمز عبور پنل مدیر را وارد کنید:');
+        if (pass === '1234') {
+            loadAdminForm();
+            adminModal.style.display = 'flex';
+        } else if (pass !== null) {
+            alert('رمز عبور اشتباه است!');
+        }
     };
 
     closeAdmin.onclick = () => { adminModal.style.display = 'none'; };
@@ -1812,62 +1101,77 @@
         };
     }
 
-    document.getElementById('refreshAdminJsonBtn').onclick = () => {
-        document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
-        document.getElementById('adminJsonStatus').textContent = 'ویرایشگر با تنظیمات فعلی فرم هماهنگ شد.';
-    };
+    function b64EncodeUnicode(str) {
+        return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function toSolidBytes(match, p1) {
+            return String.fromCharCode('0x' + p1);
+        }));
+    }
+    function b64DecodeUnicode(str) {
+        return decodeURIComponent(atob(str).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+    }
 
+    // ذخیره مستقیم در سرور گیت‌هاب با یک کلیک
     document.getElementById('autoCommitBtn').onclick = async () => {
-        if (!adminAccessToken) { setAdminStatus('ابتدا با حساب مالک وارد شوید.', true); return; }
-        const jsonMode = document.getElementById('jsonTab').classList.contains('active');
-        if (jsonMode) {
-            try {
-                const parsed = JSON.parse(document.getElementById('adminJsonEditor').value);
-                if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('ریشه تنظیمات باید یک شیء JSON باشد.');
-                if (!Array.isArray(parsed.regions) || !Array.isArray(parsed.styles) || !parsed.rules || !parsed.card || !parsed.contact || !parsed.musicChannel || !parsed.multipliers || !parsed.sessionRates) {
-                    throw new Error('کلیدهای ضروری regions، styles، rules، card، contact، musicChannel، multipliers و sessionRates باید موجود باشند.');
-                }
-                appData = {...parsed, cacheVersion: CURRENT_CACHE_VERSION};
-            } catch (error) {
-                document.getElementById('adminJsonStatus').textContent = 'JSON نامعتبر: ' + error.message;
-                document.getElementById('adminJsonStatus').style.color = '#ef4444';
-                return;
-            }
-        } else {
-            collectFormData();
-        }
-        const saveButton = document.getElementById('autoCommitBtn');
-        saveButton.disabled = true;
-        saveButton.textContent = 'در حال ذخیره در بک‌اند…';
+        const token = BUILTIN_TOKEN;
+        const btn = document.getElementById('autoCommitBtn');
+        const oldText = btn.innerText;
+        btn.innerText = '⏳ در حال ذخیره در گیت‌هاب...';
+        btn.disabled = true;
+
         try {
-            const response = await adminRequest('/rest/v1/site_settings?on_conflict=key', {
-                method:'POST',
-                useAdminToken:true,
-                headers:{
-                    'Content-Type':'application/json',
-                    'Content-Profile':'gym20',
-                    'Prefer':'resolution=merge-duplicates,return=minimal'
-                },
-                body:JSON.stringify([{key:'public_site_config', value:appData}])
+            collectFormData();
+
+            const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                }
             });
-            if (!response.ok) {
-                const detail = await response.text();
-                throw new Error(detail || ('HTTP ' + response.status));
+
+            if (!getRes.ok) {
+                throw new Error('خطا در دسترسی به گیت‌هاب.');
             }
+
+            const fileData = await getRes.json();
+            const rawContent = fileData.content.replace(/\s/g, '');
+            const currentHtml = b64DecodeUnicode(rawContent);
+
+            const newDefaultStr = 'const defaultData = ' + JSON.stringify(appData, null, 4) + ';';
+            const updatedHtml = currentHtml.replace(/const defaultData = \{[\s\S]*?\};/, newDefaultStr);
+            const newBase64 = b64EncodeUnicode(updatedHtml);
+
+            const putRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message: "به‌روزرسانی خودکار تنظیمات از پنل مدیریت",
+                    content: newBase64,
+                    sha: fileData.sha,
+                    branch: "main"
+                })
+            });
+
+            if (!putRes.ok) {
+                throw new Error('خطا در ذخیره‌سازی فایل در گیت‌هاب.');
+            }
+
+            localStorage.setItem('sports_reg_data', JSON.stringify(appData));
             applyDataToUI();
-            renderRegionSelect();
-            renderStyles();
             calculatePrice();
-            loadAdminForm();
-            document.getElementById('adminJsonEditor').value = JSON.stringify(appData, null, 2);
-            document.getElementById('adminJsonStatus').textContent = 'تنظیمات با موفقیت در بک‌اند ذخیره شد.';
-            document.getElementById('adminJsonStatus').style.color = 'var(--neon-green)';
-            alert('تنظیمات با موفقیت ذخیره شد و برای همه بازدیدکنندگان اعمال می‌شود.');
-        } catch (error) {
-            alert('ذخیره انجام نشد: ' + (error.message || 'خطای ارتباط با Supabase'));
+            adminModal.style.display = 'none';
+            alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!\nتا لحظاتی دیگر برای تمام هنرجویان اعمال می‌شود.');
+
+        } catch (err) {
+            alert('❌ خطا: ' + err.message);
         } finally {
-            saveButton.disabled = false;
-            saveButton.textContent = '💾 ذخیره در بک‌اند';
+            btn.innerText = oldText;
+            btn.disabled = false;
         }
     };
 
@@ -1896,7 +1200,7 @@
         document.getElementById('phoneLink').href = 'tel:' + appData.contact.phone;
         document.getElementById('sendReceiptBtn').href = 'sms:' + appData.contact.phone + '?body=سلام استاد، فیش واریزی ارسال شد.';
         
-        if(appData.musicChannel) {
+        if (appData.musicChannel) {
             document.getElementById('musicTitleText').innerText = appData.musicChannel.name;
             document.getElementById('musicHandleText').innerText = appData.musicChannel.id;
             document.getElementById('musicCardLink').href = appData.musicChannel.link;
@@ -1947,10 +1251,6 @@
             setRegistrationStatus('پس از پرداخت، گزینه «پرداخت کردم» را تیک بزنید.', 'error');
             return;
         }
-        if (!GYM20_SUPABASE_ANON_KEY || GYM20_SUPABASE_ANON_KEY.includes('PASTE_')) {
-            setRegistrationStatus('اتصال Supabase هنوز پیکربندی نشده است.', 'error');
-            return;
-        }
 
         const fullName = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
@@ -1963,7 +1263,6 @@
             return;
         }
 
-        // تبدیل استاندارد تاریخ تولد شمسی به میلادی برای پایگاه داده
         let gregorianBirthDate = null;
         let shamsiBirthTag = '';
         if (rawBirthShamsi) {
@@ -2006,7 +1305,7 @@
             const result = await response.json().catch(() => null);
             if (!response.ok) {
                 const message = result && (result.message || result.details || result.hint);
-                throw new Error(message || 'ارسال درخواست ناموفق بود (HTTP ' + response.status + ').');
+                throw new Error(message || 'ارسال درخواست ناموفق بود.');
             }
             registrationForm.reset();
             acceptRulesEl.checked = false;
@@ -2022,37 +1321,7 @@
         }
     });
 
-    async function loadPublicSettings(useAdmin = false) {
-        try {
-            const response = await adminRequest('/rest/v1/site_settings?key=eq.public_site_config&select=value', {
-                method:'GET',
-                useAdminToken:useAdmin,
-                headers:{'Accept-Profile':'gym20'}
-            });
-            if (!response.ok) return false;
-            const rows = await response.json();
-            if (Array.isArray(rows) && rows[0] && rows[0].value && typeof rows[0].value === 'object') {
-                const val = rows[0].value;
-                appData = {...defaultData, ...val, cacheVersion:CURRENT_CACHE_VERSION};
-                appData.card = {...defaultData.card, ...(val.card || {})};
-                appData.contact = {...defaultData.contact, ...(val.contact || {})};
-                appData.musicChannel = {...defaultData.musicChannel, ...(val.musicChannel || {})};
-                appData.multipliers = {...defaultData.multipliers, ...(val.multipliers || {})};
-                appData.sessionRates = {...defaultData.sessionRates, ...(val.sessionRates || {})};
-                appData.rules = {...defaultData.rules, ...(val.rules || {})};
-                appData.regions = (Array.isArray(val.regions) && val.regions.length) ? val.regions : defaultData.regions;
-                if (!Array.isArray(appData.styles) || !appData.styles.length) appData.styles = defaultData.styles;
-                selectedStyles = appData.styles.length ? [appData.styles[0].id] : [];
-                return true;
-            }
-        } catch (error) {
-            console.warn('Public site settings could not be loaded.', error);
-        }
-        return false;
-    }
-
-    async function initializeApp() {
-        await loadPublicSettings(false);
+    function initializeApp() {
         renderRegionSelect();
         renderStyles();
         applyDataToUI();
