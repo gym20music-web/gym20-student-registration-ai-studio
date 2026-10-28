@@ -1328,4 +1328,154 @@
         if (cardObj.gatewayLink && cardObj.gatewayLink.length > 5) {
             gatewayBtn.href = cardObj.gatewayLink;
             gatewayBtn.style.display = 'flex';
-        } el
+        } else {
+            gatewayBtn.style.display = 'none';
+        }
+
+        const contactObj = appData.contact || {};
+        document.getElementById('instaLink').href = contactObj.instagram || '#';
+        document.getElementById('teleLink').href = contactObj.telegram || '#';
+        document.getElementById('phoneLink').href = 'tel:' + (contactObj.phone || '');
+        document.getElementById('sendReceiptBtn').href = 'sms:' + (contactObj.phone || '') + '?body=سلام استاد، فیش واریزی ارسال شد.';
+        
+        const musicObj = appData.musicChannel || {};
+        document.getElementById('musicTitleText').innerText = musicObj.name || '';
+        document.getElementById('musicHandleText').innerText = musicObj.id || '';
+        document.getElementById('musicCardLink').href = musicObj.link || '#';
+        document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
+
+        updateDynamicRules();
+    }
+
+    const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co";
+    const GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
+    const registrationForm = document.getElementById('publicRegistrationForm');
+    const registrationStatus = document.getElementById('regStatus');
+    const registrationSubmit = document.getElementById('regSubmitBtn');
+    const paymentConfirmedEl = document.getElementById('regPaymentConfirmed');
+
+    function setRegistrationStatus(message, type = '') {
+        registrationStatus.textContent = message;
+        registrationStatus.className = 'registration-status' + (type ? ' ' + type : '');
+    }
+
+    function updateRegistrationSubmitState() {
+        registrationSubmit.disabled = !(acceptRulesEl.checked && paymentConfirmedEl.checked && currentRegionId);
+    }
+
+    paymentConfirmedEl.addEventListener('change', updateRegistrationSubmitState);
+
+    registrationForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!currentRegionId) {
+            setRegistrationStatus('لطفاً ابتدا منطقه کلاس در تهران را انتخاب کنید.', 'error');
+            return;
+        }
+        if (!acceptRulesEl.checked) {
+            setRegistrationStatus('ابتدا قوانین و شرایط کلاس را بپذیرید.', 'error');
+            return;
+        }
+        if (!paymentConfirmedEl.checked) {
+            setRegistrationStatus('پس از پرداخت، گزینه «پرداخت کردم» را تیک بزنید.', 'error');
+            return;
+        }
+
+        const fullName = document.getElementById('regFullName').value.trim();
+        const phone = document.getElementById('regPhone').value.trim();
+        const rawBirthShamsi = toEnglishDigits((document.getElementById('regBirthDateShamsi').value || '').trim());
+        const notes = document.getElementById('regNotes').value.trim() || null;
+        const styleNames = (appData.styles || []).filter(st => selectedStyles.includes(st.id)).map(st => st.name.trim()).filter(Boolean);
+
+        if (fullName.length < 2 || !phone || !styleNames.length) {
+            setRegistrationStatus('نام، شماره موبایل و حداقل یک سبک انتخاب‌شده لازم است.', 'error');
+            return;
+        }
+
+        let gregorianBirthDate = null;
+        let shamsiBirthTag = '';
+        if (rawBirthShamsi) {
+            const parts = rawBirthShamsi.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                gregorianBirthDate = jalaliToGregorian(parts[0], parts[1], parts[2]);
+            }
+            shamsiBirthTag = `[تولد شمسی: ${rawBirthShamsi}]\n`;
+        }
+
+        const activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
+        const regionTag = activeRegion ? `[منطقه کلاس: ${activeRegion.name}]\n` : '';
+        const combinedNotes = (regionTag + shamsiBirthTag + (notes || '')).trim() || null;
+
+        registrationSubmit.disabled = true;
+        registrationSubmit.textContent = 'در حال ارسال…';
+        setRegistrationStatus('');
+        try {
+            const response = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/submit_public_registration', {
+                method: 'POST',
+                headers: {
+                    'apikey': GYM20_SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json',
+                    'Accept-Profile': 'gym20',
+                    'Content-Profile': 'gym20'
+                },
+                body: JSON.stringify({
+                    p_full_name: fullName,
+                    p_phone: phone,
+                    p_birth_date: gregorianBirthDate,
+                    p_notes: combinedNotes,
+                    p_selected_styles: styleNames,
+                    p_age_group: currentAge,
+                    p_class_type: currentClassType,
+                    p_total_sessions: Number(currentSessions),
+                    p_payment_confirmed: true
+                })
+            });
+            const result = await response.json().catch(() => null);
+            if (!response.ok) {
+                const message = result && (result.message || result.details || result.hint);
+                throw new Error(message || 'ارسال درخواست ناموفق بود.');
+            }
+            registrationForm.reset();
+            acceptRulesEl.checked = false;
+            paymentConfirmedEl.checked = false;
+            paymentSectionEl.style.display = 'none';
+            updateRegistrationSubmitState();
+            setRegistrationStatus('درخواست ثبت‌نام شما با موفقیت ثبت شد. برای تأیید نهایی با شما تماس گرفته می‌شود.', 'success');
+        } catch (error) {
+            setRegistrationStatus(error.message || 'ارسال درخواست ناموفق بود. دوباره تلاش کنید.', 'error');
+        } finally {
+            registrationSubmit.textContent = (appData.buttons && appData.buttons.submitReg) || 'ارسال درخواست ثبت‌نام';
+            updateRegistrationSubmitState();
+        }
+    });
+
+    async function loadDataAndInit() {
+        try {
+            const res = await fetch('data.json?v=' + Date.now());
+            if (res.ok) {
+                appData = await res.json();
+                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+            } else {
+                throw new Error();
+            }
+        } catch (_) {
+            const saved = localStorage.getItem('sports_reg_data');
+            if (saved) {
+                try { appData = JSON.parse(saved); } catch (e) {}
+            }
+        }
+
+        if (appData.styles && appData.styles.length > 0) {
+            selectedStyles = [appData.styles[0].id];
+        }
+
+        renderRegionSelect();
+        renderStyles();
+        applyDataToUI();
+        calculatePrice();
+    }
+
+    loadDataAndInit();
+</script>
+</body>
+</html>
