@@ -8,7 +8,8 @@
     <meta http-equiv="Expires" content="0">
     <title>آکادمی تخصصی ورزش GYM20🤸</title>
     <style>
-        :root {
+        /* تم ۱: نئون سایبر (پیش‌فرض) */
+        :root, [data-color-theme="cyber"] {
             --bg: #0b0f19;
             --surface: #111827;
             --surface-card: #1f2937;
@@ -17,23 +18,83 @@
             --border: rgba(255, 255, 255, 0.08);
             --neon-blue: #00f3ff;
             --neon-purple: #bd00ff;
-            --neon-green: #10b981;
-            --neon-shadow: 0 0 12px rgba(0, 243, 255, 0.22);
-            --neon-purple-shadow: 0 0 15px rgba(189, 0, 255, 0.22);
+            --neon-shadow: 0 0 12px rgba(0, 243, 255, 0.25);
+            --neon-purple-shadow: 0 0 15px rgba(189, 0, 255, 0.25);
             --btn-active: linear-gradient(135deg, #00f3ff, #bd00ff);
             --radius-md: 12px;
             --radius-sm: 7px;
         }
-        [data-theme="light"] {
-            --bg: #f3f4f6;
-            --surface: #ffffff;
-            --surface-card: #ffffff;
-            --text-primary: #111827;
-            --text-secondary: #4b5563;
-            --border: rgba(0, 0, 0, 0.08);
-            --neon-shadow: 0 3px 12px rgba(0, 243, 255, 0.15);
-            --neon-purple-shadow: 0 3px 12px rgba(189, 0, 255, 0.15);
+
+        /* تم ۲: تایتان سرخ (حس مبارزه، بوکس و آدرنالین) */
+        [data-color-theme="crimson"] {
+            --bg: #0c0608;
+            --surface: #180b10;
+            --surface-card: #251017;
+            --text-primary: #fff1f2;
+            --text-secondary: #a88a91;
+            --border: rgba(255, 42, 75, 0.15);
+            --neon-blue: #ff2a4b;
+            --neon-purple: #ff6b00;
+            --neon-shadow: 0 0 14px rgba(255, 42, 75, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
+            --btn-active: linear-gradient(135deg, #ff2a4b, #ff7b00);
         }
+
+        /* تم ۳: سامورایی طلایی (مشکی کربن و طلای قهرمانی VIP) */
+        [data-color-theme="gold"] {
+            --bg: #0d0c0a;
+            --surface: #191610;
+            --surface-card: #262217;
+            --text-primary: #fefce8;
+            --text-secondary: #a39c87;
+            --border: rgba(245, 158, 11, 0.15);
+            --neon-blue: #fbbf24;
+            --neon-purple: #d97706;
+            --neon-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
+            --btn-active: linear-gradient(135deg, #fbbf24, #b45309);
+        }
+
+        /* تم ۴: نینجا فانتوم (مشکی شب و سبز فسفری زمردی) */
+        [data-color-theme="emerald"] {
+            --bg: #05100c;
+            --surface: #0b1f17;
+            --surface-card: #102d22;
+            --text-primary: #ecfdf5;
+            --text-secondary: #84a999;
+            --border: rgba(0, 255, 135, 0.15);
+            --neon-blue: #00ff87;
+            --neon-purple: #059669;
+            --neon-shadow: 0 0 14px rgba(0, 255, 135, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(5, 150, 105, 0.3);
+            --btn-active: linear-gradient(135deg, #00ff87, #059669);
+        }
+
+        /* تم ۵: کیهانی الکتریک (بنفش متالیک و ماژنتای استریت) */
+        [data-color-theme="amethyst"] {
+            --bg: #0e0717;
+            --surface: #1a0d2a;
+            --surface-card: #26133d;
+            --text-primary: #faf5ff;
+            --text-secondary: #a58ebb;
+            --border: rgba(192, 132, 252, 0.15);
+            --neon-blue: #c084fc;
+            --neon-purple: #ec4899;
+            --neon-shadow: 0 0 14px rgba(192, 132, 252, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            --btn-active: linear-gradient(135deg, #c084fc, #ec4899);
+        }
+
+        /* حالت روشن */
+        [data-theme="light"] {
+            --bg: #f3f4f6 !important;
+            --surface: #ffffff !important;
+            --surface-card: #ffffff !important;
+            --text-primary: #111827 !important;
+            --text-secondary: #4b5563 !important;
+            --border: rgba(0, 0, 0, 0.08) !important;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--bg); color: var(--text-primary); min-height: 100vh; display: flex; justify-content: center; padding: 0; transition: background 0.3s, color 0.3s; }
         .container { width: 100%; max-width: 420px; padding: 10px; padding-bottom: 40px; }
@@ -42,7 +103,7 @@
         .nav-actions { display: flex; gap: 6px; }
         .circle-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--surface); border: 1px solid var(--border); color: var(--text-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; transition: 0.2s; }
         .circle-btn:active { transform: scale(0.9); }
-        .hero-banner { position: relative; background: linear-gradient(135deg, rgba(0, 243, 255, 0.12), rgba(189, 0, 255, 0.12)), var(--surface); background-size: cover; background-position: center; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 10px; text-align: center; overflow: hidden; box-shadow: var(--neon-purple-shadow); margin-bottom: 10px; }
+        .hero-banner { position: relative; background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.2)), var(--surface); background-size: cover; background-position: center; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 10px; text-align: center; overflow: hidden; box-shadow: var(--neon-purple-shadow); margin-bottom: 10px; }
         .hero-title { font-size: 1.05rem; font-weight: 900; margin-bottom: 4px; background: linear-gradient(90deg, var(--neon-blue), #ffffff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         [data-theme="light"] .hero-title { background: linear-gradient(90deg, #0284c7, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .hero-subtitle { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5; }
@@ -57,38 +118,38 @@
         .pill-btn.active { background: var(--btn-active); color: #fff; border-color: transparent; box-shadow: var(--neon-shadow); }
         .styles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
         .style-item { background: var(--surface-card); border: 1px solid var(--border); padding: 7px 9px; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 0.76rem; font-weight: 600; transition: all 0.2s; }
-        .style-item.selected { border-color: var(--neon-blue); background: rgba(0, 243, 255, 0.08); color: var(--neon-blue); box-shadow: 0 0 8px rgba(0, 243, 255, 0.15); }
+        .style-item.selected { border-color: var(--neon-blue); background: rgba(255,255,255, 0.05); color: var(--neon-blue); box-shadow: 0 0 8px var(--neon-shadow); }
         .check-dot { width: 13px; height: 13px; border-radius: 3px; border: 1px solid var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 0.6rem; }
         .style-item.selected .check-dot { background: var(--neon-blue); border-color: var(--neon-blue); color: #000; }
-        .price-box { background: linear-gradient(135deg, rgba(0, 243, 255, 0.06), rgba(189, 0, 255, 0.06)); border: 1px dashed var(--neon-blue); border-radius: var(--radius-md); padding: 9px; margin-top: 10px; text-align: center; }
+        .price-box { background: linear-gradient(135deg, rgba(255,255,255, 0.04), rgba(0,0,0, 0.1)); border: 1px dashed var(--neon-blue); border-radius: var(--radius-md); padding: 9px; margin-top: 10px; text-align: center; }
         .price-details { font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 4px; }
         .total-price { font-size: 1.25rem; font-weight: 900; color: var(--neon-blue); letter-spacing: -0.5px; }
         [data-theme="light"] .total-price { color: #0284c7; }
-        .dynamic-rules-box { background: rgba(189, 0, 255, 0.06); border: 1px solid rgba(189, 0, 255, 0.25); border-radius: var(--radius-sm); padding: 9px; margin-bottom: 8px; }
+        .dynamic-rules-box { background: rgba(255,255,255, 0.04); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 9px; margin-bottom: 8px; }
         .dynamic-rule-badge { display: inline-block; font-size: 0.66rem; font-weight: 800; padding: 2px 7px; border-radius: 5px; background: var(--neon-purple); color: #fff; margin-bottom: 6px; }
         .dynamic-rule-text { font-size: 0.74rem; line-height: 1.7; color: var(--text-primary); white-space: pre-line; }
         .accordion-item { border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 6px; overflow: hidden; background: var(--surface-card); }
         .accordion-header { padding: 8px 10px; font-size: 0.76rem; font-weight: 600; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .accordion-content { padding: 0 10px; max-height: 0; overflow: hidden; font-size: 0.73rem; color: var(--text-secondary); line-height: 1.6; transition: max-height 0.3s ease, padding 0.3s ease; white-space: pre-line; }
         .accordion-item.open .accordion-content { padding: 8px 10px 10px; max-height: 400px; }
-        .rule-agreement { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 8px; padding: 8px; border-radius: var(--radius-sm); background: rgba(189, 0, 255, 0.06); border: 1px solid rgba(189, 0, 255, 0.2); font-size: 0.74rem; font-weight: 600; }
+        .rule-agreement { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 8px; padding: 8px; border-radius: var(--radius-sm); background: rgba(255,255,255, 0.04); border: 1px solid var(--border); font-size: 0.74rem; font-weight: 600; }
         .rule-agreement input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--neon-purple); cursor: pointer; }
         .payment-reveal { display: none; margin-top: 10px; animation: fadeIn 0.4s ease; }
-        .bank-card { background: linear-gradient(135deg, #1e1b4b, #311042); border: 1px solid rgba(189, 0, 255, 0.4); border-radius: var(--radius-md); padding: 13px 11px; color: #fff; box-shadow: 0 6px 20px rgba(189, 0, 255, 0.2); }
+        .bank-card { background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(0,0,0,0.3)), var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 13px 11px; color: #fff; box-shadow: var(--neon-purple-shadow); }
         .bank-name { font-size: 0.7rem; opacity: 0.8; margin-bottom: 8px; display: flex; justify-content: space-between; }
-        .card-number { font-size: 1.15rem; font-weight: 800; letter-spacing: 2px; direction: ltr; text-align: center; margin-bottom: 6px; font-family: monospace; color: #00f3ff; }
+        .card-number { font-size: 1.15rem; font-weight: 800; letter-spacing: 2px; direction: ltr; text-align: center; margin-bottom: 6px; font-family: monospace; color: var(--neon-blue); }
         .card-owner { font-size: 0.76rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
         .payment-actions-row { display: flex; gap: 5px; margin-top: 6px; }
         .pay-action-btn { flex: 1; min-width: 0; padding: 8px 2px; border-radius: var(--radius-sm); font-size: 0.7rem; font-weight: 800; text-align: center; text-decoration: none; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; white-space: nowrap; transition: 0.2s; line-height: 1.2; }
         .pay-action-btn:active { transform: scale(0.94); }
-        .online-pay-btn { background: linear-gradient(135deg, #10b981, #00f3ff); color: #000; box-shadow: 0 0 10px rgba(16, 185, 129, 0.35); }
+        .online-pay-btn { background: var(--btn-active); color: #fff; box-shadow: var(--neon-shadow); }
         .copy-card-btn { background: var(--neon-blue); color: #000; }
         .send-receipt-btn { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.25); color: #fff; }
         .social-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 8px; }
         .social-btn { padding: 8px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); text-decoration: none; text-align: center; font-size: 0.72rem; font-weight: 600; }
-        .music-channel-card { background: linear-gradient(135deg, rgba(189, 0, 255, 0.1), rgba(0, 243, 255, 0.06)), var(--surface); border: 1px solid rgba(189, 0, 255, 0.35); border-radius: var(--radius-md); padding: 10px 12px; margin-top: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; box-shadow: 0 4px 15px rgba(189, 0, 255, 0.16); transition: 0.2s ease; }
+        .music-channel-card { background: linear-gradient(135deg, rgba(255,255,255, 0.04), rgba(0,0,0, 0.2)), var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px 12px; margin-top: 10px; display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; box-shadow: var(--neon-purple-shadow); transition: 0.2s ease; }
         .music-channel-card:active { transform: scale(0.98); border-color: var(--neon-blue); }
-        .music-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); box-shadow: 0 0 8px rgba(189, 0, 255, 0.4); flex-shrink: 0; background: #1f2937; }
+        .music-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); box-shadow: var(--neon-purple-shadow); flex-shrink: 0; background: #1f2937; }
         .music-info { flex: 1; min-width: 0; }
         .music-title { font-size: 0.82rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 4px; margin-bottom: 2px; }
         .music-handle { font-size: 0.7rem; color: var(--neon-blue); font-weight: 600; direction: ltr; text-align: right; display: inline-block; }
@@ -127,15 +188,36 @@
         .registration-status.error { color: #f87171; }
         .registration-status.success { color: #10b981; }
         .copy-btn { width: 100%; padding: 8px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-weight: 800; font-size: 0.76rem; }
+
+        /* کارت‌های انتخاب تم در پنل */
+        .theme-card-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--surface-card);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .theme-card-option:active { transform: scale(0.98); }
+        .theme-card-option.selected {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-shadow);
+        }
+        .theme-color-dots { display: flex; gap: 4px; }
+        .theme-color-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,0.5); }
     </style>
 </head>
-<body>
+<body data-color-theme="cyber">
 
 <div class="container">
     <div class="top-nav">
         <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش GYM20🤸</div>
         <div class="nav-actions">
-            <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
+            <button class="circle-btn" id="themeBtn" title="تغییر حالت روشن/تاریک">🌙</button>
             <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
         </div>
     </div>
@@ -192,7 +274,7 @@
             </div>
         </div>
 
-        <!-- فرم ثبت‌نام هنرجو (سه فیلد در یک ردیف) -->
+        <!-- فرم ثبت‌نام هنرجو -->
         <div class="section-card" id="publicRegistrationCard">
             <div class="section-header" id="txt_regTitle">📝 فرم ثبت‌نام هنرجو</div>
             <form id="publicRegistrationForm">
@@ -279,7 +361,7 @@
         </div>
     </div>
 
-    <!-- بخش ۳: شبکه‌های ارتباطی و کانال موزیک (ثابت در انتهای صفحه) -->
+    <!-- بخش ۳: شبکه‌های ارتباطی و کانال موزیک -->
     <div class="section-card" id="contactsAndMusicSection">
         <div class="section-header" id="txt_contactsSection">💬 ۳. راه‌های ارتباطی با مربی</div>
         <div class="social-links">
@@ -304,7 +386,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت با تب اختصاصی ویرایش متن‌ها و دکمه‌ها -->
+<!-- مودال مدیریت هوشمند با تب تم‌های جدید -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -313,7 +395,8 @@
         </div>
 
         <div class="admin-tabs">
-            <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn active" onclick="switchAdminTab('themesTab')">🎨 تم سایت</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
@@ -322,8 +405,68 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <!-- تب ۱: مناطق تهران -->
-        <div class="admin-panel-tab active" id="regionsTab">
+        <!-- تب انتخاب تم -->
+        <div class="admin-panel-tab active" id="themesTab">
+            <div style="font-size:0.73rem; color:var(--neon-blue); font-weight:bold; margin-bottom:8px;">انتخاب تم رنگی و استایل سایت:</div>
+            
+            <div class="theme-card-option" onclick="selectTheme('cyber')" id="themeOpt_cyber">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">آبی فیروزه‌ای و بنفش سایبری نئونی</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#00f3ff;"></span>
+                    <span class="theme-color-dot" style="background:#bd00ff;"></span>
+                </div>
+            </div>
+
+            <div class="theme-card-option" onclick="selectTheme('crimson')" id="themeOpt_crimson">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">🥊 تایتان سرخ (Red Titan)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">قرمز آتشی مسابقه‌ای، نارنجی و حس مبارزه</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#ff2a4b;"></span>
+                    <span class="theme-color-dot" style="background:#ff7b00;"></span>
+                </div>
+            </div>
+
+            <div class="theme-card-option" onclick="selectTheme('gold')" id="themeOpt_gold">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">👑 سامورایی طلایی (Imperial Gold)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">طلای قهرمانی متالیک، مشکی کربنی و VIP</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#fbbf24;"></span>
+                    <span class="theme-color-dot" style="background:#d97706;"></span>
+                </div>
+            </div>
+
+            <div class="theme-card-option" onclick="selectTheme('emerald')" id="themeOpt_emerald">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">🥷 نینجا فانتوم (Ninja Shadow)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">سبز فسفری زمردی، چابکی و پارکور</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#00ff87;"></span>
+                    <span class="theme-color-dot" style="background:#059669;"></span>
+                </div>
+            </div>
+
+            <div class="theme-card-option" onclick="selectTheme('amethyst')" id="themeOpt_amethyst">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">🔮 کیهانی الکتریک (Cyber Amethyst)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">بنفش درخشان و ماژنتای متالیک مدرن</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#c084fc;"></span>
+                    <span class="theme-color-dot" style="background:#ec4899;"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- تب مناطق تهران -->
+        <div class="admin-panel-tab" id="regionsTab">
             <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
             <div class="admin-region-card">
                 <div class="admin-input-group">
@@ -350,7 +493,7 @@
             <div id="adminRegionsListContainer" style="max-height:220px; overflow-y:auto;"></div>
         </div>
 
-        <!-- تب ۲: سبک‌ها -->
+        <!-- تب سبک‌ها -->
         <div class="admin-panel-tab" id="stylesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
@@ -363,7 +506,7 @@
             <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
         </div>
 
-        <!-- تب ۳: متن‌ها و دکمه‌ها -->
+        <!-- تب متن‌ها و دکمه‌ها -->
         <div class="admin-panel-tab" id="textsTab">
             <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">🔘 متن دکمه‌های سایت:</div>
             <div class="admin-input-group">
@@ -410,7 +553,7 @@
             </div>
         </div>
 
-        <!-- تب ۴: ضرایب کلاس و جلسات -->
+        <!-- تب ضرایب کلاس و جلسات -->
         <div class="admin-panel-tab" id="pricesTab">
             <div style="display:flex; gap:5px; margin-bottom:8px;">
                 <div class="admin-input-group" style="flex:1;">
@@ -442,7 +585,7 @@
             </div>
         </div>
 
-        <!-- تب ۵: قوانین -->
+        <!-- تب قوانین -->
         <div class="admin-panel-tab" id="rulesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
@@ -463,7 +606,7 @@
             </div>
         </div>
 
-        <!-- تب ۶: بنر بالا -->
+        <!-- تب بنر بالا -->
         <div class="admin-panel-tab" id="bannerTab">
             <div class="admin-input-group">
                 <label>متن لوگوی بالای صفحه:</label>
@@ -483,7 +626,7 @@
             </div>
         </div>
 
-        <!-- تب ۷: کارت و پرداخت -->
+        <!-- تب کارت و پرداخت -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین:</label>
@@ -524,7 +667,6 @@
             </div>
         </div>
 
-        <!-- دکمه ذخیره مستقیم در فایل data.json گیت‌هاب -->
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active); color:#fff; font-size:0.85rem; padding:10px; margin-top:10px; font-weight:800;">💾 ذخیره</button>
     </div>
 </div>
@@ -536,6 +678,7 @@
     const DATA_FILE_PATH = "data.json";
 
     let appData = {};
+    let selectedThemeKey = "cyber";
     let currentRegionId = "";
     let currentAge = "adult";
     let currentClassType = "normal";
@@ -551,6 +694,15 @@
     const acceptRulesEl = document.getElementById('acceptRules');
     const paymentSectionEl = document.getElementById('paymentSection');
     const toastEl = document.getElementById('toast');
+
+    // تابع انتخاب تم با پیش‌نمایش درجا
+    function selectTheme(themeKey) {
+        selectedThemeKey = themeKey;
+        document.body.setAttribute('data-color-theme', themeKey);
+        document.querySelectorAll('.theme-card-option').forEach(el => el.classList.remove('selected'));
+        const activeCard = document.getElementById('themeOpt_' + themeKey);
+        if (activeCard) activeCard.classList.add('selected');
+    }
 
     function toEnglishDigits(str) {
         if (!str) return '';
@@ -939,6 +1091,8 @@
     closeAdmin.onclick = () => { adminModal.style.display = 'none'; };
 
     function loadAdminForm() {
+        selectTheme(appData.theme || 'cyber');
+
         currentEditingRuleKey = document.getElementById('ruleSelector').value;
         document.getElementById('activeRuleTextarea').value = (appData.rules && appData.rules[currentEditingRuleKey]) || '';
 
@@ -954,7 +1108,6 @@
             document.getElementById('editRate12').value = appData.sessionRates["12"] || 1.5;
         }
 
-        // لود متن دکمه‌ها
         const btnObj = appData.buttons || {};
         document.getElementById('editBtnOnlinePay').value = btnObj.onlinePay || '💳 پرداخت آنلاین';
         document.getElementById('editBtnCopyCard').value = btnObj.copyCard || '📋 کپی کارت';
@@ -962,7 +1115,6 @@
         document.getElementById('editBtnSubmitReg').value = btnObj.submitReg || 'ارسال درخواست ثبت‌نام';
         document.getElementById('editBtnMusicJoin').value = btnObj.musicJoin || 'عضویت 🎵';
 
-        // لود تیترها و عناوین
         const titleObj = appData.titles || {};
         document.getElementById('editTitleRegionSection').value = titleObj.regionSection || '📍 مرحله اول: انتخاب منطقه در تهران';
         document.getElementById('editTitleStylesSection').value = titleObj.stylesSection || '🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها';
@@ -970,7 +1122,6 @@
         document.getElementById('editTitleRulesAgreement').value = titleObj.rulesAgreement || 'قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.';
         document.getElementById('editTitlePaymentConfirmed').value = titleObj.paymentConfirmed || 'پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.';
 
-        // لود کارت و تماس
         const cardObj = appData.card || {};
         document.getElementById('editCardNum').value = cardObj.cleanNumber || '';
         document.getElementById('editCardOwner').value = cardObj.owner || '';
@@ -996,6 +1147,8 @@
     }
 
     function collectFormData() {
+        appData.theme = selectedThemeKey || 'cyber';
+
         if (!appData.rules) appData.rules = {};
         appData.rules[currentEditingRuleKey] = document.getElementById('activeRuleTextarea').value;
 
@@ -1066,7 +1219,7 @@
         }).join(''));
     }
 
-    // ذخیره فقط در فایل data.json گیت‌هاب (کدهای index.html دست‌نخورده می‌مانند)
+    // ذخیره فقط روی فایل data.json گیت‌هاب بدون بازنویسی کدهای اصلی
     document.getElementById('autoCommitBtn').onclick = async () => {
         const btn = document.getElementById('autoCommitBtn');
         const oldText = btn.innerText;
@@ -1076,7 +1229,6 @@
         try {
             collectFormData();
 
-            // ۱. دریافت فایل data.json فعلی برای گرفتن SHA
             const getRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`, {
                 headers: {
                     'Authorization': `Bearer ${BUILTIN_TOKEN}`,
@@ -1085,14 +1237,13 @@
             });
 
             if (!getRes.ok) {
-                throw new Error('فایل data.json در مخزن یافت نشد. لطفاً طبق مرحله اول آن را بسازید.');
+                throw new Error('فایل data.json در گیت‌هاب یافت نشد. لطفاً طبق مرحله ۱ آن را بسازید.');
             }
 
             const fileData = await getRes.json();
             const newJsonString = JSON.stringify(appData, null, 2);
             const newBase64 = b64EncodeUnicode(newJsonString);
 
-            // ۲. کامیت مستقیم فقط روی data.json
             const putRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`, {
                 method: 'PUT',
                 headers: {
@@ -1101,7 +1252,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: "به‌روزرسانی تنظیمات و متون از پنل مدیریت",
+                    message: "به‌روزرسانی تم، متون و تنظیمات از پنل مدیریت",
                     content: newBase64,
                     sha: fileData.sha,
                     branch: "main"
@@ -1116,7 +1267,7 @@
             applyDataToUI();
             calculatePrice();
             adminModal.style.display = 'none';
-            alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!\nتمام متن‌ها، دکمه‌ها و قیمت‌ها آنلاین به‌روزرسانی شدند.');
+            alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!\nتم انتخابی و تمام تنظیمات شما برای همه هنرجویان اعمال شدند.');
 
         } catch (err) {
             alert('❌ خطا: ' + err.message);
@@ -1127,6 +1278,11 @@
     };
 
     function applyDataToUI() {
+        // اعمال تم انتخابی
+        const activeTheme = appData.theme || 'cyber';
+        selectedThemeKey = activeTheme;
+        document.body.setAttribute('data-color-theme', activeTheme);
+
         document.getElementById('brandTag').innerText = appData.brandTag || '';
         document.getElementById('bannerTitle').innerText = appData.bannerTitle || '';
         document.getElementById('bannerSubtitle').innerText = appData.bannerSubtitle || '';
@@ -1135,7 +1291,6 @@
             document.getElementById('heroBanner').style.backgroundImage = `linear-gradient(135deg, rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('${appData.bannerBg}')`;
         }
 
-        // اعمال متن دکمه‌ها
         const btnObj = appData.buttons || {};
         if (btnObj.onlinePay) document.getElementById('btn_onlinePay').innerText = btnObj.onlinePay;
         if (btnObj.copyCard) document.getElementById('btn_copyCard').innerText = btnObj.copyCard;
@@ -1143,7 +1298,6 @@
         if (btnObj.submitReg) document.getElementById('btn_submitReg').innerText = btnObj.submitReg;
         if (btnObj.musicJoin) document.getElementById('btn_musicJoin').innerText = btnObj.musicJoin;
 
-        // اعمال عناوین و تیترها
         const titleObj = appData.titles || {};
         if (titleObj.regionSection) document.getElementById('txt_regionSection').innerText = titleObj.regionSection;
         if (titleObj.regionIntro) document.getElementById('txt_regionIntro').innerText = titleObj.regionIntro;
@@ -1166,7 +1320,6 @@
         if (titleObj.paymentConfirmed) document.getElementById('txt_paymentConfirmed').innerText = titleObj.paymentConfirmed;
         if (titleObj.contactsSection) document.getElementById('txt_contactsSection').innerText = titleObj.contactsSection;
 
-        // کارت پرداخت
         const cardObj = appData.card || {};
         document.getElementById('cardNumberText').innerText = cardObj.number || '';
         document.getElementById('cardOwnerText').innerText = cardObj.owner || '';
@@ -1175,157 +1328,4 @@
         if (cardObj.gatewayLink && cardObj.gatewayLink.length > 5) {
             gatewayBtn.href = cardObj.gatewayLink;
             gatewayBtn.style.display = 'flex';
-        } else {
-            gatewayBtn.style.display = 'none';
-        }
-
-        // راه‌های ارتباطی
-        const contactObj = appData.contact || {};
-        document.getElementById('instaLink').href = contactObj.instagram || '#';
-        document.getElementById('teleLink').href = contactObj.telegram || '#';
-        document.getElementById('phoneLink').href = 'tel:' + (contactObj.phone || '');
-        document.getElementById('sendReceiptBtn').href = 'sms:' + (contactObj.phone || '') + '?body=سلام استاد، فیش واریزی ارسال شد.';
-        
-        // کانال موزیک
-        const musicObj = appData.musicChannel || {};
-        document.getElementById('musicTitleText').innerText = musicObj.name || '';
-        document.getElementById('musicHandleText').innerText = musicObj.id || '';
-        document.getElementById('musicCardLink').href = musicObj.link || '#';
-        document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
-
-        updateDynamicRules();
-    }
-
-    const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co";
-    const GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
-    const registrationForm = document.getElementById('publicRegistrationForm');
-    const registrationStatus = document.getElementById('regStatus');
-    const registrationSubmit = document.getElementById('regSubmitBtn');
-    const paymentConfirmedEl = document.getElementById('regPaymentConfirmed');
-
-    function setRegistrationStatus(message, type = '') {
-        registrationStatus.textContent = message;
-        registrationStatus.className = 'registration-status' + (type ? ' ' + type : '');
-    }
-
-    function updateRegistrationSubmitState() {
-        registrationSubmit.disabled = !(acceptRulesEl.checked && paymentConfirmedEl.checked && currentRegionId);
-    }
-
-    paymentConfirmedEl.addEventListener('change', updateRegistrationSubmitState);
-
-    registrationForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        if (!currentRegionId) {
-            setRegistrationStatus('لطفاً ابتدا منطقه کلاس در تهران را انتخاب کنید.', 'error');
-            return;
-        }
-        if (!acceptRulesEl.checked) {
-            setRegistrationStatus('ابتدا قوانین و شرایط کلاس را بپذیرید.', 'error');
-            return;
-        }
-        if (!paymentConfirmedEl.checked) {
-            setRegistrationStatus('پس از پرداخت، گزینه «پرداخت کردم» را تیک بزنید.', 'error');
-            return;
-        }
-
-        const fullName = document.getElementById('regFullName').value.trim();
-        const phone = document.getElementById('regPhone').value.trim();
-        const rawBirthShamsi = toEnglishDigits((document.getElementById('regBirthDateShamsi').value || '').trim());
-        const notes = document.getElementById('regNotes').value.trim() || null;
-        const styleNames = (appData.styles || []).filter(st => selectedStyles.includes(st.id)).map(st => st.name.trim()).filter(Boolean);
-
-        if (fullName.length < 2 || !phone || !styleNames.length) {
-            setRegistrationStatus('نام، شماره موبایل و حداقل یک سبک انتخاب‌شده لازم است.', 'error');
-            return;
-        }
-
-        let gregorianBirthDate = null;
-        let shamsiBirthTag = '';
-        if (rawBirthShamsi) {
-            const parts = rawBirthShamsi.split(/[\/\-\.]/);
-            if (parts.length === 3) {
-                gregorianBirthDate = jalaliToGregorian(parts[0], parts[1], parts[2]);
-            }
-            shamsiBirthTag = `[تولد شمسی: ${rawBirthShamsi}]\n`;
-        }
-
-        const activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
-        const regionTag = activeRegion ? `[منطقه کلاس: ${activeRegion.name}]\n` : '';
-        const combinedNotes = (regionTag + shamsiBirthTag + (notes || '')).trim() || null;
-
-        registrationSubmit.disabled = true;
-        registrationSubmit.textContent = 'در حال ارسال…';
-        setRegistrationStatus('');
-        try {
-            const response = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/submit_public_registration', {
-                method: 'POST',
-                headers: {
-                    'apikey': GYM20_SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                    'Content-Type': 'application/json',
-                    'Accept-Profile': 'gym20',
-                    'Content-Profile': 'gym20'
-                },
-                body: JSON.stringify({
-                    p_full_name: fullName,
-                    p_phone: phone,
-                    p_birth_date: gregorianBirthDate,
-                    p_notes: combinedNotes,
-                    p_selected_styles: styleNames,
-                    p_age_group: currentAge,
-                    p_class_type: currentClassType,
-                    p_total_sessions: Number(currentSessions),
-                    p_payment_confirmed: true
-                })
-            });
-            const result = await response.json().catch(() => null);
-            if (!response.ok) {
-                const message = result && (result.message || result.details || result.hint);
-                throw new Error(message || 'ارسال درخواست ناموفق بود.');
-            }
-            registrationForm.reset();
-            acceptRulesEl.checked = false;
-            paymentConfirmedEl.checked = false;
-            paymentSectionEl.style.display = 'none';
-            updateRegistrationSubmitState();
-            setRegistrationStatus('درخواست ثبت‌نام شما با موفقیت ثبت شد. برای تأیید نهایی با شما تماس گرفته می‌شود.', 'success');
-        } catch (error) {
-            setRegistrationStatus(error.message || 'ارسال درخواست ناموفق بود. دوباره تلاش کنید.', 'error');
-        } finally {
-            registrationSubmit.textContent = (appData.buttons && appData.buttons.submitReg) || 'ارسال درخواست ثبت‌نام';
-            updateRegistrationSubmitState();
-        }
-    });
-
-    // بارگذاری داده‌ها از فایل مستقل data.json
-    async function loadDataAndInit() {
-        try {
-            const res = await fetch('data.json?v=' + Date.now());
-            if (res.ok) {
-                appData = await res.json();
-                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-            } else {
-                throw new Error();
-            }
-        } catch (_) {
-            const saved = localStorage.getItem('sports_reg_data');
-            if (saved) {
-                try { appData = JSON.parse(saved); } catch (e) {}
-            }
-        }
-
-        if (appData.styles && appData.styles.length > 0) {
-            selectedStyles = [appData.styles[0].id];
-        }
-
-        renderRegionSelect();
-        renderStyles();
-        applyDataToUI();
-        calculatePrice();
-    }
-
-    loadDataAndInit();
-</script>
-</body>
-</html>
+        } el
