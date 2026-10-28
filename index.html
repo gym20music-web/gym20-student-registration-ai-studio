@@ -249,22 +249,22 @@
         .toast.show { transform: translateX(-50%) translateY(0); }
         .admin-modal { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(6px); display: none; align-items: center; justify-content: center; padding: 10px; z-index: 2000; }
         .admin-content { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); width: 100%; max-width: 390px; max-height: 88vh; overflow-y: auto; padding: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7); }
-        .admin-tabs { display: flex; gap: 4px; margin-bottom: 10px; border-bottom: 1px solid var(--border); padding-bottom: 6px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+        .admin-tabs { display: flex; gap: 4px; margin-bottom: 8px; border-bottom: 1px solid var(--border); padding-bottom: 6px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .admin-tabs::-webkit-scrollbar { display: none; }
-        .admin-tab-btn { flex: none; padding: 6px 9px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.68rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
+        .admin-tab-btn { flex: none; padding: 5px 8px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.66rem; font-weight: 700; cursor: pointer; text-align: center; white-space: nowrap; transition: 0.2s; }
         .admin-tab-btn.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); }
         .admin-panel-tab { display: none; }
         .admin-panel-tab.active { display: block; }
-        .admin-input-group { margin-bottom: 8px; }
-        .admin-input-group label { display: block; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 3px; font-weight: 600; }
-        .admin-input-group input, .admin-input-group textarea, .admin-select { width: 100%; padding: 6px 8px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.76rem; outline: none; }
+        .admin-input-group { margin-bottom: 6px; }
+        .admin-input-group label { display: block; font-size: 0.65rem; color: var(--text-secondary); margin-bottom: 2px; font-weight: 600; }
+        .admin-input-group input, .admin-input-group textarea, .admin-select { width: 100%; padding: 5px 7px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.72rem; outline: none; }
         .admin-input-group input:focus, .admin-input-group textarea:focus, .admin-select:focus { border-color: var(--neon-blue); }
         .admin-style-row { display: flex; gap: 5px; align-items: center; margin-bottom: 5px; }
-        .admin-style-row input { flex: 1; padding: 6px 8px; font-size: 0.75rem; background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); outline: none; }
-        .delete-style-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-sm); width: 30px; height: 30px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; flex: none; }
-        .admin-region-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; margin-bottom: 8px; }
-        .admin-region-card-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 6px; }
-        .admin-region-prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+        .admin-style-row input { flex: 1; padding: 5px 7px; font-size: 0.72rem; background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); outline: none; }
+        .delete-style-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-sm); width: 28px; height: 28px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex: none; }
+        .admin-region-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 9px; margin-bottom: 6px; }
+        .admin-region-card-header { display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 5px; }
+        .admin-region-prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
         @media (max-width: 480px) { .admin-region-prices { grid-template-columns: 1fr; } }
         .reg-three-cols { display: grid; grid-template-columns: 1.15fr 1fr 0.95fr; gap: 5px; margin-top: 4px; }
         .reg-field { min-width: 0; }
@@ -279,26 +279,41 @@
         .registration-status.error { color: #f87171; }
         .registration-status.success { color: #10b981; }
         .copy-btn { width: 100%; padding: 8px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-weight: 800; font-size: 0.76rem; }
-
-        .theme-card-option {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--surface-card);
-            border: 2px solid var(--border);
-            border-radius: var(--radius-sm);
-            padding: 8px 10px;
-            margin-bottom: 6px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+        .theme-card-option { display: flex; align-items: center; justify-content: space-between; background: var(--surface-card); border: 2px solid var(--border); border-radius: var(--radius-sm); padding: 7px 9px; margin-bottom: 5px; cursor: pointer; transition: all 0.2s; }
         .theme-card-option:active { transform: scale(0.98); }
-        .theme-card-option.selected {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 10px var(--neon-shadow);
-        }
+        .theme-card-option.selected { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-shadow); }
         .theme-color-dots { display: flex; gap: 4px; }
-        .theme-color-dot { width: 16px; height: 16px; border-radius: 50%; box-shadow: 0 0 6px rgba(0,0,0,0.5); }
+        .theme-color-dot { width: 15px; height: 15px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+
+        /* زیرتب‌های تمیز برای دسته‌بندی متن‌ها بدون شلوغی */
+        .sub-tab-group {
+            display: flex;
+            gap: 3px;
+            margin-bottom: 8px;
+            background: rgba(255,255,255,0.03);
+            padding: 3px;
+            border-radius: var(--radius-sm);
+        }
+        .sub-tab-btn {
+            flex: 1;
+            padding: 4px 2px;
+            border-radius: 4px;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.63rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: center;
+        }
+        .sub-tab-btn.active {
+            background: var(--surface-card);
+            color: var(--neon-blue);
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+        .sub-text-panel { display: none; }
+        .sub-text-panel.active { display: block; }
     </style>
 </head>
 <body data-color-theme="cyber">
@@ -317,7 +332,7 @@
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
     </div>
 
-    <!-- انتخاب منطقه در تهران (بدون عبارت مرحله اول و کاملاً خلاصه) -->
+    <!-- انتخاب منطقه در تهران -->
     <div class="section-card" id="regionSelectionCard">
         <div class="section-header" id="txt_regionSection">📍 انتخاب منطقه در تهران</div>
         <p id="txt_regionIntro" style="font-size:0.72rem; color:var(--text-secondary); margin-bottom:8px; line-height:1.6;">
@@ -476,7 +491,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند -->
+<!-- مودال مدیریت هوشمند با تفکیک بدون شلوغی متن‌ها -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -495,14 +510,14 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <!-- تب انتخاب تم -->
+        <!-- تب تم‌ها -->
         <div class="admin-panel-tab active" id="themesTab">
-            <div style="font-size:0.73rem; color:var(--neon-blue); font-weight:bold; margin-bottom:8px;">انتخاب تم رنگی و استایل سایت:</div>
+            <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">انتخاب تم رنگی و استایل سایت:</div>
             
             <div class="theme-card-option" onclick="selectTheme('noctech')" id="themeOpt_noctech">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">🛰️ رادار تک (NOC Tech - آبی یخی و سرمه‌ای)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">سرمه‌ای هوانوردی و دکمه‌های آبی آسمانی (مشابه تصویر)</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">🛰️ رادار تک (NOC Tech)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">سرمه‌ای هوانوردی و دکمه‌های آبی آسمانی یخی</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#070d18; border:1px solid #67c5db;"></span>
@@ -512,8 +527,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('obsidian')" id="themeOpt_obsidian">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">💎 مشکی دارک شیشه‌ای (Obsidian Glass)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">افکت شیشه‌ای مات، مشکی عمیق و نور الماسی</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">💎 مشکی دارک شیشه‌ای (Obsidian Glass)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">افکت شیشه‌ای مات، مشکی عمیق و نور الماسی</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#030407; border:1px solid #38bdf8;"></span>
@@ -523,8 +538,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('bumblebee')" id="themeOpt_bumblebee">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">⚡ زرد و مشکی مدرن (Cyber Volt)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">مشکی تیره با زرد صاعقه‌ای؛ حس انرژی و سرعت</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">⚡ زرد و مشکی مدرن (Cyber Volt)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">مشکی تیره با زرد صاعقه‌ای؛ حس انرژی و سرعت</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#09090b;"></span>
@@ -534,8 +549,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('stealth')" id="themeOpt_stealth">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">🛡️ طوسی تیتانیوم خفن (Stealth Gray)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">استیل مات، گرافیت نظامی و نقره‌ای مدرن</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">🛡️ طوسی تیتانیوم خفن (Stealth Gray)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">استیل مات، گرافیت نظامی و نقره‌ای مدرن</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#191c23;"></span>
@@ -545,8 +560,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('cyber')" id="themeOpt_cyber">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">آبی فیروزه‌ای و بنفش سایبری نئونی</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">آبی فیروزه‌ای و بنفش سایبری نئونی</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#00f3ff;"></span>
@@ -556,8 +571,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('crimson')" id="themeOpt_crimson">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">🥊 تایتان سرخ (Red Titan)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">قرمز آتشی مسابقه‌ای، نارنجی و حس مبارزه</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">🥊 تایتان سرخ (Red Titan)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">قرمز آتشی مسابقه‌ای، نارنجی و حس مبارزه</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#ff2a4b;"></span>
@@ -567,8 +582,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('gold')" id="themeOpt_gold">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">👑 سامورایی طلایی (Imperial Gold)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">طلای قهرمانی متالیک، مشکی کربنی و VIP</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">👑 سامورایی طلایی (Imperial Gold)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">طلای قهرمانی متالیک، مشکی کربنی و VIP</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#fbbf24;"></span>
@@ -578,8 +593,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('emerald')" id="themeOpt_emerald">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">🥷 نینجا فانتوم (Ninja Shadow)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">سبز فسفری زمردی، چابکی و پارکور</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">🥷 نینجا فانتوم (Ninja Shadow)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">سبز فسفری زمردی، چابکی و پارکور</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#00ff87;"></span>
@@ -589,8 +604,8 @@
 
             <div class="theme-card-option" onclick="selectTheme('amethyst')" id="themeOpt_amethyst">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">🔮 کیهانی الکتریک (Cyber Amethyst)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">بنفش درخشان و ماژنتای متالیک مدرن</div>
+                    <div style="font-size:0.75rem; font-weight:bold;">🔮 کیهانی الکتریک (Cyber Amethyst)</div>
+                    <div style="font-size:0.63rem; color:var(--text-secondary);">بنفش درخشان و ماژنتای متالیک مدرن</div>
                 </div>
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#c084fc;"></span>
@@ -601,7 +616,7 @@
 
         <!-- تب مناطق تهران -->
         <div class="admin-panel-tab" id="regionsTab">
-            <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
+            <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:5px;">افزودن منطقه جدید در تهران:</div>
             <div class="admin-region-card">
                 <div class="admin-input-group">
                     <label>نام منطقه:</label>
@@ -621,10 +636,10 @@
                         <input type="text" id="newRegionExtraPrice" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
                     </div>
                 </div>
-                <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:7px; font-size:0.75rem; margin-top:4px;">➕ افزودن این منطقه</button>
+                <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:6px; font-size:0.72rem; margin-top:3px;">➕ افزودن این منطقه</button>
             </div>
-            <div style="font-size:0.72rem; color:var(--neon-purple); font-weight:bold; margin:8px 0 4px;">لیست مناطق تهران:</div>
-            <div id="adminRegionsListContainer" style="max-height:220px; overflow-y:auto;"></div>
+            <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:bold; margin:6px 0 3px;">لیست مناطق تهران:</div>
+            <div id="adminRegionsListContainer" style="max-height:200px; overflow-y:auto;"></div>
         </div>
 
         <!-- تب سبک‌ها -->
@@ -633,67 +648,126 @@
                 <label style="color:var(--neon-blue);">افزودن سبک جدید:</label>
                 <div style="display:flex; gap:5px;">
                     <input type="text" id="newStyleNameInput" placeholder="نام سبک جدید (مثلاً: ووشو 🥋)" style="flex:1;">
-                    <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:6px 12px; font-size:0.75rem; flex:none;">➕ افزودن</button>
+                    <button type="button" class="pill-btn active" onclick="addNewStyle()" style="padding:5px 10px; font-size:0.72rem; flex:none;">➕ افزودن</button>
                 </div>
             </div>
-            <div style="font-size:0.7rem; color:var(--neon-purple); font-weight:700; margin:8px 0 4px;">لیست سبک‌ها (ویرایش یا حذف):</div>
+            <div style="font-size:0.68rem; color:var(--neon-purple); font-weight:700; margin:6px 0 3px;">لیست سبک‌ها (ویرایش یا حذف):</div>
             <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
         </div>
 
-        <!-- تب متن‌ها و دکمه‌ها -->
+        <!-- تب متن‌ها و دکمه‌ها (دسته‌بندی شده و فوق‌العاده مرتب بدون شلوغی) -->
         <div class="admin-panel-tab" id="textsTab">
-            <div style="font-size:0.72rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">🔘 متن دکمه‌های سایت:</div>
-            <div class="admin-input-group">
-                <label>دکمه پرداخت آنلاین:</label>
-                <input type="text" id="editBtnOnlinePay">
-            </div>
-            <div class="admin-input-group">
-                <label>دکمه کپی کارت:</label>
-                <input type="text" id="editBtnCopyCard">
-            </div>
-            <div class="admin-input-group">
-                <label>دکمه ارسال فیش:</label>
-                <input type="text" id="editBtnSendReceipt">
-            </div>
-            <div class="admin-input-group">
-                <label>دکمه ارسال فرم ثبت‌نام:</label>
-                <input type="text" id="editBtnSubmitReg">
-            </div>
-            <div class="admin-input-group">
-                <label>دکمه عضویت کانال موزیک:</label>
-                <input type="text" id="editBtnMusicJoin">
+            <div class="sub-tab-group">
+                <button type="button" class="sub-tab-btn active" onclick="switchSubTextTab('sub_btns')">🔘 دکمه‌ها</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_titles')">🏷️ تیترها</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_form')">📝 فرم هنرجو</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_classes')">🥋 بخش کلاس</button>
             </div>
 
-            <div style="font-size:0.72rem; color:var(--neon-purple); font-weight:bold; margin:10px 0 6px;">🏷️ تیترها و عناوین بخش‌ها:</div>
-            <div class="admin-input-group">
-                <label>عنوان بخش منطقه:</label>
-                <input type="text" id="editTitleRegionSection">
+            <!-- دسته ۱: متن دکمه‌ها -->
+            <div class="sub-text-panel active" id="sub_btns">
+                <div class="admin-input-group">
+                    <label>دکمه پرداخت آنلاین:</label>
+                    <input type="text" id="editBtnOnlinePay">
+                </div>
+                <div class="admin-input-group">
+                    <label>دکمه کپی کارت:</label>
+                    <input type="text" id="editBtnCopyCard">
+                </div>
+                <div class="admin-input-group">
+                    <label>دکمه ارسال فیش:</label>
+                    <input type="text" id="editBtnSendReceipt">
+                </div>
+                <div class="admin-input-group">
+                    <label>دکمه ارسال فرم ثبت‌نام:</label>
+                    <input type="text" id="editBtnSubmitReg">
+                </div>
+                <div class="admin-input-group">
+                    <label>دکمه عضویت کانال موزیک:</label>
+                    <input type="text" id="editBtnMusicJoin">
+                </div>
             </div>
-            <div class="admin-input-group">
-                <label>متن راهنمای انتخاب منطقه:</label>
-                <input type="text" id="editTitleRegionIntro">
+
+            <!-- دسته ۲: تیترهای اصلی -->
+            <div class="sub-text-panel" id="sub_titles">
+                <div class="admin-input-group">
+                    <label>عنوان بخش منطقه:</label>
+                    <input type="text" id="editTitleRegionSection">
+                </div>
+                <div class="admin-input-group">
+                    <label>متن راهنمای انتخاب منطقه:</label>
+                    <input type="text" id="editTitleRegionIntro">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان بخش سبک‌ها:</label>
+                    <input type="text" id="editTitleStylesSection">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان فرم ثبت‌نام:</label>
+                    <input type="text" id="editTitleReg">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان شرایط و قوانین:</label>
+                    <input type="text" id="editTitleRulesSection">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان راه‌های ارتباطی:</label>
+                    <input type="text" id="editTitleContactsSection">
+                </div>
             </div>
-            <div class="admin-input-group">
-                <label>عنوان مرحله سبک‌ها:</label>
-                <input type="text" id="editTitleStylesSection">
+
+            <!-- دسته ۳: برچسب‌های فرم هنرجو -->
+            <div class="sub-text-panel" id="sub_form">
+                <div class="admin-input-group">
+                    <label>نام و نام خانوادگی:</label>
+                    <input type="text" id="editTitleFullNameLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>شماره موبایل:</label>
+                    <input type="text" id="editTitlePhoneLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>تولد شمسی:</label>
+                    <input type="text" id="editTitleBirthDateLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>متن تعهد قوانین:</label>
+                    <input type="text" id="editTitleRulesAgreement">
+                </div>
+                <div class="admin-input-group">
+                    <label>متن تیک پرداخت کردم:</label>
+                    <input type="text" id="editTitlePaymentConfirmed">
+                </div>
             </div>
-            <div class="admin-input-group">
-                <label>عنوان فرم ثبت‌نام:</label>
-                <input type="text" id="editTitleReg">
-            </div>
-            <div class="admin-input-group">
-                <label>متن تعهد قوانین:</label>
-                <input type="text" id="editTitleRulesAgreement">
-            </div>
-            <div class="admin-input-group">
-                <label>متن تیک پرداخت کردم:</label>
-                <input type="text" id="editTitlePaymentConfirmed">
+
+            <!-- دسته ۴: برچسب‌های انتخاب کلاس و شهریه -->
+            <div class="sub-text-panel" id="sub_classes">
+                <div class="admin-input-group">
+                    <label>برچسب نوع برگزاری کلاس:</label>
+                    <input type="text" id="editTitleClassTypeLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>برچسب تعداد جلسات هر ترم:</label>
+                    <input type="text" id="editTitleSessionCountLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>برچسب انتخاب سبک‌ها:</label>
+                    <input type="text" id="editTitleStylesChoiceLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>برچسب شهریه نهایی ترم:</label>
+                    <input type="text" id="editTitleTuitionLabel">
+                </div>
+                <div class="admin-input-group">
+                    <label>عنوان قوانین عمومی آکادمی:</label>
+                    <input type="text" id="editTitleGeneralRulesTitle">
+                </div>
             </div>
         </div>
 
         <!-- تب ضرایب کلاس و جلسات -->
         <div class="admin-panel-tab" id="pricesTab">
-            <div style="display:flex; gap:5px; margin-bottom:8px;">
+            <div style="display:flex; gap:5px; margin-bottom:6px;">
                 <div class="admin-input-group" style="flex:1;">
                     <label>ضریب نیمه‌خصوصی:</label>
                     <input type="number" step="0.1" id="editSemiFactor">
@@ -790,7 +864,7 @@
                 <label>لینک تلگرام / ایتا:</label>
                 <input type="text" id="editTele">
             </div>
-            <hr style="border-color:var(--border); margin:8px 0;">
+            <hr style="border-color:var(--border); margin:6px 0;">
             <div class="admin-input-group">
                 <label>نام کانال موزیک:</label>
                 <input type="text" id="editMusicName">
@@ -839,6 +913,14 @@
         document.querySelectorAll('.theme-card-option').forEach(el => el.classList.remove('selected'));
         const activeCard = document.getElementById('themeOpt_' + themeKey);
         if (activeCard) activeCard.classList.add('selected');
+    }
+
+    function switchSubTextTab(subTabId) {
+        document.querySelectorAll('.sub-text-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+        const targetPanel = document.getElementById(subTabId);
+        if (targetPanel) targetPanel.classList.add('active');
+        event.target.classList.add('active');
     }
 
     function toEnglishDigits(str) {
@@ -969,7 +1051,7 @@
             card.className = 'admin-region-card';
             card.innerHTML = `
                 <div class="admin-region-card-header">
-                    <input type="text" value="${reg.name}" oninput="updateRegionField('${reg.id}', 'name', this.value)" style="flex:1; padding:6px 8px; font-size:0.75rem; font-weight:bold; background:var(--surface); border:1px solid var(--border); color:var(--neon-blue); border-radius:var(--radius-sm);">
+                    <input type="text" value="${reg.name}" oninput="updateRegionField('${reg.id}', 'name', this.value)" style="flex:1; padding:5px 7px; font-size:0.72rem; font-weight:bold; background:var(--surface); border:1px solid var(--border); color:var(--neon-blue); border-radius:var(--radius-sm);">
                     <button type="button" class="delete-style-btn" onclick="deleteRegion('${reg.id}')" title="حذف منطقه">🗑️</button>
                 </div>
                 <div class="admin-region-prices">
@@ -1231,7 +1313,6 @@
         if (!str) return '';
         return str
             .replace(/مرحله اول:\s*/g, '')
-            .replace(/مرحله اول:\s*/g, '')
             .replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g, '')
             .trim();
     }
@@ -1266,8 +1347,20 @@
         document.getElementById('editTitleRegionIntro').value = cleanLegacyPhrases(titleObj.regionIntro) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         document.getElementById('editTitleStylesSection').value = titleObj.stylesSection || '🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها';
         document.getElementById('editTitleReg').value = titleObj.regTitle || '📝 فرم ثبت‌نام هنرجو';
+        document.getElementById('editTitleRulesSection').value = titleObj.rulesSection || '📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره';
+        document.getElementById('editTitleContactsSection').value = titleObj.contactsSection || '💬 ۳. راه‌های ارتباطی با مربی';
+
+        document.getElementById('editTitleFullNameLabel').value = titleObj.fullNameLabel || 'نام و نام خانوادگی *';
+        document.getElementById('editTitlePhoneLabel').value = titleObj.phoneLabel || 'شماره موبایل *';
+        document.getElementById('editTitleBirthDateLabel').value = titleObj.birthDateLabel || 'تولد شمسی (اختیاری)';
         document.getElementById('editTitleRulesAgreement').value = titleObj.rulesAgreement || 'قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.';
         document.getElementById('editTitlePaymentConfirmed').value = titleObj.paymentConfirmed || 'پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.';
+
+        document.getElementById('editTitleClassTypeLabel').value = titleObj.classTypeLabel || 'نوع برگزاری کلاس:';
+        document.getElementById('editTitleSessionCountLabel').value = titleObj.sessionCountLabel || 'تعداد جلسات هر ترم:';
+        document.getElementById('editTitleStylesChoiceLabel').value = titleObj.stylesChoiceLabel || 'سبک‌های مورد نظر را انتخاب کنید:';
+        document.getElementById('editTitleTuitionLabel').value = titleObj.tuitionLabel || 'شهریه نهایی ترم:';
+        document.getElementById('editTitleGeneralRulesTitle').value = titleObj.generalRulesTitle || 'قوانین عمومی و انضباطی آکادمی';
 
         const cardObj = appData.card || {};
         document.getElementById('editCardNum').value = cardObj.cleanNumber || '';
@@ -1325,8 +1418,20 @@
         appData.titles.regionIntro = cleanLegacyPhrases(document.getElementById('editTitleRegionIntro').value.trim()) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         appData.titles.stylesSection = document.getElementById('editTitleStylesSection').value.trim();
         appData.titles.regTitle = document.getElementById('editTitleReg').value.trim();
+        appData.titles.rulesSection = document.getElementById('editTitleRulesSection').value.trim();
+        appData.titles.contactsSection = document.getElementById('editTitleContactsSection').value.trim();
+
+        appData.titles.fullNameLabel = document.getElementById('editTitleFullNameLabel').value.trim();
+        appData.titles.phoneLabel = document.getElementById('editTitlePhoneLabel').value.trim();
+        appData.titles.birthDateLabel = document.getElementById('editTitleBirthDateLabel').value.trim();
         appData.titles.rulesAgreement = document.getElementById('editTitleRulesAgreement').value.trim();
         appData.titles.paymentConfirmed = document.getElementById('editTitlePaymentConfirmed').value.trim();
+
+        appData.titles.classTypeLabel = document.getElementById('editTitleClassTypeLabel').value.trim();
+        appData.titles.sessionCountLabel = document.getElementById('editTitleSessionCountLabel').value.trim();
+        appData.titles.stylesChoiceLabel = document.getElementById('editTitleStylesChoiceLabel').value.trim();
+        appData.titles.tuitionLabel = document.getElementById('editTitleTuitionLabel').value.trim();
+        appData.titles.generalRulesTitle = document.getElementById('editTitleGeneralRulesTitle').value.trim();
 
         appData.brandTag = document.getElementById('editBrandTag').value.trim();
         appData.bannerTitle = document.getElementById('editBannerTitle').value.trim();
@@ -1444,7 +1549,6 @@
         if (btnObj.submitReg) document.getElementById('btn_submitReg').innerText = btnObj.submitReg;
         if (btnObj.musicJoin) document.getElementById('btn_musicJoin').innerText = btnObj.musicJoin;
 
-        // اعمال عناوین و اعمال فیلتر قطعی حذف عبارت‌های ناخواسته
         const titleObj = appData.titles || {};
         const regSectionText = cleanLegacyPhrases(titleObj.regionSection) || '📍 انتخاب منطقه در تهران';
         const regIntroText = cleanLegacyPhrases(titleObj.regionIntro) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
@@ -1461,7 +1565,6 @@
         if (titleObj.fullNameLabel) document.getElementById('txt_fullNameLabel').innerText = titleObj.fullNameLabel;
         if (titleObj.phoneLabel) document.getElementById('txt_phoneLabel').innerText = titleObj.phoneLabel;
         if (titleObj.birthDateLabel) document.getElementById('txt_birthDateLabel').innerText = titleObj.birthDateLabel;
-        if (titleObj.notesLabel) document.getElementById('txt_notesLabel').innerText = titleObj.notesLabel;
         if (titleObj.rulesSection) document.getElementById('txt_rulesSection').innerText = titleObj.rulesSection;
         if (titleObj.classRulesLabel) document.getElementById('txt_classRulesLabel').innerText = titleObj.classRulesLabel;
         if (titleObj.sessionRulesLabel) document.getElementById('txt_sessionRulesLabel').innerText = titleObj.sessionRulesLabel;
