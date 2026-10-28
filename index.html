@@ -204,9 +204,12 @@
         .region-select-box option { background: var(--surface); color: var(--text-primary); }
         #regionDependentContent { display: none; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-        .pill-group { display: flex; gap: 5px; margin-bottom: 8px; }
-        .pill-btn { flex: 1; padding: 6px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.74rem; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; }
+        
+        /* بهینه‌سازی دکمه‌های گزینشی برای ۵ مورد */
+        .pill-group { display: flex; gap: 4px; margin-bottom: 8px; flex-wrap: wrap; }
+        .pill-btn { flex: 1 1 calc(20% - 4px); min-width: 58px; padding: 6px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.71rem; font-weight: 700; cursor: pointer; text-align: center; transition: 0.2s; white-space: nowrap; }
         .pill-btn.active { background: var(--btn-active); color: #fff; border-color: transparent; box-shadow: var(--neon-shadow); }
+        
         .styles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px; }
         .style-item { background: var(--surface-card); border: 1px solid var(--border); padding: 7px 9px; border-radius: var(--radius-sm); cursor: pointer; display: flex; align-items: center; justify-content: space-between; font-size: 0.76rem; font-weight: 600; transition: all 0.2s; }
         .style-item.selected { border-color: var(--neon-blue); background: rgba(255,255,255, 0.05); color: var(--neon-blue); box-shadow: 0 0 8px var(--neon-shadow); }
@@ -284,34 +287,9 @@
         .theme-card-option.selected { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-shadow); }
         .theme-color-dots { display: flex; gap: 4px; }
         .theme-color-dot { width: 15px; height: 15px; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-
-        /* زیرتب‌های تمیز برای دسته‌بندی متن‌ها بدون شلوغی */
-        .sub-tab-group {
-            display: flex;
-            gap: 3px;
-            margin-bottom: 8px;
-            background: rgba(255,255,255,0.03);
-            padding: 3px;
-            border-radius: var(--radius-sm);
-        }
-        .sub-tab-btn {
-            flex: 1;
-            padding: 4px 2px;
-            border-radius: 4px;
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.63rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: 0.2s;
-            text-align: center;
-        }
-        .sub-tab-btn.active {
-            background: var(--surface-card);
-            color: var(--neon-blue);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        }
+        .sub-tab-group { display: flex; gap: 3px; margin-bottom: 8px; background: rgba(255,255,255,0.03); padding: 3px; border-radius: var(--radius-sm); }
+        .sub-tab-btn { flex: 1; padding: 4px 2px; border-radius: 4px; background: transparent; border: none; color: var(--text-secondary); font-size: 0.63rem; font-weight: 700; cursor: pointer; transition: 0.2s; text-align: center; }
+        .sub-tab-btn.active { background: var(--surface-card); color: var(--neon-blue); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
         .sub-text-panel { display: none; }
         .sub-text-panel.active { display: block; }
     </style>
@@ -360,6 +338,7 @@
                 <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
                 <button class="pill-btn" data-val="private">خصوصی</button>
                 <button class="pill-btn" data-val="vip">VIP 👑</button>
+                <button class="pill-btn" data-val="online">آنلاین 🌐</button>
             </div>
 
             <div id="txt_sessionCountLabel" style="font-size: 0.7rem; color: var(--text-secondary); margin: 6px 0 3px;">تعداد جلسات هر ترم:</div>
@@ -655,7 +634,7 @@
             <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:4px; max-height:200px; overflow-y:auto; padding-left:2px;"></div>
         </div>
 
-        <!-- تب متن‌ها و دکمه‌ها (دسته‌بندی شده و فوق‌العاده مرتب بدون شلوغی) -->
+        <!-- تب متن‌ها و دکمه‌ها (دسته‌بندی شده و مرتب) -->
         <div class="admin-panel-tab" id="textsTab">
             <div class="sub-tab-group">
                 <button type="button" class="sub-tab-btn active" onclick="switchSubTextTab('sub_btns')">🔘 دکمه‌ها</button>
@@ -767,16 +746,20 @@
 
         <!-- تب ضرایب کلاس و جلسات -->
         <div class="admin-panel-tab" id="pricesTab">
-            <div style="display:flex; gap:5px; margin-bottom:6px;">
-                <div class="admin-input-group" style="flex:1;">
+            <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:4px; margin-bottom:6px;">
+                <div class="admin-input-group">
+                    <label>ضریب آنلاین:</label>
+                    <input type="number" step="0.1" id="editOnlineFactor">
+                </div>
+                <div class="admin-input-group">
                     <label>ضریب نیمه‌خصوصی:</label>
                     <input type="number" step="0.1" id="editSemiFactor">
                 </div>
-                <div class="admin-input-group" style="flex:1;">
+                <div class="admin-input-group">
                     <label>ضریب خصوصی:</label>
                     <input type="number" step="0.1" id="editPrivateFactor">
                 </div>
-                <div class="admin-input-group" style="flex:1;">
+                <div class="admin-input-group">
                     <label>ضریب VIP:</label>
                     <input type="number" step="0.1" id="editVipFactor">
                 </div>
@@ -802,6 +785,7 @@
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
                 <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
+                    <option value="online">🌐 شرایط و قوانین کلاس آنلاین</option>
                     <option value="vip">👑 شرایط و مزایای کلاس VIP</option>
                     <option value="normal">شرایط کلاس عمومی</option>
                     <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
@@ -896,7 +880,7 @@
     let currentClassType = "normal";
     let currentSessions = "8";
     let selectedStyles = [];
-    let currentEditingRuleKey = "vip";
+    let currentEditingRuleKey = "online";
 
     const regionSelectEl = document.getElementById('regionSelect');
     const regionDependentContentEl = document.getElementById('regionDependentContent');
@@ -1195,7 +1179,7 @@
     }
 
     function updateDynamicRules() {
-        const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP 👑' };
+        const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP 👑', online: 'آنلاین 🌐' };
         document.getElementById('activeRuleBadge').innerText = `شرایط انتخابی: کلاس ${classNames[currentClassType]} - ترم ${currentSessions} جلسه`;
         document.getElementById('classTypeRuleText').innerText = (appData.rules && appData.rules[currentClassType]) || '';
         document.getElementById('sessionRuleText').innerText = (appData.rules && appData.rules['s' + currentSessions]) || '';
@@ -1218,7 +1202,7 @@
         let total = Math.round(subTotal * classFactor * sessionFactor);
         finalPriceEl.innerText = formatTomanPersian(total);
 
-        const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP' };
+        const classNames = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP', online: 'آنلاین' };
         const ageNames = { adult: 'بزرگسال', kids: 'کودک' };
         const regionPrefix = activeRegion ? (activeRegion.name + ' | ') : '';
         priceBreakdownEl.innerText = `${regionPrefix}${count} سبک انتخاب شده (${ageNames[currentAge]} - ${classNames[currentClassType]} - ${currentSessions} جلسه)`;
@@ -1324,6 +1308,7 @@
         document.getElementById('activeRuleTextarea').value = (appData.rules && appData.rules[currentEditingRuleKey]) || '';
 
         if (appData.multipliers) {
+            document.getElementById('editOnlineFactor').value = appData.multipliers.online || 0.8;
             document.getElementById('editSemiFactor').value = appData.multipliers.semi || 1.4;
             document.getElementById('editPrivateFactor').value = appData.multipliers.private || 2.0;
             document.getElementById('editVipFactor').value = appData.multipliers.vip || 3.0;
@@ -1394,6 +1379,7 @@
 
         appData.multipliers = {
             normal: 1.0,
+            online: Number(document.getElementById('editOnlineFactor').value) || 0.8,
             semi: Number(document.getElementById('editSemiFactor').value) || 1.4,
             private: Number(document.getElementById('editPrivateFactor').value) || 2.0,
             vip: Number(document.getElementById('editVipFactor').value) || 3.0
@@ -1717,6 +1703,12 @@
             if (saved) {
                 try { appData = JSON.parse(saved); } catch (e) {}
             }
+        }
+
+        // افزودن دیفالت قوانین آنلاین در صورت نبودن در دیتای ذخیره شده
+        if (!appData.rules) appData.rules = {};
+        if (!appData.rules.online) {
+            appData.rules.online = "• برگزاری کلاس‌ها به‌صورت زنده (Live) از طریق پلتفرم آنلاین با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها و اصلاح آنی حرکات.\n• نیاز به فضای تمرینی مناسب (حداقل ۲×۲ متر) و اتصال اینترنت پایدار.\n• پشتیبانی و ارسال ویدیوهای تمرینی مکمل در طول ترم.";
         }
 
         if (appData.styles && appData.styles.length > 0) {
