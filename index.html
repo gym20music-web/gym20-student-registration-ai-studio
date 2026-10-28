@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- کدهای جلوگیری قطعی از کش شدن در مرورگرها -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -25,7 +26,7 @@
             --radius-sm: 7px;
         }
 
-        /* تم جدید: رادار تک / سرمه‌ای هوانوردی و آبی آسمانی یخی (مشابه تصویر) */
+        /* تم ۲: رادار تک / سرمه‌ای هوانوردی و آبی آسمانی یخی */
         [data-color-theme="noctech"] {
             --bg: #070d18;
             --surface: #0e1726;
@@ -316,11 +317,11 @@
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
     </div>
 
-    <!-- مرحله اول: انتخاب منطقه در تهران -->
+    <!-- انتخاب منطقه در تهران (بدون عبارت مرحله اول و کاملاً خلاصه) -->
     <div class="section-card" id="regionSelectionCard">
-        <div class="section-header" id="txt_regionSection">📍 مرحله اول: انتخاب منطقه در تهران</div>
+        <div class="section-header" id="txt_regionSection">📍 انتخاب منطقه در تهران</div>
         <p id="txt_regionIntro" style="font-size:0.72rem; color:var(--text-secondary); margin-bottom:8px; line-height:1.6;">
-            برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه، لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:
+            لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:
         </p>
         <select id="regionSelect" class="region-select-box">
             <option value="">-- لطفاً منطقه کلاس را انتخاب کنید --</option>
@@ -475,7 +476,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با تم‌های متنوع و جدید -->
+<!-- مودال مدیریت هوشمند -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -665,8 +666,12 @@
 
             <div style="font-size:0.72rem; color:var(--neon-purple); font-weight:bold; margin:10px 0 6px;">🏷️ تیترها و عناوین بخش‌ها:</div>
             <div class="admin-input-group">
-                <label>عنوان مرحله اول (منطقه):</label>
+                <label>عنوان بخش منطقه:</label>
                 <input type="text" id="editTitleRegionSection">
+            </div>
+            <div class="admin-input-group">
+                <label>متن راهنمای انتخاب منطقه:</label>
+                <input type="text" id="editTitleRegionIntro">
             </div>
             <div class="admin-input-group">
                 <label>عنوان مرحله سبک‌ها:</label>
@@ -1222,6 +1227,15 @@
 
     closeAdmin.onclick = () => { adminModal.style.display = 'none'; };
 
+    function cleanLegacyPhrases(str) {
+        if (!str) return '';
+        return str
+            .replace(/مرحله اول:\s*/g, '')
+            .replace(/مرحله اول:\s*/g, '')
+            .replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g, '')
+            .trim();
+    }
+
     function loadAdminForm() {
         selectTheme(appData.theme || 'cyber');
 
@@ -1248,7 +1262,8 @@
         document.getElementById('editBtnMusicJoin').value = btnObj.musicJoin || 'عضویت 🎵';
 
         const titleObj = appData.titles || {};
-        document.getElementById('editTitleRegionSection').value = titleObj.regionSection || '📍 مرحله اول: انتخاب منطقه در تهران';
+        document.getElementById('editTitleRegionSection').value = cleanLegacyPhrases(titleObj.regionSection) || '📍 انتخاب منطقه در تهران';
+        document.getElementById('editTitleRegionIntro').value = cleanLegacyPhrases(titleObj.regionIntro) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         document.getElementById('editTitleStylesSection').value = titleObj.stylesSection || '🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها';
         document.getElementById('editTitleReg').value = titleObj.regTitle || '📝 فرم ثبت‌نام هنرجو';
         document.getElementById('editTitleRulesAgreement').value = titleObj.rulesAgreement || 'قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.';
@@ -1306,7 +1321,8 @@
         };
 
         if (!appData.titles) appData.titles = {};
-        appData.titles.regionSection = document.getElementById('editTitleRegionSection').value.trim();
+        appData.titles.regionSection = cleanLegacyPhrases(document.getElementById('editTitleRegionSection').value.trim()) || '📍 انتخاب منطقه در تهران';
+        appData.titles.regionIntro = cleanLegacyPhrases(document.getElementById('editTitleRegionIntro').value.trim()) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         appData.titles.stylesSection = document.getElementById('editTitleStylesSection').value.trim();
         appData.titles.regTitle = document.getElementById('editTitleReg').value.trim();
         appData.titles.rulesAgreement = document.getElementById('editTitleRulesAgreement').value.trim();
@@ -1383,7 +1399,7 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    message: "به‌روزرسانی تم، متون و تنظیمات از پنل مدیریت",
+                    message: "به‌روزرسانی تنظیمات و متون از پنل مدیریت",
                     content: newBase64,
                     sha: fileData.sha,
                     branch: "main"
@@ -1398,7 +1414,7 @@
             applyDataToUI();
             calculatePrice();
             adminModal.style.display = 'none';
-            alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!\nتم انتخابی و تمام تنظیمات شما برای همه هنرجویان اعمال شدند.');
+            alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!\nمتن‌ها و تنظیمات جدید ذخیره شدند.');
 
         } catch (err) {
             alert('❌ خطا: ' + err.message);
@@ -1428,9 +1444,14 @@
         if (btnObj.submitReg) document.getElementById('btn_submitReg').innerText = btnObj.submitReg;
         if (btnObj.musicJoin) document.getElementById('btn_musicJoin').innerText = btnObj.musicJoin;
 
+        // اعمال عناوین و اعمال فیلتر قطعی حذف عبارت‌های ناخواسته
         const titleObj = appData.titles || {};
-        if (titleObj.regionSection) document.getElementById('txt_regionSection').innerText = titleObj.regionSection;
-        if (titleObj.regionIntro) document.getElementById('txt_regionIntro').innerText = titleObj.regionIntro;
+        const regSectionText = cleanLegacyPhrases(titleObj.regionSection) || '📍 انتخاب منطقه در تهران';
+        const regIntroText = cleanLegacyPhrases(titleObj.regionIntro) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
+
+        document.getElementById('txt_regionSection').innerText = regSectionText;
+        document.getElementById('txt_regionIntro').innerText = regIntroText;
+
         if (titleObj.stylesSection) document.getElementById('txt_stylesSection').innerText = titleObj.stylesSection;
         if (titleObj.classTypeLabel) document.getElementById('txt_classTypeLabel').innerText = titleObj.classTypeLabel;
         if (titleObj.sessionCountLabel) document.getElementById('txt_sessionCountLabel').innerText = titleObj.sessionCountLabel;
