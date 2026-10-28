@@ -678,7 +678,6 @@
         }
         .delete-style-btn:active { transform: scale(0.92); }
 
-        /* کارت منطقه در پنل ادمین */
         .admin-region-card {
             background: var(--surface-card);
             border: 1px solid var(--border);
@@ -704,24 +703,50 @@
             }
         }
     
-        .registration-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px; }
-        .registration-form label { display: block; color: var(--text-secondary); font-size: .72rem; margin-bottom: 3px; }
-        .registration-form input, .registration-form textarea {
-            box-sizing: border-box; width: 100%; min-width: 0; padding: 8px 9px; border-radius: var(--radius-sm);
-            background: var(--surface-card); border: 1px solid var(--border);
-            color: var(--text-primary); font: inherit; font-size: .82rem; outline: none;
+        /* ساختار جدید ۳ فیلد مرتب در یک ردیف */
+        .reg-three-cols {
+            display: grid;
+            grid-template-columns: 1.15fr 1fr 0.95fr;
+            gap: 5px;
+            margin-top: 4px;
         }
-        .registration-form input:focus, .registration-form textarea:focus { border-color: var(--neon-blue); }
-        .registration-form .form-wide { grid-column: 1 / -1; }
-        .selected-styles-summary { border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface-card); padding: 8px 10px; color: var(--text-secondary); font-size: .76rem; line-height: 1.7; }
+        .reg-field {
+            min-width: 0;
+        }
+        .reg-field label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+            margin-bottom: 2px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .reg-field input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 5px;
+            border-radius: var(--radius-sm);
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            font: inherit;
+            font-size: 0.74rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .reg-field input:focus {
+            border-color: var(--neon-blue);
+        }
+
         .payment-confirm-row { display: flex; align-items: flex-start; gap: 8px; margin-top: 12px; padding: 10px; border-radius: var(--radius-sm); background: rgba(255,255,255,.05); font-size: .78rem; line-height: 1.7; }
         .payment-confirm-row input { width: 17px; height: 17px; margin: 2px 0 0; flex: none; accent-color: var(--neon-purple); }
         .registration-submit { width: 100%; margin-top: 9px; border: 0; border-radius: var(--radius-sm); padding: 11px; font-size: .86rem; font-weight: 800; cursor: pointer; background: var(--btn-active); color: #fff; }
         .registration-submit:disabled { opacity: .45; cursor: not-allowed; filter: saturate(.5); }
-        .registration-status { font-size: .78rem; line-height: 1.7; white-space: pre-line; }
+        .registration-status { font-size: .78rem; line-height: 1.7; white-space: pre-line; margin-top: 6px; }
         .registration-status.error { color: #f87171; }
         .registration-status.success { color: #10b981; }
-        @media (max-width: 360px) { .registration-form { grid-template-columns: 1fr; } .registration-form .form-wide { grid-column: auto; } }
 
     </style>
 </head>
@@ -741,7 +766,7 @@
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
     </div>
 
-    <!-- گام اول: انتخاب منطقه در تهران (همیشه نمایش داده می‌شود) -->
+    <!-- گام اول: انتخاب منطقه در تهران -->
     <div class="section-card" id="regionSelectionCard">
         <div class="section-header" data-page-text="regionSectionTitle">📍 مرحله اول: انتخاب منطقه در تهران</div>
         <p data-page-text="regionSelectIntro" style="font-size:0.72rem; color:var(--text-secondary); margin-bottom:8px; line-height:1.6;">
@@ -788,19 +813,30 @@
             </div>
         </div>
 
-        <!-- فرم ثبت‌نام -->
+        <!-- فرم ثبت‌نام هنرجو - سه فیلد در یک ردیف و بدون متن‌های اضافی -->
         <div class="section-card" id="publicRegistrationCard">
             <div class="section-header" data-page-text="registrationTitle">📝 فرم ثبت‌نام هنرجو</div>
-            <p data-page-text="registrationIntro" style="font-size:.75rem;color:var(--text-secondary);line-height:1.7;margin-bottom:8px">
-                اطلاعات تماس را وارد کنید؛ منطقه، سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.
-            </p>
-            <form id="publicRegistrationForm" class="registration-form">
-                <div><label for="regFullName" data-page-text="fullNameLabel">نام و نام خانوادگی *</label><input id="regFullName" name="full_name" autocomplete="name" maxlength="120" required></div>
-                <div><label for="regPhone" data-page-text="phoneLabel">شماره موبایل *</label><input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" required></div>
-                <div><label for="regBirthDate" data-page-text="birthDateLabel">تاریخ تولد (اختیاری)</label><input id="regBirthDate" name="birth_date" type="date" min="1900-01-01"></div>
-                <div class="form-wide"><label for="regNotes" data-page-text="notesLabel">توضیحات (اختیاری)</label><textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید" data-page-placeholder="notesPlaceholder"></textarea></div>
-                <div class="selected-styles-summary form-wide" id="selectedStylesSummary" aria-live="polite"></div>
-                <div id="regStatus" class="registration-status form-wide" role="status" aria-live="polite"></div>
+            <form id="publicRegistrationForm">
+                <div class="reg-three-cols">
+                    <div class="reg-field">
+                        <label for="regFullName" data-page-text="fullNameLabel">نام و نام خانوادگی *</label>
+                        <input id="regFullName" name="full_name" autocomplete="name" maxlength="120" placeholder="نام هنرجو" required>
+                    </div>
+                    <div class="reg-field">
+                        <label for="regPhone" data-page-text="phoneLabel">شماره موبایل *</label>
+                        <input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="۰۹..." dir="ltr" required>
+                    </div>
+                    <div class="reg-field">
+                        <label for="regBirthDateShamsi" data-page-text="birthDateLabel">تولد شمسی (اختیاری)</label>
+                        <input id="regBirthDateShamsi" name="birth_date_shamsi" type="text" inputmode="numeric" placeholder="مثال: ۱۳۸۰/۰۵/۱۴" maxlength="10" dir="ltr">
+                    </div>
+                </div>
+
+                <div style="margin-top:6px;">
+                    <label for="regNotes" data-page-text="notesLabel" style="display:block; color:var(--text-secondary); font-size:0.65rem; margin-bottom:2px; font-weight:600;">توضیحات (اختیاری)</label>
+                    <textarea id="regNotes" name="notes" rows="2" maxlength="1000" placeholder="در صورت نیاز توضیحی بنویسید" data-page-placeholder="notesPlaceholder" style="box-sizing:border-box; width:100%; padding:6px 8px; border-radius:var(--radius-sm); background:var(--surface-card); border:1px solid var(--border); color:var(--text-primary); font:inherit; font-size:0.75rem; outline:none;"></textarea>
+                </div>
+                <div id="regStatus" class="registration-status" role="status" aria-live="polite"></div>
             </form>
         </div>
 
@@ -862,7 +898,7 @@
         </div>
     </div>
 
-    <!-- بخش ۳: شبکه‌های ارتباطی و کانال موزیک (همیشه در صفحه ثابت و نمایان است) -->
+    <!-- بخش ۳: شبکه‌های ارتباطی و کانال موزیک -->
     <div class="section-card" id="contactsAndMusicSection">
         <div class="section-header" data-page-text="contactsSectionTitle">💬 ۳. راه‌های ارتباطی با مربی</div>
         <div class="social-links">
@@ -919,7 +955,7 @@
                 <button class="admin-tab-btn" onclick="switchAdminTab('jsonTab')">🧩 همه کلیدها</button>
             </div>
 
-            <!-- تب ۱: مدیریت مناطق تهران و قیمت‌گذاری اختصاصی هر منطقه -->
+            <!-- تب ۱: مناطق تهران -->
             <div class="admin-panel-tab active" id="regionsTab">
                 <div style="font-size:0.74rem; color:var(--neon-blue); font-weight:bold; margin-bottom:6px;">افزودن منطقه جدید در تهران:</div>
                 <div class="admin-region-card">
@@ -969,7 +1005,7 @@
                 </div>
             </div>
 
-            <!-- تب ۳: ضرایب نوع کلاس و نرخ جلسات -->
+            <!-- تب ۳: ضرایب کلاس و جلسات -->
             <div class="admin-panel-tab" id="pricesTab">
                 <div style="font-size:0.72rem; color:var(--text-secondary); line-height:1.7; margin-bottom:8px;">
                     قیمت‌های پایه در تب «📍 مناطق تهران» تعیین می‌شوند. در این بخش می‌توانید ضرایب افزایش شهریه برای انواع کلاس و تعداد جلسات را تنظیم کنید:
@@ -1085,7 +1121,7 @@
                 </div>
             </div>
 
-            <!-- تب ۷: همه کلیدها (JSON) -->
+            <!-- تب ۷: همه کلیدها -->
             <div class="admin-panel-tab" id="jsonTab">
                 <div style="font-size:.75rem;color:var(--text-secondary);line-height:1.9;margin-bottom:8px;">ویرایش پیشرفته تمام تنظیمات ذخیره‌شده (مناطق، عنوان‌ها، متن‌ها، قیمت‌ها، سبک‌ها، قوانین و لینک‌ها). ساختار JSON را معتبر نگه دارید.</div>
                 <textarea id="adminJsonEditor" rows="16" spellcheck="false" dir="ltr" style="width:100%;box-sizing:border-box;font:12px/1.7 monospace;padding:10px;border-radius:8px;background:var(--surface-card);color:var(--text-primary);border:1px solid var(--border);"></textarea>
@@ -1099,10 +1135,10 @@
 </div>
 
 <script>
-    const CURRENT_CACHE_VERSION = 14;
+    const CURRENT_CACHE_VERSION = 15;
 
     const defaultData = {
-        "cacheVersion": 14,
+        "cacheVersion": 15,
         "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
         "bannerTitle": "سلام، وقتتون بخیر 🌱",
         "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
@@ -1115,10 +1151,9 @@
             "stylesChoiceLabel": "سبک‌های مورد نظر را انتخاب کنید:",
             "tuitionLabel": "شهریه نهایی ترم:",
             "registrationTitle": "📝 فرم ثبت‌نام هنرجو",
-            "registrationIntro": "اطلاعات تماس را وارد کنید؛ منطقه، سبک‌ها و مشخصات کلاس از انتخاب‌های همین صفحه ثبت می‌شوند.",
             "fullNameLabel": "نام و نام خانوادگی *",
             "phoneLabel": "شماره موبایل *",
-            "birthDateLabel": "تاریخ تولد (اختیاری)",
+            "birthDateLabel": "تولد شمسی (اختیاری)",
             "notesLabel": "توضیحات (اختیاری)",
             "notesPlaceholder": "در صورت نیاز توضیحی بنویسید",
             "rulesSectionTitle": "📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره",
@@ -1222,7 +1257,7 @@
     };
 
     let appData = defaultData;
-    let currentRegionId = ""; // تا زمانی که هنرجو انتخاب نکند خالی است
+    let currentRegionId = "";
     let currentAge = "adult";
     let currentClassType = "normal";
     let currentSessions = "8";
@@ -1237,6 +1272,56 @@
     const acceptRulesEl = document.getElementById('acceptRules');
     const paymentSectionEl = document.getElementById('paymentSection');
     const toastEl = document.getElementById('toast');
+
+    function toEnglishDigits(str) {
+        if (!str) return '';
+        return str.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+                  .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+    }
+
+    // الگوریتم تبدیل استاندارد تاریخ شمسی به میلادی برای ذخیره‌سازی دقیق در دیتابیس
+    function jalaliToGregorian(jy, jm, jd) {
+        jy = Number(jy); jm = Number(jm); jd = Number(jd);
+        if (!jy || !jm || !jd || jm < 1 || jm > 12 || jd < 1 || jd > 31) return null;
+        var gy = (jy <= 979) ? 621 : 1600;
+        jy -= (jy <= 979) ? 0 : 979;
+        var days = (365 * jy) + (Math.floor(jy / 33) * 8) + (Math.floor(((jy % 33) + 3) / 4))
+            + 78 + jd + ((jm < 7) ? (jm - 1) * 31 : ((jm - 7) * 30) + 186);
+        gy += 400 * Math.floor(days / 146097);
+        days %= 146097;
+        if (days > 36524) {
+            gy += 100 * Math.floor(--days / 36524);
+            days %= 36524;
+            if (days >= 365) days++;
+        }
+        gy += 4 * Math.floor(days / 1461);
+        days %= 1461;
+        gy += Math.floor((days - 1) / 365);
+        if (days > 365) days = (days - 1) % 365;
+        var gd = days + 1;
+        var sal_a = [0, 31, ((gy % 4 === 0 && gy % 100 !== 0) || (gy % 400 === 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        var gm;
+        for (gm = 0; gm < 13; gm++) {
+            var v = sal_a[gm];
+            if (gd <= v) break;
+            gd -= v;
+        }
+        return gy + '-' + String(gm).padStart(2, '0') + '-' + String(gd).padStart(2, '0');
+    }
+
+    // درج خودکار اسلش هنگام تایپ تاریخ تولد شمسی
+    const birthInput = document.getElementById('regBirthDateShamsi');
+    if (birthInput) {
+        birthInput.addEventListener('input', (e) => {
+            let val = toEnglishDigits(e.target.value).replace(/[^\d]/g, '');
+            if (val.length > 4 && val.length <= 6) {
+                val = val.slice(0, 4) + '/' + val.slice(4);
+            } else if (val.length > 6) {
+                val = val.slice(0, 4) + '/' + val.slice(4, 6) + '/' + val.slice(6, 8);
+            }
+            e.target.value = val;
+        });
+    }
 
     function formatTomanPersian(num) {
         if (!num) return "۰ تومان";
@@ -1254,7 +1339,6 @@
         return Number(str.toString().replace(/\D/g, "")) || 0;
     }
 
-    // رندر منوی انتخاب منطقه برای هنرجو
     function renderRegionSelect() {
         regionSelectEl.innerHTML = '<option value="">-- لطفاً منطقه کلاس را انتخاب کنید --</option>';
         (appData.regions || []).forEach(reg => {
@@ -1267,7 +1351,6 @@
         updateRegionDependentVisibility();
     }
 
-    // کنترل نمایش بخش‌های وابسته فقط پس از انتخاب منطقه
     function updateRegionDependentVisibility() {
         if (currentRegionId) {
             regionDependentContentEl.style.display = 'block';
@@ -1285,13 +1368,6 @@
         }
     });
 
-    function updateSelectedStylesSummary() {
-        const summary = document.getElementById('selectedStylesSummary');
-        if (!summary) return;
-        const names = appData.styles.filter(st => selectedStyles.includes(st.id)).map(st => st.name);
-        summary.textContent = names.length ? 'سبک‌های انتخاب‌شده: ' + names.join('، ') : 'از بخش سبک‌ها حداقل یک سبک را انتخاب کنید.';
-    }
-
     function renderStyles() {
         stylesListEl.innerHTML = "";
         appData.styles.forEach(st => {
@@ -1307,7 +1383,6 @@
             item.onclick = () => toggleStyle(st.id);
             stylesListEl.appendChild(item);
         });
-        updateSelectedStylesSummary();
     }
 
     function toggleStyle(id) {
@@ -1320,7 +1395,6 @@
         calculatePrice();
     }
 
-    // رندر لیست مناطق در تب پنل ادمین
     function renderAdminRegionsList() {
         const container = document.getElementById('adminRegionsListContainer');
         container.innerHTML = "";
@@ -1410,7 +1484,6 @@
         }
     }
 
-    // مدیریت لیست سبک‌ها در پنل ادمین
     function renderAdminStylesList() {
         const container = document.getElementById('adminStylesListContainer');
         container.innerHTML = "";
@@ -1482,7 +1555,6 @@
         document.getElementById('generalRuleText').innerText = appData.rules.general || '';
     }
 
-    // محاسبه قیمت بر اساس منطقه انتخابی هنرجو
     function calculatePrice() {
         let activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
         let kidsBase = activeRegion ? activeRegion.kidsBase : (appData.kidsBase || 1500000);
@@ -1852,7 +1924,7 @@
 
     function setRegistrationStatus(message, type = '') {
         registrationStatus.textContent = message;
-        registrationStatus.className = 'registration-status form-wide' + (type ? ' ' + type : '');
+        registrationStatus.className = 'registration-status' + (type ? ' ' + type : '');
     }
 
     function updateRegistrationSubmitState() {
@@ -1882,7 +1954,7 @@
 
         const fullName = document.getElementById('regFullName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
-        const birthDate = document.getElementById('regBirthDate').value || null;
+        const rawBirthShamsi = toEnglishDigits((document.getElementById('regBirthDateShamsi').value || '').trim());
         const notes = document.getElementById('regNotes').value.trim() || null;
         const styleNames = appData.styles.filter(st => selectedStyles.includes(st.id)).map(st => st.name.trim()).filter(Boolean);
 
@@ -1891,9 +1963,20 @@
             return;
         }
 
+        // تبدیل استاندارد تاریخ تولد شمسی به میلادی برای پایگاه داده
+        let gregorianBirthDate = null;
+        let shamsiBirthTag = '';
+        if (rawBirthShamsi) {
+            const parts = rawBirthShamsi.split(/[\/\-\.]/);
+            if (parts.length === 3) {
+                gregorianBirthDate = jalaliToGregorian(parts[0], parts[1], parts[2]);
+            }
+            shamsiBirthTag = `[تولد شمسی: ${rawBirthShamsi}]\n`;
+        }
+
         const activeRegion = (appData.regions || []).find(r => r.id === currentRegionId);
         const regionTag = activeRegion ? `[منطقه کلاس: ${activeRegion.name}]\n` : '';
-        const combinedNotes = (regionTag + (notes || '')).trim() || null;
+        const combinedNotes = (regionTag + shamsiBirthTag + (notes || '')).trim() || null;
 
         registrationSubmit.disabled = true;
         registrationSubmit.textContent = 'در حال ارسال…';
@@ -1911,7 +1994,7 @@
                 body: JSON.stringify({
                     p_full_name: fullName,
                     p_phone: phone,
-                    p_birth_date: birthDate,
+                    p_birth_date: gregorianBirthDate,
                     p_notes: combinedNotes,
                     p_selected_styles: styleNames,
                     p_age_group: currentAge,
