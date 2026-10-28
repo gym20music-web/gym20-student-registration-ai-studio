@@ -25,67 +25,29 @@
             --radius-sm: 7px;
         }
 
-        /* تم ۲: تایتان سرخ */
-        [data-color-theme="crimson"] {
-            --bg: #0c0608;
-            --surface: #180b10;
-            --surface-card: #251017;
-            --text-primary: #fff1f2;
-            --text-secondary: #a88a91;
-            --border: rgba(255, 42, 75, 0.15);
-            --neon-blue: #ff2a4b;
-            --neon-purple: #ff6b00;
-            --neon-shadow: 0 0 14px rgba(255, 42, 75, 0.35);
-            --neon-purple-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
-            --btn-active: linear-gradient(135deg, #ff2a4b, #ff7b00);
+        /* تم جدید: رادار تک / سرمه‌ای هوانوردی و آبی آسمانی یخی (مشابه تصویر) */
+        [data-color-theme="noctech"] {
+            --bg: #070d18;
+            --surface: #0e1726;
+            --surface-card: #142034;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b9bb4;
+            --border: rgba(103, 197, 219, 0.16);
+            --neon-blue: #67c5db;
+            --neon-purple: #38bdf8;
+            --neon-shadow: 0 0 14px rgba(103, 197, 219, 0.35);
+            --neon-purple-shadow: 0 0 16px rgba(56, 189, 248, 0.25);
+            --btn-active: linear-gradient(135deg, #67c5db, #38bdf8);
+        }
+        [data-color-theme="noctech"] .online-pay-btn,
+        [data-color-theme="noctech"] .pill-btn.active,
+        [data-color-theme="noctech"] .registration-submit,
+        [data-color-theme="noctech"] .music-join-btn {
+            color: #070d18 !important;
+            font-weight: 900 !important;
         }
 
-        /* تم ۳: سامورایی طلایی */
-        [data-color-theme="gold"] {
-            --bg: #0d0c0a;
-            --surface: #191610;
-            --surface-card: #262217;
-            --text-primary: #fefce8;
-            --text-secondary: #a39c87;
-            --border: rgba(245, 158, 11, 0.15);
-            --neon-blue: #fbbf24;
-            --neon-purple: #d97706;
-            --neon-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
-            --neon-purple-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
-            --btn-active: linear-gradient(135deg, #fbbf24, #b45309);
-        }
-
-        /* تم ۴: نینجا فانتوم */
-        [data-color-theme="emerald"] {
-            --bg: #05100c;
-            --surface: #0b1f17;
-            --surface-card: #102d22;
-            --text-primary: #ecfdf5;
-            --text-secondary: #84a999;
-            --border: rgba(0, 255, 135, 0.15);
-            --neon-blue: #00ff87;
-            --neon-purple: #059669;
-            --neon-shadow: 0 0 14px rgba(0, 255, 135, 0.35);
-            --neon-purple-shadow: 0 0 15px rgba(5, 150, 105, 0.3);
-            --btn-active: linear-gradient(135deg, #00ff87, #059669);
-        }
-
-        /* تم ۵: کیهانی الکتریک */
-        [data-color-theme="amethyst"] {
-            --bg: #0e0717;
-            --surface: #1a0d2a;
-            --surface-card: #26133d;
-            --text-primary: #faf5ff;
-            --text-secondary: #a58ebb;
-            --border: rgba(192, 132, 252, 0.15);
-            --neon-blue: #c084fc;
-            --neon-purple: #ec4899;
-            --neon-shadow: 0 0 14px rgba(192, 132, 252, 0.35);
-            --neon-purple-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
-            --btn-active: linear-gradient(135deg, #c084fc, #ec4899);
-        }
-
-        /* تم ۶: مشکی دارک شیشه‌ای خفن (Obsidian Glass) */
+        /* تم ۳: مشکی دارک شیشه‌ای خفن (Obsidian Glass) */
         [data-color-theme="obsidian"] {
             --bg: #030407;
             --surface: rgba(16, 20, 30, 0.7);
@@ -110,7 +72,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
         }
 
-        /* تم ۷: زرد و مشکی مدرن (Cyber Volt) */
+        /* تم ۴: زرد و مشکی مدرن (Cyber Volt) */
         [data-color-theme="bumblebee"] {
             --bg: #09090b;
             --surface: #141416;
@@ -132,7 +94,7 @@
             font-weight: 900 !important;
         }
 
-        /* تم ۸: طوسی تیتانیوم خفن و استیلث (Stealth Gray) */
+        /* تم ۵: طوسی تیتانیوم استیلث (Stealth Gray) */
         [data-color-theme="stealth"] {
             --bg: #0f1115;
             --surface: #191c23;
@@ -151,6 +113,66 @@
         [data-color-theme="stealth"] .registration-submit {
             color: #000 !important;
             font-weight: 800 !important;
+        }
+
+        /* تم ۶: تایتان سرخ */
+        [data-color-theme="crimson"] {
+            --bg: #0c0608;
+            --surface: #180b10;
+            --surface-card: #251017;
+            --text-primary: #fff1f2;
+            --text-secondary: #a88a91;
+            --border: rgba(255, 42, 75, 0.15);
+            --neon-blue: #ff2a4b;
+            --neon-purple: #ff6b00;
+            --neon-shadow: 0 0 14px rgba(255, 42, 75, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(255, 107, 0, 0.3);
+            --btn-active: linear-gradient(135deg, #ff2a4b, #ff7b00);
+        }
+
+        /* تم ۷: سامورایی طلایی */
+        [data-color-theme="gold"] {
+            --bg: #0d0c0a;
+            --surface: #191610;
+            --surface-card: #262217;
+            --text-primary: #fefce8;
+            --text-secondary: #a39c87;
+            --border: rgba(245, 158, 11, 0.15);
+            --neon-blue: #fbbf24;
+            --neon-purple: #d97706;
+            --neon-shadow: 0 0 14px rgba(251, 191, 36, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(217, 119, 6, 0.3);
+            --btn-active: linear-gradient(135deg, #fbbf24, #b45309);
+        }
+
+        /* تم ۸: نینجا فانتوم */
+        [data-color-theme="emerald"] {
+            --bg: #05100c;
+            --surface: #0b1f17;
+            --surface-card: #102d22;
+            --text-primary: #ecfdf5;
+            --text-secondary: #84a999;
+            --border: rgba(0, 255, 135, 0.15);
+            --neon-blue: #00ff87;
+            --neon-purple: #059669;
+            --neon-shadow: 0 0 14px rgba(0, 255, 135, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(5, 150, 105, 0.3);
+            --btn-active: linear-gradient(135deg, #00ff87, #059669);
+        }
+
+        /* تم ۹: کیهانی الکتریک */
+        [data-color-theme="amethyst"] {
+            --bg: #0e0717;
+            --surface: #1a0d2a;
+            --surface-card: #26133d;
+            --text-primary: #faf5ff;
+            --text-secondary: #a58ebb;
+            --border: rgba(192, 132, 252, 0.15);
+            --neon-blue: #c084fc;
+            --neon-purple: #ec4899;
+            --neon-shadow: 0 0 14px rgba(192, 132, 252, 0.35);
+            --neon-purple-shadow: 0 0 15px rgba(236, 72, 153, 0.3);
+            --btn-active: linear-gradient(135deg, #c084fc, #ec4899);
         }
 
         /* حالت روشن کلی */
@@ -257,7 +279,6 @@
         .registration-status.success { color: #10b981; }
         .copy-btn { width: 100%; padding: 8px; border-radius: var(--radius-sm); border: none; cursor: pointer; font-weight: 800; font-size: 0.76rem; }
 
-        /* کارت‌های انتخاب تم در پنل */
         .theme-card-option {
             display: flex;
             align-items: center;
@@ -454,7 +475,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با تم‌های جدید -->
+<!-- مودال مدیریت هوشمند با تم‌های متنوع و جدید -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
@@ -477,14 +498,14 @@
         <div class="admin-panel-tab active" id="themesTab">
             <div style="font-size:0.73rem; color:var(--neon-blue); font-weight:bold; margin-bottom:8px;">انتخاب تم رنگی و استایل سایت:</div>
             
-            <div class="theme-card-option" onclick="selectTheme('cyber')" id="themeOpt_cyber">
+            <div class="theme-card-option" onclick="selectTheme('noctech')" id="themeOpt_noctech">
                 <div>
-                    <div style="font-size:0.78rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div>
-                    <div style="font-size:0.66rem; color:var(--text-secondary);">آبی فیروزه‌ای و بنفش سایبری نئونی</div>
+                    <div style="font-size:0.78rem; font-weight:bold;">🛰️ رادار تک (NOC Tech - آبی یخی و سرمه‌ای)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">سرمه‌ای هوانوردی و دکمه‌های آبی آسمانی (مشابه تصویر)</div>
                 </div>
                 <div class="theme-color-dots">
-                    <span class="theme-color-dot" style="background:#00f3ff;"></span>
-                    <span class="theme-color-dot" style="background:#bd00ff;"></span>
+                    <span class="theme-color-dot" style="background:#070d18; border:1px solid #67c5db;"></span>
+                    <span class="theme-color-dot" style="background:#67c5db;"></span>
                 </div>
             </div>
 
@@ -518,6 +539,17 @@
                 <div class="theme-color-dots">
                     <span class="theme-color-dot" style="background:#191c23;"></span>
                     <span class="theme-color-dot" style="background:#cbd5e1;"></span>
+                </div>
+            </div>
+
+            <div class="theme-card-option" onclick="selectTheme('cyber')" id="themeOpt_cyber">
+                <div>
+                    <div style="font-size:0.78rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div>
+                    <div style="font-size:0.66rem; color:var(--text-secondary);">آبی فیروزه‌ای و بنفش سایبری نئونی</div>
+                </div>
+                <div class="theme-color-dots">
+                    <span class="theme-color-dot" style="background:#00f3ff;"></span>
+                    <span class="theme-color-dot" style="background:#bd00ff;"></span>
                 </div>
             </div>
 
