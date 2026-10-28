@@ -135,7 +135,7 @@
   "classTypesConfig": {
     "normal": {
       "enabled": false,
-      "statusText": "ظرفیت",
+      "statusText": "ظرفیت تمام",
       "allowedStyles": []
     },
     "semi": {
