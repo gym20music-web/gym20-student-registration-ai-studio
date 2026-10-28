@@ -1,62 +1,94 @@
+
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!-- کدهای جلوگیری قطعی از کش شدن در مرورگرها -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>آکادمی تخصصی ورزش GYM20🤸</title>
     <style>
         :root, [data-color-theme="cyber"] {
-            --bg: #0b0f19; --surface: #111827; --surface-card: #1f2937;
-            --text-primary: #f9fafb; --text-secondary: #9ca3af; --border: rgba(255,255,255,0.08);
-            --neon-blue: #00f3ff; --neon-purple: #bd00ff; --neon-green: #10b981;
-            --neon-shadow: 0 0 10px rgba(0,243,255,0.22); --neon-purple-shadow: 0 0 12px rgba(189,0,255,0.22);
-            --btn-active: linear-gradient(135deg, #00f3ff, #bd00ff); --radius-md: 10px; --radius-sm: 6px;
+            --bg: #0b0f19;
+            --surface: #111827;
+            --surface-card: #1f2937;
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+            --neon-blue: #00f3ff;
+            --neon-purple: #bd00ff;
+            --neon-green: #10b981;
+            --neon-shadow: 0 0 10px rgba(0, 243, 255, 0.22);
+            --neon-purple-shadow: 0 0 12px rgba(189, 0, 255, 0.22);
+            --btn-active: linear-gradient(135deg, #00f3ff, #bd00ff);
+            --radius-md: 10px;
+            --radius-sm: 6px;
         }
         [data-color-theme="noctech"] {
-            --bg: #070d18; --surface: #0e1726; --surface-card: #142034;
-            --text-primary: #f0f6fc; --text-secondary: #8b9bb4; --border: rgba(103,197,219,0.16);
-            --neon-blue: #67c5db; --neon-purple: #38bdf8;
-            --neon-shadow: 0 0 12px rgba(103,197,219,0.3); --neon-purple-shadow: 0 0 14px rgba(56,189,248,0.2);
+            --bg: #070d18;
+            --surface: #0e1726;
+            --surface-card: #142034;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b9bb4;
+            --border: rgba(103, 197, 219, 0.16);
+            --neon-blue: #67c5db;
+            --neon-purple: #38bdf8;
+            --neon-shadow: 0 0 12px rgba(103, 197, 219, 0.3);
+            --neon-purple-shadow: 0 0 14px rgba(56, 189, 248, 0.2);
             --btn-active: linear-gradient(135deg, #67c5db, #38bdf8);
         }
-        [data-color-theme="noctech"] .online-pay-btn, [data-color-theme="noctech"] .pill-btn.active,
-        [data-color-theme="noctech"] .registration-submit, [data-color-theme="noctech"] .music-join-btn { color: #070d18 !important; font-weight: 900 !important; }
+        [data-color-theme="noctech"] .online-pay-btn,
+        [data-color-theme="noctech"] .pill-btn.active,
+        [data-color-theme="noctech"] .registration-submit,
+        [data-color-theme="noctech"] .music-join-btn { color: #070d18 !important; font-weight: 900 !important; }
         [data-color-theme="obsidian"] {
-            --bg: #030407; --surface: rgba(16,20,30,0.7); --surface-card: rgba(24,30,46,0.55);
-            --text-primary: #f8fafc; --text-secondary: #94a3b8; --border: rgba(255,255,255,0.14);
-            --neon-blue: #38bdf8; --neon-purple: #818cf8;
-            --neon-shadow: 0 0 14px rgba(56,189,248,0.3); --neon-purple-shadow: 0 0 16px rgba(129,140,248,0.2);
+            --bg: #030407;
+            --surface: rgba(16, 20, 30, 0.7);
+            --surface-card: rgba(24, 30, 46, 0.55);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.14);
+            --neon-blue: #38bdf8;
+            --neon-purple: #818cf8;
+            --neon-shadow: 0 0 14px rgba(56, 189, 248, 0.3);
+            --neon-purple-shadow: 0 0 16px rgba(129, 140, 248, 0.2);
             --btn-active: linear-gradient(135deg, #38bdf8, #6366f1);
         }
-        [data-color-theme="obsidian"] .section-card, [data-color-theme="obsidian"] .hero-banner,
-        [data-color-theme="obsidian"] .bank-card, [data-color-theme="obsidian"] .music-channel-card,
-        [data-color-theme="obsidian"] .admin-content, [data-color-theme="obsidian"] .custom-dropdown-menu {
-            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.14) !important;
+        [data-color-theme="obsidian"] .section-card,
+        [data-color-theme="obsidian"] .hero-banner,
+        [data-color-theme="obsidian"] .bank-card,
+        [data-color-theme="obsidian"] .music-channel-card,
+        [data-color-theme="obsidian"] .admin-content,
+        [data-color-theme="obsidian"] .custom-dropdown-menu {
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
         }
         [data-color-theme="bumblebee"] {
             --bg: #09090b; --surface: #141416; --surface-card: #1f1f23;
-            --text-primary: #ffffff; --text-secondary: #a1a1aa; --border: rgba(255,230,0,0.2);
-            --neon-blue: #ffe600; --neon-purple: #f59e0b;
-            --neon-shadow: 0 0 12px rgba(255,230,0,0.3); --neon-purple-shadow: 0 0 14px rgba(245,158,11,0.25);
+            --text-primary: #ffffff; --text-secondary: #a1a1aa;
+            --border: rgba(255, 230, 0, 0.2); --neon-blue: #ffe600; --neon-purple: #f59e0b;
+            --neon-shadow: 0 0 12px rgba(255, 230, 0, 0.3); --neon-purple-shadow: 0 0 14px rgba(245, 158, 11, 0.25);
             --btn-active: linear-gradient(135deg, #ffe600, #f59e0b);
         }
-        [data-color-theme="bumblebee"] .online-pay-btn, [data-color-theme="bumblebee"] .pill-btn.active,
-        [data-color-theme="bumblebee"] .registration-submit, [data-color-theme="bumblebee"] .music-join-btn { color: #000 !important; font-weight: 900 !important; }
+        [data-color-theme="bumblebee"] .online-pay-btn,
+        [data-color-theme="bumblebee"] .pill-btn.active,
+        [data-color-theme="bumblebee"] .registration-submit,
+        [data-color-theme="bumblebee"] .music-join-btn { color: #000 !important; font-weight: 900 !important; }
         [data-color-theme="stealth"] {
             --bg: #0f1115; --surface: #191c23; --surface-card: #232732;
-            --text-primary: #f8fafc; --text-secondary: #94a3b8; --border: rgba(148,163,184,0.2);
-            --neon-blue: #e2e8f0; --neon-purple: #64748b;
-            --neon-shadow: 0 0 12px rgba(226,232,240,0.25); --neon-purple-shadow: 0 0 14px rgba(100,116,139,0.25);
+            --text-primary: #f8fafc; --text-secondary: #94a3b8;
+            --border: rgba(148, 163, 184, 0.2); --neon-blue: #e2e8f0; --neon-purple: #64748b;
+            --neon-shadow: 0 0 12px rgba(226, 232, 240, 0.25); --neon-purple-shadow: 0 0 14px rgba(100, 116, 139, 0.25);
             --btn-active: linear-gradient(135deg, #cbd5e1, #64748b);
         }
-        [data-color-theme="stealth"] .online-pay-btn, [data-color-theme="stealth"] .pill-btn.active,
+        [data-color-theme="stealth"] .online-pay-btn,
+        [data-color-theme="stealth"] .pill-btn.active,
         [data-color-theme="stealth"] .registration-submit { color: #000 !important; font-weight: 800 !important; }
         [data-theme="light"] {
             --bg: #f3f4f6 !important; --surface: #ffffff !important; --surface-card: #ffffff !important;
-            --text-primary: #111827 !important; --text-secondary: #4b5563 !important; --border: rgba(0,0,0,0.08) !important;
+            --text-primary: #111827 !important; --text-secondary: #4b5563 !important; --border: rgba(0, 0, 0, 0.08) !important;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Tahoma, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -117,7 +149,7 @@
         .accordion-item.open .accordion-content { padding: 6px 8px 8px; max-height: 380px; }
         .rule-agreement { display: flex; align-items: center; gap: 7px; cursor: pointer; margin-top: 6px; padding: 7px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.03); border: 1px solid var(--border); font-size: 0.68rem; font-weight: 600; }
         .rule-agreement input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--neon-purple); cursor: pointer; }
-        .payment-reveal { display: none; margin-top: 8px; animation: fadeIn 0.35s ease; }
+        .payment-reveal { display: none; margin-top: 10px; animation: fadeIn 0.35s ease; }
         .bank-card { background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(0,0,0,0.3)), var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 10px; color: #fff; box-shadow: var(--neon-purple-shadow); }
         .bank-name { font-size: 0.66rem; opacity: 0.8; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .card-number { font-size: 1.05rem; font-weight: 800; letter-spacing: 2px; direction: ltr; text-align: center; margin-bottom: 4px; font-family: monospace; color: var(--neon-blue); }
@@ -130,12 +162,29 @@
         .send-receipt-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); color: #fff; }
         .social-links { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 6px; }
         .social-btn { padding: 6px 2px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); text-decoration: none; text-align: center; font-size: 0.68rem; font-weight: 600; }
-        .music-channel-card { background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2)), var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 8px 10px; margin-top: 8px; display: flex; align-items: center; gap: 8px; text-decoration: none; color: inherit; box-shadow: var(--neon-purple-shadow); }
-        .music-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); flex-shrink: 0; background: #1f2937; }
+
+        /* استایل اختصاصی کارت تبلیغ کانال موزیک با نشانه تلگرام */
+        .music-channel-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2)), var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 8px 10px;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: var(--neon-purple-shadow);
+            transition: 0.2s ease;
+        }
+        .music-channel-card:active { transform: scale(0.98); border-color: var(--neon-blue); }
+        .music-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; border: 2px solid var(--neon-purple); flex-shrink: 0; background: #1f2937; }
         .music-info { flex: 1; min-width: 0; }
-        .music-title { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1px; }
+        .music-title { font-size: 0.76rem; font-weight: 800; color: var(--text-primary); margin-bottom: 2px; display: flex; align-items: center; gap: 4px; }
         .music-handle { font-size: 0.66rem; color: var(--neon-blue); font-weight: 600; direction: ltr; text-align: right; display: inline-block; }
-        .music-join-btn { padding: 4px 8px; border-radius: 12px; background: var(--btn-active); color: #fff; font-size: 0.64rem; font-weight: 800; border: none; }
+        .music-join-btn { padding: 5px 10px; border-radius: 12px; background: var(--btn-active); color: #fff; font-size: 0.65rem; font-weight: 800; border: none; cursor: pointer; white-space: nowrap; flex: none; }
+        
         .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(100px); background: #10b981; color: #000; padding: 6px 14px; border-radius: 16px; font-size: 0.7rem; font-weight: 700; box-shadow: 0 4px 12px rgba(16,185,129,0.4); transition: transform 0.3s ease; z-index: 1000; }
         .toast.show { transform: translateX(-50%) translateY(0); }
 
@@ -173,6 +222,8 @@
         .theme-card-option.selected { border-color: var(--neon-blue); box-shadow: 0 0 8px var(--neon-shadow); }
         .theme-color-dots { display: flex; gap: 3px; }
         .theme-color-dot { width: 13px; height: 13px; border-radius: 50%; }
+
+        /* زیرتب‌های تمیز برای دسته‌بندی متن‌ها بدون شلوغی */
         .sub-tab-group { display: flex; gap: 3px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 2px; border-radius: var(--radius-sm); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
         .sub-tab-group::-webkit-scrollbar { display: none; }
         .sub-tab-btn { flex: none; padding: 4px 7px; border-radius: 4px; background: transparent; border: none; color: var(--text-secondary); font-size: 0.62rem; font-weight: 700; cursor: pointer; }
@@ -197,28 +248,25 @@
         <p class="hero-subtitle" id="bannerSubtitle">شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه</p>
     </div>
 
-    <!-- منوی کشویی سفارشی نئونی -->
-    <div class="section-card" id="regionSelectionCard" style="padding: 6px 8px; margin-bottom: 8px;">
-        <div class="custom-dropdown-container" id="customRegionDropdown">
-            <div class="custom-dropdown-trigger" id="customRegionTrigger">
-                <div class="selected-title" id="customRegionSelectedText">
-                    <span>📍</span>
-                    <span>انتخاب منطقه در تهران...</span>
-                </div>
-                <span class="arrow-icon">▾</span>
-            </div>
-            <div class="custom-dropdown-menu" id="customRegionMenu"></div>
+    <!-- فیلد مینی‌مال و فوق‌العاده باریک انتخاب منطقه -->
+    <div class="section-card" id="regionSelectionCard" style="padding: 7px 9px;">
+        <div class="compact-region-bar">
+            <span style="font-size: 0.85rem;">📍</span>
+            <select id="regionSelect" class="region-select-box">
+                <option value="">-- لطفاً منطقه کلاس در تهران را انتخاب کنید --</option>
+            </select>
         </div>
     </div>
 
+    <!-- این بخش فقط پس از انتخاب منطقه نمایش داده می‌شود -->
     <div id="regionDependentContent">
         <!-- بخش ۱: انتخاب‌ها و سبک‌ها -->
         <div class="section-card">
             <div class="section-header" id="txt_stylesSection">🥋 ۱. نوع کلاس، سبک‌ها و جلسات</div>
             
             <div class="pill-group" id="ageGroup">
-                <button class="pill-btn active" data-val="adult">بزرگسالان</button>
-                <button class="pill-btn" data-val="kids">کودکان</button>
+                <button class="pill-btn active" data-val="adult" id="pill_adult">بزرگسالان</button>
+                <button class="pill-btn" data-val="kids" id="pill_kids">کودکان</button>
             </div>
 
             <div id="txt_classTypeLabel" style="font-size: 0.66rem; color: var(--text-secondary); margin: 5px 0 2px;">نوع برگزاری کلاس:</div>
@@ -230,6 +278,7 @@
                 <button class="pill-btn" data-val="online">آنلاین 🌐</button>
             </div>
 
+            <!-- باکس اخطار تکمیل ظرفیت -->
             <div id="classStatusNoticeBox" class="class-status-notice"></div>
 
             <div id="classNormalFlowContainer">
@@ -349,12 +398,12 @@
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
 
+        <!-- کارت تبلیغ کانال موزیک هماهنگ با درخواست شما -->
         <a href="https://t.me/GYM20MUSIC" target="_blank" class="music-channel-card" id="musicCardLink">
             <img src="music.jpg" onerror="this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
             <div class="music-info">
                 <div class="music-title">
-                    <span id="musicTitleText">کانال موزیک GYM20MUSIC</span>
-                    <span>⚡️</span>
+                    <span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span>
                 </div>
                 <div class="music-handle" id="musicHandleText">@GYM20MUSIC</div>
             </div>
@@ -365,7 +414,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند -->
+<!-- مودال مدیریت هوشمند با دسترسی کامل به تمام متن‌ها و دکمه‌ها -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -374,18 +423,84 @@
         </div>
 
         <div class="admin-tabs">
-            <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn active" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها و کلاس‌ها</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('themesTab')">🎨 تم سایت</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر بالا</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
+        <!-- تب متن‌ها و دکمه‌ها (تفکیک‌شده در ۴ زیرشاخه بدون شلوغی) -->
+        <div class="admin-panel-tab active" id="textsTab">
+            <div class="sub-tab-group">
+                <button type="button" class="sub-tab-btn active" onclick="switchSubTextTab('sub_btns')">🔘 متن دکمه‌ها</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_titles')">🏷️ تیترهای اصلی</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_form')">📝 فرم و تعهدات</button>
+                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_classes')">🥋 کلاس و قیمت</button>
+            </div>
+
+            <!-- ۱. متن دکمه‌ها -->
+            <div class="sub-text-panel active" id="sub_btns">
+                <div class="admin-input-group"><label>دکمه پرداخت آنلاین:</label><input type="text" id="editBtnOnlinePay"></div>
+                <div class="admin-input-group"><label>دکمه کپی کارت:</label><input type="text" id="editBtnCopyCard"></div>
+                <div class="admin-input-group"><label>دکمه ارسال تصویر فیش:</label><input type="text" id="editBtnSendReceipt"></div>
+                <div class="admin-input-group"><label>دکمه ارسال درخواست ثبت‌نام:</label><input type="text" id="editBtnSubmitReg"></div>
+                <div class="admin-input-group"><label style="color:var(--neon-green); font-weight:bold;">دکمه تبلیغ کانال موزیک:</label><input type="text" id="editBtnMusicJoin"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; margin-top:4px;">
+                    <div class="admin-input-group"><label>اینستاگرام:</label><input type="text" id="editBtnInsta"></div>
+                    <div class="admin-input-group"><label>تلگرام/ایتا:</label><input type="text" id="editBtnTele"></div>
+                    <div class="admin-input-group"><label>تماس تلفنی:</label><input type="text" id="editBtnPhone"></div>
+                </div>
+            </div>
+
+            <!-- ۲. تیترهای اصلی -->
+            <div class="sub-text-panel" id="sub_titles">
+                <div class="admin-input-group"><label>عنوان بخش منطقه:</label><input type="text" id="editTitleRegionSection"></div>
+                <div class="admin-input-group"><label>راهنمای انتخاب منطقه:</label><input type="text" id="editTitleRegionIntro"></div>
+                <div class="admin-input-group"><label>عنوان بخش سبک‌ها و کلاس:</label><input type="text" id="editTitleStylesSection"></div>
+                <div class="admin-input-group"><label>عنوان فرم ثبت‌نام:</label><input type="text" id="editTitleReg"></div>
+                <div class="admin-input-group"><label>عنوان شرایط و قوانین دوره:</label><input type="text" id="editTitleRulesSection"></div>
+                <div class="admin-input-group"><label>عنوان قوانین عمومی آکادمی:</label><input type="text" id="editTitleGeneralRulesTitle"></div>
+                <div class="admin-input-group"><label>عنوان اطلاعات واریز شهریه:</label><input type="text" id="editTitleBankInfo"></div>
+                <div class="admin-input-group"><label>عنوان راه‌های ارتباطی با مربی:</label><input type="text" id="editTitleContactsSection"></div>
+            </div>
+
+            <!-- ۳. فرم هنرجو و تعهدات -->
+            <div class="sub-text-panel" id="sub_form">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group"><label>برچسب نام و نام خانوادگی:</label><input type="text" id="editTitleFullNameLabel"></div>
+                    <div class="admin-input-group"><label>برچسب شماره موبایل:</label><input type="text" id="editTitlePhoneLabel"></div>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group"><label>برچسب تولد شمسی:</label><input type="text" id="editTitleBirthDateLabel"></div>
+                    <div class="admin-input-group"><label>برچسب توضیحات اختیاری:</label><input type="text" id="editTitleNotesLabel"></div>
+                </div>
+                <div class="admin-input-group"><label>متن تعهد و مطالعه قوانین:</label><input type="text" id="editTitleRulesAgreement"></div>
+                <div class="admin-input-group"><label>متن تیک پرداخت شهریه:</label><input type="text" id="editTitlePaymentConfirmed"></div>
+            </div>
+
+            <!-- ۴. گزینه‌های کلاس و شهریه -->
+            <div class="sub-text-panel" id="sub_classes">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group"><label>متن دکمه بزرگسالان:</label><input type="text" id="editLabelAdult"></div>
+                    <div class="admin-input-group"><label>متن دکمه کودکان:</label><input type="text" id="editLabelKids"></div>
+                </div>
+                <div class="admin-input-group"><label>برچسب نوع برگزاری کلاس:</label><input type="text" id="editTitleClassTypeLabel"></div>
+                <div class="admin-input-group"><label>برچسب تعداد جلسات هر ترم:</label><input type="text" id="editTitleSessionCountLabel"></div>
+                <div class="admin-input-group"><label>برچسب سبک‌های مجاز:</label><input type="text" id="editTitleStylesChoiceLabel"></div>
+                <div class="admin-input-group"><label>برچسب شهریه نهایی ترم:</label><input type="text" id="editTitleTuitionLabel"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group"><label>برچسب شرایط نوع کلاس:</label><input type="text" id="editTitleClassRulesLabel"></div>
+                    <div class="admin-input-group"><label>برچسب شرایط تعداد جلسات:</label><input type="text" id="editTitleSessionRulesLabel"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- تب مناطق تهران -->
-        <div class="admin-panel-tab active" id="regionsTab">
+        <div class="admin-panel-tab" id="regionsTab">
             <div style="font-size:0.67rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
             <div class="sub-tab-group" id="adminRegionsNavPills"></div>
 
@@ -456,7 +571,7 @@
             </div>
         </div>
 
-        <!-- تب سبک‌ها و کلاس‌ها -->
+        <!-- تب سبک‌ها و وضعیت کلاس‌ها -->
         <div class="admin-panel-tab" id="stylesTab">
             <div class="sub-tab-group">
                 <button type="button" class="sub-tab-btn active" onclick="switchStylesSubTab('sub_class_status')">🔴 ظرفیت و تخصیص سبک</button>
@@ -521,35 +636,6 @@
             <div class="theme-card-option" onclick="selectTheme('cyber')" id="themeOpt_cyber">
                 <div><div style="font-size:0.72rem; font-weight:bold;">⚡ نئون سایبر (Cyber Neon)</div></div>
                 <div class="theme-color-dots"><span class="theme-color-dot" style="background:#00f3ff;"></span><span class="theme-color-dot" style="background:#bd00ff;"></span></div>
-            </div>
-        </div>
-
-        <!-- تب متن‌ها و دکمه‌ها -->
-        <div class="admin-panel-tab" id="textsTab">
-            <div class="sub-tab-group">
-                <button type="button" class="sub-tab-btn active" onclick="switchSubTextTab('sub_btns')">🔘 دکمه‌ها</button>
-                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_titles')">🏷️ تیترها</button>
-                <button type="button" class="sub-tab-btn" onclick="switchSubTextTab('sub_form')">📝 فرم هنرجو</button>
-            </div>
-            <div class="sub-text-panel active" id="sub_btns">
-                <div class="admin-input-group"><label>دکمه پرداخت آنلاین:</label><input type="text" id="editBtnOnlinePay"></div>
-                <div class="admin-input-group"><label>دکمه کپی کارت:</label><input type="text" id="editBtnCopyCard"></div>
-                <div class="admin-input-group"><label>دکمه ارسال فیش:</label><input type="text" id="editBtnSendReceipt"></div>
-                <div class="admin-input-group"><label>دکمه ارسال فرم:</label><input type="text" id="editBtnSubmitReg"></div>
-                <div class="admin-input-group"><label>دکمه عضویت موزیک:</label><input type="text" id="editBtnMusicJoin"></div>
-            </div>
-            <div class="sub-text-panel" id="sub_titles">
-                <div class="admin-input-group"><label>عنوان سبک‌ها:</label><input type="text" id="editTitleStylesSection"></div>
-                <div class="admin-input-group"><label>عنوان فرم ثبت‌نام:</label><input type="text" id="editTitleReg"></div>
-                <div class="admin-input-group"><label>عنوان شرایط و قوانین:</label><input type="text" id="editTitleRulesSection"></div>
-                <div class="admin-input-group"><label>عنوان راه‌های ارتباطی:</label><input type="text" id="editTitleContactsSection"></div>
-            </div>
-            <div class="sub-text-panel" id="sub_form">
-                <div class="admin-input-group"><label>نام و نام خانوادگی:</label><input type="text" id="editTitleFullNameLabel"></div>
-                <div class="admin-input-group"><label>شماره موبایل:</label><input type="text" id="editTitlePhoneLabel"></div>
-                <div class="admin-input-group"><label>تولد شمسی:</label><input type="text" id="editTitleBirthDateLabel"></div>
-                <div class="admin-input-group"><label>متن تعهد قوانین:</label><input type="text" id="editTitleRulesAgreement"></div>
-                <div class="admin-input-group"><label>متن تیک پرداخت کردم:</label><input type="text" id="editTitlePaymentConfirmed"></div>
             </div>
         </div>
 
@@ -743,7 +829,7 @@
                 ${parsed.desc ? `<span style="font-size:0.62rem; color:var(--text-secondary); margin-right:4px;">(${parsed.desc.split(':')[0] || parsed.desc})</span>` : ''}
             `;
         } else {
-            customRegionSelectedTextEl.innerHTML = `<span>📍</span><span>انتخاب منطقه در تهران...</span>`;
+            customRegionSelectedTextEl.innerHTML = `<span>📍</span><span>${(appData.titles && appData.titles.regionSection) || 'انتخاب منطقه در تهران...'}</span>`;
         }
 
         regions.forEach(reg => {
@@ -1264,18 +1350,35 @@
         document.getElementById('editBtnSendReceipt').value = btnObj.sendReceipt || '📩 ارسال فیش';
         document.getElementById('editBtnSubmitReg').value = btnObj.submitReg || 'ارسال درخواست ثبت‌نام';
         document.getElementById('editBtnMusicJoin').value = btnObj.musicJoin || 'عضویت 🎵';
+        document.getElementById('editBtnInsta').value = btnObj.instaBtn || '📸 اینستاگرام';
+        document.getElementById('editBtnTele').value = btnObj.teleBtn || '✈️ تلگرام / ایتا';
+        document.getElementById('editBtnPhone').value = btnObj.phoneBtn || '📞 تماس تلفنی';
 
         const titleObj = appData.titles || {};
+        document.getElementById('editTitleRegionSection').value = cleanLegacyPhrases(titleObj.regionSection) || '📍 انتخاب منطقه در تهران';
+        document.getElementById('editTitleRegionIntro').value = cleanLegacyPhrases(titleObj.regionIntro) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         document.getElementById('editTitleStylesSection').value = titleObj.stylesSection || '🥋 ۱. نوع کلاس، سبک‌ها و جلسات';
         document.getElementById('editTitleReg').value = titleObj.regTitle || '📝 فرم ثبت‌نام هنرجو';
         document.getElementById('editTitleRulesSection').value = titleObj.rulesSection || '📌 ۲. شرایط برگزاری و قوانین دوره';
+        document.getElementById('editTitleGeneralRulesTitle').value = titleObj.generalRulesTitle || 'قوانین عمومی و انضباطی آکادمی';
+        document.getElementById('editTitleBankInfo').value = titleObj.bankInfoTitle || 'اطلاعات واریز شهریه';
         document.getElementById('editTitleContactsSection').value = titleObj.contactsSection || '💬 ۳. راه‌های ارتباطی با مربی';
 
         document.getElementById('editTitleFullNameLabel').value = titleObj.fullNameLabel || 'نام و نام خانوادگی *';
         document.getElementById('editTitlePhoneLabel').value = titleObj.phoneLabel || 'شماره موبایل *';
         document.getElementById('editTitleBirthDateLabel').value = titleObj.birthDateLabel || 'تولد شمسی (اختیاری)';
+        document.getElementById('editTitleNotesLabel').value = titleObj.notesLabel || 'توضیحات (اختیاری)';
         document.getElementById('editTitleRulesAgreement').value = titleObj.rulesAgreement || 'قوانین و شرایط کلاس را با دقت مطالعه کردم و می‌پذیرم.';
         document.getElementById('editTitlePaymentConfirmed').value = titleObj.paymentConfirmed || 'پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.';
+
+        document.getElementById('editLabelAdult').value = titleObj.labelAdult || 'بزرگسالان';
+        document.getElementById('editLabelKids').value = titleObj.labelKids || 'کودکان';
+        document.getElementById('editTitleClassTypeLabel').value = titleObj.classTypeLabel || 'نوع برگزاری کلاس:';
+        document.getElementById('editTitleSessionCountLabel').value = titleObj.sessionCountLabel || 'تعداد جلسات هر ترم:';
+        document.getElementById('editTitleStylesChoiceLabel').value = titleObj.stylesChoiceLabel || 'سبک‌های مجاز این کلاس:';
+        document.getElementById('editTitleTuitionLabel').value = titleObj.tuitionLabel || 'شهریه نهایی ترم:';
+        document.getElementById('editTitleClassRulesLabel').value = titleObj.classRulesLabel || 'شرایط نوع کلاس:';
+        document.getElementById('editTitleSessionRulesLabel').value = titleObj.sessionRulesLabel || 'شرایط تعداد جلسات ترم:';
 
         const cardObj = appData.card || {};
         document.getElementById('editCardNum').value = cardObj.cleanNumber || '';
@@ -1327,20 +1430,37 @@
             copyCard: document.getElementById('editBtnCopyCard').value.trim(),
             sendReceipt: document.getElementById('editBtnSendReceipt').value.trim(),
             submitReg: document.getElementById('editBtnSubmitReg').value.trim(),
-            musicJoin: document.getElementById('editBtnMusicJoin').value.trim()
+            musicJoin: document.getElementById('editBtnMusicJoin').value.trim(),
+            instaBtn: document.getElementById('editBtnInsta').value.trim(),
+            teleBtn: document.getElementById('editBtnTele').value.trim(),
+            phoneBtn: document.getElementById('editBtnPhone').value.trim()
         };
 
         if (!appData.titles) appData.titles = {};
+        appData.titles.regionSection = cleanLegacyPhrases(document.getElementById('editTitleRegionSection').value.trim()) || '📍 انتخاب منطقه در تهران';
+        appData.titles.regionIntro = cleanLegacyPhrases(document.getElementById('editTitleRegionIntro').value.trim()) || 'لطفاً ابتدا منطقه مورد نظر خود را در تهران انتخاب کنید:';
         appData.titles.stylesSection = document.getElementById('editTitleStylesSection').value.trim();
         appData.titles.regTitle = document.getElementById('editTitleReg').value.trim();
         appData.titles.rulesSection = document.getElementById('editTitleRulesSection').value.trim();
+        appData.titles.generalRulesTitle = document.getElementById('editTitleGeneralRulesTitle').value.trim();
+        appData.titles.bankInfoTitle = document.getElementById('editTitleBankInfo').value.trim();
         appData.titles.contactsSection = document.getElementById('editTitleContactsSection').value.trim();
 
         appData.titles.fullNameLabel = document.getElementById('editTitleFullNameLabel').value.trim();
         appData.titles.phoneLabel = document.getElementById('editTitlePhoneLabel').value.trim();
         appData.titles.birthDateLabel = document.getElementById('editTitleBirthDateLabel').value.trim();
+        appData.titles.notesLabel = document.getElementById('editTitleNotesLabel').value.trim();
         appData.titles.rulesAgreement = document.getElementById('editTitleRulesAgreement').value.trim();
         appData.titles.paymentConfirmed = document.getElementById('editTitlePaymentConfirmed').value.trim();
+
+        appData.titles.labelAdult = document.getElementById('editLabelAdult').value.trim();
+        appData.titles.labelKids = document.getElementById('editLabelKids').value.trim();
+        appData.titles.classTypeLabel = document.getElementById('editTitleClassTypeLabel').value.trim();
+        appData.titles.sessionCountLabel = document.getElementById('editTitleSessionCountLabel').value.trim();
+        appData.titles.stylesChoiceLabel = document.getElementById('editTitleStylesChoiceLabel').value.trim();
+        appData.titles.tuitionLabel = document.getElementById('editTitleTuitionLabel').value.trim();
+        appData.titles.classRulesLabel = document.getElementById('editTitleClassRulesLabel').value.trim();
+        appData.titles.sessionRulesLabel = document.getElementById('editTitleSessionRulesLabel').value.trim();
 
         appData.brandTag = document.getElementById('editBrandTag').value.trim();
         appData.bannerTitle = document.getElementById('editBannerTitle').value.trim();
@@ -1363,7 +1483,7 @@
         };
 
         appData.musicChannel = {
-            name: document.getElementById('editMusicName').value.trim() || 'کانال موزیک GYM20MUSIC',
+            name: document.getElementById('editMusicName').value.trim() || '✈️ کانال موزیک GYM20MUSIC 🎧',
             id: document.getElementById('editMusicId').value.trim() || '@GYM20MUSIC',
             link: document.getElementById('editMusicLink').value.trim() || 'https://t.me/GYM20MUSIC',
             avatar: "music.jpg"
@@ -1439,15 +1559,33 @@
         if (btnObj.sendReceipt) document.getElementById('btn_sendReceipt').innerText = btnObj.sendReceipt;
         if (btnObj.submitReg) document.getElementById('btn_submitReg').innerText = btnObj.submitReg;
         if (btnObj.musicJoin) document.getElementById('btn_musicJoin').innerText = btnObj.musicJoin;
+        if (btnObj.instaBtn) document.getElementById('instaLink').innerText = btnObj.instaBtn;
+        if (btnObj.teleBtn) document.getElementById('teleLink').innerText = btnObj.teleBtn;
+        if (btnObj.phoneBtn) document.getElementById('phoneLink').innerText = btnObj.phoneBtn;
 
         const titleObj = appData.titles || {};
+        if (titleObj.labelAdult) document.getElementById('pill_adult').innerText = titleObj.labelAdult;
+        if (titleObj.labelKids) document.getElementById('pill_kids').innerText = titleObj.labelKids;
+
         if (titleObj.stylesSection) document.getElementById('txt_stylesSection').innerText = titleObj.stylesSection;
+        if (titleObj.classTypeLabel) document.getElementById('txt_classTypeLabel').innerText = titleObj.classTypeLabel;
+        if (titleObj.sessionCountLabel) document.getElementById('txt_sessionCountLabel').innerText = titleObj.sessionCountLabel;
+        if (titleObj.stylesChoiceLabel) document.getElementById('txt_stylesChoiceLabel').innerText = titleObj.stylesChoiceLabel;
+        if (titleObj.tuitionLabel) document.getElementById('txt_tuitionLabel').innerText = titleObj.tuitionLabel;
+
         if (titleObj.regTitle) document.getElementById('txt_regTitle').innerText = titleObj.regTitle;
         if (titleObj.fullNameLabel) document.getElementById('txt_fullNameLabel').innerText = titleObj.fullNameLabel;
         if (titleObj.phoneLabel) document.getElementById('txt_phoneLabel').innerText = titleObj.phoneLabel;
         if (titleObj.birthDateLabel) document.getElementById('txt_birthDateLabel').innerText = titleObj.birthDateLabel;
+        if (titleObj.notesLabel) document.getElementById('txt_notesLabel').innerText = titleObj.notesLabel;
+
         if (titleObj.rulesSection) document.getElementById('txt_rulesSection').innerText = titleObj.rulesSection;
+        if (titleObj.classRulesLabel) document.getElementById('txt_classRulesLabel').innerText = titleObj.classRulesLabel;
+        if (titleObj.sessionRulesLabel) document.getElementById('txt_sessionRulesLabel').innerText = titleObj.sessionRulesLabel;
+        if (titleObj.generalRulesTitle) document.getElementById('txt_generalRulesTitle').innerText = titleObj.generalRulesTitle;
         if (titleObj.rulesAgreement) document.getElementById('txt_rulesAgreement').innerText = titleObj.rulesAgreement;
+
+        if (titleObj.bankInfoTitle) document.getElementById('txt_bankInfoTitle').innerText = titleObj.bankInfoTitle;
         if (titleObj.paymentConfirmed) document.getElementById('txt_paymentConfirmed').innerText = titleObj.paymentConfirmed;
         if (titleObj.contactsSection) document.getElementById('txt_contactsSection').innerText = titleObj.contactsSection;
 
@@ -1470,8 +1608,8 @@
         document.getElementById('sendReceiptBtn').href = 'sms:' + (contactObj.phone || '') + '?body=سلام استاد، فیش واریزی ارسال شد.';
         
         const musicObj = appData.musicChannel || {};
-        document.getElementById('musicTitleText').innerText = musicObj.name || '';
-        document.getElementById('musicHandleText').innerText = musicObj.id || '';
+        document.getElementById('musicTitleText').innerText = musicObj.name || '✈️ کانال موزیک GYM20MUSIC 🎧';
+        document.getElementById('musicHandleText').innerText = musicObj.id || '@GYM20MUSIC';
         document.getElementById('musicCardLink').href = musicObj.link || '#';
         document.getElementById('musicAvatarImg').src = 'music.jpg?v=' + Date.now();
 
