@@ -1,5 +1,5 @@
 {
-  "theme": "cyber",
+  "theme": "crimson",
   "brandTag": "آکادمی تخصصی ورزش GYM20🤸",
   "bannerTitle": "سلام، وقتتون بخیر 🌱",
   "bannerSubtitle": "شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه",
@@ -21,7 +21,7 @@
     "tuitionLabel": "شهریه نهایی ترم:",
     "regTitle": "📝 فرم ثبت‌نام هنرجو",
     "fullNameLabel": "نام و نام خانوادگی *",
-    "phoneLabel": "شماره موبایل *",
+    "phoneLabel": "📞 تماس تلفنی",
     "birthDateLabel": "تولد شمسی (اختیاری)",
     "notesLabel": "توضیحات (اختیاری)",
     "rulesSection": "📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره",
@@ -33,8 +33,7 @@
     "paymentConfirmed": "پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.",
     "contactsSection": "💬 ۳. راه‌های ارتباطی با مربی",
     "instaLabel": "📸 اینستاگرام",
-    "teleLabel": "✈️ تلگرام / ایتا",
-    "phoneLabel": "📞 تماس تلفنی"
+    "teleLabel": "✈️ تلگرام / ایتا"
   },
   "regions": [
     {
@@ -67,27 +66,45 @@
     }
   ],
   "styles": [
-    { "id": "ninjutsu", "name": "نینجوتسو 🥋" },
-    { "id": "parkour", "name": "پارکور 🏃‍♂️" },
-    { "id": "calisthenics", "name": "کلیستنیکس 🤸‍♂️" },
-    { "id": "breakdance", "name": "بریک‌دنس (پاورموو) ⚡" },
-    { "id": "boxing", "name": "بوکس خیابانی 🥊" },
-    { "id": "kyokushin", "name": "کیوکوشین 🥋" }
+    {
+      "id": "ninjutsu",
+      "name": "نینجوتسو 🥋"
+    },
+    {
+      "id": "parkour",
+      "name": "پارکور 🏃‍♂️"
+    },
+    {
+      "id": "calisthenics",
+      "name": "کلیستنیکس 🤸‍♂️"
+    },
+    {
+      "id": "breakdance",
+      "name": "بریک‌دنس (پاورموو) ⚡"
+    },
+    {
+      "id": "boxing",
+      "name": "بوکس خیابانی 🥊"
+    },
+    {
+      "id": "kyokushin",
+      "name": "کیوکوشین 🥋"
+    }
   ],
   "multipliers": {
-    "normal": 1.0,
+    "normal": 1,
     "semi": 1.4,
-    "private": 2.0,
-    "vip": 3.0
+    "private": 2,
+    "vip": 3
   },
   "sessionRates": {
-    "8": 1.0,
+    "8": 1,
     "10": 1.25,
     "12": 1.5
   },
   "card": {
     "bank": "بانک سامان",
-    "number": "۶۲۱۹-۸۶۱۰-۲۲۳۴-۵۶۷۸",
+    "number": "6219-8610-2234-5678",
     "cleanNumber": "6219861022345678",
     "owner": "به نام: مربی ورزشی",
     "gatewayLink": "https://zarinp.al/"
