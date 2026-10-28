@@ -99,6 +99,7 @@
         .section-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 9px 10px; margin-bottom: 8px; }
         .section-header { display: flex; align-items: center; gap: 5px; margin-bottom: 6px; font-size: 0.78rem; font-weight: 700; color: var(--neon-blue); }
         
+        /* فیلد فشرده، مینی‌مال و شیک انتخاب منطقه */
         .compact-region-bar { display: flex; align-items: center; gap: 6px; background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 4px 8px; transition: border-color 0.2s; }
         .compact-region-bar:focus-within { border-color: var(--neon-blue); box-shadow: var(--neon-shadow); }
         .region-select-box { flex: 1; border: none; background: transparent; color: var(--text-primary); font-size: 0.75rem; font-weight: 700; outline: none; cursor: pointer; padding: 4px 0; }
@@ -163,12 +164,24 @@
         .admin-input-group { margin-bottom: 5px; }
         .admin-input-group label { display: block; font-size: 0.63rem; color: var(--text-secondary); margin-bottom: 2px; font-weight: 600; }
         .admin-input-group input, .admin-input-group textarea, .admin-select { width: 100%; padding: 4px 6px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font-size: 0.7rem; outline: none; }
+        .price-input-wrapper { position: relative; display: flex; align-items: center; }
+        .price-currency-tag { position: absolute; left: 6px; font-size: 0.62rem; color: var(--neon-blue); pointer-events: none; font-weight: 700; }
+        .price-input-wrapper input { padding-left: 36px; direction: ltr; text-align: right; font-weight: 700; }
+
         .admin-style-row { display: flex; gap: 4px; align-items: center; margin-bottom: 4px; }
         .admin-style-row input { flex: 1; padding: 4px 6px; font-size: 0.7rem; background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); border-radius: var(--radius-sm); outline: none; }
         .delete-style-btn { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #ef4444; border-radius: var(--radius-sm); width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; flex: none; }
-        .admin-region-card { background: var(--surface-card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 6px 8px; margin-bottom: 5px; }
-        .admin-region-card-header { display: flex; justify-content: space-between; align-items: center; gap: 4px; margin-bottom: 4px; }
-        .admin-region-prices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+
+        /* باکس مدرن و متمرکز تنظیم منطقه */
+        .admin-region-box {
+            background: var(--surface-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 8px;
+            margin-top: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+        }
+
         .reg-three-cols { display: grid; grid-template-columns: 1.15fr 1fr 0.95fr; gap: 4px; margin-top: 3px; }
         .reg-field label { display: block; color: var(--text-secondary); font-size: 0.62rem; margin-bottom: 1px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .reg-field input { width: 100%; box-sizing: border-box; padding: 5px 4px; border-radius: var(--radius-sm); background: var(--surface-card); border: 1px solid var(--border); color: var(--text-primary); font: inherit; font-size: 0.7rem; outline: none; }
@@ -184,8 +197,9 @@
         .theme-card-option.selected { border-color: var(--neon-blue); box-shadow: 0 0 8px var(--neon-shadow); }
         .theme-color-dots { display: flex; gap: 3px; }
         .theme-color-dot { width: 13px; height: 13px; border-radius: 50%; }
-        .sub-tab-group { display: flex; gap: 3px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 2px; border-radius: var(--radius-sm); }
-        .sub-tab-btn { flex: 1; padding: 4px 2px; border-radius: 4px; background: transparent; border: none; color: var(--text-secondary); font-size: 0.62rem; font-weight: 700; cursor: pointer; text-align: center; }
+        .sub-tab-group { display: flex; gap: 3px; margin-bottom: 6px; background: rgba(255,255,255,0.03); padding: 2px; border-radius: var(--radius-sm); overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+        .sub-tab-group::-webkit-scrollbar { display: none; }
+        .sub-tab-btn { flex: none; padding: 4px 7px; border-radius: 4px; background: transparent; border: none; color: var(--text-secondary); font-size: 0.62rem; font-weight: 700; cursor: pointer; }
         .sub-tab-btn.active { background: var(--surface-card); color: var(--neon-blue); }
         .sub-text-panel { display: none; }
         .sub-text-panel.active { display: block; }
@@ -229,7 +243,6 @@
             </div>
 
             <div id="txt_classTypeLabel" style="font-size: 0.66rem; color: var(--text-secondary); margin: 5px 0 2px;">نوع برگزاری کلاس:</div>
-            <!-- کلیدهای کاملاً تمیز و یکدست بدون هیچ متن اضافه -->
             <div class="pill-group" id="classType">
                 <button class="pill-btn active" data-val="normal">عمومی</button>
                 <button class="pill-btn" data-val="semi">نیمه‌خصوصی</button>
@@ -238,7 +251,7 @@
                 <button class="pill-btn" data-val="online">آنلاین 🌐</button>
             </div>
 
-            <!-- باکس اخطار تکمیل ظرفیت بدون بهم‌ریختگی دکمه‌ها -->
+            <!-- باکس اخطار تکمیل ظرفیت -->
             <div id="classStatusNoticeBox" class="class-status-notice"></div>
 
             <div id="classNormalFlowContainer">
@@ -374,7 +387,7 @@
 
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- مودال مدیریت هوشمند با ۲ بخش کاملاً تفکیک‌شده و منظم برای سبک‌ها و کلاس‌ها -->
+<!-- مودال مدیریت هوشمند -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -383,8 +396,8 @@
         </div>
 
         <div class="admin-tabs">
-            <button class="admin-tab-btn active" onclick="switchAdminTab('stylesTab')">🥋 وضعیت کلاس و سبک‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn active" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها و کلاس‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('themesTab')">🎨 تم سایت</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
@@ -393,9 +406,84 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <!-- تب تفکیک‌شده سبک‌ها و کلاس‌ها (بدون شلوغی و تکرار) -->
-        <div class="admin-panel-tab active" id="stylesTab">
-            <!-- زیرتب‌های تمیز برای تفکیک کارها -->
+        <!-- تب مناطق تهران (فوق‌العاده مدرن، خلوت و مینی‌مال با متد Pill Selector) -->
+        <div class="admin-panel-tab active" id="regionsTab">
+            <div style="font-size:0.67rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
+            
+            <!-- نوار اسکرولی و مرتب گزینه‌های مناطق -->
+            <div class="sub-tab-group" id="adminRegionsNavPills"></div>
+
+            <!-- کارت متمرکز ویرایش منطقه انتخاب شده -->
+            <div class="admin-region-box" id="adminRegionEditCard">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:5px;">
+                    <span style="font-size:0.65rem; color:var(--neon-blue); font-weight:bold;">تنظیمات منطقه انتخابی:</span>
+                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" style="width:auto; padding:2px 6px; font-size:0.62rem;" title="حذف منطقه">🗑️ حذف</button>
+                </div>
+                <div class="admin-input-group">
+                    <label>نام و محله‌های منطقه:</label>
+                    <input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group">
+                        <label>شهریه کودکان (۸ جلسه):</label>
+                        <div class="price-input-wrapper">
+                            <input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value); onActiveRegionFieldInput();">
+                            <span class="price-currency-tag">تومان</span>
+                        </div>
+                    </div>
+                    <div class="admin-input-group">
+                        <label>شهریه بزرگسالان (۸ جلسه):</label>
+                        <div class="price-input-wrapper">
+                            <input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value); onActiveRegionFieldInput();">
+                            <span class="price-currency-tag">تومان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-input-group" style="margin-top:3px;">
+                    <label>هزینه هر سبک اضافه در این منطقه:</label>
+                    <div class="price-input-wrapper">
+                        <input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value); onActiveRegionFieldInput();">
+                        <span class="price-currency-tag">تومان</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- کارت مینی‌مال تعریف منطقه جدید -->
+            <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
+                <div style="font-size:0.67rem; color:var(--neon-green); font-weight:bold; margin-bottom:5px;">➕ تعریف منطقه جدید در تهران:</div>
+                <div class="admin-input-group">
+                    <label>نام منطقه جدید:</label>
+                    <input type="text" id="newRegNameInput" placeholder="مثلاً: منطقه ۲۲ - دریاچه چیتگر">
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:4px;">
+                    <div class="admin-input-group">
+                        <label>شهریه کودکان:</label>
+                        <div class="price-input-wrapper">
+                            <input type="text" id="newRegKidsInput" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                            <span class="price-currency-tag">تومان</span>
+                        </div>
+                    </div>
+                    <div class="admin-input-group">
+                        <label>شهریه بزرگسالان:</label>
+                        <div class="price-input-wrapper">
+                            <input type="text" id="newRegAdultInput" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                            <span class="price-currency-tag">تومان</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-input-group" style="margin-top:3px;">
+                    <label>هزینه هر سبک اضافه:</label>
+                    <div class="price-input-wrapper">
+                        <input type="text" id="newRegExtraInput" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
+                        <span class="price-currency-tag">تومان</span>
+                    </div>
+                </div>
+                <button type="button" class="pill-btn active" onclick="saveNewRegionFromCard()" style="width:100%; padding:6px; font-size:0.72rem; margin-top:5px;">➕ ثبت و اضافه کردن به لیست</button>
+            </div>
+        </div>
+
+        <!-- تب تفکیک‌شده سبک‌ها و کلاس‌ها -->
+        <div class="admin-panel-tab" id="stylesTab">
             <div class="sub-tab-group">
                 <button type="button" class="sub-tab-btn active" onclick="switchStylesSubTab('sub_class_status')">🔴 ظرفیت و تخصیص سبک</button>
                 <button type="button" class="sub-tab-btn" onclick="switchStylesSubTab('sub_styles_manager')">🥋 مدیریت سبک‌های آکادمی</button>
@@ -412,7 +500,6 @@
                     <button type="button" class="sub-tab-btn" onclick="switchAdminClassType('online')">آنلاین</button>
                 </div>
 
-                <!-- سوئیچ فعال/تکمیل ظرفیت -->
                 <div style="background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-sm); padding:6px; margin-bottom:6px;">
                     <label style="display:flex; align-items:center; gap:5px; font-size:0.67rem; font-weight:bold; cursor:pointer;">
                         <input type="checkbox" id="adminClassEnabledCheckbox" onchange="toggleAdminClassEnabled(this.checked)" style="width:13px; height:13px; accent-color:var(--neon-blue);">
@@ -424,7 +511,6 @@
                     </div>
                 </div>
 
-                <!-- انتخاب سبک‌های مجاز به صورت برچسب‌های شیک نئونی بدون چک‌باکس جاگیر -->
                 <div style="font-size:0.65rem; color:var(--neon-purple); font-weight:bold; margin-bottom:4px;">سبک‌های فعال این کلاس (لمس کنید تا روشن/خاموش شوند):</div>
                 <div id="adminClassStylesChips" style="display:grid; grid-template-columns:1fr 1fr; gap:4px; max-height:140px; overflow-y:auto;"></div>
             </div>
@@ -439,34 +525,6 @@
                 <div style="font-size:0.65rem; color:var(--text-secondary); margin-bottom:3px;">لیست سبک‌ها (ویرایش نام یا حذف):</div>
                 <div id="adminStylesListContainer" style="display:flex; flex-direction:column; gap:3px; max-height:160px; overflow-y:auto;"></div>
             </div>
-        </div>
-
-        <!-- تب مناطق تهران -->
-        <div class="admin-panel-tab" id="regionsTab">
-            <div style="font-size:0.68rem; color:var(--neon-blue); font-weight:bold; margin-bottom:4px;">افزودن منطقه جدید در تهران:</div>
-            <div class="admin-region-card">
-                <div class="admin-input-group">
-                    <label>نام منطقه:</label>
-                    <input type="text" id="newRegionNameInput" placeholder="مثلاً: منطقه ۲ - سعادت‌آباد">
-                </div>
-                <div class="admin-region-prices">
-                    <div class="admin-input-group">
-                        <label>شهریه کودکان (۸ جلسه):</label>
-                        <input type="text" id="newRegionKidsPrice" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                    </div>
-                    <div class="admin-input-group">
-                        <label>شهریه بزرگسالان (۸ جلسه):</label>
-                        <input type="text" id="newRegionAdultPrice" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                    </div>
-                    <div class="admin-input-group">
-                        <label>هزینه هر سبک اضافه:</label>
-                        <input type="text" id="newRegionExtraPrice" placeholder="۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)">
-                    </div>
-                </div>
-                <button type="button" class="pill-btn active" onclick="addNewRegion()" style="width:100%; padding:5px; font-size:0.68rem; margin-top:2px;">➕ افزودن این منطقه</button>
-            </div>
-            <div style="font-size:0.68rem; color:var(--neon-purple); font-weight:bold; margin:6px 0 2px;">لیست مناطق تهران:</div>
-            <div id="adminRegionsListContainer" style="max-height:180px; overflow-y:auto;"></div>
         </div>
 
         <!-- تب تم‌ها -->
@@ -598,6 +656,7 @@
     let selectedStyles = [];
     let currentEditingRuleKey = "online";
     let adminActiveEditingClassType = "normal";
+    let adminActiveRegionId = "";
 
     const regionSelectEl = document.getElementById('regionSelect');
     const regionDependentContentEl = document.getElementById('regionDependentContent');
@@ -627,7 +686,6 @@
         event.target.classList.add('active');
     }
 
-    // تغییر زیرتب در بخش سبک‌ها بین ظرفیت کلاس و تعریف سبک‌ها
     function switchStylesSubTab(subTabId) {
         document.querySelectorAll('#stylesTab .sub-text-panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('#stylesTab > .sub-tab-group > .sub-tab-btn').forEach(b => b.classList.remove('active'));
@@ -810,7 +868,6 @@
         renderClassStylesChips();
     }
 
-    // رندر تگ‌های سبک نئونی و مینی‌مال در پنل ادمین
     function renderClassStylesChips() {
         const container = document.getElementById('adminClassStylesChips');
         if (!container) return;
@@ -860,57 +917,130 @@
         updateClassStatusAndStylesFlow();
     }
 
-    function renderAdminRegionsList() {
-        const container = document.getElementById('adminRegionsListContainer');
-        container.innerHTML = "";
-        (appData.regions || []).forEach(reg => {
-            const card = document.createElement('div');
-            card.className = 'admin-region-card';
-            card.innerHTML = `
-                <div class="admin-region-card-header">
-                    <input type="text" value="${reg.name}" oninput="updateRegionField('${reg.id}', 'name', this.value)" style="flex:1; padding:4px 6px; font-size:0.7rem; font-weight:bold; background:var(--surface); border:1px solid var(--border); color:var(--neon-blue); border-radius:var(--radius-sm);">
-                    <button type="button" class="delete-style-btn" onclick="deleteRegion('${reg.id}')" title="حذف">🗑️</button>
-                </div>
-                <div class="admin-region-prices">
-                    <div class="admin-input-group"><label>کودکان:</label><input type="text" value="${formatNumberEn(reg.kidsBase)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'kidsBase', parsePureNumber(this.value))"></div>
-                    <div class="admin-input-group"><label>بزرگسالان:</label><input type="text" value="${formatNumberEn(reg.adultBase)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'adultBase', parsePureNumber(this.value))"></div>
-                    <div class="admin-input-group"><label>سبک اضافه:</label><input type="text" value="${formatNumberEn(reg.extraStylePrice)}" oninput="this.value=formatNumberEn(this.value); updateRegionField('${reg.id}', 'extraStylePrice', parsePureNumber(this.value))"></div>
-                </div>
-            `;
-            container.appendChild(card);
+    // رندر تب فوق‌العاده مدرن و مینی‌مال مدیریت مناطق
+    function renderAdminRegionsNav() {
+        const nav = document.getElementById('adminRegionsNavPills');
+        if (!nav) return;
+        nav.innerHTML = "";
+        
+        if (!appData.regions || appData.regions.length === 0) {
+            appData.regions = [];
+        }
+        
+        if (!adminActiveRegionId || !appData.regions.some(r => r.id === adminActiveRegionId)) {
+            adminActiveRegionId = appData.regions.length > 0 ? appData.regions[0].id : 'new';
+        }
+
+        appData.regions.forEach(reg => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = `sub-tab-btn ${reg.id === adminActiveRegionId ? 'active' : ''}`;
+            let shortName = reg.name.split('(')[0].replace('منطقه', '').trim();
+            btn.textContent = '📍 ' + (shortName ? 'منطقه ' + shortName : reg.name);
+            btn.title = reg.name;
+            btn.onclick = () => switchAdminRegion(reg.id);
+            nav.appendChild(btn);
         });
+
+        const addBtn = document.createElement('button');
+        addBtn.type = 'button';
+        addBtn.className = `sub-tab-btn ${adminActiveRegionId === 'new' ? 'active' : ''}`;
+        addBtn.style.cssText = "color: var(--neon-green); font-weight: 800;";
+        addBtn.textContent = '➕ منطقه جدید';
+        addBtn.onclick = () => switchAdminRegion('new');
+        nav.appendChild(addBtn);
+
+        loadActiveRegionDataIntoForm();
     }
 
-    function addNewRegion() {
-        const nameInput = document.getElementById('newRegionNameInput');
-        const kidsInput = document.getElementById('newRegionKidsPrice');
-        const adultInput = document.getElementById('newRegionAdultPrice');
-        const extraInput = document.getElementById('newRegionExtraPrice');
-        const name = nameInput.value.trim();
-        const kids = parsePureNumber(kidsInput.value);
-        const adult = parsePureNumber(adultInput.value);
-        const extra = parsePureNumber(extraInput.value);
+    function switchAdminRegion(regId) {
+        adminActiveRegionId = regId;
+        renderAdminRegionsNav();
+    }
 
-        if (!name || !kids || !adult) { alert('لطفاً مشخصات منطقه را وارد کنید.'); return; }
+    function loadActiveRegionDataIntoForm() {
+        const editCard = document.getElementById('adminRegionEditCard');
+        const newCard = document.getElementById('adminRegionNewCard');
+        if (!editCard || !newCard) return;
+
+        if (adminActiveRegionId === 'new') {
+            editCard.style.display = 'none';
+            newCard.style.display = 'block';
+        } else {
+            editCard.style.display = 'block';
+            newCard.style.display = 'none';
+
+            const reg = appData.regions.find(r => r.id === adminActiveRegionId);
+            if (reg) {
+                document.getElementById('activeRegionNameInput').value = reg.name || '';
+                document.getElementById('activeRegionKidsInput').value = formatNumberEn(reg.kidsBase);
+                document.getElementById('activeRegionAdultInput').value = formatNumberEn(reg.adultBase);
+                document.getElementById('activeRegionExtraInput').value = formatNumberEn(reg.extraStylePrice);
+            }
+        }
+    }
+
+    function onActiveRegionFieldInput() {
+        if (adminActiveRegionId === 'new') return;
+        const reg = appData.regions.find(r => r.id === adminActiveRegionId);
+        if (!reg) return;
+
+        reg.name = document.getElementById('activeRegionNameInput').value.trim();
+        reg.kidsBase = parsePureNumber(document.getElementById('activeRegionKidsInput').value);
+        reg.adultBase = parsePureNumber(document.getElementById('activeRegionAdultInput').value);
+        reg.extraStylePrice = parsePureNumber(document.getElementById('activeRegionExtraInput').value);
+
+        renderRegionSelect();
+        calculatePrice();
+    }
+
+    function deleteActiveRegion() {
+        if (!appData.regions || appData.regions.length <= 1) {
+            alert('حداقل باید ۱ منطقه در سیستم فعال بماند!');
+            return;
+        }
+        const reg = appData.regions.find(r => r.id === adminActiveRegionId);
+        if (!reg) return;
+        if (confirm(`آیا از حذف «${reg.name}» مطمئن هستید؟`)) {
+            appData.regions = appData.regions.filter(r => r.id !== adminActiveRegionId);
+            if (currentRegionId === adminActiveRegionId) currentRegionId = "";
+            adminActiveRegionId = appData.regions[0].id;
+            renderAdminRegionsNav();
+            renderRegionSelect();
+            calculatePrice();
+        }
+    }
+
+    function saveNewRegionFromCard() {
+        const name = document.getElementById('newRegNameInput').value.trim();
+        const kids = parsePureNumber(document.getElementById('newRegKidsInput').value);
+        const adult = parsePureNumber(document.getElementById('newRegAdultInput').value);
+        const extra = parsePureNumber(document.getElementById('newRegExtraInput').value);
+
+        if (!name || !kids || !adult) {
+            alert('لطفاً نام منطقه و شهریه‌های پایه را وارد کنید.');
+            return;
+        }
+
         const newId = "reg_" + Date.now();
         if (!Array.isArray(appData.regions)) appData.regions = [];
-        appData.regions.push({ id: newId, name: name, kidsBase: kids, adultBase: adult, extraStylePrice: extra || 500000 });
-        nameInput.value = ""; kidsInput.value = ""; adultInput.value = ""; extraInput.value = "";
-        renderAdminRegionsList(); renderRegionSelect(); calculatePrice();
-    }
+        appData.regions.push({
+            id: newId,
+            name: name,
+            kidsBase: kids,
+            adultBase: adult,
+            extraStylePrice: extra || 500000
+        });
 
-    function updateRegionField(id, field, value) {
-        const target = (appData.regions || []).find(r => r.id === id);
-        if (target) { target[field] = value; renderRegionSelect(); calculatePrice(); }
-    }
+        document.getElementById('newRegNameInput').value = "";
+        document.getElementById('newRegKidsInput').value = "";
+        document.getElementById('newRegAdultInput').value = "";
+        document.getElementById('newRegExtraInput').value = "";
 
-    function deleteRegion(id) {
-        if (!appData.regions || appData.regions.length <= 1) { alert('حداقل ۱ منطقه باید باقی بماند!'); return; }
-        if (confirm('حذف شود؟')) {
-            appData.regions = appData.regions.filter(r => r.id !== id);
-            if (currentRegionId === id) currentRegionId = "";
-            renderAdminRegionsList(); renderRegionSelect(); calculatePrice();
-        }
+        adminActiveRegionId = newId;
+        renderAdminRegionsNav();
+        renderRegionSelect();
+        calculatePrice();
     }
 
     function renderAdminStylesList() {
@@ -1139,7 +1269,7 @@
         document.getElementById('editMusicId').value = musicObj.id || '';
         document.getElementById('editMusicLink').value = musicObj.link || '';
 
-        renderAdminRegionsList();
+        renderAdminRegionsNav();
         renderAdminStylesList();
         loadAdminClassTypeConfig();
     }
