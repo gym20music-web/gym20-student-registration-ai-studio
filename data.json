@@ -134,7 +134,7 @@
   },
   "classTypesConfig": {
     "normal": {
-      "enabled": false,
+      "enabled": true,
       "statusText": "ظرفیت تمام 🤪",
       "allowedStyles": []
     },
