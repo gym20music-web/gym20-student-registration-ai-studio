@@ -852,121 +852,43 @@ function deleteTgRecipient(idx){
     renderTgRecipientsList();
 }
 
-async function sendSingleTelegramMessage(botToken, chatId, htmlText) {
-    if(!botToken || !chatId) return { ok: false, error: 'اطلاعات ناقص است' };
-    const cleanChatId = chatId.trim();
-    const params = new URLSearchParams();
-    params.append('chat_id', cleanChatId);
-    params.append('text', htmlText);
-    params.append('parse_mode', 'HTML');
-    
-    try {
-        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: params
-        });
-        const data = await res.json().catch(()=>null);
-        if(res.ok && data?.ok) {
-            return { ok: true, recipient: cleanChatId };
-        }
-        return { ok: false, recipient: cleanChatId, error: data?.description || 'خطا در ارسال' };
-    } catch(err) {
-        return { ok: false, recipient: cleanChatId, error: err.message || 'عدم دسترسی به سرور تلگرام' };
-    }
-}
-
 async function dispatchTelegramNotification(info, isTest = false) {
-    const tg = appData.telegramConfig;
-    if(!tg || (!tg.enabled && !isTest) || !tg.botToken) return [];
-    
-    const recipients = [];
-    if(tg.channelId) recipients.push(tg.channelId.trim());
-    if(tg.adminChatId) recipients.push(tg.adminChatId.trim());
-    if(Array.isArray(tg.extraRecipients)) {
-        tg.extraRecipients.forEach(r => {
-            const tr = (r||'').trim();
-            if(tr && !recipients.includes(tr)) recipients.push(tr);
-        });
-    }
-    if(!recipients.length) return [];
+    const tg = appData.telegramConfig || {};
+    if (!isTest && tg.enabled === false) return [];
+    const endpoint = GYM20_SUPABASE_URL + '/functions/v1/telegram-notify';
+    const payload = isTest ? { isTest: true } : info;
 
-    let msg = '';
-    if(isTest) {
-        msg = `🧪 <b>تست اتصال تلگرام - آکادمی ورزش GYM20</b> 🤸‍♂️\n━━━━━━━━━━━━━━━━━━\n✅ ربات تلگرام با موفقیت متصل است و گزارش‌های ثبت‌نام هنرجویان به این مقصد ارسال خواهد شد.\n\n⏰ زمان تست: ${new Date().toLocaleTimeString('fa-IR')}\n🌐 سامانه: gym20.ir`;
-    } else {
-        msg = `🥋 <b>ثبت‌نام جدید هنرجو در آکادمی GYM20</b> 🤸‍♂️\n` +
-              `━━━━━━━━━━━━━━━━━━\n` +
-              `👤 <b>نام هنرجو:</b> ${info.fullName}\n` +
-              `📞 <b>شماره تماس:</b> <code>${info.phone}</code>\n` +
-              (info.birthDate ? `🎂 <b>تاریخ تولد:</b> ${info.birthDate}\n` : '') +
-              `📍 <b>منطقه تهران:</b> ${info.regionName}\n` +
-              `🥊 <b>سبک‌های انتخابی:</b> ${info.styles}\n` +
-              `👥 <b>رده سنی:</b> ${info.ageGroup === 'adult' ? 'بزرگسالان' : 'کودکان'}\n` +
-              `🏷️ <b>نوع برگزاری کلاس:</b> ${info.classTypeName}\n` +
-              `🔢 <b>تعداد جلسات:</b> ${info.sessions} جلسه\n` +
-              `💰 <b>شهریه نهایی ترم:</b> ${info.price}\n` +
-              `💳 <b>وضعیت پرداخت:</b> پرداخت تأیید شد ✅\n` +
-              (info.notes ? `📝 <b>توضیحات هنرجو:</b> ${info.notes}\n` : '') +
-              `━━━━━━━━━━━━━━━━━━\n` +
-              `⏰ <b>زمان ثبت:</b> ${new Date().toLocaleDateString('fa-IR')} - ساعت ${new Date().toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'})}\n` +
-              `🌐 <b>سامانه:</b> gym20.ir`;
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'apikey': GYM20_SUPABASE_ANON_KEY,
+            'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) {
+        throw new Error(result.detail || result.error || 'ارسال پیام تلگرام ناموفق بود');
     }
-
-    const results = [];
-    for(const rc of recipients) {
-        const r = await sendSingleTelegramMessage(tg.botToken, rc, msg);
-        results.push(r);
-    }
-    return results;
+    return [{ ok: true, recipient: 'تنظیم‌شده در سرور' }];
 }
 
 async function testSendTelegramNotification() {
     const btn = document.getElementById('testTgNotificationBtn');
     const statusEl = document.getElementById('tgTestResultBox');
-    if(!btn || !statusEl) return;
+    if (!btn || !statusEl) return;
     const oldText = btn.innerText;
-    
-    const token = (document.getElementById('editTgBotToken')?.value || '').trim();
-    const channel = (document.getElementById('editTgChannelId')?.value || '').trim();
-    const admin = (document.getElementById('editTgAdminChatId')?.value || '').trim();
-    const extras = (adminTgRecipients || []).map(x=>x.trim()).filter(Boolean);
-
-    if(!token) {
-        statusEl.innerHTML = '<span style="color:#f87171;">⚠️ لطفاً ابتدا توکن ربات تلگرام را وارد کنید.</span>';
-        return;
-    }
-    if(!channel && !admin && !extras.length) {
-        statusEl.innerHTML = '<span style="color:#f87171;">⚠️ حداقل یک مقصد (کانال، چت‌آیدی شما یا سایر همکاران) را وارد کنید.</span>';
-        return;
-    }
 
     btn.disabled = true;
-    btn.innerText = '⏳ در حال ارسال پیام تست به تلگرام...';
-    statusEl.innerHTML = '<span style="color:var(--neon-blue);">در حال ارتباط با سرورهای تلگرام...</span>';
-
-    if(!appData.telegramConfig) appData.telegramConfig = {};
-    appData.telegramConfig.botToken = token;
-    appData.telegramConfig.channelId = channel;
-    appData.telegramConfig.adminChatId = admin;
-    appData.telegramConfig.extraRecipients = extras;
+    btn.innerText = '⏳ در حال ارسال پیام تست...';
+    statusEl.textContent = 'در حال ارتباط با تابع امن تلگرام...';
 
     try {
-        const results = await dispatchTelegramNotification({}, true);
-        const successCount = results.filter(r => r.ok).length;
-        const failList = results.filter(r => !r.ok);
-
-        if(successCount > 0 && failList.length === 0) {
-            statusEl.innerHTML = `<span style="color:#10b981;">🎉 تست موفق! پیام آزمایشی به هر ${successCount} مقصد با موفقیت ارسال شد.</span>`;
-        } else if(successCount > 0) {
-            const fails = failList.map(f => `${f.recipient}: ${f.error}`).join(' | ');
-            statusEl.innerHTML = `<span style="color:#fbbf24;">⚠️ پیام به ${successCount} مقصد ارسال شد ولی برای این موارد خطا داد: ${fails}</span>`;
-        } else {
-            const err = failList.map(f => `${f.recipient}: ${f.error}`).join(' | ');
-            statusEl.innerHTML = `<span style="color:#f87171;">❌ خطا در ارسال: ${err || 'ارتباط با تلگرام برقرار نشد. بررسی کنید فیلترشکن فعال باشد و ربات در کانال ادمین باشد.'}</span>`;
-        }
-    } catch(e) {
-        statusEl.innerHTML = `<span style="color:#f87171;">❌ خطا: ${e.message}</span>`;
+        await dispatchTelegramNotification({}, true);
+        statusEl.innerHTML = '<span style="color:#10b981;">🎉 پیام آزمایشی با موفقیت ارسال شد.</span>';
+    } catch (e) {
+        statusEl.innerHTML = '<span style="color:#f87171;">❌ ' + String(e.message || e) + '</span>';
     } finally {
         btn.disabled = false;
         btn.innerText = oldText;
@@ -1259,6 +1181,10 @@ registrationForm.addEventListener('submit',async e=>{
             body:JSON.stringify({p_full_name:fn,p_phone:ph,p_birth_date:gB,p_notes:cNotes,p_selected_styles:styles,p_age_group:currentAge,p_class_type:currentClassType,p_total_sessions:Number(currentSessions),p_payment_confirmed:true})
         });
         const resData=await res.json().catch(()=>null);
+        if (!res.ok || !resData) {
+            const serverMessage = typeof resData === 'string' ? resData : (resData?.message || resData?.hint || '');
+            throw new Error(serverMessage || 'ثبت درخواست در پایگاه داده ناموفق بود.');
+        }
         registrationForm.reset();acceptRulesEl.checked=false;paymentConfirmedEl.checked=false;paymentSectionEl.style.display='none';updateRegistrationSubmitState();setRegistrationStatus('ثبت‌نام با موفقیت انجام شد.','success');
         
         // ارسال گزارش ثبت‌نام به تلگرام (کانال، مدیر و همکاران)
