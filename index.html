@@ -149,7 +149,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .promo-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:12px;z-index:3000;animation:fadeIn .3s ease;}
 .promo-card{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(0,0,0,0.6)),var(--surface);border:1px solid var(--neon-purple);border-radius:var(--radius-md);width:100%;max-width:310px;padding:14px;text-align:center;position:relative;box-shadow:var(--neon-purple-shadow);}
 .promo-close-btn{position:absolute;top:8px;left:8px;background:var(--surface-card);border:1px solid var(--border);width:24px;height:24px;border-radius:50%;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
-.promo-img{width:80px;height:80px;object-fit:cover;border-radius:50%;margin:0 auto 8px;border:2px solid var(--neon-blue);box-shadow:0 0 12px var(--neon-shadow);display:block;}
+.promo-img{width:80px;height:80px;object-fit:cover;border-radius:50%;margin:0 auto 8px;border:2px solid var(--neon-blue);box-shadow:0 0 12px var(--neon-shadow);display:block;background:#1f2937;}
 .promo-title{font-size:.85rem;font-weight:900;color:var(--neon-blue);margin-bottom:4px;}
 .promo-text{font-size:.67rem;color:var(--text-secondary);line-height:1.6;margin-bottom:9px;}
 
@@ -296,11 +296,11 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 </div>
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- بنر تبلیغاتی پاپ‌آپ استایل میوکس (تصویر خودکار از پروفایل تلگرام) -->
+<!-- بنر تبلیغاتی پاپ‌آپ استایل میوکس -->
 <div class="promo-modal" id="meoxPromoModal">
     <div class="promo-card">
         <button class="promo-close-btn" id="closeMeoxPromo">✕</button>
-        <img src="" alt="Meox Accessory" class="promo-img" id="meoxPromoImg" onerror="this.src='https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80'">
+        <img src="" referrerpolicy="no-referrer" alt="Meox Accessory" class="promo-img" id="meoxPromoImg">
         <div class="promo-title" id="meoxPromoTitle">✨ گالری اکسسوری و استایل میوکس</div>
         <div class="promo-text" id="meoxPromoText">خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!</div>
         <div class="promo-code-box">
@@ -330,7 +330,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <!-- تب ضرایب کلاس با چیدمان بدون به‌هم‌ریختگی -->
+        <!-- تب ضرایب کلاس -->
         <div class="admin-panel-tab active" id="pricesTab">
             <div class="admin-card-section">
                 <div class="admin-section-subhead">⚙️ ضرایب نوع کلاس (محاسبه روی شهریه پایه):</div>
@@ -351,7 +351,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
         </div>
 
-        <!-- تب تنظیم تبلیغ با تصویر خودکار از تلگرام -->
+        <!-- تب تبلیغ میوکس -->
         <div class="admin-panel-tab" id="promoTab">
             <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px;margin-bottom:6px;">
                 <label style="display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:bold;cursor:pointer;">
@@ -565,10 +565,23 @@ const customRegionDropdownEl = document.getElementById('customRegionDropdown'), 
 function safeSetText(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.innerText=val;}
 function safeSetValue(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.value=val;}
 
-function extractTelegramAvatarUrl(input) {
+// استخراج آیدی تلگرام و تولید آدرس تصویر بدون فیلتر و رفرر
+function cleanTelegramUsername(input) {
     if (!input) return '';
-    let clean = input.replace(/https?:\/\/t\.me\//i, '').replace(/https?:\/\/telegram\.me\//i, '').replace('@', '').split('/')[0].split('?')[0].trim();
-    return clean ? `https://t.me/i/userpic/320/${clean}.jpg` : '';
+    return input.trim()
+        .replace(/https?:\/\/t\.me\//i, '')
+        .replace(/https?:\/\/telegram\.me\//i, '')
+        .replace(/^@+/, '')
+        .split('/')[0]
+        .split('?')[0]
+        .trim();
+}
+
+function extractTelegramAvatarUrl(input) {
+    const clean = cleanTelegramUsername(input);
+    if (!clean) return '';
+    // استفاده از پروکسی ضد تحریم و بدون رفرر تلگرام
+    return `https://wsrv.nl/?url=https://t.me/i/userpic/320/${clean}.jpg`;
 }
 
 function selectTheme(t){selectedThemeKey=t;document.body.setAttribute('data-color-theme',t);document.querySelectorAll('.theme-card-option').forEach(e=>e.classList.remove('selected'));const c=document.getElementById('themeOpt_'+t);if(c)c.classList.add('selected');}
@@ -826,14 +839,27 @@ function applyPromoPopupData(){
     safeSetText('meoxPromoText',pO.text||'خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!');
     safeSetText('meoxDiscountCode',pO.code||'MEOX20');
     safeSetText('meoxPromoBtn',pO.btnText||'ورود به کانال و مشاهده محصولات 🛍️');
-    const pBtn=document.getElementById('meoxPromoBtn');if(pBtn)pBtn.href=pO.link||'https://t.me/';
+    
+    let link = (pO.link || '').trim();
+    if(link && !link.startsWith('http://') && !link.startsWith('https://')) {
+        link = 'https://t.me/' + cleanTelegramUsername(link);
+    }
+    const pBtn=document.getElementById('meoxPromoBtn');if(pBtn)pBtn.href=link||'https://t.me/';
+    
     const pImg=document.getElementById('meoxPromoImg');
     if(pImg){
-        if(pO.img && pO.img.length > 5){
-            pImg.src = pO.img;
-        } else if(pO.link){
-            const autoTgAvatar = extractTelegramAvatarUrl(pO.link);
+        pImg.onerror = function() {
+            this.onerror = null;
+            this.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
+        };
+
+        if(pO.img && pO.img.trim().length > 5){
+            pImg.src = pO.img.trim();
+        } else if(link){
+            const autoTgAvatar = extractTelegramAvatarUrl(link);
             pImg.src = autoTgAvatar || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
+        } else {
+            pImg.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
         }
     }
 }
