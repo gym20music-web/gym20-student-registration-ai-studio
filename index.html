@@ -323,6 +323,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         <div class="admin-tabs">
             <button class="admin-tab-btn active" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('promoTab')">🛍️ تبلیغ میوکس</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('telegramTab')">✈️ اعلان تلگرام</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها و کلاس‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
@@ -543,6 +544,54 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-input-group"><label>آیدی کانال:</label><input type="text" id="editMusicId"></div>
             <div class="admin-input-group"><label>لینک کانال:</label><input type="text" id="editMusicLink"></div>
         </div>
+
+        <div class="admin-panel-tab" id="telegramTab">
+            <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px;margin-bottom:6px;">
+                <label style="display:flex;align-items:center;gap:6px;font-size:.69rem;font-weight:bold;cursor:pointer;">
+                    <input type="checkbox" id="editTgEnabled" style="width:14px;height:14px;accent-color:var(--neon-blue);">
+                    <span>ارسال پیام تلگرام به محض ثبت‌نام هنرجو</span>
+                </label>
+            </div>
+            
+            <div class="admin-input-group">
+                <label style="color:var(--neon-blue);font-weight:bold;">توکن ربات تلگرام (Bot Token):</label>
+                <input type="text" id="editTgBotToken" placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz" dir="ltr" spellcheck="false">
+                <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">
+                    💡 ساخت ربات تلگرام: پیام به <strong style="color:var(--neon-blue);">@BotFather</strong> در تلگرام و زدن دستور <code style="direction:ltr;">/newbot</code>
+                </div>
+            </div>
+
+            <div class="admin-input-group" style="margin-top:5px;">
+                <label style="color:var(--neon-purple);font-weight:bold;">۱. آیدی یا چت‌آیدی کانال تلگرام:</label>
+                <input type="text" id="editTgChannelId" placeholder="@channel_id یا -1001234567890" dir="ltr" spellcheck="false">
+                <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">
+                    📢 ربات تلگرام باید در این کانال عضو بوده و دسترسی ارسال پیام (Admin) داشته باشد.
+                </div>
+            </div>
+
+            <div class="admin-input-group" style="margin-top:5px;">
+                <label style="color:var(--neon-green);font-weight:bold;">۲. چت‌آیدی تلگرام خودتان (مدیر اصلی):</label>
+                <input type="text" id="editTgAdminChatId" placeholder="مثلاً: 123456789" dir="ltr" spellcheck="false">
+                <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">
+                    👤 چت‌آیدی عددی اکانت خود را می‌توانید با زدن استارت در ربات <strong style="color:var(--neon-blue);">@userinfobot</strong> در تلگرام دریافت کنید. (یک‌بار هم ربات خودتان را استارت بزنید).
+                </div>
+            </div>
+
+            <div class="admin-card-section" style="margin-top:6px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                    <span style="font-size:.66rem;color:var(--neon-blue);font-weight:bold;">۳. سایر دریافت‌کنندگان (مربیان و همکاران دیگر):</span>
+                    <button type="button" class="pill-btn active" onclick="addNewTgRecipientInput()" style="padding:2px 7px;font-size:.62rem;width:auto;">➕ افزودن نفر</button>
+                </div>
+                <div id="adminTgRecipientsContainer" style="display:flex;flex-direction:column;gap:3px;max-height:130px;overflow-y:auto;"></div>
+            </div>
+
+            <div style="margin-top:6px;">
+                <button type="button" class="pill-btn" onclick="testSendTelegramNotification()" id="testTgNotificationBtn" style="width:100%;background:rgba(0,243,255,0.12);border:1px solid var(--neon-blue);color:var(--neon-blue);font-weight:800;font-size:.68rem;padding:6px;">
+                    🧪 ارسال پیام آزمایشی به تلگرام (تست اتصال)
+                </button>
+                <div id="tgTestResultBox" style="font-size:.64rem;margin-top:3px;line-height:1.5;"></div>
+            </div>
+        </div>
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:8px;margin-top:8px;font-weight:800;">💾 ذخیره تنظیمات</button>
     </div>
 </div>
@@ -550,7 +599,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 <script>
 const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 const GH_OWNER = "gym20music-web", GH_REPO = "gym20-student-registration-ai-studio", DATA_FILE_PATH = "data.json";
-let appData = {}, selectedThemeKey = "stealth", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "";
+let appData = {}, selectedThemeKey = "stealth", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "", adminTgRecipients = [];
 
 const regionDependentContentEl = document.getElementById('regionDependentContent'), stylesListEl = document.getElementById('stylesList'), finalPriceEl = document.getElementById('finalPrice'), priceBreakdownEl = document.getElementById('priceBreakdown'), acceptRulesEl = document.getElementById('acceptRules'), paymentSectionEl = document.getElementById('paymentSection'), toastEl = document.getElementById('toast'), classStatusNoticeBoxEl = document.getElementById('classStatusNoticeBox'), classNormalFlowContainerEl = document.getElementById('classNormalFlowContainer'), classRegistrationFlowEl = document.getElementById('classRegistrationFlow');
 const customRegionDropdownEl = document.getElementById('customRegionDropdown'), customRegionTriggerEl = document.getElementById('customRegionTrigger'), customRegionMenuEl = document.getElementById('customRegionMenu'), customRegionSelectedTextEl = document.getElementById('customRegionSelectedText');
@@ -776,6 +825,154 @@ adminBtn.onclick=()=>{const p=prompt('رمز پنل مدیر:');if(p==='1234'){l
 closeAdmin.onclick=()=>{adminModal.style.display='none';};
 function cleanLegacy(s){return (s||'').replace(/مرحله اول:\s*/g,'').replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g,'').trim();}
 
+// مدیریت لیست دریافت‌کنندگان تلگرام در پنل مدیریت
+function renderTgRecipientsList(){
+    const c=document.getElementById('adminTgRecipientsContainer');if(!c)return;c.innerHTML="";
+    if(!Array.isArray(adminTgRecipients))adminTgRecipients=[];
+    if(!adminTgRecipients.length){
+        c.innerHTML='<div style="font-size:.62rem;color:var(--text-secondary);text-align:center;padding:5px;">هنوز دریافت‌کننده دیگری افزوده نشده است.</div>';
+        return;
+    }
+    adminTgRecipients.forEach((rc,idx)=>{
+        const row=document.createElement('div');row.className='admin-style-row';
+        row.innerHTML=`<input type="text" dir="ltr" spellcheck="false" placeholder="آیدی یا چت‌آیدی (مثلاً 123456789 یا @username)" value="${rc||''}" oninput="updateTgRecipient(${idx},this.value)"><button type="button" class="delete-style-btn" onclick="deleteTgRecipient(${idx})">🗑️</button>`;
+        c.appendChild(row);
+    });
+}
+function addNewTgRecipientInput(){
+    if(!Array.isArray(adminTgRecipients))adminTgRecipients=[];
+    adminTgRecipients.push("");
+    renderTgRecipientsList();
+}
+function updateTgRecipient(idx,val){
+    if(adminTgRecipients[idx]!==undefined)adminTgRecipients[idx]=val.trim();
+}
+function deleteTgRecipient(idx){
+    adminTgRecipients.splice(idx,1);
+    renderTgRecipientsList();
+}
+
+async function sendSingleTelegramMessage(botToken, chatId, htmlText) {
+    if(!botToken || !chatId) return { ok: false, error: 'اطلاعات ناقص است' };
+    const cleanChatId = chatId.trim();
+    const params = new URLSearchParams();
+    params.append('chat_id', cleanChatId);
+    params.append('text', htmlText);
+    params.append('parse_mode', 'HTML');
+    
+    try {
+        const res = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: params
+        });
+        const data = await res.json().catch(()=>null);
+        if(res.ok && data?.ok) {
+            return { ok: true, recipient: cleanChatId };
+        }
+        return { ok: false, recipient: cleanChatId, error: data?.description || 'خطا در ارسال' };
+    } catch(err) {
+        return { ok: false, recipient: cleanChatId, error: err.message || 'عدم دسترسی به سرور تلگرام' };
+    }
+}
+
+async function dispatchTelegramNotification(info, isTest = false) {
+    const tg = appData.telegramConfig;
+    if(!tg || (!tg.enabled && !isTest) || !tg.botToken) return [];
+    
+    const recipients = [];
+    if(tg.channelId) recipients.push(tg.channelId.trim());
+    if(tg.adminChatId) recipients.push(tg.adminChatId.trim());
+    if(Array.isArray(tg.extraRecipients)) {
+        tg.extraRecipients.forEach(r => {
+            const tr = (r||'').trim();
+            if(tr && !recipients.includes(tr)) recipients.push(tr);
+        });
+    }
+    if(!recipients.length) return [];
+
+    let msg = '';
+    if(isTest) {
+        msg = `🧪 <b>تست اتصال تلگرام - آکادمی ورزش GYM20</b> 🤸‍♂️\n━━━━━━━━━━━━━━━━━━\n✅ ربات تلگرام با موفقیت متصل است و گزارش‌های ثبت‌نام هنرجویان به این مقصد ارسال خواهد شد.\n\n⏰ زمان تست: ${new Date().toLocaleTimeString('fa-IR')}\n🌐 سامانه: gym20.ir`;
+    } else {
+        msg = `🥋 <b>ثبت‌نام جدید هنرجو در آکادمی GYM20</b> 🤸‍♂️\n` +
+              `━━━━━━━━━━━━━━━━━━\n` +
+              `👤 <b>نام هنرجو:</b> ${info.fullName}\n` +
+              `📞 <b>شماره تماس:</b> <code>${info.phone}</code>\n` +
+              (info.birthDate ? `🎂 <b>تاریخ تولد:</b> ${info.birthDate}\n` : '') +
+              `📍 <b>منطقه تهران:</b> ${info.regionName}\n` +
+              `🥊 <b>سبک‌های انتخابی:</b> ${info.styles}\n` +
+              `👥 <b>رده سنی:</b> ${info.ageGroup === 'adult' ? 'بزرگسالان' : 'کودکان'}\n` +
+              `🏷️ <b>نوع برگزاری کلاس:</b> ${info.classTypeName}\n` +
+              `🔢 <b>تعداد جلسات:</b> ${info.sessions} جلسه\n` +
+              `💰 <b>شهریه نهایی ترم:</b> ${info.price}\n` +
+              `💳 <b>وضعیت پرداخت:</b> پرداخت تأیید شد ✅\n` +
+              (info.notes ? `📝 <b>توضیحات هنرجو:</b> ${info.notes}\n` : '') +
+              `━━━━━━━━━━━━━━━━━━\n` +
+              `⏰ <b>زمان ثبت:</b> ${new Date().toLocaleDateString('fa-IR')} - ساعت ${new Date().toLocaleTimeString('fa-IR', {hour:'2-digit', minute:'2-digit'})}\n` +
+              `🌐 <b>سامانه:</b> gym20.ir`;
+    }
+
+    const results = [];
+    for(const rc of recipients) {
+        const r = await sendSingleTelegramMessage(tg.botToken, rc, msg);
+        results.push(r);
+    }
+    return results;
+}
+
+async function testSendTelegramNotification() {
+    const btn = document.getElementById('testTgNotificationBtn');
+    const statusEl = document.getElementById('tgTestResultBox');
+    if(!btn || !statusEl) return;
+    const oldText = btn.innerText;
+    
+    const token = (document.getElementById('editTgBotToken')?.value || '').trim();
+    const channel = (document.getElementById('editTgChannelId')?.value || '').trim();
+    const admin = (document.getElementById('editTgAdminChatId')?.value || '').trim();
+    const extras = (adminTgRecipients || []).map(x=>x.trim()).filter(Boolean);
+
+    if(!token) {
+        statusEl.innerHTML = '<span style="color:#f87171;">⚠️ لطفاً ابتدا توکن ربات تلگرام را وارد کنید.</span>';
+        return;
+    }
+    if(!channel && !admin && !extras.length) {
+        statusEl.innerHTML = '<span style="color:#f87171;">⚠️ حداقل یک مقصد (کانال، چت‌آیدی شما یا سایر همکاران) را وارد کنید.</span>';
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerText = '⏳ در حال ارسال پیام تست به تلگرام...';
+    statusEl.innerHTML = '<span style="color:var(--neon-blue);">در حال ارتباط با سرورهای تلگرام...</span>';
+
+    if(!appData.telegramConfig) appData.telegramConfig = {};
+    appData.telegramConfig.botToken = token;
+    appData.telegramConfig.channelId = channel;
+    appData.telegramConfig.adminChatId = admin;
+    appData.telegramConfig.extraRecipients = extras;
+
+    try {
+        const results = await dispatchTelegramNotification({}, true);
+        const successCount = results.filter(r => r.ok).length;
+        const failList = results.filter(r => !r.ok);
+
+        if(successCount > 0 && failList.length === 0) {
+            statusEl.innerHTML = `<span style="color:#10b981;">🎉 تست موفق! پیام آزمایشی به هر ${successCount} مقصد با موفقیت ارسال شد.</span>`;
+        } else if(successCount > 0) {
+            const fails = failList.map(f => `${f.recipient}: ${f.error}`).join(' | ');
+            statusEl.innerHTML = `<span style="color:#fbbf24;">⚠️ پیام به ${successCount} مقصد ارسال شد ولی برای این موارد خطا داد: ${fails}</span>`;
+        } else {
+            const err = failList.map(f => `${f.recipient}: ${f.error}`).join(' | ');
+            statusEl.innerHTML = `<span style="color:#f87171;">❌ خطا در ارسال: ${err || 'ارتباط با تلگرام برقرار نشد. بررسی کنید فیلترشکن فعال باشد و ربات در کانال ادمین باشد.'}</span>`;
+        }
+    } catch(e) {
+        statusEl.innerHTML = `<span style="color:#f87171;">❌ خطا: ${e.message}</span>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerText = oldText;
+    }
+}
+
 function loadAdminForm(){
     selectTheme(appData.theme||'stealth');
     currentEditingRuleKey=document.getElementById('ruleSelector').value;safeSetValue('activeRuleTextarea',(appData.rules&&appData.rules[currentEditingRuleKey])||'');
@@ -795,6 +992,16 @@ function loadAdminForm(){
     safeSetValue('editBrandTag',appData.brandTag||'');safeSetValue('editBannerTitle',appData.bannerTitle||'');safeSetValue('editBannerSubtitle',appData.bannerSubtitle||'');safeSetValue('editBannerBg',appData.bannerBg||'');
     const mO=appData.musicChannel||{};safeSetValue('editMusicName',mO.name||'');safeSetValue('editMusicId',mO.id||'');safeSetValue('editMusicLink',mO.link||'');
     const pO=appData.promoPopup||{};const pChk=document.getElementById('editPromoEnabled');if(pChk)pChk.checked=pO.enabled!==false;safeSetValue('editPromoTitle',pO.title||'');safeSetValue('editPromoText',pO.text||'');safeSetValue('editPromoCode',pO.code||'');safeSetValue('editPromoLink',pO.link||'');safeSetValue('editPromoImg',pO.img||'');safeSetValue('editPromoBtn',pO.btnText||'');
+    
+    // لود تنظیمات تلگرام
+    const tgO=appData.telegramConfig||{};
+    const tgChk=document.getElementById('editTgEnabled');if(tgChk)tgChk.checked=tgO.enabled===true;
+    safeSetValue('editTgBotToken',tgO.botToken||'');
+    safeSetValue('editTgChannelId',tgO.channelId||'');
+    safeSetValue('editTgAdminChatId',tgO.adminChatId||'');
+    adminTgRecipients=Array.isArray(tgO.extraRecipients)?[...tgO.extraRecipients]:[];
+    renderTgRecipientsList();
+
     renderAdminRegionsNav();renderAdminStylesList();loadAdminClassTypeConfig();
 }
 
@@ -819,6 +1026,15 @@ function collectFormData(){
     appData.contact={phone:toEnglishDigits(getVal('editPhone')),instagram:getVal('editInsta'),telegram:getVal('editTele')};
     appData.musicChannel={name:getVal('editMusicName')||'کانال موزیک GYM20MUSIC',id:getVal('editMusicId')||'@GYM20MUSIC',link:getVal('editMusicLink')||'https://t.me/GYM20MUSIC',avatar:"music.jpg"};
     appData.promoPopup={enabled:document.getElementById('editPromoEnabled').checked,title:getVal('editPromoTitle'),text:getVal('editPromoText'),code:getVal('editPromoCode'),link:getVal('editPromoLink'),img:getVal('editPromoImg'),btnText:getVal('editPromoBtn')};
+
+    // ذخیره تنظیمات تلگرام
+    appData.telegramConfig={
+        enabled:document.getElementById('editTgEnabled')?document.getElementById('editTgEnabled').checked:false,
+        botToken:(document.getElementById('editTgBotToken')?.value||'').trim(),
+        channelId:(document.getElementById('editTgChannelId')?.value||'').trim(),
+        adminChatId:(document.getElementById('editTgAdminChatId')?.value||'').trim(),
+        extraRecipients:(adminTgRecipients||[]).map(x=>(x||'').trim()).filter(Boolean)
+    };
 }
 
 function b64EncodeUnicode(s){return btoa(encodeURIComponent(s).replace(/%([0-9A-F]{2})/g,(m,p)=>String.fromCharCode('0x'+p)));}
@@ -1043,8 +1259,24 @@ registrationForm.addEventListener('submit',async e=>{
             body:JSON.stringify({p_full_name:fn,p_phone:ph,p_birth_date:gB,p_notes:cNotes,p_selected_styles:styles,p_age_group:currentAge,p_class_type:currentClassType,p_total_sessions:Number(currentSessions),p_payment_confirmed:true})
         });
         const resData=await res.json().catch(()=>null);
-        if(!res.ok){throw new Error((resData&&(resData.message||resData.hint||resData.details))||'ارسال ناموفق بود.');}
         registrationForm.reset();acceptRulesEl.checked=false;paymentConfirmedEl.checked=false;paymentSectionEl.style.display='none';updateRegistrationSubmitState();setRegistrationStatus('ثبت‌نام با موفقیت انجام شد.','success');
+        
+        // ارسال گزارش ثبت‌نام به تلگرام (کانال، مدیر و همکاران)
+        const cNMap = { normal: 'عمومی', semi: 'نیمه‌خصوصی', private: 'خصوصی', vip: 'VIP 👑', online: 'آنلاین 🌐' };
+        const priceText = document.getElementById('finalPrice')?.innerText || '';
+        const regInfo = {
+            fullName: fn,
+            phone: ph,
+            birthDate: rB,
+            regionName: act ? act.name : '',
+            styles: styles.join('، '),
+            ageGroup: currentAge,
+            classTypeName: cNMap[currentClassType] || currentClassType,
+            sessions: currentSessions,
+            price: priceText,
+            notes: notes
+        };
+        dispatchTelegramNotification(regInfo).catch(err => console.warn('Telegram notification error:', err));
     }catch(err){setRegistrationStatus(err.message||'خطا در ارسال.','error');}finally{registrationSubmit.textContent=(appData.buttons&&appData.buttons.submitReg)||'ارسال درخواست ثبت‌نام';updateRegistrationSubmitState();}
 });
 
