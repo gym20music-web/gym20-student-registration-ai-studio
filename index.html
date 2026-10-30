@@ -154,21 +154,21 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .promo-text{font-size:.67rem;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;}
 
 /* چیدمان دقیق زیر هم برای کد تخفیف و دکمه کپی کوچک */
-.promo-code-container{background:var(--surface-card);border:1px dashed var(--neon-blue);padding:6px;border-radius:var(--radius-sm);margin-bottom:10px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.promo-code-container{background:var(--surface-card);border:1px dashed var(--neon-blue);padding:7px 6px;border-radius:var(--radius-sm);margin-bottom:10px;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .promo-code-label{font-size:.58rem;color:var(--text-secondary);}
-.promo-code-val{font-size:.88rem;font-weight:900;letter-spacing:2px;color:var(--neon-blue);font-family:monospace;direction:ltr;}
+.promo-code-val{font-size:.92rem;font-weight:900;letter-spacing:2px;color:var(--neon-blue);font-family:monospace;direction:ltr;}
 .promo-copy-btn{background:var(--neon-blue);color:#000;border:none;padding:3px 14px;border-radius:12px;font-size:.62rem;font-weight:800;cursor:pointer;transition:all .15s;}
 .promo-copy-btn:active{transform:scale(.92);}
 .promo-action-btn{display:block;width:100%;padding:8px;background:var(--btn-active);color:#fff;border-radius:var(--radius-sm);text-decoration:none;font-weight:800;font-size:.74rem;box-shadow:var(--neon-shadow);}
 </style>
 </head>
-<body data-color-theme="cyber">
+<body data-color-theme="stealth">
 <div class="container">
     <div class="top-nav">
         <div class="brand-badge" id="brandTag">آکادمی تخصصی ورزش GYM20🤸</div>
         <div class="nav-actions">
-            <button class="circle-btn" id="themeBtn">🌙</button>
-            <button class="circle-btn" id="adminBtn">⚙️</button>
+            <button class="circle-btn" id="themeBtn" title="تغییر تم">🌙</button>
+            <button class="circle-btn" id="adminBtn" title="پنل مدیریت">⚙️</button>
         </div>
     </div>
     <div class="hero-banner" id="heroBanner">
@@ -361,7 +361,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
             <div class="admin-input-group">
                 <label style="color:var(--neon-green);font-weight:bold;">لینک یا آیدی تلگرام کانال میوکس (مثال: @meox یا https://t.me/meox):</label>
-                <input type="text" id="editPromoLink" placeholder="@meox">
+                <input type="text" id="editPromoLink" placeholder="@MEOWX_ACCS">
                 <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">✨ عکس پروفایل کانال به طور خودکار به عنوان تصویر بنر نمایش داده خواهد شد.</div>
             </div>
             <div class="admin-input-group"><label>عنوان بنر تبلیغاتی:</label><input type="text" id="editPromoTitle"></div>
@@ -550,13 +550,19 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 <script>
 const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 const GH_OWNER = "gym20music-web", GH_REPO = "gym20-student-registration-ai-studio", DATA_FILE_PATH = "data.json";
-let appData = {}, selectedThemeKey = "cyber", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "";
+let appData = {}, selectedThemeKey = "stealth", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "";
 
 const regionDependentContentEl = document.getElementById('regionDependentContent'), stylesListEl = document.getElementById('stylesList'), finalPriceEl = document.getElementById('finalPrice'), priceBreakdownEl = document.getElementById('priceBreakdown'), acceptRulesEl = document.getElementById('acceptRules'), paymentSectionEl = document.getElementById('paymentSection'), toastEl = document.getElementById('toast'), classStatusNoticeBoxEl = document.getElementById('classStatusNoticeBox'), classNormalFlowContainerEl = document.getElementById('classNormalFlowContainer'), classRegistrationFlowEl = document.getElementById('classRegistrationFlow');
 const customRegionDropdownEl = document.getElementById('customRegionDropdown'), customRegionTriggerEl = document.getElementById('customRegionTrigger'), customRegionMenuEl = document.getElementById('customRegionMenu'), customRegionSelectedTextEl = document.getElementById('customRegionSelectedText');
 
 function safeSetText(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.innerText=val;}
 function safeSetValue(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.value=val;}
+
+function toEnglishDigits(s){return (s||'').toString().replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
+function formatTomanPersian(n){if(!n)return "۰ تومان";return Number(n).toLocaleString('en-US').replace(/\d/g,d=>['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d])+' تومان';}
+function formatNumberEn(n){return n?Number(n.toString().replace(/\D/g,"")).toLocaleString('en-US'):"";}
+function parsePureNumber(s){return Number(toEnglishDigits(s).replace(/\D/g,""))||0;}
+function formatRegionDisplayName(r){if(!r)return {title:'',desc:''};const m=r.match(/^(.*?)\((.*?)\)$/);return m?{title:m[1].trim(),desc:m[2].trim()}:{title:r.trim(),desc:''};}
 
 function cleanTelegramUsername(input) {
     if (!input) return '';
@@ -569,18 +575,40 @@ function cleanTelegramUsername(input) {
         .trim();
 }
 
+// تابع کپی امن با پشتیبانی از وب‌ویوهای تلگرام و ایتا
+function safeCopyToClipboard(text, onSuccess) {
+    if (!text) return;
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => fallbackCopy(text, onSuccess));
+    } else {
+        fallbackCopy(text, onSuccess);
+    }
+}
+
+function fallbackCopy(text, onSuccess) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        document.execCommand('copy');
+        if (onSuccess) onSuccess();
+    } catch (err) {
+        console.error('Copy failed', err);
+    }
+    document.body.removeChild(textArea);
+}
+
 function selectTheme(t){selectedThemeKey=t;document.body.setAttribute('data-color-theme',t);document.querySelectorAll('.theme-card-option').forEach(e=>e.classList.remove('selected'));const c=document.getElementById('themeOpt_'+t);if(c)c.classList.add('selected');}
 function switchSubTextTab(id){document.querySelectorAll('#textsTab .sub-text-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('#textsTab .sub-tab-btn').forEach(b=>b.classList.remove('active'));const p=document.getElementById(id);if(p)p.classList.add('active');if(window.event)window.event.target.classList.add('active');}
 function switchStylesSubTab(id){document.querySelectorAll('#stylesTab .sub-text-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('#stylesTab > .sub-tab-group > .sub-tab-btn').forEach(b=>b.classList.remove('active'));const p=document.getElementById(id);if(p)p.classList.add('active');if(window.event)window.event.target.classList.add('active');}
-function toEnglishDigits(s){return (s||'').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));}
 function jalaliToGregorian(jy,jm,jd){jy=Number(jy);jm=Number(jm);jd=Number(jd);if(!jy||!jm||!jd||jm<1||jm>12||jd<1||jd>31)return null;var gy=(jy<=979)?621:1600;jy-=(jy<=979)?0:979;var days=(365*jy)+(Math.floor(jy/33)*8)+(Math.floor(((jy%33)+3)/4))+78+jd+((jm<7)?(jm-1)*31:((jm-7)*30)+186);gy+=400*Math.floor(days/146097);days%=146097;if(days>36524){gy+=100*Math.floor(--days/36524);days%=36524;if(days>=365)days++;}gy+=4*Math.floor(days/1461);days%=1461;gy+=Math.floor((days-1)/365);if(days>365)days=(days-1)%365;var gd=days+1;var sal_a=[0,31,((gy%4===0&&gy%100!==0)||(gy%400===0))?29:28,31,30,31,30,31,31,30,31,30,31];var gm;for(gm=0;gm<13;gm++){var v=sal_a[gm];if(gd<=v)break;gd -= v;}return gy+'-'+String(gm).padStart(2,'0')+'-'+String(gd).padStart(2,'0');}
 
 const birthInput = document.getElementById('regBirthDateShamsi');
 if(birthInput){birthInput.addEventListener('input',e=>{let v=toEnglishDigits(e.target.value).replace(/[^\d]/g,'');if(v.length>4&&v.length<=6)v=v.slice(0,4)+'/'+v.slice(4);else if(v.length>6)v=v.slice(0,4)+'/'+v.slice(4,6)+'/'+v.slice(6,8);e.target.value=v;});}
-function formatTomanPersian(n){if(!n)return "۰ تومان";return Number(n).toLocaleString('en-US').replace(/\d/g,d=>['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'][d])+' تومان';}
-function formatNumberEn(n){return n?Number(n.toString().replace(/\D/g,"")).toLocaleString('en-US'):"";}
-function parsePureNumber(s){return Number((s||'').toString().replace(/\D/g,""))||0;}
-function formatRegionDisplayName(r){if(!r)return {title:'',desc:''};const m=r.match(/^(.*?)\((.*?)\)$/);return m?{title:m[1].trim(),desc:m[2].trim()}:{title:r.trim(),desc:''};}
 
 function renderCustomRegionDropdown(){
     if(!customRegionMenuEl||!customRegionSelectedTextEl)return;
@@ -730,7 +758,16 @@ setupPills('sessionsCount',v=>{currentSessions=v;calculatePrice();});
 
 document.querySelectorAll('.accordion-header').forEach(h=>{h.onclick=()=>h.parentElement.classList.toggle('open');});
 acceptRulesEl.onchange=e=>{paymentSectionEl.style.display=e.target.checked?'block':'none';if(!e.target.checked)document.getElementById('regPaymentConfirmed').checked=false;updateRegistrationSubmitState();if(e.target.checked)paymentSectionEl.scrollIntoView({behavior:'smooth'});};
-document.getElementById('copyCardBtn').onclick=()=>{if(appData.card&&appData.card.cleanNumber){navigator.clipboard.writeText(appData.card.cleanNumber).then(()=>{toastEl.classList.add('show');setTimeout(()=>toastEl.classList.remove('show'),2200);});}};
+
+document.getElementById('copyCardBtn').onclick=()=>{
+    if(appData.card&&appData.card.cleanNumber){
+        safeCopyToClipboard(appData.card.cleanNumber, ()=>{
+            toastEl.classList.add('show');
+            setTimeout(()=>toastEl.classList.remove('show'),2200);
+        });
+    }
+};
+
 themeBtn.onclick=()=>{const l=document.body.getAttribute('data-theme')==='light';if(l){document.body.removeAttribute('data-theme');themeBtn.innerText='🌙';}else{document.body.setAttribute('data-theme','light');themeBtn.innerText='☀️';}};
 function switchAdminTab(tId){document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));const tab=document.getElementById(tId);if(tab)tab.classList.add('active');const btn=Array.from(document.querySelectorAll('.admin-tab-btn')).find(b=>b.getAttribute('onclick')===`switchAdminTab('${tId}')`);if(btn)btn.classList.add('active');}
 function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea');if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=document.getElementById('ruleSelector').value;t.value=appData.rules[currentEditingRuleKey]||'';}
@@ -740,7 +777,7 @@ closeAdmin.onclick=()=>{adminModal.style.display='none';};
 function cleanLegacy(s){return (s||'').replace(/مرحله اول:\s*/g,'').replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g,'').trim();}
 
 function loadAdminForm(){
-    selectTheme(appData.theme||'cyber');
+    selectTheme(appData.theme||'stealth');
     currentEditingRuleKey=document.getElementById('ruleSelector').value;safeSetValue('activeRuleTextarea',(appData.rules&&appData.rules[currentEditingRuleKey])||'');
     if(appData.multipliers){safeSetValue('editOnlineFactor',appData.multipliers.online||0.8);safeSetValue('editSemiFactor',appData.multipliers.semi||1.4);safeSetValue('editPrivateFactor',appData.multipliers.private||2.0);safeSetValue('editVipFactor',appData.multipliers.vip||3.0);}
     if(appData.sessionRates){safeSetValue('editRate8',appData.sessionRates["8"]||1.0);safeSetValue('editRate10',appData.sessionRates["10"]||1.25);safeSetValue('editRate12',appData.sessionRates["12"]||1.5);}
@@ -762,7 +799,7 @@ function loadAdminForm(){
 }
 
 function collectFormData(){
-    appData.theme=selectedThemeKey||'cyber';if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=document.getElementById('activeRuleTextarea').value;
+    appData.theme=selectedThemeKey||'stealth';if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=document.getElementById('activeRuleTextarea').value;
     appData.multipliers={normal:1.0,online:Number(document.getElementById('editOnlineFactor').value)||0.8,semi:Number(document.getElementById('editSemiFactor').value)||1.4,private:Number(document.getElementById('editPrivateFactor').value)||2.0,vip:Number(document.getElementById('editVipFactor').value)||3.0};
     appData.sessionRates={"8":Number(document.getElementById('editRate8').value)||1.0,"10":Number(document.getElementById('editRate10').value)||1.25,"12":Number(document.getElementById('editRate12').value)||1.5};
     const getVal=id=>(document.getElementById(id)?document.getElementById(id).value.trim():'');
@@ -775,9 +812,12 @@ function collectFormData(){
     };
     Object.assign(appData.titles,tFields);
     appData.brandTag=getVal('editBrandTag');appData.bannerTitle=getVal('editBannerTitle');appData.bannerSubtitle=getVal('editBannerSubtitle');appData.bannerBg=getVal('editBannerBg');
-    const raw=document.getElementById('editCardNum').value.replace(/\D/g,'');appData.card={bank:"بانک سامان",number:raw.replace(/(\d{4})/g,'$1-').slice(0,19),cleanNumber:raw,owner:getVal('editCardOwner'),gatewayLink:getVal('editGatewayLink')};
-    appData.contact={phone:getVal('editPhone'),instagram:getVal('editInsta'),telegram:getVal('editTele')};
-    appData.musicChannel={name:getVal('editMusicName')||'✈️ کانال موزیک GYM20MUSIC 🎧',id:getVal('editMusicId')||'@GYM20MUSIC',link:getVal('editMusicLink')||'https://t.me/GYM20MUSIC',avatar:"music.jpg"};
+    
+    // تبدیل ارقام فارسی به انگلیسی برای شماره کارت
+    const raw=toEnglishDigits(document.getElementById('editCardNum').value).replace(/\D/g,'');
+    appData.card={bank:"بانک سامان",number:raw.replace(/(\d{4})/g,'$1-').slice(0,19),cleanNumber:raw,owner:getVal('editCardOwner'),gatewayLink:getVal('editGatewayLink')};
+    appData.contact={phone:toEnglishDigits(getVal('editPhone')),instagram:getVal('editInsta'),telegram:getVal('editTele')};
+    appData.musicChannel={name:getVal('editMusicName')||'کانال موزیک GYM20MUSIC',id:getVal('editMusicId')||'@GYM20MUSIC',link:getVal('editMusicLink')||'https://t.me/GYM20MUSIC',avatar:"music.jpg"};
     appData.promoPopup={enabled:document.getElementById('editPromoEnabled').checked,title:getVal('editPromoTitle'),text:getVal('editPromoText'),code:getVal('editPromoCode'),link:getVal('editPromoLink'),img:getVal('editPromoImg'),btnText:getVal('editPromoBtn')};
 }
 
@@ -785,33 +825,87 @@ function b64EncodeUnicode(s){return btoa(encodeURIComponent(s).replace(/%([0-9A-
 
 document.getElementById('autoCommitBtn').onclick=async()=>{
     const btn=document.getElementById('autoCommitBtn'),oldText=btn.innerText;
-    btn.innerText='⏳ در حال ذخیره...';btn.disabled=true;
+    btn.innerText='⏳ در حال ذخیره در سرور و گیت‌هاب...';btn.disabled=true;
     try{
         collectFormData();
         localStorage.setItem('sports_reg_data',JSON.stringify(appData));
         applyDataToUI();updateClassStatusAndStylesFlow();
         
-        let fileSha=null;
-        const getRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
-            headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json'}
-        });
-        if(getRes.ok){
-            const fd=await getRes.json();
-            fileSha=fd.sha;
-            const newBase64=b64EncodeUnicode(JSON.stringify(appData,null,2));
-            const putBody={message:"به‌روزرسانی تنظیمات و سبک‌ها",content:newBase64,branch:"main"};
-            if(fileSha)putBody.sha=fileSha;
-            const putRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
-                method:'PUT',
-                headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-                body:JSON.stringify(putBody)
+        let dbSynced=false, githubSynced=false;
+        
+        // ۱. ذخیره لحظه‌ای در دیتابیس Supabase (برای اعمال بلادرنگ روی گوشی همه هنرجوها)
+        try {
+            // تلاش از طریق تابع اختصاصی امن با پین
+            const dbRpcRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/save_site_config', {
+                method: 'POST',
+                headers: {
+                    'apikey': GYM20_SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                    'Content-Type': 'application/json',
+                    'Content-Profile': 'gym20',
+                    'Accept-Profile': 'gym20'
+                },
+                body: JSON.stringify({ p_config: appData, p_pin: '1234' })
             });
-            if(!putRes.ok){
-                console.warn('GitHub sync failed, saved locally');
+            if (dbRpcRes.ok) {
+                dbSynced = true;
+            } else {
+                // تلاش پشتیبان: آپدیت مستقیم ردیف تنظیمات در جدول site_settings
+                const dbPatchRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/site_settings?key=eq.public_site_config', {
+                    method: 'PATCH',
+                    headers: {
+                        'apikey': GYM20_SUPABASE_ANON_KEY,
+                        'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                        'Content-Type': 'application/json',
+                        'Content-Profile': 'gym20',
+                        'Accept-Profile': 'gym20'
+                    },
+                    body: JSON.stringify({ value: appData })
+                });
+                if (dbPatchRes.ok) dbSynced = true;
             }
+        } catch(e) {
+            console.warn('Supabase DB save error:', e);
         }
+
+        // ۲. کامیت و ذخیره در مخزن گیت‌هاب (ثبت در تاریخچه و پشتیبان کامل)
+        try {
+            async function commitToGitHub(retryCount) {
+                const getRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
+                    headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Cache-Control':'no-cache'}
+                });
+                if(getRes.ok){
+                    const fd=await getRes.json();
+                    const newBase64=b64EncodeUnicode(JSON.stringify(appData,null,2));
+                    const putBody={message:"به‌روزرسانی تنظیمات و سبک‌ها از پنل مدیریت",content:newBase64,sha:fd.sha,branch:"main"};
+                    const putRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
+                        method:'PUT',
+                        headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+                        body:JSON.stringify(putBody)
+                    });
+                    if(putRes.ok){
+                        return true;
+                    } else if(putRes.status===409 && retryCount<2){
+                        return await commitToGitHub(retryCount+1);
+                    }
+                }
+                return false;
+            }
+            githubSynced = await commitToGitHub(0);
+        }catch(e){
+            console.warn('GitHub API sync error:', e);
+        }
+
         adminModal.style.display='none';
-        alert('🎉 تنظیمات با موفقیت ذخیره و اعمال شد!');
+        if(dbSynced && githubSynced){
+            alert('🎉 عالی! تنظیمات همزمان در «دیتابیس آنلاین» و «گیت‌هاب» ذخیره شد و برای همه هنرجوها در کل سایت اعمال گردید.');
+        } else if(dbSynced){
+            alert('✅ تنظیمات در «دیتابیس آنلاین» ذخیره شد و تمام کاربران سایت در لحظه تغییرات جدید را می‌بینند.');
+        } else if(githubSynced){
+            alert('✅ تنظیمات در «گیت‌هاب» با موفقیت کامیت و ذخیره شد و در کل سایت ثبت گردید.');
+        } else {
+            alert('✅ تنظیمات روی مرورگر ذخیره شد (اتصال به سرور برقرار نشد، اتصال اینترنت را چک کنید).');
+        }
     }catch(err){
         console.error(err);
         adminModal.style.display='none';
@@ -822,7 +916,7 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
 };
 
 function applyDataToUI(){
-    const aT=appData.theme||'cyber';selectedThemeKey=aT;document.body.setAttribute('data-color-theme',aT);
+    const aT=appData.theme||'stealth';selectedThemeKey=aT;document.body.setAttribute('data-color-theme',aT);
     safeSetText('brandTag',appData.brandTag||'');safeSetText('bannerTitle',appData.bannerTitle||'');safeSetText('bannerSubtitle',appData.bannerSubtitle||'');
     const hero=document.getElementById('heroBanner');if(hero&&appData.bannerBg)hero.style.backgroundImage=`linear-gradient(135deg,rgba(0,0,0,0.65),rgba(0,0,0,0.65)),url('${appData.bannerBg}')`;
     const bO=appData.buttons||{};
@@ -843,11 +937,12 @@ function applyDataToUI(){
 
 function loadTelegramAvatarSafely(imgElement, cleanUser) {
     if (!cleanUser) {
+        imgElement.onerror = null;
         imgElement.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
         return;
     }
     const cdns = [
-        `https://wsrv.nl/?url=https://t.me/i/userpic/320/${cleanUser}.jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1599643478518-a784e5dc4c8f%3Fw%3D300`,
+        `https://wsrv.nl/?url=https://t.me/i/userpic/320/${cleanUser}.jpg`,
         `https://images.weserv.nl/?url=t.me/i/userpic/320/${cleanUser}.jpg`,
         `https://t.me/i/userpic/320/${cleanUser}.jpg`
     ];
@@ -856,6 +951,7 @@ function loadTelegramAvatarSafely(imgElement, cleanUser) {
         if (step < cdns.length) {
             imgElement.src = cdns[step++];
         } else {
+            imgElement.onerror = null;
             imgElement.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
         }
     }
@@ -879,12 +975,13 @@ function applyPromoPopupData(){
     
     const pImg=document.getElementById('meoxPromoImg');
     if(pImg){
-        if(pO.img && pO.img.trim().length > 5){
+        if(cleanUser){
+            loadTelegramAvatarSafely(pImg, cleanUser);
+        } else if(pO.img && pO.img.trim().length > 5){
             pImg.onerror = null;
             pImg.src = pO.img.trim();
-        } else if(cleanUser){
-            loadTelegramAvatarSafely(pImg, cleanUser);
         } else {
+            pImg.onerror = null;
             pImg.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
         }
     }
@@ -896,7 +993,7 @@ if(closeMeoxPromo)closeMeoxPromo.onclick=()=>{meoxPromoModal.style.display='none
 const copyMeoxBtn=document.getElementById('copyMeoxCodeBtn');
 if(copyMeoxBtn)copyMeoxBtn.onclick=()=>{
     const code=document.getElementById('meoxDiscountCode').innerText;
-    navigator.clipboard.writeText(code).then(()=>{
+    safeCopyToClipboard(code, ()=>{
         copyMeoxBtn.innerText='کپی شد! ✓';
         setTimeout(()=>copyMeoxBtn.innerText='📋 کپی کد',2000);
     });
@@ -920,16 +1017,29 @@ registrationForm.addEventListener('submit',async e=>{
     if(!currentRegionId){setRegistrationStatus('لطفاً منطقه را انتخاب کنید.','error');return;}
     if(!acceptRulesEl.checked){setRegistrationStatus('قوانین را بپذیرید.','error');return;}
     if(!paymentConfirmedEl.checked){setRegistrationStatus('تیک پرداخت را بزنید.','error');return;}
-    const fn=document.getElementById('regFullName').value.trim(),ph=document.getElementById('regPhone').value.trim(),rB=toEnglishDigits((document.getElementById('regBirthDateShamsi').value||'').trim()),notes=document.getElementById('regNotes').value.trim()||null;
+    
+    const fn=document.getElementById('regFullName').value.trim();
+    const ph=toEnglishDigits(document.getElementById('regPhone').value.trim());
+    const rB=toEnglishDigits((document.getElementById('regBirthDateShamsi').value||'').trim());
+    const notes=document.getElementById('regNotes').value.trim()||null;
     const styles=(appData.styles||[]).filter(s=>selectedStyles.includes(s.id)).map(s=>s.name.trim()).filter(Boolean);
+    
     if(fn.length<2||!ph||!styles.length){setRegistrationStatus('نام، موبایل و حداقل یک سبک لازم است.','error');return;}
+    
     let gB=null,sTag='';if(rB){const p=rB.split(/[\/\-\.]/);if(p.length===3)gB=jalaliToGregorian(p[0],p[1],p[2]);sTag=`[تولد شمسی: ${rB}]\n`;}
     const act=(appData.regions||[]).find(r=>r.id===currentRegionId),rTag=act?`[منطقه: ${act.name}]\n`:'',cNotes=(rTag+sTag+(notes||'')).trim()||null;
+    
     registrationSubmit.disabled=true;registrationSubmit.textContent='در حال ارسال…';setRegistrationStatus('');
     try{
         const res=await fetch(GYM20_SUPABASE_URL+'/rest/v1/rpc/submit_public_registration',{
             method:'POST',
-            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json'},
+            headers:{
+                'apikey':GYM20_SUPABASE_ANON_KEY,
+                'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,
+                'Content-Type':'application/json',
+                'Content-Profile':'gym20',
+                'Accept-Profile':'gym20'
+            },
             body:JSON.stringify({p_full_name:fn,p_phone:ph,p_birth_date:gB,p_notes:cNotes,p_selected_styles:styles,p_age_group:currentAge,p_class_type:currentClassType,p_total_sessions:Number(currentSessions),p_payment_confirmed:true})
         });
         const resData=await res.json().catch(()=>null);
@@ -939,14 +1049,101 @@ registrationForm.addEventListener('submit',async e=>{
 });
 
 async function loadDataAndInit(){
-    try{
-        const r=await fetch('data.json?v='+Date.now());
-        if(r.ok){appData=await r.json();localStorage.setItem('sports_reg_data',JSON.stringify(appData));}else throw new Error();
-    }catch(_){const s=localStorage.getItem('sports_reg_data');if(s)try{appData=JSON.parse(s);}catch(e){}}
+    let loadedSource = '';
+
+    // منبع ۱: خواندن آنی و بدون کش از دیتابیس آنلاین Supabase (اولین اولویت)
+    try {
+        const dbRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/get_site_config', {
+            method: 'POST',
+            headers: {
+                'apikey': GYM20_SUPABASE_ANON_KEY,
+                'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                'Content-Type': 'application/json',
+                'Content-Profile': 'gym20',
+                'Accept-Profile': 'gym20'
+            },
+            body: '{}'
+        });
+        if (dbRes.ok) {
+            const dbData = await dbRes.json();
+            if (dbData && typeof dbData === 'object' && Array.isArray(dbData.regions) && dbData.regions.length > 0) {
+                appData = dbData;
+                loadedSource = 'supabase_rpc';
+                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+            }
+        }
+    } catch(e) {}
+
+    // منبع ۲ (پشتیبان دیتابیس): کوئری مستقیم جدول site_settings در Supabase
+    if (!loadedSource) {
+        try {
+            const tableRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/site_settings?key=eq.public_site_config&select=value', {
+                headers: {
+                    'apikey': GYM20_SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+                    'Accept-Profile': 'gym20'
+                }
+            });
+            if (tableRes.ok) {
+                const rows = await tableRes.json();
+                if (rows && rows.length > 0 && rows[0].value && Array.isArray(rows[0].value.regions)) {
+                    appData = rows[0].value;
+                    loadedSource = 'supabase_table';
+                    localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+                }
+            }
+        } catch(e) {}
+    }
+
+    // منبع ۳: دریافت مستقیم آخرین کامیت فایل data.json از GitHub API (بدون معطلی کش گیت‌هاب پیجز)
+    if (!loadedSource) {
+        try {
+            const ghRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`, {
+                headers: {
+                    'Authorization': `token ${BUILTIN_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json',
+                    'Cache-Control': 'no-cache'
+                }
+            });
+            if (ghRes.ok) {
+                const ghData = await ghRes.json();
+                if (ghData && ghData.content) {
+                    const decoded = decodeURIComponent(escape(atob(ghData.content.replace(/\s/g, ''))));
+                    const parsed = JSON.parse(decoded);
+                    if (parsed && Array.isArray(parsed.regions)) {
+                        appData = parsed;
+                        loadedSource = 'github_api';
+                        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+                    }
+                }
+            }
+        } catch(e) {}
+    }
+
+    // منبع ۴: دریافت فایل استاتیک data.json هاست
+    if (!loadedSource) {
+        try {
+            const r = await fetch('data.json?v=' + Date.now());
+            if (r.ok) {
+                appData = await r.json();
+                loadedSource = 'static_file';
+                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
+            }
+        } catch(_) {}
+    }
+
+    // منبع ۵: حافظه محلی مرورگر (در صورت آفلاین بودن)
+    if (!loadedSource) {
+        const s = localStorage.getItem('sports_reg_data');
+        if (s) {
+            try { appData = JSON.parse(s); loadedSource = 'local_storage'; } catch(e) {}
+        }
+    }
+
     if(!appData.rules)appData.rules={};
     if(!appData.rules.online)appData.rules.online="• برگزاری کلاس‌ها به‌صورت زنده (Live) با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها.";
     if(!appData.classTypesConfig)appData.classTypesConfig={normal:{enabled:true,statusText:"",allowedStyles:[]},semi:{enabled:true,statusText:"",allowedStyles:[]},private:{enabled:true,statusText:"",allowedStyles:[]},vip:{enabled:true,statusText:"",allowedStyles:[]},online:{enabled:true,statusText:"",allowedStyles:[]}};
-    if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
+    if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
     renderCustomRegionDropdown();applyDataToUI();updateClassStatusAndStylesFlow();triggerPromoPopupIfEnabled();
 }
 loadDataAndInit();
