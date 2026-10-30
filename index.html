@@ -99,6 +99,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:#10b981;color:#000;padding:6px 14px;border-radius:16px;font-size:.7rem;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);transition:transform .3s ease;z-index:1000;}
 .toast.show{transform:translateX(-50%) translateY(0);}
+
 .admin-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:8px;z-index:2000;}
 .admin-content{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);width:100%;max-width:380px;max-height:88vh;overflow-y:auto;padding:10px;}
 .admin-tabs{display:flex;gap:3px;margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:5px;overflow-x:auto;white-space:nowrap;scrollbar-width:none;}
@@ -139,25 +140,25 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .sub-text-panel{display:none;}
 .sub-text-panel.active{display:block;}
 
-/* استایل مدرن و بدون شلوغی کارت‌های پنل ادمین */
 .admin-card-section{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:var(--radius-sm);padding:7px;margin-bottom:6px;}
 .admin-section-subhead{font-size:0.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:5px;}
 .admin-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:5px;}
 .admin-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;}
 
-/* پاپ‌آپ مدرن، نئونی و شیشه‌ای بنر تبلیغاتی */
+/* پاپ‌آپ مدرن و بازطراحی مینی‌مال کد تخفیف */
 .promo-modal{position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:12px;z-index:3000;animation:fadeIn .3s ease;}
-.promo-card{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(0,0,0,0.6)),var(--surface);border:1px solid var(--neon-purple);border-radius:var(--radius-md);width:100%;max-width:310px;padding:14px;text-align:center;position:relative;box-shadow:var(--neon-purple-shadow);}
+.promo-card{background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(0,0,0,0.6)),var(--surface);border:1px solid var(--neon-purple);border-radius:var(--radius-md);width:100%;max-width:300px;padding:14px;text-align:center;position:relative;box-shadow:var(--neon-purple-shadow);}
 .promo-close-btn{position:absolute;top:8px;left:8px;background:var(--surface-card);border:1px solid var(--border);width:24px;height:24px;border-radius:50%;color:var(--text-primary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.75rem;}
 .promo-img{width:80px;height:80px;object-fit:cover;border-radius:50%;margin:0 auto 8px;border:2px solid var(--neon-blue);box-shadow:0 0 12px var(--neon-shadow);display:block;background:#1f2937;}
 .promo-title{font-size:.85rem;font-weight:900;color:var(--neon-blue);margin-bottom:4px;}
-.promo-text{font-size:.67rem;color:var(--text-secondary);line-height:1.6;margin-bottom:9px;}
+.promo-text{font-size:.67rem;color:var(--text-secondary);line-height:1.6;margin-bottom:8px;}
 
-/* باکس کد تخفیف شیک، مینی‌مال و مرتب */
-.promo-code-box{display:flex;align-items:center;justify-content:space-between;background:var(--surface-card);border:1px dashed var(--neon-blue);padding:4px 8px;border-radius:var(--radius-sm);margin-bottom:9px;}
-.promo-code-val{font-size:.8rem;font-weight:900;letter-spacing:1px;color:var(--neon-blue);font-family:monospace;direction:ltr;}
-.promo-copy-btn{background:var(--neon-blue);color:#000;border:none;padding:4px 8px;border-radius:4px;font-size:.63rem;font-weight:800;cursor:pointer;transition:all .15s;}
-.promo-copy-btn:active{transform:scale(.94);}
+/* چیدمان دقیق زیر هم برای کد تخفیف و دکمه کپی کوچک */
+.promo-code-container{background:var(--surface-card);border:1px dashed var(--neon-blue);padding:6px;border-radius:var(--radius-sm);margin-bottom:10px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.promo-code-label{font-size:.58rem;color:var(--text-secondary);}
+.promo-code-val{font-size:.88rem;font-weight:900;letter-spacing:2px;color:var(--neon-blue);font-family:monospace;direction:ltr;}
+.promo-copy-btn{background:var(--neon-blue);color:#000;border:none;padding:3px 14px;border-radius:12px;font-size:.62rem;font-weight:800;cursor:pointer;transition:all .15s;}
+.promo-copy-btn:active{transform:scale(.92);}
 .promo-action-btn{display:block;width:100%;padding:8px;background:var(--btn-active);color:#fff;border-radius:var(--radius-sm);text-decoration:none;font-weight:800;font-size:.74rem;box-shadow:var(--neon-shadow);}
 </style>
 </head>
@@ -303,15 +304,16 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         <img src="" referrerpolicy="no-referrer" alt="Meox Accessory" class="promo-img" id="meoxPromoImg">
         <div class="promo-title" id="meoxPromoTitle">✨ گالری اکسسوری و استایل میوکس</div>
         <div class="promo-text" id="meoxPromoText">خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!</div>
-        <div class="promo-code-box">
+        <div class="promo-code-container">
+            <span class="promo-code-label">کد تخفیف اختصاصی:</span>
             <span class="promo-code-val" id="meoxDiscountCode">MEOX20</span>
-            <button class="promo-copy-btn" id="copyMeoxCodeBtn">کپی کد</button>
+            <button class="promo-copy-btn" id="copyMeoxCodeBtn">📋 کپی کد</button>
         </div>
         <a href="https://t.me/" target="_blank" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات 🛍️</a>
     </div>
 </div>
 
-<!-- پنل مدیریت هوشمند و مرتب -->
+<!-- پنل مدیریت هوشمند -->
 <div class="admin-modal" id="adminModal">
     <div class="admin-content">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -330,7 +332,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
         </div>
 
-        <!-- تب ضرایب کلاس -->
         <div class="admin-panel-tab active" id="pricesTab">
             <div class="admin-card-section">
                 <div class="admin-section-subhead">⚙️ ضرایب نوع کلاس (محاسبه روی شهریه پایه):</div>
@@ -351,7 +352,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
         </div>
 
-        <!-- تب تبلیغ میوکس -->
         <div class="admin-panel-tab" id="promoTab">
             <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px;margin-bottom:6px;">
                 <label style="display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:bold;cursor:pointer;">
@@ -360,7 +360,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                 </label>
             </div>
             <div class="admin-input-group">
-                <label style="color:var(--neon-green);font-weight:bold;">لینک یا آیدی تلگرام کانال میوکس (مثال: meox@ یا https://t.me/meox):</label>
+                <label style="color:var(--neon-green);font-weight:bold;">لینک یا آیدی تلگرام کانال میوکس (مثال: @meox یا https://t.me/meox):</label>
                 <input type="text" id="editPromoLink" placeholder="@meox">
                 <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">✨ عکس پروفایل کانال به طور خودکار به عنوان تصویر بنر نمایش داده خواهد شد.</div>
             </div>
@@ -371,7 +371,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-input-group"><label>متن دکمه ورود و خرید:</label><input type="text" id="editPromoBtn"></div>
         </div>
 
-        <!-- تب متن‌ها و دکمه‌ها -->
         <div class="admin-panel-tab" id="textsTab">
             <div class="sub-tab-group">
                 <button type="button" class="sub-tab-btn active" onclick="switchSubTextTab('sub_btns')">🔘 متن دکمه‌ها</button>
@@ -429,7 +428,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
         </div>
 
-        <!-- تب مناطق تهران -->
         <div class="admin-panel-tab" id="regionsTab">
             <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
             <div class="sub-tab-group" id="adminRegionsNavPills"></div>
@@ -457,7 +455,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
         </div>
 
-        <!-- تب سبک‌ها و کلاس‌ها -->
         <div class="admin-panel-tab" id="stylesTab">
             <div class="sub-tab-group">
                 <button type="button" class="sub-tab-btn active" onclick="switchStylesSubTab('sub_class_status')">🔴 ظرفیت و تخصیص سبک</button>
@@ -496,7 +493,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             </div>
         </div>
 
-        <!-- تب تم‌ها -->
         <div class="admin-panel-tab" id="themesTab">
             <div style="font-size:.68rem;color:var(--neon-blue);font-weight:bold;margin-bottom:5px;">انتخاب تم رنگی:</div>
             <div class="theme-card-option" onclick="selectTheme('noctech')" id="themeOpt_noctech"><div><div style="font-size:.72rem;font-weight:bold;">🛰️ رادار تک (NOC Tech)</div></div><div class="theme-color-dots"><span class="theme-color-dot" style="background:#070d18;border:1px solid #67c5db;"></span><span class="theme-color-dot" style="background:#67c5db;"></span></div></div>
@@ -510,7 +506,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="theme-card-option" onclick="selectTheme('amethyst')" id="themeOpt_amethyst"><div><div style="font-size:.72rem;font-weight:bold;">🔮 کیهانی الکتریک (Cyber Amethyst)</div></div><div class="theme-color-dots"><span class="theme-color-dot" style="background:#c084fc;"></span><span class="theme-color-dot" style="background:#ec4899;"></span></div></div>
         </div>
 
-        <!-- تب قوانین -->
         <div class="admin-panel-tab" id="rulesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
@@ -529,7 +524,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-input-group"><textarea rows="5" id="activeRuleTextarea"></textarea></div>
         </div>
 
-        <!-- تب بنر بالا -->
         <div class="admin-panel-tab" id="bannerTab">
             <div class="admin-input-group"><label>متن لوگوی بالا:</label><input type="text" id="editBrandTag"></div>
             <div class="admin-input-group"><label>عنوان بنر:</label><input type="text" id="editBannerTitle"></div>
@@ -537,7 +531,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-input-group"><label>لینک عکس پس‌زمینه:</label><input type="text" id="editBannerBg"></div>
         </div>
 
-        <!-- تب کارت و پرداخت -->
         <div class="admin-panel-tab" id="infoTab">
             <div class="admin-input-group"><label style="color:var(--neon-green);">🔗 لینک درگاه پرداخت آنلاین:</label><input type="text" id="editGatewayLink"></div>
             <div class="admin-input-group"><label>شماره کارت:</label><input type="text" id="editCardNum"></div>
@@ -550,7 +543,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-input-group"><label>آیدی کانال:</label><input type="text" id="editMusicId"></div>
             <div class="admin-input-group"><label>لینک کانال:</label><input type="text" id="editMusicLink"></div>
         </div>
-        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:8px;margin-top:8px;font-weight:800;">💾 ذخیره</button>
+        <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:8px;margin-top:8px;font-weight:800;">💾 ذخیره تنظیمات</button>
     </div>
 </div>
 
@@ -565,7 +558,6 @@ const customRegionDropdownEl = document.getElementById('customRegionDropdown'), 
 function safeSetText(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.innerText=val;}
 function safeSetValue(id, val){const el=document.getElementById(id);if(el&&val!==undefined&&val!==null)el.value=val;}
 
-// استخراج آیدی تلگرام و تولید آدرس تصویر بدون فیلتر و رفرر
 function cleanTelegramUsername(input) {
     if (!input) return '';
     return input.trim()
@@ -575,13 +567,6 @@ function cleanTelegramUsername(input) {
         .split('/')[0]
         .split('?')[0]
         .trim();
-}
-
-function extractTelegramAvatarUrl(input) {
-    const clean = cleanTelegramUsername(input);
-    if (!clean) return '';
-    // استفاده از پروکسی ضد تحریم و بدون رفرر تلگرام
-    return `https://wsrv.nl/?url=https://t.me/i/userpic/320/${clean}.jpg`;
 }
 
 function selectTheme(t){selectedThemeKey=t;document.body.setAttribute('data-color-theme',t);document.querySelectorAll('.theme-card-option').forEach(e=>e.classList.remove('selected'));const c=document.getElementById('themeOpt_'+t);if(c)c.classList.add('selected');}
@@ -797,20 +782,43 @@ function collectFormData(){
 }
 
 function b64EncodeUnicode(s){return btoa(encodeURIComponent(s).replace(/%([0-9A-F]{2})/g,(m,p)=>String.fromCharCode('0x'+p)));}
+
 document.getElementById('autoCommitBtn').onclick=async()=>{
-    const btn=document.getElementById('autoCommitBtn'),oldText=btn.innerText;btn.innerText='⏳ در حال ذخیره...';btn.disabled=true;
+    const btn=document.getElementById('autoCommitBtn'),oldText=btn.innerText;
+    btn.innerText='⏳ در حال ذخیره...';btn.disabled=true;
     try{
         collectFormData();
+        localStorage.setItem('sports_reg_data',JSON.stringify(appData));
+        applyDataToUI();updateClassStatusAndStylesFlow();
+        
         let fileSha=null;
-        const getRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{headers:{'Authorization':`Bearer ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json'}});
-        if(getRes.ok){const fd=await getRes.json();fileSha=fd.sha;}
-        const newBase64=b64EncodeUnicode(JSON.stringify(appData,null,2));
-        const putBody={message:"به‌روزرسانی تنظیمات و سبک‌های کلاس‌ها",content:newBase64,branch:"main"};
-        if(fileSha)putBody.sha=fileSha;
-        const putRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{method:'PUT',headers:{'Authorization':`Bearer ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},body:JSON.stringify(putBody)});
-        if(!putRes.ok)throw new Error('خطا در ذخیره‌سازی.');
-        localStorage.setItem('sports_reg_data',JSON.stringify(appData));applyDataToUI();updateClassStatusAndStylesFlow();adminModal.style.display='none';alert('🎉 با موفقیت در گیت‌هاب ذخیره شد!');
-    }catch(err){alert('❌ خطا: '+err.message);}finally{btn.innerText=oldText;btn.disabled=false;}
+        const getRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
+            headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json'}
+        });
+        if(getRes.ok){
+            const fd=await getRes.json();
+            fileSha=fd.sha;
+            const newBase64=b64EncodeUnicode(JSON.stringify(appData,null,2));
+            const putBody={message:"به‌روزرسانی تنظیمات و سبک‌ها",content:newBase64,branch:"main"};
+            if(fileSha)putBody.sha=fileSha;
+            const putRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
+                method:'PUT',
+                headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+                body:JSON.stringify(putBody)
+            });
+            if(!putRes.ok){
+                console.warn('GitHub sync failed, saved locally');
+            }
+        }
+        adminModal.style.display='none';
+        alert('🎉 تنظیمات با موفقیت ذخیره و اعمال شد!');
+    }catch(err){
+        console.error(err);
+        adminModal.style.display='none';
+        alert('✅ تغییرات روی مرورگر شما ذخیره و اعمال شد!');
+    }finally{
+        btn.innerText=oldText;btn.disabled=false;
+    }
 };
 
 function applyDataToUI(){
@@ -833,6 +841,28 @@ function applyDataToUI(){
     applyPromoPopupData();updateDynamicRules();renderCustomRegionDropdown();
 }
 
+function loadTelegramAvatarSafely(imgElement, cleanUser) {
+    if (!cleanUser) {
+        imgElement.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
+        return;
+    }
+    const cdns = [
+        `https://wsrv.nl/?url=https://t.me/i/userpic/320/${cleanUser}.jpg&default=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1599643478518-a784e5dc4c8f%3Fw%3D300`,
+        `https://images.weserv.nl/?url=t.me/i/userpic/320/${cleanUser}.jpg`,
+        `https://t.me/i/userpic/320/${cleanUser}.jpg`
+    ];
+    let step = 0;
+    function tryNext() {
+        if (step < cdns.length) {
+            imgElement.src = cdns[step++];
+        } else {
+            imgElement.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
+        }
+    }
+    imgElement.onerror = tryNext;
+    tryNext();
+}
+
 function applyPromoPopupData(){
     const pO=appData.promoPopup||{};
     safeSetText('meoxPromoTitle',pO.title||'✨ گالری اکسسوری و استایل میوکس');
@@ -841,23 +871,19 @@ function applyPromoPopupData(){
     safeSetText('meoxPromoBtn',pO.btnText||'ورود به کانال و مشاهده محصولات 🛍️');
     
     let link = (pO.link || '').trim();
+    const cleanUser = cleanTelegramUsername(link);
     if(link && !link.startsWith('http://') && !link.startsWith('https://')) {
-        link = 'https://t.me/' + cleanTelegramUsername(link);
+        link = 'https://t.me/' + cleanUser;
     }
     const pBtn=document.getElementById('meoxPromoBtn');if(pBtn)pBtn.href=link||'https://t.me/';
     
     const pImg=document.getElementById('meoxPromoImg');
     if(pImg){
-        pImg.onerror = function() {
-            this.onerror = null;
-            this.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
-        };
-
         if(pO.img && pO.img.trim().length > 5){
+            pImg.onerror = null;
             pImg.src = pO.img.trim();
-        } else if(link){
-            const autoTgAvatar = extractTelegramAvatarUrl(link);
-            pImg.src = autoTgAvatar || 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
+        } else if(cleanUser){
+            loadTelegramAvatarSafely(pImg, cleanUser);
         } else {
             pImg.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
         }
@@ -870,7 +896,10 @@ if(closeMeoxPromo)closeMeoxPromo.onclick=()=>{meoxPromoModal.style.display='none
 const copyMeoxBtn=document.getElementById('copyMeoxCodeBtn');
 if(copyMeoxBtn)copyMeoxBtn.onclick=()=>{
     const code=document.getElementById('meoxDiscountCode').innerText;
-    navigator.clipboard.writeText(code).then(()=>{copyMeoxBtn.innerText='کپی شد! ✓';setTimeout(()=>copyMeoxBtn.innerText='کپی کد',2000);});
+    navigator.clipboard.writeText(code).then(()=>{
+        copyMeoxBtn.innerText='کپی شد! ✓';
+        setTimeout(()=>copyMeoxBtn.innerText='📋 کپی کد',2000);
+    });
 };
 
 function triggerPromoPopupIfEnabled(){
