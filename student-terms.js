@@ -130,7 +130,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted">ابتدا تاریخ شروع و پایان ترم را مشخص کن</span></div></form></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
-      '<div class="st-actions"><button class="st-btn" type="button" id="stAddDates" hidden>▦ افزودن تاریخ جلسات</button></div><div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی جلسات و انتشار برنامه برای هنرجو</button></div></div>'+
+      '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی جلسات و انتشار برنامه برای هنرجو</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
@@ -255,7 +255,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
 
   async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
-    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stAddDates').hidden=true;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
+    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term.published_version_id||null;
@@ -268,7 +268,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
-    const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;$('stAddDates').hidden=false;
+    const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
     $('stManual')?.classList.remove('st-hide');
     $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
@@ -285,7 +285,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
     $('stDraftTable').innerHTML='<div class="st-schedule-table-wrap"><table class="st-schedule-table"><thead><tr><th>جلسه</th><th>روز</th><th>تاریخ شمسی</th><th>ساعت کلاس</th><th>نام مربی</th><th>وضعیت</th><th></th></tr></thead><tbody>'+sorted.map((r,i)=>{
       const state=sessionState(r),d=new Date(r.starts_at),weekday=weekdays[d.getDay()];
-      return '<tr class="st-schedule-row '+state.cls+'"><td class="st-session-number">جلسه '+fa(r.session_number)+'</td><td>'+weekday+'</td><td><input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(localDate(r.starts_at))+'" data-jalali-date aria-label="تاریخ جلسه"></td><td><input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></td><td><input class="st-table-input st-coach-input" type="text" maxlength="120" data-coach="'+r.session_number+'" value="'+esc(r.coach_name||'')+'" placeholder="نام مربی" aria-label="نام مربی"></td><td><span class="st-session-state '+state.cls+'">'+state.label+'</span></td><td><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></td></tr>';
+      return '<tr class="st-schedule-row '+state.cls+'"><td class="st-session-number">جلسه '+fa(r.session_number)+'</td><td>'+weekday+'</td><td><input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(localDate(r.starts_at))+'" data-jalali-date aria-label="تاریخ جلسه"></td><td><input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></td><td><select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="">انتخاب مربی</option><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></td><td><span class="st-session-state '+state.cls+'">'+state.label+'</span></td><td><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></td></tr>';
     }).join('')+'</tbody></table></div>';
     bindJalaliDates($('stDraftTable'));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
@@ -345,11 +345,11 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
         setTimeout(()=>document.addEventListener('pointerdown',close),0);
       });
     };
-    const create=$('stManualCalendar'),add=$('stAddDates');if(create)openCalendar(create,false);if(add)openCalendar(add,true);
+    const create=$('stManualCalendar');if(create)openCalendar(create,false);
   }
   async function persistDraft(){
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
-    const payload=collectDraftPayload();if(!payload.length)throw Error('برای این ترم هنوز جلسه‌ای انتخاب نشده؛ ابتدا روی «افزودن تاریخ جلسات» بزن.');
+    const payload=collectDraftPayload();if(!payload.length)throw Error('برای این ترم هنوز جلسه‌ای از تقویم انتخاب نشده است.');
     const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;
     S.term.total_sessions=payload.length;await loadDraftRows();drawDraft();return data;
   }
