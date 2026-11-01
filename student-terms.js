@@ -58,7 +58,7 @@
       '<p class="st-muted">پیش‌نویس از برنامه منتشرشده جداست؛ تغییرات فقط پس از انتشار برای هنرجو قابل مشاهده می‌شود.</p>'+
       '<div class="st-card"><div class="st-title">۱. انتخاب هنرجو</div><div class="st-field"><label>هنرجو</label><select id="stStudent"><option value="">در حال دریافت…</option></select></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
-      '<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+
+      '<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
       '<div class="st-field"><label>ماه ترم</label><select id="stMonth" required><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select></div>'+
       '<div class="st-field"><label>سال</label><select id="stYear"><option value="1405">۱۴۰۵</option><option value="1406">۱۴۰۶</option><option value="1404">۱۴۰۴</option></select></div>'+
