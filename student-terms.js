@@ -217,6 +217,16 @@
       say('در حال ذخیره حضور و غیاب…');const {error}=await db().from('attendance').upsert(records,{onConflict:'session_id,student_id'});if(error)throw error;await loadAttendance();say('حضور و غیاب ذخیره شد.');
     }catch(e){say(e.message||'ذخیره حضور و غیاب ناموفق بود.',true);}
   }
-  function init(){mount();const obs=new MutationObserver(()=>{const p=$(TAB);if(p&&p.classList.contains('active')&&gym20OwnerAuthorized&&!S.students.length)loadStudents();});const p=$(TAB);if(p)obs.observe(p,{attributes:true,attributeFilter:['class']});}
+  function init(){
+    mount();
+    const tabObserver=new MutationObserver(()=>{
+      if(!$(TAB)&&document.querySelector('.admin-tabs')&&document.querySelector('.admin-workspace'))mount();
+      if($(TAB))tabObserver.disconnect();
+    });
+    if(!$(TAB))tabObserver.observe(document.body,{childList:true,subtree:true});
+    const activeObserver=new MutationObserver(()=>{const p=$(TAB);if(p&&p.classList.contains('active')&&gym20OwnerAuthorized&&!S.students.length)loadStudents();});
+    const p=$(TAB);if(p)activeObserver.observe(p,{attributes:true,attributeFilter:['class']});
+  }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
