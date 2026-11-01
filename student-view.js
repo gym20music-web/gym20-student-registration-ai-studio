@@ -14,7 +14,7 @@
   let terms=[];
   function showTerm(id){
     const t=terms.find(x=>x.id===id)||terms[0];if(!t)return;
-    $('termMeta').textContent='تعداد جلسات: '+num(t.total_sessions)+' · شروع: '+faDate(t.start_date)+' · پایان: '+faDate(t.end_date);
+    $('termMeta').textContent='تعداد جلسات: '+num(t.total_sessions)+' · شروع: '+faDate(t.start_date)+' · پایان: '+faDate(t.end_date)+(t.styles?.length?' · سبک‌ها: '+t.styles.map(esc).join('، '):'');
     const sessions=t.sessions||[];
     if(!sessions.length){$('schedule').innerHTML='<div class="empty">برای این ترم هنوز جلسه منتشرشده‌ای ثبت نشده است.</div>';return;}
     const done=sessions.filter(s=>['present','absent','excused','makeup','cancelled'].includes(s.attendance)).length;
