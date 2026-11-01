@@ -237,7 +237,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term.published_version_id||null;
-      if(S.draftId){await loadDraftRows();await renderBuilder();}else if(S.publishedId){$('stDraftTable').innerHTML='<button class="st-btn" id="stNewDraft">ساخت پیش‌نویس از نسخه منتشرشده</button>';$('stNewDraft').onclick=createDraft;$('stManual').classList.add('st-hide');}else{say('پیش‌نویس این ترم موجود نیست.',true);}
+      if(S.draftId){await loadDraftRows();await renderBuilder();}else if(S.publishedId){$('stDraftTable').innerHTML='<button class="st-btn" id="stNewDraft">ساخت پیش‌نویس از نسخه منتشرشده</button>';$('stNewDraft').onclick=createDraft;$('stManual')?.classList.add('st-hide');}else{say('پیش‌نویس این ترم موجود نیست.',true);}
     }catch(e){say(e.message||'دریافت ترم ناموفق بود.',true);}
   }
 
@@ -247,7 +247,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
-    $('stManual').classList.remove('st-hide');
+    $('stManual')?.classList.remove('st-hide');
     $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
   }
