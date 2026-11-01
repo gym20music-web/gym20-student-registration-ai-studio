@@ -148,7 +148,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
-    $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
+    $('stTerm').addEventListener('change',e=>{$('stDeleteTerm').disabled=!e.target.value;loadTerm(e.target.value);});
     $('stDeleteTerm').addEventListener('click',deleteSelectedTerm);
     initManualMultiCalendar(p);
     $('stPublish').addEventListener('click',publish);
