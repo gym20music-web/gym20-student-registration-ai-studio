@@ -41,9 +41,9 @@
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div><div id="stTermInfo" class="st-muted"></div><div id="stVersions"></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">۴. برنامه جلسات پیش‌نویس</div><div id="stDraftMeta" class="st-muted"></div>'+
-      '<div id="stWeekly" class="st-hide"><p class="st-muted">برای هر سبک تاریخ و ساعت اولین جلسه را وارد کنید؛ جلسات بعدی هر ۷ روز ساخته می‌شوند.</p><div id="stPatterns"></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت جلسات هفتگی</button></div>'+
-      '<div id="stManual" class="st-hide"><p class="st-muted">جلسات را تک‌به‌تک اضافه کنید؛ برای هر سبک باید تعداد کامل جلسات ترم ثبت شود.</p><div class="st-grid">'+
-      '<div class="st-field"><label>سبک</label><select id="stStyle"></select></div><div class="st-field"><label>شماره جلسه</label><input id="stNumber" type="number" min="1" value="1"></div>'+
+      '<div id="stWeekly" class="st-hide"><p class="st-muted">تاریخ و ساعت اولین جلسه را وارد کنید؛ دقیقاً به تعداد کل جلسات ترم، جلسه هفتگی ساخته می‌شود. سپس سبک هر جلسه را انتخاب کنید.</p><div class="st-grid"><div class="st-field"><label>تاریخ اولین جلسه</label><input type="date" id="stWeeklyDate"></div><div class="st-field"><label>ساعت شروع</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت جلسات هفتگی</button></div>'+
+      '<div id="stManual" class="st-hide"><p class="st-muted">جلسات را تک‌به‌تک اضافه کنید؛ هر جلسه یک شماره دارد و می‌توانید یک یا چند سبک به آن اختصاص دهید.</p><div class="st-grid">'+
+      '<div class="st-field"><label>سبک‌های این جلسه (چندانتخابی)</label><select id="stStyle" multiple size="4"></select></div><div class="st-field"><label>شماره جلسه</label><input id="stNumber" type="number" min="1" value="1"></div>'+
       '<div class="st-field"><label>تاریخ</label><input id="stDate" type="date"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div>'+
       '<div class="st-field"><label>محل این جلسه</label><input id="stSessionVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stAdd">افزودن جلسه</button></div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stSave">ذخیره پیش‌نویس</button><button class="st-btn" type="button" id="stPublish">انتشار برنامه برای هنرجو</button></div></div>'+
@@ -108,39 +108,38 @@
   }
 
   async function loadDraftRows(){
-    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,ends_at,venue,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x}));
+    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,ends_at,venue,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id),selected=S.enrollments.filter(e=>ids.includes(e.id));
-    $('stDraftMeta').textContent='پیش‌نویس فعال · '+fa(S.term.total_sessions)+' جلسه برای هر سبک · '+fa(S.term.duration_minutes)+' دقیقه';
+    $('stDraftMeta').textContent='پیش‌نویس فعال · '+fa(S.term.total_sessions)+' جلسه برای کل ترم · '+fa(S.term.duration_minutes)+' دقیقه';
     $('stWeekly').classList.toggle('st-hide',S.term.schedule_mode!=='weekly');$('stManual').classList.toggle('st-hide',S.term.schedule_mode!=='manual');
     $('stStyle').innerHTML=selected.map(e=>'<option value="'+e.id+'">'+esc(e.courses?.name||'سبک')+'</option>').join('');
-    $('stPatterns').innerHTML=selected.map(e=>'<div class="st-card" data-pattern="'+e.id+'"><b>'+esc(e.courses?.name||'سبک')+'</b><div class="st-grid"><div class="st-field"><label>تاریخ اولین جلسه</label><input type="date" class="st-first-date" value="'+(S.term.start_date||'')+'"></div><div class="st-field"><label>ساعت شروع</label><input type="time" class="st-first-time" value="18:00"></div><div class="st-field"><label>محل این سبک</label><input class="st-first-venue" placeholder="'+esc(S.term.default_venue||'محل پیش‌فرض')+'"></div></div></div>').join('');
+    $('stWeeklyDate').value=S.term.start_date||'';$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';
     drawDraft();
   }
   function drawDraft(){
     if(!S.rows.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای در پیش‌نویس ثبت نشده است.</p>';return;}
-    const sorted=S.rows.slice().sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at));
-    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>سبک</th><th>جلسه</th><th>تاریخ</th><th>ساعت</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+esc(r.courses?.name||S.enrollments.find(e=>e.id===r.enrollment_id)?.courses?.name||'سبک')+'</td><td>'+fa(r.session_number)+'</td><td>'+dateFa(r.starts_at)+'</td><td>'+new Date(r.starts_at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(r.venue||S.term.default_venue||'—')+'</td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
+    const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
+    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>جلسه</th><th>سبک‌های این جلسه</th><th>تاریخ</th><th>ساعت</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+fa(r.session_number)+'</td><td><select multiple size="3" data-styles="'+r.session_number+'">'+S.enrollments.map(e=>'<option value="'+e.id+'" '+((r.enrollment_ids||[]).includes(e.id)?'selected':'')+'>'+esc(e.courses?.name||'سبک')+'</option>').join('')+'</select></td><td>'+dateFa(r.starts_at)+'</td><td>'+new Date(r.starts_at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(r.venue||S.term.default_venue||'—')+'</td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
+    $('stDraftTable').querySelectorAll('[data-styles]').forEach(el=>el.addEventListener('change',()=>{const row=sorted.find(x=>Number(x.session_number)===Number(el.dataset.styles));if(row)row.enrollment_ids=Array.from(el.selectedOptions).map(o=>o.value);}));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
   }
   function makeWeekly(){
-    try{const cards=Array.from(document.querySelectorAll('[data-pattern]')),out=[],n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!cards.length)throw Error('سبکی در ترم انتخاب نشده است.');
-      cards.forEach(c=>{const id=c.dataset.pattern,d=c.querySelector('.st-first-date').value,t=c.querySelector('.st-first-time').value,v=c.querySelector('.st-first-venue').value.trim()||S.term.default_venue||null;if(!d||!t)throw Error('تاریخ اولین جلسه و ساعت هر سبک را وارد کنید.');
-        for(let i=1;i<=n;i++){const start=localISO(plus7(d,i-1),t);out.push({enrollment_id:id,session_number:i,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,notes:null,courses:{name:S.enrollments.find(e=>e.id===id)?.courses?.name||'سبک'}});}
-      });S.rows=out;drawDraft();say(fa(out.length)+' جلسه برای '+fa(cards.length)+' سبک ساخته شد؛ برای ثبت، ذخیره پیش‌نویس را بزنید.');
+    try{const d=$('stWeeklyDate').value,t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!d||!t)throw Error('تاریخ اولین جلسه و ساعت شروع را وارد کنید.');if(!S.enrollments.length)throw Error('برای این ترم سبکی انتخاب نشده است.');
+      S.rows=Array.from({length:n},(_,i)=>{const start=localISO(plus7(d,i),t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,notes:null};});drawDraft();say(fa(n)+' جلسه برای کل ترم ساخته شد؛ سبک هر جلسه را در جدول انتخاب کنید.');
     }catch(e){say(e.message,true);}
   }
   function addManual(){
-    try{const id=$('stStyle').value,n=Number($('stNumber').value),d=$('stDate').value,t=$('stTime').value;if(!id||!d||!t||!Number.isInteger(n)||n<1||n>Number(S.term.total_sessions))throw Error('سبک، شماره جلسه، تاریخ و ساعت را کامل وارد کنید.');
-      if(S.rows.some(x=>x.enrollment_id===id&&Number(x.session_number)===n))throw Error('این شماره جلسه برای این سبک تکراری است.');
-      const start=localISO(d,t),e=S.enrollments.find(x=>x.id===id);S.rows.push({enrollment_id:id,session_number:n,starts_at:start,ends_at:new Date(new Date(start).getTime()+Number(S.term.duration_minutes)*60000).toISOString(),venue:$('stSessionVenue').value.trim()||S.term.default_venue||null,notes:null,courses:{name:e?.courses?.name||'سبک'}});
+    try{const ids=Array.from($('stStyle').selectedOptions).map(o=>o.value),n=Number($('stNumber').value),d=$('stDate').value,t=$('stTime').value;if(!ids.length||!d||!t||!Number.isInteger(n)||n<1||n>Number(S.term.total_sessions))throw Error('حداقل یک سبک، شماره جلسه، تاریخ و ساعت را کامل وارد کنید.');
+      if(S.rows.some(x=>Number(x.session_number)===n))throw Error('این شماره جلسه قبلاً ثبت شده است؛ هر جلسه فقط یک شماره دارد.');
+      const start=localISO(d,t);S.rows.push({enrollment_ids:ids,session_number:n,starts_at:start,ends_at:new Date(new Date(start).getTime()+Number(S.term.duration_minutes)*60000).toISOString(),venue:$('stSessionVenue').value.trim()||S.term.default_venue||null,notes:null});
       $('stNumber').value=String(Math.min(n+1,Number(S.term.total_sessions)));drawDraft();say('جلسه به پیش‌نویس اضافه شد.');
     }catch(e){say(e.message,true);}
   }
   async function saveDraft(){
-    try{if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');const payload=S.rows.map(r=>({enrollment_id:r.enrollment_id,session_number:Number(r.session_number),starts_at:r.starts_at,ends_at:r.ends_at,venue:r.venue||S.term.default_venue||null,notes:r.notes||null}));
+    try{if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');const payload=S.rows.map(r=>({enrollment_ids:r.enrollment_ids||[],session_number:Number(r.session_number),starts_at:r.starts_at,ends_at:r.ends_at,venue:r.venue||S.term.default_venue||null,notes:r.notes||null}));
       say('در حال ذخیره پیش‌نویس…');const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;await loadDraftRows();drawDraft();say(fa(data)+' جلسه در پیش‌نویس ذخیره شد.');
     }catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
@@ -162,7 +161,7 @@
     }catch(e){box.textContent=e.message||'دریافت حضور و غیاب ناموفق بود.';}
   }
   async function saveAttendance(){
-    try{const {data:{user},error:ue}=await gym20AdminClient.auth.getUser();if(ue)throw ue;const records=Array.from(document.querySelectorAll('[data-att]')).map(el=>({session_id:el.dataset.att,student_id:S.studentId,enrollment_id:S.sessions.find(x=>x.id===el.dataset.att)?.enrollment_id||null,status:el.value,confirmed_by:user?.id||null,confirmed_at:new Date().toISOString()}));
+    try{const {data:{user},error:ue}=await gym20AdminClient.auth.getUser();if(ue)throw ue;const records=Array.from(document.querySelectorAll('[data-att]')).map(el=>({session_id:el.dataset.att,student_id:S.studentId,enrollment_id:null,status:el.value,confirmed_by:user?.id||null,confirmed_at:new Date().toISOString()}));
       say('در حال ذخیره حضور و غیاب…');const {error}=await db().from('attendance').upsert(records,{onConflict:'session_id,student_id'});if(error)throw error;await loadAttendance();say('حضور و غیاب ذخیره شد.');
     }catch(e){say(e.message||'ذخیره حضور و غیاب ناموفق بود.',true);}
   }
