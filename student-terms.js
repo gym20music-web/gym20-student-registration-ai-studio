@@ -131,10 +131,9 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">افزودن و تنظیم جلسات ترم</div>'+
-      '<div id="stWeekly"><div class="st-weekly-top"><label class="st-compact-field">ساعت شروع <input type="time" id="stWeeklyTime" value="18:00"></label><div class="st-pattern-switch"><button type="button" class="st-pattern-tab active" data-day-pattern="even">کلاس زوج</button><button type="button" class="st-pattern-tab" data-day-pattern="odd">کلاس فرد</button></div></div><div id="stEvenPanel" class="st-day-panel"><div id="stEvenDays" class="st-day-picks"></div></div><div id="stOddPanel" class="st-day-panel st-hide"><div id="stOddDays" class="st-day-picks"></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت برنامه از روی روزهای انتخابی</button></div>'+
-      '<div id="stManual"><div class="st-grid">'+
-      '<div class="st-field"><label>تاریخ جلسه</label><input id="stDate" data-jalali-date type="text" placeholder="تاریخ شمسی"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div>'+
-      '<div class="st-field"><label>نام مربی این جلسه</label><input id="stSessionCoach" maxlength="120" placeholder="نام مربی"></div></div><button class="st-btn" type="button" id="stAdd">+ افزودن جلسه به ترم</button></div>'+
+      '<div class="st-mode-switch"><button type="button" class="st-mode-btn" data-mode="manual">دستی</button><button type="button" class="st-mode-btn" data-mode="even">کلاس زوج</button><button type="button" class="st-mode-btn" data-mode="odd">کلاس فرد</button></div>'+
+      '<div id="stManual" class="st-mode-panel st-hide"><div class="st-manual-pick"><button class="st-btn" type="button" id="stManualCalendar">انتخاب تاریخ جلسات از تقویم</button><span id="stManualCount" class="st-muted">هنوز تاریخی انتخاب نشده</span></div><div id="stManualSelected" class="st-muted"></div></div>'+
+      '<div id="stWeekly" class="st-mode-panel st-hide"><div class="st-weekly-top"><label class="st-compact-field">ساعت شروع <input type="time" id="stWeeklyTime" value="18:00"></label></div><div id="stEvenPanel" class="st-day-panel st-hide"><div class="st-muted">روزهای زوج را انتخاب کن</div><div id="stEvenDays" class="st-day-picks"></div><button class="st-btn" type="button" id="stMakeEven">ساخت جلسات زوج</button></div><div id="stOddPanel" class="st-day-panel st-hide"><div class="st-muted">روزهای فرد را انتخاب کن</div><div id="stOddDays" class="st-day-picks"></div><button class="st-btn" type="button" id="stMakeOdd">ساخت جلسات فرد</button></div></div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn" type="button" id="stSave">ذخیره موقت جلسات</button><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی ترم و نمایش برنامه به هنرجو</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
@@ -148,18 +147,19 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     initTermCalendars(p);
     bindJalaliDates(p);
     $('stStart').addEventListener('change',()=>{syncTermName();if(!$('stDate').value)$('stDate').value=$('stStart').value;});
-     const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
-     const renderDayPicks=id=>{$(id).innerHTML=weekNames.map((n,i)=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'"><span>'+n+'</span></label>').join('');};renderDayPicks('stEvenDays');renderDayPicks('stOddDays');
-     p.querySelectorAll('[data-day-pattern]').forEach(btn=>btn.addEventListener('click',()=>{const even=btn.dataset.dayPattern==='even';$('stEvenPanel').classList.toggle('st-hide',!even);$('stOddPanel').classList.toggle('st-hide',even);p.querySelectorAll('[data-day-pattern]').forEach(x=>x.classList.toggle('active',x===btn));}));
-     const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stDate').value=todayFa;
+      const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+      const renderDayPicks=(id,days)=>{$(id).innerHTML=days.map(i=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'" checked><span>'+weekNames[i]+'</span></label>').join('');};renderDayPicks('stEvenDays',[0,2,4]);renderDayPicks('stOddDays',[1,3,5]);
+      p.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.mode;$('stManual').classList.toggle('st-hide',mode!=='manual');$('stWeekly').classList.toggle('st-hide',mode==='manual');$('stEvenPanel').classList.toggle('st-hide',mode!=='even');$('stOddPanel').classList.toggle('st-hide',mode!=='odd');p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===btn));}));
+      const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',createTerm);
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
-    $('stMakeWeekly').addEventListener('click',makeWeekly);
-    $('stAdd').addEventListener('click',addManual);
+     $('stMakeEven').addEventListener('click',()=>makeWeekly('even'));
+     $('stMakeOdd').addEventListener('click',()=>makeWeekly('odd'));
+     initManualMultiCalendar(p);
     $('stSave').addEventListener('click',saveDraft);
     $('stPublish').addEventListener('click',publish);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
