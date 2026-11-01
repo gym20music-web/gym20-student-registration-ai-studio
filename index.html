@@ -965,8 +965,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script src="./supabase-auth.js"></script>
 <script>
-const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
-const GH_OWNER = "gym20music-web", GH_REPO = "gym20-student-registration-ai-studio", DATA_FILE_PATH = "data.json";
 let appData = {}, selectedThemeKey = "stealth", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "", adminTgRecipients = [];
 
 const regionDependentContentEl = document.getElementById('regionDependentContent'), stylesListEl = document.getElementById('stylesList'), finalPriceEl = document.getElementById('finalPrice'), priceBreakdownEl = document.getElementById('priceBreakdown'), acceptRulesEl = document.getElementById('acceptRules'), paymentSectionEl = document.getElementById('paymentSection'), toastEl = document.getElementById('toast'), classStatusNoticeBoxEl = document.getElementById('classStatusNoticeBox'), classNormalFlowContainerEl = document.getElementById('classNormalFlowContainer'), classRegistrationFlowEl = document.getElementById('classRegistrationFlow');
@@ -1583,7 +1581,6 @@ function collectFormData(){
     };
 }
 
-function b64EncodeUnicode(s){return btoa(encodeURIComponent(s).replace(/%([0-9A-F]{2})/g,(m,p)=>String.fromCharCode('0x'+p)));}
 
 document.getElementById('autoCommitBtn').onclick=async()=>{
     const btn=document.getElementById('autoCommitBtn'),oldText=btn.innerText;
@@ -1593,7 +1590,7 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
         localStorage.setItem('sports_reg_data',JSON.stringify(appData));
         applyDataToUI();updateClassStatusAndStylesFlow();
         
-        let dbSynced=false, githubSynced=false;
+        let dbSynced=false;
         
         // ۱. ذخیره لحظه‌ای در دیتابیس Supabase (برای اعمال بلادرنگ روی گوشی همه هنرجوها)
         try {
@@ -1630,43 +1627,11 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
             console.warn('Supabase DB save error:', e);
         }
 
-        // ۲. کامیت و ذخیره در مخزن گیت‌هاب (ثبت در تاریخچه و پشتیبان کامل)
-        try {
-            async function commitToGitHub(retryCount) {
-                const getRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
-                    headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Cache-Control':'no-cache'}
-                });
-                if(getRes.ok){
-                    const fd=await getRes.json();
-                    const newBase64=b64EncodeUnicode(JSON.stringify(appData,null,2));
-                    const putBody={message:"به‌روزرسانی تنظیمات و سبک‌ها از پنل مدیریت",content:newBase64,sha:fd.sha,branch:"main"};
-                    const putRes=await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`,{
-                        method:'PUT',
-                        headers:{'Authorization':`token ${BUILTIN_TOKEN}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-                        body:JSON.stringify(putBody)
-                    });
-                    if(putRes.ok){
-                        return true;
-                    } else if(putRes.status===409 && retryCount<2){
-                        return await commitToGitHub(retryCount+1);
-                    }
-                }
-                return false;
-            }
-            githubSynced = await commitToGitHub(0);
-        }catch(e){
-            console.warn('GitHub API sync error:', e);
-        }
-
         adminModal.style.display='none';
-        if(dbSynced && githubSynced){
-            alert('🎉 عالی! تنظیمات همزمان در «دیتابیس آنلاین» و «گیت‌هاب» ذخیره شد و برای همه هنرجوها در کل سایت اعمال گردید.');
-        } else if(dbSynced){
-            alert('✅ تنظیمات در «دیتابیس آنلاین» ذخیره شد و تمام کاربران سایت در لحظه تغییرات جدید را می‌بینند.');
-        } else if(githubSynced){
-            alert('✅ تنظیمات در «گیت‌هاب» با موفقیت کامیت و ذخیره شد و در کل سایت ثبت گردید.');
+        if(dbSynced){
+            alert('✅ تنظیمات در دیتابیس آنلاین ذخیره شد و برای همه کاربران اعمال می‌شود.');
         } else {
-            alert('✅ تنظیمات روی مرورگر ذخیره شد (اتصال به سرور برقرار نشد، اتصال اینترنت را چک کنید).');
+            alert('⚠️ اتصال دیتابیس برقرار نشد؛ تنظیمات فقط روی همین مرورگر ذخیره شد.');
         }
     }catch(err){
         console.error(err);
@@ -1881,31 +1846,6 @@ async function loadDataAndInit(){
         } catch(e) {}
     }
 
-    // منبع ۳: دریافت مستقیم آخرین کامیت فایل data.json از GitHub API (بدون معطلی کش گیت‌هاب پیجز)
-    if (!loadedSource) {
-        try {
-            const ghRes = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${DATA_FILE_PATH}`, {
-                headers: {
-                    'Authorization': `token ${BUILTIN_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Cache-Control': 'no-cache'
-                }
-            });
-            if (ghRes.ok) {
-                const ghData = await ghRes.json();
-                if (ghData && ghData.content) {
-                    const decoded = decodeURIComponent(escape(atob(ghData.content.replace(/\s/g, ''))));
-                    const parsed = JSON.parse(decoded);
-                    if (parsed && Array.isArray(parsed.regions)) {
-                        appData = parsed;
-                        loadedSource = 'github_api';
-                        localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-                    }
-                }
-            }
-        } catch(e) {}
-    }
-
     // منبع ۴: دریافت فایل استاتیک data.json هاست
     if (!loadedSource) {
         try {
@@ -1941,6 +1881,6 @@ loadDataAndInit().then(()=>{
 });
 resumeGym20AdminSession();
 </script>
-<script src="student-terms.js?v=20261101-term-form-v3"></script>
+<script src="student-terms.js?v=20261101-term-form-v4"></script>
 </body>
 </html>
