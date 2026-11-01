@@ -7,21 +7,27 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{color-scheme:dark;--bg:#090b10;--panel:#141821;--panel2:#1b2230;--gold:#e3bd62;--muted:#9ca3af;--line:#303746}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#1b1a13 0,#090b10 52%);color:#f8fafc;font-family:Vazirmatn,sans-serif;min-height:100vh;padding:22px 12px}
-main{max-width:850px;margin:auto}.brand{font:800 13px Montserrat,sans-serif;color:var(--gold);letter-spacing:2px;text-align:center;margin:10px 0 18px}
-header,.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;margin-bottom:14px;box-shadow:0 12px 34px #0005}
-h1{font-size:1.25rem;margin:0 0 6px;color:var(--gold)}.muted{color:var(--muted);font-size:.85rem;line-height:1.8}
-select{width:100%;padding:12px;border-radius:10px;background:var(--panel2);color:white;border:1px solid var(--line);font:inherit;margin-top:8px}
-table{width:100%;border-collapse:collapse;min-width:620px;font-size:.85rem}th,td{text-align:right;padding:12px 9px;border-bottom:1px solid var(--line);vertical-align:middle}th{color:var(--gold);font-weight:700}
-.table-wrap{overflow:auto}.status{display:inline-block;border-radius:20px;padding:4px 9px;background:#ffffff12;font-size:.75rem;white-space:nowrap}.present{color:#6ee7b7;background:#064e3b66}.absent{color:#fda4af;background:#88133766}.pending{color:#fcd34d;background:#78350f66}
-.empty{text-align:center;padding:28px 10px;color:var(--muted)}.session-count{color:var(--gold);font-weight:700}.hide{display:none!important}
-@media(max-width:600px){body{padding:12px 8px}header,.card{padding:13px;border-radius:12px}h1{font-size:1.1rem}table{font-size:.78rem}th,td{padding:10px 7px}}
+:root{color-scheme:dark;--bg:#080a0f;--panel:#111722;--panel2:#171f2c;--gold:#e8c46b;--muted:#8e9aaa;--line:#293343}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:#f7f8fb;font-family:Vazirmatn,sans-serif}
+body{padding:10px;background:radial-gradient(ellipse at 50% -12%,#302719 0,#11151d 34%,#080a0f 75%)}
+main{width:min(100%,760px);margin:0 auto}.brand{font:800 10px Montserrat,sans-serif;color:var(--gold);letter-spacing:1.7px;text-align:center;margin:3px 0 9px}
+header,.card{background:linear-gradient(145deg,#151c27,#0f141d);border:1px solid #30394a;border-radius:12px;padding:10px;margin-bottom:8px;box-shadow:0 8px 24px #0005}
+h1{font-size:15px;line-height:1.4;margin:0 0 2px;color:var(--gold);font-weight:800}.muted{color:var(--muted);font-size:10px;line-height:1.65}
+label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:31px;padding:4px 8px;border-radius:7px;background:var(--panel2);color:#fff;border:1px solid var(--line);font:500 11px Vazirmatn,sans-serif;margin-top:4px}#termMeta{margin:5px 0 0}
+.schedule-summary{display:flex;justify-content:space-between;gap:8px;margin:0 0 7px;padding:5px 8px;border:1px solid #343d4b;border-radius:8px;background:#ffffff07;color:var(--muted);font-size:9px}.schedule-summary b{color:var(--gold);font-size:10px}
+.session-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.session-card{min-width:0;border:1px solid #303a49;border-radius:9px;background:linear-gradient(135deg,#1a2230,#111722);padding:7px 8px;box-shadow:inset 2px 0 0 #327fc1;transition:border-color .18s,background .18s,box-shadow .18s}.session-card.time-past{border-color:#a83242;background:linear-gradient(135deg,#351820,#17141b);box-shadow:inset 3px 0 0 #ef4444}.session-card.time-next,.session-card.time-live{border-color:#238653;background:linear-gradient(135deg,#102d24,#111b1b);box-shadow:inset 3px 0 0 #22c55e}.session-card.time-future{border-color:#2469a4;background:linear-gradient(135deg,#13283c,#111722);box-shadow:inset 3px 0 0 #3b9cf2}.status.time-past{color:#fecaca;background:#991b1b88}.status.time-next,.status.time-live{color:#bbf7d0;background:#16653488}.status.time-future{color:#bfdbfe;background:#1d4ed888}
+.session-top{display:flex;align-items:center;justify-content:space-between;gap:5px;margin-bottom:4px}.session-number{font-size:10px;color:var(--gold);font-weight:800}
+.status{display:inline-flex;align-items:center;border-radius:20px;padding:2px 6px;background:#ffffff12;font-size:9px;line-height:1.5;white-space:nowrap}.present{color:#6ee7b7;background:#064e3b66}.absent{color:#fda4af;background:#88133766}.pending{color:#fcd34d;background:#78350f66}
+.session-facts{display:grid;grid-template-columns:1.15fr 1fr .75fr;gap:4px;padding-bottom:4px;border-bottom:1px solid #ffffff12}.session-facts span{display:flex;flex-direction:column;min-width:0}.session-facts i{font-style:normal;color:#8290a2;font-size:8px}.session-facts b{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.session-bottom{display:flex;justify-content:space-between;gap:5px;padding-top:4px;color:#aab5c3;font-size:8.5px;line-height:1.5}.session-bottom span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.session-bottom .coach{color:#e7ca83}
+.empty{text-align:center;padding:22px 8px;color:var(--muted);font-size:10px}.hide{display:none!important}footer{font-size:9px!important;text-align:center;padding:2px 0 5px}
+@media(max-width:700px){.session-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}@media(max-width:520px){body{padding:7px 6px}.brand{font-size:9px;margin:2px 0 7px}header,.card{padding:8px;border-radius:10px;margin-bottom:6px}h1{font-size:13px}.muted{font-size:9px}select{height:29px;font-size:10px}.session-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.session-card{padding:5px 6px}.session-top{margin-bottom:3px}.session-number{font-size:9.5px}.status{font-size:8px;padding:1px 5px}.session-facts{grid-template-columns:1.1fr 1fr .8fr;gap:3px;padding-bottom:3px}.session-facts i{font-size:7px}.session-facts b{font-size:8px}.session-bottom{padding-top:3px;font-size:7.5px;gap:3px}.schedule-summary{font-size:8px;margin-bottom:5px;padding:4px 7px}.schedule-summary b{font-size:9px}}@media(max-width:350px){.session-list{grid-template-columns:1fr}}
+@media(max-height:760px) and (max-width:520px){body{padding-top:4px}.brand{margin-bottom:4px}header,.card{padding:6px;margin-bottom:4px}.session-list{gap:3px}.session-card{padding:4px 6px}.session-facts{gap:3px}}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="/student-view.js?v=20261101-short-links-v2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="/student-view.js?v=20261101-short-links-timeline-v3"></script>
 </body></html>
