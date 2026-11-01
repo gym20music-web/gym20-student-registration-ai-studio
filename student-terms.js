@@ -23,7 +23,7 @@
     const nav=document.querySelector('.admin-tabs'),work=document.querySelector('.admin-workspace');
     if(!nav||!work)return;
     const css=document.createElement('style');css.id='studentTermsCss';
-    css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.8rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:8px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:8px 11px;font-size:.72rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-check{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:.72rem}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select,.st-table input{max-width:150px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:.68rem}.st-table small{display:block;color:var(--text-secondary);font-size:.6rem}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:1fr}.st-card{padding:9px}}';
+    css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.8rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:8px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:8px 11px;font-size:.72rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-check{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:.72rem}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select,.st-table input{max-width:150px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:.68rem}.st-table small{display:block;color:var(--text-secondary);font-size:.6rem}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}.st-short-url{direction:ltr;text-align:left;word-break:break-all;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px;margin:7px 0;font-size:.78rem;color:#e7c875}.st-public-link{margin-top:8px}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:1fr}.st-card{padding:9px}}';
     css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:column!important}.admin-sidebar{width:100%!important;min-width:0!important;flex:0 0 auto!important;max-height:none!important;padding:5px 7px!important;border-left:0!important;border-bottom:1px solid var(--border)!important;overflow:visible!important}.admin-sidebar-brand{display:none!important}.admin-tabs{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;gap:4px!important;justify-content:flex-start!important}.admin-tab-btn{width:auto!important;min-height:32px!important;flex:0 0 auto!important;padding:5px 8px!important;font-size:.66rem!important;line-height:1.2!important;white-space:nowrap!important;border-radius:7px!important}.admin-tab-btn.active{box-shadow:inset 0 -2px 0 #d6b35a!important}.admin-workspace{padding:8px 7px calc(16px + env(safe-area-inset-bottom))!important}.st-card{padding:8px!important;margin:7px 0!important}.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.st-table{min-width:560px!important}}@media(max-width:390px){.admin-tab-btn{font-size:.6rem!important;padding:5px 6px!important}.st-grid{grid-template-columns:1fr!important}}';
     document.head.appendChild(css);
     const b=document.createElement('button');b.className='admin-tab-btn';b.type='button';b.textContent='👥 هنرجویان و ترم‌ها';b.setAttribute('onclick',"switchAdminTab('"+TAB+"')");
@@ -86,31 +86,41 @@
         db().from('student_terms').select('id,term_name,start_date,end_date,total_sessions,duration_minutes,default_venue,schedule_mode,status,published_version_id,created_at').eq('student_id',id).order('created_at',{ascending:false})
       ]);
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];
-      $('stSummary').innerHTML='<b>'+esc(student?.full_name||'')+'</b> · '+esc(student?.phone||'—')+'<br>تعداد سبک‌ها: '+fa(S.enrollments.length)+' · تولد: '+esc(student?.birth_date||'ثبت نشده')+'<div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت / کپی لینک اختصاصی هنرجو</button><span id="stPublicLinkStatus" class="st-muted"></span></div>';
+      $('stSummary').innerHTML='<b>'+esc(student?.full_name||'')+'</b> · '+esc(student?.phone||'—')+'<br>تعداد سبک‌ها: '+fa(S.enrollments.length)+' · تولد: '+esc(student?.birth_date||'ثبت نشده')+'<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
+      loadStudentPublicLink();
       $('stEnrollments').innerHTML=S.enrollments.map(e=>'<label class="st-check"><input type="checkbox" name="stEnroll" value="'+e.id+'" '+(e.status==='active'?'checked':'')+'><span>'+esc(e.courses?.name||'سبک')+' <small>('+esc(classNames[e.class_type]||e.class_type||'عمومی')+' · '+(e.age_group==='kids'?'کودک':'بزرگسال')+')</small></span></label>').join('')||'ثبت‌نام فعالی وجود ندارد.';
       $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(t.term_name)+' · '+fa(t.total_sessions)+' جلسه</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
 
+  function studentShortUrl(code){return 'https://gym20.ir/s/'+encodeURIComponent(code);}
+  async function renderStudentPublicLink(code){
+    const box=$('stPublicLinkBox');if(!box)return;
+    if(!code){box.innerHTML='<div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">هنوز لینکی ساخته نشده است.</span></div>';return;}
+    const url=studentShortUrl(code);
+    box.innerHTML='<div class="st-muted">لینک اختصاصی هنرجو</div><div class="st-short-url" dir="ltr">'+esc(url)+'</div><div class="st-actions"><button type="button" class="st-btn primary" id="stCopyPublicLinkBtn">کپی لینک</button><a class="st-btn" id="stSharePublicLinkBtn" target="_blank" rel="noopener">ارسال در تلگرام</a><button type="button" class="st-btn danger" id="stRenewPublicLinkBtn">ساخت لینک جدید</button></div><div id="stPublicLinkStatus" class="st-muted">این لینک فقط برنامه‌های منتشرشده را نمایش می‌دهد.</div>';
+    $('stSharePublicLinkBtn').href='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent('برنامه کلاس‌های GYM20 شما');
+    $('stCopyPublicLinkBtn').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(url);$('stPublicLinkStatus').textContent='لینک کپی شد.';}catch(_){$('stPublicLinkStatus').textContent='کپی خودکار در دسترس نیست؛ آدرس بالا را انتخاب و کپی کن.';}});
+    $('stRenewPublicLinkBtn').addEventListener('click',makeStudentPublicLink);
+  }
+  async function loadStudentPublicLink(){
+    try{const {data,error}=await db().rpc('get_student_public_link',{p_student_id:S.studentId});if(error)throw error;await renderStudentPublicLink(typeof data==='string'?data:null);}
+    catch(e){const status=$('stPublicLinkStatus');if(status)status.textContent='وضعیت لینک دریافت نشد: '+(e.message||'خطا');}
+  }
   async function makeStudentPublicLink(){
-    const btn=$('stPublicLinkBtn'),status=$('stPublicLinkStatus');
+    const btn=$('stPublicLinkBtn')||$('stRenewPublicLinkBtn');
+    const status=$('stPublicLinkStatus');
     if(!S.studentId||!btn)return;
-    btn.disabled=true;btn.textContent='در حال ساخت لینک امن…';
+    btn.disabled=true;if(status)status.textContent='در حال ساخت لینک امن…';
     try{
       const {data,error}=await db().rpc('create_student_public_link',{p_student_id:S.studentId});
       if(error)throw error;
-      const token=typeof data==='string'?data:Array.isArray(data)?data[0]:data?.create_student_public_link;
-      if(!token||!/^[0-9a-f]{64}$/.test(token))throw Error('توکن امن از سرور دریافت نشد.');
-      const base=new URL('student.html',window.location.href);
-      base.searchParams.set('t',token);
-      const url=base.toString();
-      try{await navigator.clipboard.writeText(url);status.textContent='لینک ساخته و کپی شد؛ آن را برای هنرجو بفرستید.';}
-      catch(_){status.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" style="color:#d6b35a;direction:ltr;display:block;word-break:break-all">باز کردن لینک هنرجو</a><small>لینک را از نوار آدرس کپی کنید.</small>';}
-      const share=document.createElement('a');share.href='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent('برنامه کلاس‌های GYM20 شما');share.target='_blank';share.rel='noopener';share.className='st-btn';share.textContent='ارسال در تلگرام';status.appendChild(share);
-      btn.textContent='🔄 ساخت لینک جدید و لغو لینک قبلی';
-    }catch(e){status.textContent=e.message||'ساخت لینک ناموفق بود.';btn.textContent='🔗 تلاش دوباره برای ساخت لینک';}
-    finally{btn.disabled=false;}
+      const code=typeof data==='string'?data:Array.isArray(data)?data[0]:data?.create_student_public_link;
+      if(!code||!/^[0-9a-f]{12}$/.test(code))throw Error('کد کوتاه امن از سرور دریافت نشد.');
+      await renderStudentPublicLink(code);
+      try{await navigator.clipboard.writeText(studentShortUrl(code));$('stPublicLinkStatus').textContent='لینک کوتاه ساخته و کپی شد.';}catch(_){$('stPublicLinkStatus').textContent='لینک کوتاه ساخته شد.';}
+    }catch(e){if(status)status.textContent=e.message||'ساخت لینک ناموفق بود.';btn.disabled=false;}
   }
 
   async function createTerm(ev){
