@@ -302,6 +302,40 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .admin-content .admin-workspace textarea::placeholder{font-size:12px!important;}
 }
 
+
+/* Final compact sizing for EVERY editable control in ALL admin tabs */
+.admin-content .admin-workspace input:not([type="checkbox]):not([type="radio]):not([type="color"]),
+.admin-content .admin-workspace textarea,
+.admin-content .admin-workspace select,
+.admin-content .admin-workspace [contenteditable="true"],
+.admin-content .admin-workspace .admin-select{
+ font-family:'Vazirmatn',sans-serif!important;
+ font-size:12px!important;
+ font-weight:400!important;
+ line-height:1.55!important;
+ letter-spacing:0!important;
+ padding:6px 8px!important;
+ min-height:34px;
+ box-sizing:border-box;
+}
+.admin-content .admin-workspace input::placeholder,
+.admin-content .admin-workspace textarea::placeholder{font-size:11px!important;font-weight:400!important;}
+.admin-content .admin-workspace textarea{min-height:58px;resize:vertical;}
+@media(max-width:720px){
+ .admin-content .admin-workspace input:not([type="checkbox]):not([type="radio]):not([type="color"]),
+ .admin-content .admin-workspace textarea,
+ .admin-content .admin-workspace select,
+ .admin-content .admin-workspace [contenteditable="true"],
+ .admin-content .admin-workspace .admin-select{
+  font-size:12px!important;
+  line-height:1.6!important;
+  padding:6px 7px!important;
+  min-height:34px;
+ }
+ .admin-content .admin-workspace input::placeholder,
+ .admin-content .admin-workspace textarea::placeholder{font-size:10px!important;}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
