@@ -29,7 +29,7 @@
       let jy=raw.length===3&&raw[0]>1200?raw[0]:todayParts[0];
       let jm=raw.length===3&&raw[1]>=1&&raw[1]<=12?raw[1]:todayParts[1];
       const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
-      const rect=btn.getBoundingClientRect();pop.style.top=Math.min(innerHeight-280,rect.bottom+5)+'px';pop.style.left=Math.max(8,Math.min(innerWidth-253,rect.left-205))+'px';
+      const rect=btn.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-260,rect.left+rect.width/2-126))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-290,rect.bottom+5))+'px';
       const draw=()=>{
         const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1);
         const first=new Date(g+'T12:00:00'),last=new Date(next+'T12:00:00'),days=Math.round((last-first)/86400000),offset=(first.getDay()+1)%7,picked=enDigits(input.value).split('/').map(Number),todayParts=enDigits(jalaliInput(localDate(new Date()))).split('/').map(Number);
@@ -75,7 +75,7 @@
       .st-student-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:42px;padding:9px 11px;border:1px solid rgba(214,179,90,.55);border-radius:10px;background:#111a27;color:#f3f0e8;font:inherit;font-size:13px;text-align:right;cursor:pointer}
       .st-student-trigger span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
       .st-picker-arrow{color:#d6b35a;font-size:18px}
-      .st-student-menu{position:absolute;z-index:10050;top:calc(100% + 6px);right:0;left:0;max-height:min(48vh,300px);overflow:auto;padding:5px;border:1px solid rgba(214,179,90,.5);border-radius:11px;background:#171e2b;box-shadow:0 14px 32px #000b}
+      .st-student-menu{position:fixed;z-index:10050;top:0;left:8px;right:auto;width:min(420px,calc(100vw - 16px));max-height:min(48vh,300px);overflow:auto;padding:5px;border:1px solid rgba(214,179,90,.5);border-radius:11px;background:#171e2b;box-shadow:0 14px 32px #000b}
       .st-student-menu[hidden]{display:none!important}
       .st-student-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 9px;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#eee;text-align:right;font:inherit;font-size:12px;cursor:pointer}
       .st-student-option:last-child{border-bottom:0}
@@ -149,7 +149,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
      const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
      const renderDayPicks=id=>{$(id).innerHTML=weekNames.map((n,i)=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'"><span>'+n+'</span></label>').join('');};renderDayPicks('stEvenDays');renderDayPicks('stOddDays');
      const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stDate').value=todayFa;
-    $('stStudentTrigger').addEventListener('click',()=>{const menu=$('stStudentMenu'),open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
+    $('stStudentTrigger').addEventListener('click',()=>{const menu=$('stStudentMenu'),open=menu.hidden;if(open){const rect=$('stStudentTrigger').getBoundingClientRect(),w=Math.min(rect.width,innerWidth-16),h=Math.min(menu.scrollHeight||300,Math.min(innerHeight*.48,300));menu.style.width=w+'px';menu.style.left=Math.max(8,Math.min(innerWidth-w-8,rect.left))+'px';menu.style.top=Math.max(8,Math.min(innerHeight-h-8,rect.bottom+6))+'px';}menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
