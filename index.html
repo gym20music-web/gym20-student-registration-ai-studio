@@ -336,6 +336,37 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .admin-content .admin-workspace textarea::placeholder{font-size:9px!important;}
 }
 
+
+/* Registration requests management */
+.requests-toolbar{display:grid;grid-template-columns:minmax(150px,1fr) 145px auto auto;gap:6px;align-items:center;margin:8px 0;}
+.requests-toolbar input,.requests-toolbar select{width:100%;min-width:0;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:12px;}
+.requests-toolbar button,.request-action-btn{border:1px solid var(--border);border-radius:8px;padding:7px 9px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:11px;cursor:pointer;white-space:nowrap;}
+.requests-toolbar .danger,.request-action-btn.danger{border-color:rgba(248,113,113,.4);color:#fca5a5;}
+.request-summary{font-size:11px;color:var(--text-secondary);margin:5px 0 8px;line-height:1.8;}
+.requests-table-wrap{width:100%;overflow:auto;border:1px solid var(--border);border-radius:10px;background:var(--surface-card);}
+.requests-table{width:100%;min-width:850px;border-collapse:collapse;font-size:11px;}
+.requests-table th,.requests-table td{padding:8px 7px;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle;}
+.requests-table th{color:var(--neon-blue);font-weight:800;background:rgba(255,255,255,.025);white-space:nowrap;}
+.requests-table tr:last-child td{border-bottom:0;}
+.requests-table .request-name{font-weight:800;color:var(--text-primary);}
+.requests-table .request-sub{display:block;color:var(--text-secondary);font-size:10px;margin-top:2px;direction:ltr;text-align:right;}
+.request-status{display:inline-block;padding:3px 7px;border-radius:20px;background:rgba(148,163,184,.13);color:var(--text-secondary);font-size:10px;white-space:nowrap;}
+.request-status.pending{color:#fbbf24;background:rgba(251,191,36,.1);}
+.request-status.approved{color:#34d399;background:rgba(52,211,153,.1);}
+.request-status.rejected{color:#fb7185;background:rgba(251,113,133,.1);}
+.request-status.converted{color:#60a5fa;background:rgba(96,165,250,.12);}
+.request-row-actions{display:flex;flex-wrap:wrap;gap:4px;min-width:190px;}
+.request-action-btn.primary{border-color:var(--neon-blue);color:var(--neon-blue);}
+.request-action-btn:disabled{opacity:.4;cursor:not-allowed;}
+.request-status-select{max-width:110px;padding:5px;border:1px solid var(--border);border-radius:7px;background:var(--surface);color:var(--text-primary);font:inherit;font-size:10px;}
+.request-detail-panel{margin-top:10px;padding:10px;border:1px solid var(--neon-blue);border-radius:10px;background:var(--surface-card);line-height:1.9;font-size:11px;overflow-wrap:anywhere;}
+.request-detail-panel[hidden]{display:none;}
+.request-detail-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px;color:var(--neon-blue);font-weight:800;}
+.request-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px;}
+.request-detail-grid b{color:var(--text-secondary);font-weight:600;}
+.request-feedback{min-height:22px;margin:5px 0;color:var(--text-secondary);font-size:11px;}
+@media(max-width:720px){.requests-toolbar{grid-template-columns:1fr 1fr}.requests-toolbar input{grid-column:1/-1}.request-detail-grid{grid-template-columns:1fr}.requests-table{min-width:790px;}}
+
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -496,16 +527,15 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
     <div class="admin-login-mark">G<span>20</span></div>
     <div class="admin-login-kicker">GYM20 ACADEMY · CONTROL CENTER</div>
     <h2 id="adminLoginTitle">ورود مدیر</h2>
-    <p class="admin-login-subtitle">برای دسترسی به تنظیمات آکادمی، رمز مدیریت را وارد کنید.</p>
-    <form id="adminLoginForm" autocomplete="off">
-      <label class="admin-login-label" for="adminLoginPassword">رمز عبور مدیریت</label>
+    <p class="admin-login-subtitle">برای ورود مدیر، لینک یک‌بارمصرف به ایمیل حساب مالک آکادمی ارسال می‌شود.</p>
+    <form id="adminLoginForm" autocomplete="on">
+      <label class="admin-login-label" for="adminLoginEmail">ایمیل حساب مدیر</label>
       <div class="admin-login-input-wrap">
-        <span class="admin-login-lock">⌑</span>
-        <input id="adminLoginPassword" type="password" placeholder="رمز عبور را وارد کنید" autocomplete="current-password" required>
-        <button type="button" id="toggleAdminPassword" class="admin-login-eye" aria-label="نمایش رمز">◉</button>
+        <span class="admin-login-lock">✉</span>
+        <input id="adminLoginEmail" type="email" placeholder="ایمیل مدیر" autocomplete="email" required>
       </div>
-      <div class="admin-login-error" id="adminLoginError" role="alert" aria-live="polite"></div>
-      <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ورود به پنل مدیریت <span>←</span></button>
+      <div class="admin-login-error" id="adminLoginError" role="status" aria-live="polite"></div>
+      <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ارسال لینک ورود <span>←</span></button>
     </form>
     <div class="admin-login-foot"><span></span> دسترسی ویژه مدیران GYM20</div>
   </div>
@@ -516,7 +546,10 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
     <div class="admin-content">
         <div class="admin-header">
             <h3>⚙️ پنل مدیریت <span>GYM20</span></h3>
-            <button class="circle-btn" id="closeAdmin" aria-label="بستن پنل">✕</button>
+            <div style="display:flex;gap:6px;align-items:center;">
+              <button class="circle-btn" id="adminLogoutBtn" title="خروج از حساب مدیر" aria-label="خروج">↪</button>
+              <button class="circle-btn" id="closeAdmin" aria-label="بستن پنل">✕</button>
+            </div>
         </div>
         <div class="admin-layout">
           <aside class="admin-sidebar">
@@ -532,6 +565,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر بالا</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('requestsTab')">📥 درخواست‌های ثبت‌نام</button>
             </nav>
           </aside>
           <main class="admin-workspace">
@@ -794,12 +828,36 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                 <div id="tgTestResultBox" style="font-size:.64rem;margin-top:3px;line-height:1.5;"></div>
             </div>
         </div>
+        <div class="admin-panel-tab" id="requestsTab">
+          <div class="admin-section-subhead">📥 مدیریت درخواست‌های ثبت‌نام</div>
+          <p class="hint">درخواست‌ها فقط با انتخاب مدیر به هنرجوی فعال تبدیل می‌شوند. درخواست‌های تبدیل‌شده برای حفظ سابقه حذف نمی‌شوند.</p>
+          <div class="request-summary" id="requestsSummary">برای دریافت درخواست‌ها، ابتدا با حساب مدیر وارد شوید.</div>
+          <div class="requests-toolbar">
+            <input id="requestsSearch" type="search" placeholder="جست‌وجو بر اساس نام یا شماره تماس…" autocomplete="off">
+            <select id="requestsStatusFilter" aria-label="فیلتر وضعیت">
+              <option value="all">همه وضعیت‌ها</option>
+              <option value="pending">در انتظار بررسی</option>
+              <option value="approved">تأییدشده</option>
+              <option value="rejected">ردشده</option>
+              <option value="converted">تبدیل‌شده به هنرجو</option>
+            </select>
+            <button type="button" id="refreshRequestsBtn">↻ بروزرسانی</button>
+            <button type="button" id="bulkDeleteRequestsBtn" class="danger" disabled>🗑 حذف انتخاب‌شده‌ها</button>
+          </div>
+          <div class="request-feedback" id="requestsFeedback" role="status" aria-live="polite"></div>
+          <div class="requests-table-wrap" id="requestsTableContainer">
+            <div style="padding:16px;text-align:center;color:var(--text-secondary);">هنوز درخواستی بارگذاری نشده است.</div>
+          </div>
+          <div class="request-detail-panel" id="requestDetailsPanel" hidden></div>
+        </div>
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:10px;margin-top:14px;font-weight:800;width:100%;">💾 ذخیره تنظیمات</button>
           </main>
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./supabase-auth.js"></script>
 <script>
 const BUILTIN_TOKEN = ["ghp", "_4gtZjEhhDAhn", "mOytJHLkh9Pa7mS", "5vw4b7ClF"].join("");
 const GH_OWNER = "gym20music-web", GH_REPO = "gym20-student-registration-ai-studio", DATA_FILE_PATH = "data.json";
@@ -1022,20 +1080,258 @@ document.getElementById('copyCardBtn').onclick=()=>{
 };
 
 themeBtn.onclick=()=>{const l=document.body.getAttribute('data-theme')==='light';if(l){document.body.removeAttribute('data-theme');themeBtn.innerText='🌙';}else{document.body.setAttribute('data-theme','light');themeBtn.innerText='☀️';}};
-function switchAdminTab(tId){document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));const tab=document.getElementById(tId);if(tab)tab.classList.add('active');const btn=Array.from(document.querySelectorAll('.admin-tab-btn')).find(b=>b.getAttribute('onclick')===`switchAdminTab('${tId}')`);if(btn)btn.classList.add('active');}
+function switchAdminTab(tId){
+  if(tId==='requestsTab'&&!gym20OwnerAuthorized){alert('برای مشاهده درخواست‌ها ابتدا با حساب مدیر وارد شوید.');return;}
+  document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));
+  const tab=document.getElementById(tId);if(tab)tab.classList.add('active');
+  const btn=Array.from(document.querySelectorAll('.admin-tab-btn')).find(b=>b.getAttribute('onclick')===`switchAdminTab('${tId}')`);
+  if(btn)btn.classList.add('active');
+  const saveButton=document.getElementById('autoCommitBtn');
+  if(saveButton)saveButton.style.display=tId==='requestsTab'?'none':'block';
+  if(tId==='requestsTab')loadRegistrationRequests();
+}
+
+/* Owner-only registration request management */
+let registrationRequestsCache=[];
+const selectedRegistrationRequestIds=new Set();
+const requestStatusLabels={pending:'در انتظار بررسی',approved:'تأییدشده',rejected:'ردشده',converted:'تبدیل‌شده به هنرجو'};
+function escapeRequestHtml(value){
+  return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function formatRequestDate(value){
+  if(!value)return '—';
+  const d=new Date(value);
+  return Number.isNaN(d.getTime())?'—':d.toLocaleString('fa-IR',{dateStyle:'short',timeStyle:'short'});
+}
+function setRequestsFeedback(message,isError=false){
+  const el=document.getElementById('requestsFeedback');
+  if(el){el.textContent=message||'';el.style.color=isError?'#fb7185':'var(--text-secondary)';}
+}
+function renderRegistrationRequests(){
+  const container=document.getElementById('requestsTableContainer');
+  const search=(document.getElementById('requestsSearch')?.value||'').trim().toLowerCase();
+  const status=document.getElementById('requestsStatusFilter')?.value||'all';
+  const filtered=registrationRequestsCache.filter(r=>{
+    const matchesStatus=status==='all'||r.status===status;
+    const haystack=[r.full_name,r.phone].join(' ').toLowerCase();
+    return matchesStatus&&(!search||haystack.includes(search));
+  });
+  const pending=registrationRequestsCache.filter(r=>r.status==='pending').length;
+  const converted=registrationRequestsCache.filter(r=>r.status==='converted').length;
+  document.getElementById('requestsSummary').textContent=
+    'کل درخواست‌ها: '+registrationRequestsCache.length+' | در انتظار بررسی: '+pending+' | تبدیل‌شده به هنرجو: '+converted+' | نمایش فعلی: '+filtered.length;
+  const bulkBtn=document.getElementById('bulkDeleteRequestsBtn');
+  const deletableSelected=[...selectedRegistrationRequestIds].filter(id=>{
+    const r=registrationRequestsCache.find(x=>x.id===id);return r&&!r.converted_student_id;
+  });
+  bulkBtn.disabled=!deletableSelected.length;
+  if(!filtered.length){
+    container.innerHTML='<div style="padding:16px;text-align:center;color:var(--text-secondary);">درخواستی با این فیلتر پیدا نشد.</div>';
+    return;
+  }
+  const rows=filtered.map(r=>{
+    const isConverted=!!r.converted_student_id||r.status==='converted';
+    const styles=(r.selected_styles||[]).join('، ');
+    const statusClass=['pending','approved','rejected','converted'].includes(r.status)?r.status:'';
+    return `<tr>
+      <td><input type="checkbox" data-request-select="${escapeRequestHtml(r.id)}" ${selectedRegistrationRequestIds.has(r.id)?'checked':''} ${isConverted?'disabled':''}></td>
+      <td><span class="request-name">${escapeRequestHtml(r.full_name)}</span><span class="request-sub">${escapeRequestHtml(r.phone)}</span></td>
+      <td>${escapeRequestHtml(styles||'—')}</td>
+      <td>${escapeRequestHtml(r.total_sessions)} جلسه</td>
+      <td><span class="request-status ${statusClass}">${escapeRequestHtml(requestStatusLabels[r.status]||r.status)}</span></td>
+      <td>${escapeRequestHtml(formatRequestDate(r.created_at))}</td>
+      <td><div class="request-row-actions">
+        <button type="button" class="request-action-btn" data-request-action="details" data-request-id="${escapeRequestHtml(r.id)}">جزئیات</button>
+        <select class="request-status-select" data-request-action="status" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>
+          <option value="pending" ${r.status==='pending'?'selected':''}>در انتظار</option>
+          <option value="approved" ${r.status==='approved'?'selected':''}>تأیید</option>
+          <option value="rejected" ${r.status==='rejected'?'selected':''}>رد</option>
+        </select>
+        <button type="button" class="request-action-btn primary" data-request-action="convert" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>تبدیل به هنرجو</button>
+        <button type="button" class="request-action-btn danger" data-request-action="delete" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>حذف</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+  container.innerHTML=`<table class="requests-table">
+    <thead><tr><th><input type="checkbox" id="selectAllVisibleRequests" aria-label="انتخاب همه موارد قابل حذف"></th><th>هنرجو / تماس</th><th>سبک‌های انتخابی</th><th>جلسات</th><th>وضعیت</th><th>تاریخ درخواست</th><th>عملیات</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+async function loadRegistrationRequests(){
+  if(!gym20OwnerAuthorized||!gym20AdminClient){setRequestsFeedback('دسترسی مدیر تأیید نشده است.',true);return;}
+  const container=document.getElementById('requestsTableContainer');
+  container.innerHTML='<div style="padding:16px;text-align:center;color:var(--text-secondary);">در حال دریافت درخواست‌ها…</div>';
+  setRequestsFeedback('');
+  try{
+    const {data,error}=await gym20AdminClient.schema('gym20').from('public_registration_requests')
+      .select('id,full_name,phone,birth_date,notes,course_id,class_type,total_sessions,package_type,status,created_at,selected_styles,age_group,payment_confirmed,converted_student_id,converted_at,converted_by')
+      .order('created_at',{ascending:false});
+    if(error)throw error;
+    registrationRequestsCache=data||[];
+    selectedRegistrationRequestIds.clear();
+    renderRegistrationRequests();
+    setRequestsFeedback('اطلاعات درخواست‌ها با موفقیت دریافت شد.');
+  }catch(err){
+    container.innerHTML='<div style="padding:16px;text-align:center;color:#fb7185;">بارگذاری درخواست‌ها ناموفق بود.</div>';
+    setRequestsFeedback(err.message||'خطا در دریافت درخواست‌ها.',true);
+  }
+}
+function showRegistrationRequestDetails(id){
+  const r=registrationRequestsCache.find(x=>x.id===id);if(!r)return;
+  const panel=document.getElementById('requestDetailsPanel');
+  const styles=(r.selected_styles||[]).join('، ')||'—';
+  panel.innerHTML=`<div class="request-detail-head"><span>جزئیات درخواست · ${escapeRequestHtml(r.full_name)}</span><button type="button" class="request-action-btn" id="closeRequestDetailsBtn">بستن</button></div>
+    <div class="request-detail-grid">
+      <div><b>شماره تماس:</b> ${escapeRequestHtml(r.phone)}</div>
+      <div><b>تاریخ درخواست:</b> ${escapeRequestHtml(formatRequestDate(r.created_at))}</div>
+      <div><b>تاریخ تولد:</b> ${escapeRequestHtml(r.birth_date||'ثبت نشده')}</div>
+      <div><b>رده سنی:</b> ${r.age_group==='kids'?'کودک':'بزرگسال'}</div>
+      <div><b>نوع کلاس:</b> ${escapeRequestHtml(r.class_type)}</div>
+      <div><b>تعداد جلسات:</b> ${escapeRequestHtml(r.total_sessions)}</div>
+      <div><b>نوع بسته:</b> ${escapeRequestHtml(r.package_type)}</div>
+      <div><b>تأیید پرداخت:</b> ${r.payment_confirmed?'بله':'خیر'}</div>
+      <div><b>سبک‌ها:</b> ${escapeRequestHtml(styles)}</div>
+      <div><b>وضعیت:</b> ${escapeRequestHtml(requestStatusLabels[r.status]||r.status)}</div>
+      <div style="grid-column:1/-1"><b>توضیحات:</b><br>${escapeRequestHtml(r.notes||'بدون توضیح').replace(/\n/g,'<br>')}</div>
+      ${r.converted_student_id?`<div style="grid-column:1/-1"><b>شناسه هنرجوی ایجادشده:</b> ${escapeRequestHtml(r.converted_student_id)}</div>`:''}
+    </div>`;
+  panel.hidden=false;
+  document.getElementById('closeRequestDetailsBtn').onclick=()=>{panel.hidden=true;};
+}
+async function deleteRegistrationRequest(id){
+  const r=registrationRequestsCache.find(x=>x.id===id);if(!r||r.converted_student_id)return;
+  if(!confirm('این درخواست ثبت‌نام حذف شود؟ این کار قابل بازگشت نیست.'))return;
+  try{
+    const {error}=await gym20AdminClient.schema('gym20').from('public_registration_requests')
+      .delete().eq('id',id).is('converted_student_id',null);
+    if(error)throw error;
+    selectedRegistrationRequestIds.delete(id);
+    await loadRegistrationRequests();
+    setRequestsFeedback('درخواست حذف شد.');
+  }catch(err){setRequestsFeedback(err.message||'حذف درخواست ناموفق بود.',true);}
+}
+async function bulkDeleteRegistrationRequests(){
+  const ids=[...selectedRegistrationRequestIds].filter(id=>{
+    const r=registrationRequestsCache.find(x=>x.id===id);return r&&!r.converted_student_id;
+  });
+  if(!ids.length)return;
+  if(!confirm('تعداد '+ids.length+' درخواست انتخاب‌شده حذف شوند؟ این کار قابل بازگشت نیست.'))return;
+  try{
+    const {error}=await gym20AdminClient.schema('gym20').from('public_registration_requests')
+      .delete().in('id',ids).is('converted_student_id',null);
+    if(error)throw error;
+    selectedRegistrationRequestIds.clear();
+    await loadRegistrationRequests();
+    setRequestsFeedback(ids.length+' درخواست حذف شد.');
+  }catch(err){setRequestsFeedback(err.message||'حذف گروهی ناموفق بود.',true);}
+}
+async function updateRegistrationRequestStatus(id,status){
+  try{
+    const {error}=await gym20AdminClient.schema('gym20').rpc('update_registration_request_status',{p_request_id:id,p_status:status});
+    if(error)throw error;
+    await loadRegistrationRequests();
+    setRequestsFeedback('وضعیت درخواست بروزرسانی شد.');
+  }catch(err){setRequestsFeedback(err.message||'تغییر وضعیت ناموفق بود.',true);await loadRegistrationRequests();}
+}
+async function convertRegistrationRequest(id){
+  const r=registrationRequestsCache.find(x=>x.id===id);if(!r||r.converted_student_id)return;
+  if(!confirm('درخواست «'+r.full_name+'» به هنرجوی فعال تبدیل شود؟ برای هر سبک انتخابی یک ثبت‌نام فعال ایجاد می‌شود.'))return;
+  try{
+    const {data,error}=await gym20AdminClient.schema('gym20').rpc('convert_registration_request',{p_request_id:id});
+    if(error)throw error;
+    const result=Array.isArray(data)?data[0]:data;
+    await loadRegistrationRequests();
+    setRequestsFeedback('درخواست با موفقیت تبدیل شد؛ '+(result?.enrollment_count??'')+' ثبت‌نام برای هنرجو ایجاد شد.');
+  }catch(err){setRequestsFeedback(err.message||'تبدیل درخواست ناموفق بود.',true);}
+}
+document.getElementById('requestsSearch').addEventListener('input',renderRegistrationRequests);
+document.getElementById('requestsStatusFilter').addEventListener('change',renderRegistrationRequests);
+document.getElementById('refreshRequestsBtn').addEventListener('click',loadRegistrationRequests);
+document.getElementById('bulkDeleteRequestsBtn').addEventListener('click',bulkDeleteRegistrationRequests);
+document.getElementById('requestsTableContainer').addEventListener('click',e=>{
+  const btn=e.target.closest('button[data-request-action]');if(!btn)return;
+  const id=btn.getAttribute('data-request-id'),action=btn.getAttribute('data-request-action');
+  if(action==='details')showRegistrationRequestDetails(id);
+  if(action==='delete')deleteRegistrationRequest(id);
+  if(action==='convert')convertRegistrationRequest(id);
+});
+document.getElementById('requestsTableContainer').addEventListener('change',e=>{
+  const target=e.target;
+  if(target.matches('[data-request-select]')){
+    const id=target.getAttribute('data-request-select');
+    if(target.checked)selectedRegistrationRequestIds.add(id);else selectedRegistrationRequestIds.delete(id);
+    renderRegistrationRequests();
+  }else if(target.matches('select[data-request-action="status"]')){
+    updateRegistrationRequestStatus(target.getAttribute('data-request-id'),target.value);
+  }else if(target.id==='selectAllVisibleRequests'){
+    const search=(document.getElementById('requestsSearch').value||'').trim().toLowerCase();
+    const status=document.getElementById('requestsStatusFilter').value;
+    registrationRequestsCache.filter(r=>(status==='all'||r.status===status)&&(!search||[r.full_name,r.phone].join(' ').toLowerCase().includes(search))&&!r.converted_student_id)
+      .forEach(r=>selectedRegistrationRequestIds.add(r.id));
+    renderRegistrationRequests();
+  }
+});
+
 function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea');if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=document.getElementById('ruleSelector').value;t.value=appData.rules[currentEditingRuleKey]||'';}
 
 const adminLoginModal=document.getElementById('adminLoginModal');
 const adminLoginForm=document.getElementById('adminLoginForm');
-const adminLoginPassword=document.getElementById('adminLoginPassword');
+const adminLoginEmail=document.getElementById('adminLoginEmail');
 const adminLoginError=document.getElementById('adminLoginError');
-function openAdminLogin(){adminLoginError.textContent='';adminLoginPassword.value='';adminLoginPassword.type='password';adminLoginModal.classList.add('open');adminLoginModal.setAttribute('aria-hidden','false');setTimeout(()=>adminLoginPassword.focus(),80);}
+let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false;
+function setAdminLoginStatus(message,isError=false){
+  adminLoginError.textContent=message||'';
+  adminLoginError.style.color=isError?'#fb7185':'#34d399';
+}
+function ensureGym20AdminAuth(){
+  if(!gym20AdminAuth){
+    if(!window.GYM20AdminAuth)throw new Error('ماژول ورود مدیر بارگذاری نشده است.');
+    gym20AdminAuth=window.GYM20AdminAuth.init({
+      url:GYM20_SUPABASE_URL,
+      publishableKey:GYM20_SUPABASE_ANON_KEY,
+      onStatus:setAdminLoginStatus,
+      onAuthorized:({user})=>{
+        gym20OwnerAuthorized=true;
+        closeAdminLogin();
+        loadAdminForm();
+        document.getElementById('adminModal').style.display='flex';
+      }
+    });
+    gym20AdminClient=gym20AdminAuth.getClient();
+  }
+  return gym20AdminAuth;
+}
+function openAdminLogin(){
+  setAdminLoginStatus('');
+  adminLoginEmail.value='';
+  adminLoginModal.classList.add('open');
+  adminLoginModal.setAttribute('aria-hidden','false');
+  setTimeout(()=>adminLoginEmail.focus(),80);
+  try{ensureGym20AdminAuth().verifyOwner().catch(()=>{});}catch(e){setAdminLoginStatus(e.message,true);}
+}
 function closeAdminLogin(){adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');}
 adminBtn.onclick=openAdminLogin;
 document.getElementById('closeAdminLogin').onclick=closeAdminLogin;
-document.getElementById('toggleAdminPassword').onclick=()=>{const visible=adminLoginPassword.type==='text';adminLoginPassword.type=visible?'password':'text';document.getElementById('toggleAdminPassword').setAttribute('aria-label',visible?'نمایش رمز':'مخفی کردن رمز');};
-adminLoginForm.addEventListener('submit',e=>{e.preventDefault();const p=adminLoginPassword.value;if(p==='1234'){closeAdminLogin();loadAdminForm();adminModal.style.display='flex';}else{adminLoginError.textContent='رمز عبور صحیح نیست؛ دوباره تلاش کنید.';adminLoginPassword.focus();adminLoginPassword.select();}});
+adminLoginForm.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const submit=document.getElementById('adminLoginSubmit');
+  const old=submit.textContent;
+  submit.disabled=true;submit.textContent='در حال ارسال…';
+  try{
+    const auth=ensureGym20AdminAuth();
+    await auth.sendMagicLink(adminLoginEmail.value.trim(),window.location.href.split('#')[0]);
+  }catch(err){setAdminLoginStatus(err.message||'ارسال لینک ورود ناموفق بود.',true);}
+  finally{submit.disabled=false;submit.textContent=old;}
+});
 adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminLogin();});
+document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{
+  try{if(gym20AdminAuth)await gym20AdminAuth.signOut();}
+  catch(e){alert(e.message||'خروج ناموفق بود.');return;}
+  gym20OwnerAuthorized=false;
+  document.getElementById('adminModal').style.display='none';
+  switchAdminTab('pricesTab');
+});
 closeAdmin.onclick=()=>{adminModal.style.display='none';};
 function cleanLegacy(s){return (s||'').replace(/مرحله اول:\s*/g,'').replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g,'').trim();}
 
@@ -1359,6 +1655,10 @@ function triggerPromoPopupIfEnabled(){
 }
 
 const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
+function resumeGym20AdminSession(){
+  try{ensureGym20AdminAuth().verifyOwner().catch(err=>console.warn('Admin session check failed:',err));}
+  catch(err){console.warn('Admin auth initialization failed:',err);}
+}
 const registrationForm = document.getElementById('publicRegistrationForm'), registrationStatus = document.getElementById('regStatus'), registrationSubmit = document.getElementById('regSubmitBtn'), paymentConfirmedEl = document.getElementById('regPaymentConfirmed');
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
 function updateRegistrationSubmitState(){registrationSubmit.disabled=!(acceptRulesEl.checked&&paymentConfirmedEl.checked&&currentRegionId);}
@@ -1519,6 +1819,7 @@ async function loadDataAndInit(){
     renderCustomRegionDropdown();applyDataToUI();updateClassStatusAndStylesFlow();triggerPromoPopupIfEnabled();
 }
 loadDataAndInit();
+resumeGym20AdminSession();
 </script>
 </body>
 </html>
