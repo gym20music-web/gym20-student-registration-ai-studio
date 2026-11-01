@@ -194,7 +194,7 @@
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
     $('stWeekly').classList.remove('st-hide');$('stManual').classList.remove('st-hide');
-    $('stDate').value=jalaliInput(S.term.start_date||'');$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';$('stSessionDuration').value=String(S.term.duration_minutes||60);$('stCount').value=String(S.term.total_sessions||8);
+    $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stDate').value=jalaliInput(S.term.start_date||'');$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';$('stSessionDuration').value=String(S.term.duration_minutes||60);$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
   }
   function sessionState(r){
