@@ -78,7 +78,7 @@
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">افزودن و تنظیم جلسات ترم</div>'+
-      '<div id="stWeekly"><p class="st-muted">روزهای برگزاری را برای هر الگو انتخاب کن؛ سامانه تا تعداد جلسات ترم، تاریخ‌ها را در بازه شروع و پایان می‌چیند.</p><div class="st-grid"><div class="st-field"><label>ساعت شروع کلاس</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><div class="st-grid st-pattern-grid"><div class="st-field"><label>کلاس روز زوج</label><div id="stEvenDays" class="st-day-picks"></div></div><div class="st-field"><label>کلاس روز فرد</label><div id="stOddDays" class="st-day-picks"></div></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت برنامه از روی روزهای انتخابی</button></div>'+
+      '<div id="stWeekly"><p class="st-muted">روزهای هر الگو بر اساس شماره جلسه نوبتی اجرا می‌شود: جلسه‌های فرد از الگوی فرد و جلسه‌های زوج از الگوی زوج تاریخ می‌گیرند.</p><div class="st-grid"><div class="st-field"><label>ساعت شروع کلاس</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><div class="st-grid st-pattern-grid"><div class="st-field"><label>کلاس روز زوج</label><div id="stEvenDays" class="st-day-picks"></div></div><div class="st-field"><label>کلاس روز فرد</label><div id="stOddDays" class="st-day-picks"></div></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت برنامه از روی روزهای انتخابی</button></div>'+
       '<div id="stManual"><div class="st-grid">'+
       '<div class="st-field"><label>تاریخ جلسه</label><input id="stDate" data-jalali-date type="text" placeholder="تاریخ شمسی"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div><div class="st-field"><label>مدت این جلسه (دقیقه)</label><input id="stSessionDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
       '<div class="st-field"><label>نام مربی این جلسه</label><input id="stSessionCoach" maxlength="120" placeholder="نام مربی"></div><div class="st-field"><label>محل این جلسه</label><input id="stSessionVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stAdd">+ افزودن جلسه به ترم</button></div>'+
@@ -173,7 +173,7 @@
       say('در حال ثبت ترم…');
       const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:count,p_duration_minutes:duration,p_default_venue:$('stVenue').value.trim()||null,p_schedule_mode:'manual',p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
-      await loadStudent(S.studentId);$('stTerm').value=x.term_id;await loadTerm(x.term_id);$('stName').value='';say('ترم و پیش‌نویس اولیه ساخته شد.');
+      await loadStudent(S.studentId);$('stTerm').value=x.term_id;await loadTerm(x.term_id);$('stName').value='';say('ترم «'+termName+'» با '+fa(count)+' جلسه ساخته شد. حالا جلسه‌ها را دستی اضافه کن یا الگوی روزهای زوج و فرد را بساز.');
     }catch(e){say(e.message||'ساخت ترم ناموفق بود.',true);}
   }
 
@@ -234,9 +234,9 @@
   }
   function makeWeekly(){
     try{const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value),t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number($('stCount').value||S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!startDate||!endDate||!t)throw Error('تاریخ شروع، پایان ترم و ساعت کلاس را بررسی کن.');
-      const even=Array.from($('stEvenDays').querySelectorAll('input:checked')).map(x=>Number(x.value)),odd=Array.from($('stOddDays').querySelectorAll('input:checked')).map(x=>Number(x.value)),days=Array.from(new Set([...even,...odd]));if(!days.length)throw Error('حداقل یک روز برای کلاس زوج یا فرد انتخاب کن.');
-      const candidates=[];let cursor=new Date(startDate+'T12:00:00'),last=new Date(endDate+'T12:00:00');while(cursor<=last){const d=cursor.getFullYear()+'-'+String(cursor.getMonth()+1).padStart(2,'0')+'-'+String(cursor.getDate()).padStart(2,'0'),weekday=(cursor.getDay()+1)%7;if(days.includes(weekday))candidates.push(d);cursor.setDate(cursor.getDate()+1);}
-      const selected=candidates.slice(0,n);if(selected.length<n)throw Error('در بازه انتخابی فقط '+selected.length+' تاریخ مطابق روزهای انتخابی وجود دارد؛ پایان ترم را افزایش بده یا روزهای بیشتری انتخاب کن.');
+      const even=Array.from($('stEvenDays').querySelectorAll('input:checked')).map(x=>Number(x.value)),odd=Array.from($('stOddDays').querySelectorAll('input:checked')).map(x=>Number(x.value));if(!even.length||!odd.length)throw Error('برای هر دو الگوی روز زوج و روز فرد، حداقل یک روز انتخاب کن.');
+      const selected=[];let cursor=new Date(startDate+'T12:00:00'),last=new Date(endDate+'T12:00:00');while(cursor<=last&&selected.length<n){const d=cursor.getFullYear()+'-'+String(cursor.getMonth()+1).padStart(2,'0')+'-'+String(cursor.getDate()).padStart(2,'0'),weekday=(cursor.getDay()+1)%7,nextSession=selected.length+1,allowed=nextSession%2===0?even:odd;if(allowed.includes(weekday))selected.push(d);cursor.setDate(cursor.getDate()+1);}
+      if(selected.length<n)throw Error('در بازه ترم فقط '+selected.length+' جلسه با الگوی زوج و فرد پیدا شد؛ پایان ترم را افزایش بده یا روزهای بیشتری انتخاب کن.');
       S.rows=selected.map((d,i)=>{const start=localISO(d,t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,coach_name:null,notes:null};});drawDraft();say(fa(n)+' جلسه بر اساس روزهای انتخابی ساخته شد؛ هر جلسه قابل ویرایش است.');
     }catch(e){say(e.message,true);}
   }
