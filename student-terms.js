@@ -19,14 +19,15 @@
   const attNames={pending:'در انتظار',present:'حاضر',absent:'غایب',excused:'غیبت موجه',makeup:'جلسه جبرانی',cancelled:'لغوشده'};
 
 
-  function syncTermName(){const m=$('stMonth'),y=$('stYear');if(m&&y)$('stName').value='ترم '+m.selectedOptions[0].textContent+' '+enDigits(y.value);}
+  function syncTermName(){const p=enDigits($('stStart')?.value||'').split('/').map(Number),months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];$('stName').value=p.length===3&&p[0]>1200&&p[1]>=1&&p[1]<=12?'ترم '+months[p[1]-1]+' '+p[0]:'';}
   function initTermCalendars(root){
     const monthsFa=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
     root.querySelectorAll('[data-calendar]').forEach(btn=>btn.addEventListener('click',()=>{
       document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
       const input=$(btn.dataset.calendar),raw=enDigits(input.value||'').split('/').map(Number);
-      let jy=raw.length===3&&raw[0]>1200?raw[0]:Number(enDigits($('stYear').value)||1405);
-      let jm=raw.length===3&&raw[1]>=1&&raw[1]<=12?raw[1]:Number($('stMonth').value);
+      const todayParts=enDigits(jalaliInput(localDate(new Date()))).split('/').map(Number);
+      let jy=raw.length===3&&raw[0]>1200?raw[0]:todayParts[0];
+      let jm=raw.length===3&&raw[1]>=1&&raw[1]<=12?raw[1]:todayParts[1];
       const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
       const rect=btn.getBoundingClientRect();pop.style.top=Math.min(innerHeight-280,rect.bottom+5)+'px';pop.style.left=Math.max(8,Math.min(innerWidth-253,rect.left-205))+'px';
       const draw=()=>{
@@ -68,20 +69,18 @@
       '<div id="stMain" class="st-hide">'+
       '<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
-      '<div class="st-field"><label>ماه ترم</label><select id="stMonth" required><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select></div>'+
-      '<div class="st-field"><label>سال</label><select id="stYear"><option value="1405">۱۴۰۵</option><option value="1406">۱۴۰۶</option><option value="1404">۱۴۰۴</option></select></div>'+
-      '<div class="st-field"><label>مدت پیش‌فرض (دقیقه)</label><input id="stDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
-      '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="۱۴۰۵/۰۸/۰۱"><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
-      '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="۱۴۰۵/۰۸/۳۰"><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
-      '<div class="st-field"><label>محل پیش‌فرض</label><input id="stVenue" maxlength="250" placeholder="مثلاً سالن نیاوران"></div>'+
-      '<div class="st-field"><label>روش برنامه‌ریزی</label><select id="stMode"><option value="manual">ویرایش دستی هر جلسه</option><option value="weekly">برنامه ثابت هفتگی</option></select></div></div>'+
-      '<div class="st-actions"><button class="st-btn primary" type="submit">ثبت ترم</button></div></form></div>'+
+      '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
+      '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
+      '<div class="st-field"><label>تعداد جلسات</label><input id="stCount" type="number" min="1" max="100" step="1" value="8" required></div>'+
+      '<div class="st-field"><label>مدت پیش‌فرض (دقیقه)</label><input id="stDuration" type="number" min="15" max="720" step="5" value="60" required></div>'+
+      '<div class="st-field"><label>محل پیش‌فرض</label><input id="stVenue" maxlength="250" placeholder="مثلاً سالن نیاوران"></div></div>'+
+      '<div class="st-actions"><button class="st-btn primary" type="submit">ایجاد ترم و ادامه تنظیم جلسات</button></div></form></div>'+
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">افزودن و تنظیم جلسات ترم</div>'+
-      '<div id="stWeekly" class="st-hide"><p class="st-muted">تعداد اولیه جلسات ساخته می‌شود؛ بعد از ساخت می‌توانی هر جلسه را حذف یا ویرایش کنی. انتخاب سبک اجباری نیست.</p><div class="st-grid"><div class="st-field"><label>تاریخ اولین جلسه</label><input data-jalali-date type="text" id="stWeeklyDate"></div><div class="st-field"><label>ساعت شروع</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت جلسات هفتگی</button></div>'+
-      '<div id="stManual" class="st-hide"><div class="st-grid">'+
-      '<div class="st-field"><label>تاریخ</label><input id="stDate" data-jalali-date type="text" placeholder="۱۴۰۵/۰۸/۱۰"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div><div class="st-field"><label>مدت این جلسه (دقیقه)</label><input id="stSessionDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
+      '<div id="stWeekly"><p class="st-muted">روزهای برگزاری را برای هر الگو انتخاب کن؛ سامانه تا تعداد جلسات ترم، تاریخ‌ها را در بازه شروع و پایان می‌چیند.</p><div class="st-grid"><div class="st-field"><label>ساعت شروع کلاس</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><div class="st-grid st-pattern-grid"><div class="st-field"><label>کلاس روز زوج</label><div id="stEvenDays" class="st-day-picks"></div></div><div class="st-field"><label>کلاس روز فرد</label><div id="stOddDays" class="st-day-picks"></div></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت برنامه از روی روزهای انتخابی</button></div>'+
+      '<div id="stManual"><div class="st-grid">'+
+      '<div class="st-field"><label>تاریخ جلسه</label><input id="stDate" data-jalali-date type="text" placeholder="تاریخ شمسی"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div><div class="st-field"><label>مدت این جلسه (دقیقه)</label><input id="stSessionDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
       '<div class="st-field"><label>نام مربی این جلسه</label><input id="stSessionCoach" maxlength="120" placeholder="نام مربی"></div><div class="st-field"><label>محل این جلسه</label><input id="stSessionVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stAdd">+ افزودن جلسه به ترم</button></div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn" type="button" id="stSave">ذخیره موقت جلسات</button><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی ترم و نمایش برنامه به هنرجو</button></div></div>'+
       '</div></div>'+
@@ -94,7 +93,10 @@
     selectObserver.observe(p,{childList:true,subtree:true});
     initTermCalendars(p);
     bindJalaliDates(p);
-    $('stMonth').addEventListener('change',syncTermName);$('stYear').addEventListener('change',syncTermName);syncTermName();
+    $('stStart').addEventListener('change',()=>{syncTermName();if(!$('stDate').value)$('stDate').value=$('stStart').value;});
+     const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
+     const renderDayPicks=id=>{$(id).innerHTML=weekNames.map((n,i)=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'"><span>'+n+'</span></label>').join('');};renderDayPicks('stEvenDays');renderDayPicks('stOddDays');
+     const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stDate').value=todayFa;
     $('stStudentTrigger').addEventListener('click',()=>{const menu=$('stStudentMenu'),open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
@@ -165,10 +167,11 @@
       const activeEnrollments=S.enrollments.filter(e=>e.status==='active');
       const ids=activeEnrollments.map(x=>x.id);
       if(!ids.length)throw Error('برای این هنرجو سبک فعالی در ثبت‌نام اولیه پیدا نشد.');
-      const count=Math.max(1,...activeEnrollments.map(e=>Number(e.total_sessions)||1));
-      const termName='ترم '+$('stMonth').selectedOptions[0].textContent+' '+enDigits($('stYear').value);const exists=await db().from('student_terms').select('id').eq('student_id',S.studentId).ilike('term_name',termName).limit(1);if(exists.error)throw exists.error;if(exists.data?.length){throw Error('این نام ترم قبلاً برای این هنرجو ثبت شده است؛ از فهرست ترم‌ها همان ترم را انتخاب کن یا نام دیگری وارد کن.');}
+      const count=Number($('stCount').value),duration=Number($('stDuration').value),startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+      if(!Number.isInteger(count)||count<1||count>100)throw Error('تعداد جلسات باید بین ۱ تا ۱۰۰ باشد.');if(!Number.isInteger(duration)||duration<15||duration>720)throw Error('مدت پیش‌فرض باید بین ۱۵ تا ۷۲۰ دقیقه باشد.');if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
+      const p=enDigits($('stStart').value).split('/').map(Number),termName='ترم '+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][p[1]-1]+' '+p[0];const exists=await db().from('student_terms').select('id').eq('student_id',S.studentId).ilike('term_name',termName).limit(1);if(exists.error)throw exists.error;if(exists.data?.length)throw Error('این ترم برای این هنرجو قبلاً ثبت شده است؛ از فهرست ترم‌ها انتخابش کن.');
       say('در حال ثبت ترم…');
-      const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:gregorianInput($('stStart').value)||null,p_end_date:gregorianInput($('stEnd').value)||null,p_total_sessions:count,p_duration_minutes:Number($('stDuration').value),p_default_venue:$('stVenue').value.trim()||null,p_schedule_mode:$('stMode').value,p_enrollment_ids:ids});
+      const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:count,p_duration_minutes:duration,p_default_venue:$('stVenue').value.trim()||null,p_schedule_mode:'manual',p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
       await loadStudent(S.studentId);$('stTerm').value=x.term_id;await loadTerm(x.term_id);$('stName').value='';say('ترم و پیش‌نویس اولیه ساخته شد.');
     }catch(e){say(e.message||'ساخت ترم ناموفق بود.',true);}
@@ -190,8 +193,8 @@
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
-    $('stWeekly').classList.toggle('st-hide',S.term.schedule_mode!=='weekly');$('stManual').classList.toggle('st-hide',S.term.schedule_mode!=='manual');
-    $('stWeeklyDate').value=jalaliInput(S.term.start_date||'');$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';$('stSessionDuration').value=String(S.term.duration_minutes||60);
+    $('stWeekly').classList.remove('st-hide');$('stManual').classList.remove('st-hide');
+    $('stDate').value=jalaliInput(S.term.start_date||'');$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';$('stSessionDuration').value=String(S.term.duration_minutes||60);$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
   }
   function sessionState(r){
@@ -230,8 +233,11 @@
     });
   }
   function makeWeekly(){
-    try{const d=gregorianInput($('stWeeklyDate').value),t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!d||!t)throw Error('تاریخ اولین جلسه و ساعت شروع را وارد کنید.');if(!Number.isInteger(n)||n<1||n>1000)throw Error('تعداد اولیه جلسات معتبر نیست.');
-      S.rows=Array.from({length:n},(_,i)=>{const start=localISO(plus7(d,i),t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,coach_name:null,notes:null};});drawDraft();say(fa(n)+' جلسه ساخته شد؛ تعداد و مدت هر جلسه قابل ویرایش است و انتخاب سبک اجباری نیست.');
+    try{const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value),t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!startDate||!endDate||!t)throw Error('تاریخ شروع، پایان ترم و ساعت کلاس را بررسی کن.');
+      const even=Array.from($('stEvenDays').querySelectorAll('input:checked')).map(x=>Number(x.value)),odd=Array.from($('stOddDays').querySelectorAll('input:checked')).map(x=>Number(x.value)),days=Array.from(new Set([...even,...odd]));if(!days.length)throw Error('حداقل یک روز برای کلاس زوج یا فرد انتخاب کن.');
+      const candidates=[];let cursor=new Date(startDate+'T12:00:00'),last=new Date(endDate+'T12:00:00');while(cursor<=last){const d=cursor.getFullYear()+'-'+String(cursor.getMonth()+1).padStart(2,'0')+'-'+String(cursor.getDate()).padStart(2,'0'),weekday=(cursor.getDay()+1)%7;if(days.includes(weekday))candidates.push(d);cursor.setDate(cursor.getDate()+1);}
+      const selected=candidates.slice(0,n);if(selected.length<n)throw Error('در بازه انتخابی فقط '+selected.length+' تاریخ مطابق روزهای انتخابی وجود دارد؛ پایان ترم را افزایش بده یا روزهای بیشتری انتخاب کن.');
+      S.rows=selected.map((d,i)=>{const start=localISO(d,t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,coach_name:null,notes:null};});drawDraft();say(fa(n)+' جلسه بر اساس روزهای انتخابی ساخته شد؛ هر جلسه قابل ویرایش است.');
     }catch(e){say(e.message,true);}
   }
   function addManual(){
