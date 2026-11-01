@@ -1280,7 +1280,7 @@ const adminLoginModal=document.getElementById('adminLoginModal');
 const adminLoginForm=document.getElementById('adminLoginForm');
 const adminLoginEmail=document.getElementById('adminLoginEmail');
 const adminLoginError=document.getElementById('adminLoginError');
-let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false;
+let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false,gym20AppDataLoaded=false;
 function setAdminLoginStatus(message,isError=false){
   adminLoginError.textContent=message||'';
   adminLoginError.style.color=isError?'#fb7185':'#34d399';
@@ -1295,8 +1295,10 @@ function ensureGym20AdminAuth(){
       onAuthorized:({user})=>{
         gym20OwnerAuthorized=true;
         closeAdminLogin();
-        loadAdminForm();
-        document.getElementById('adminModal').style.display='flex';
+        if(gym20AppDataLoaded){
+          loadAdminForm();
+          document.getElementById('adminModal').style.display='flex';
+        }
       }
     });
     gym20AdminClient=gym20AdminAuth.getClient();
@@ -1819,7 +1821,13 @@ async function loadDataAndInit(){
     if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
     renderCustomRegionDropdown();applyDataToUI();updateClassStatusAndStylesFlow();triggerPromoPopupIfEnabled();
 }
-loadDataAndInit();
+loadDataAndInit().then(()=>{
+  gym20AppDataLoaded=true;
+  if(gym20OwnerAuthorized){
+    loadAdminForm();
+    document.getElementById('adminModal').style.display='flex';
+  }
+});
 resumeGym20AdminSession();
 </script>
 </body>
