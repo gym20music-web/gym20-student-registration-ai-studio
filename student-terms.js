@@ -58,6 +58,7 @@
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     bindJalaliDates(p);\n    $('stStudent').addEventListener('change',e=>loadStudent(e.target.value));
+    $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCount').addEventListener('change',e=>$('stCustomWrap').classList.toggle('st-hide',e.target.value!=='custom'));
     $('stCreate').addEventListener('submit',createTerm);
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
@@ -83,11 +84,31 @@
         db().from('student_terms').select('id,term_name,start_date,end_date,total_sessions,duration_minutes,default_venue,schedule_mode,status,published_version_id,created_at').eq('student_id',id).order('created_at',{ascending:false})
       ]);
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];
-      $('stSummary').innerHTML='<b>'+esc(student?.full_name||'')+'</b> · '+esc(student?.phone||'—')+'<br>تعداد سبک‌ها: '+fa(S.enrollments.length)+' · تولد: '+esc(student?.birth_date||'ثبت نشده');
+      $('stSummary').innerHTML='<b>'+esc(student?.full_name||'')+'</b> · '+esc(student?.phone||'—')+'<br>تعداد سبک‌ها: '+fa(S.enrollments.length)+' · تولد: '+esc(student?.birth_date||'ثبت نشده')+'<div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت / کپی لینک اختصاصی هنرجو</button><span id="stPublicLinkStatus" class="st-muted"></span></div>';
       $('stEnrollments').innerHTML=S.enrollments.map(e=>'<label class="st-check"><input type="checkbox" name="stEnroll" value="'+e.id+'" '+(e.status==='active'?'checked':'')+'><span>'+esc(e.courses?.name||'سبک')+' <small>('+esc(classNames[e.class_type]||e.class_type||'عمومی')+' · '+(e.age_group==='kids'?'کودک':'بزرگسال')+')</small></span></label>').join('')||'ثبت‌نام فعالی وجود ندارد.';
       $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(t.term_name)+' · '+fa(t.total_sessions)+' جلسه</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
+  }
+
+  async function makeStudentPublicLink(){
+    const btn=$('stPublicLinkBtn'),status=$('stPublicLinkStatus');
+    if(!S.studentId||!btn)return;
+    btn.disabled=true;btn.textContent='در حال ساخت لینک امن…';
+    try{
+      const {data,error}=await db().rpc('create_student_public_link',{p_student_id:S.studentId});
+      if(error)throw error;
+      const token=typeof data==='string'?data:Array.isArray(data)?data[0]:data?.create_student_public_link;
+      if(!token||!/^[0-9a-f]{64}$/.test(token))throw Error('توکن امن از سرور دریافت نشد.');
+      const base=new URL('student.html',window.location.href);
+      base.searchParams.set('t',token);
+      const url=base.toString();
+      try{await navigator.clipboard.writeText(url);status.textContent='لینک ساخته و کپی شد؛ آن را برای هنرجو بفرستید.';}
+      catch(_){status.innerHTML='<a href="'+esc(url)+'" target="_blank" rel="noopener" style="color:#d6b35a;direction:ltr;display:block;word-break:break-all">باز کردن لینک هنرجو</a><small>لینک را از نوار آدرس کپی کنید.</small>';}
+      const share=document.createElement('a');share.href='https://t.me/share/url?url='+encodeURIComponent(url)+'&text='+encodeURIComponent('برنامه کلاس‌های GYM20 شما');share.target='_blank';share.rel='noopener';share.className='st-btn';share.textContent='ارسال در تلگرام';status.appendChild(share);
+      btn.textContent='🔄 ساخت لینک جدید و لغو لینک قبلی';
+    }catch(e){status.textContent=e.message||'ساخت لینک ناموفق بود.';btn.textContent='🔗 تلاش دوباره برای ساخت لینک';}
+    finally{btn.disabled=false;}
   }
 
   async function createTerm(ev){
