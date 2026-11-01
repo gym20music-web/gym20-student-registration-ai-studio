@@ -2,7 +2,7 @@
   const SUPABASE_URL='https://iqjujumhoawlugrmjvyj.supabase.co';
   const SUPABASE_KEY='sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ';
   const $=id=>document.getElementById(id);
-  const faDate=v=>v?new Date(v+'T12:00:00').toLocaleDateString('fa-IR'):'—';
+  const faDate=v=>{if(!v)return '—';const p=String(v).slice(0,10).split('-').map(Number);if(p.length!==3||!p.every(Number.isFinite))return '—';if(p[0]<1700)return p.map((x,i)=>String(x).padStart(i===0?4:2,'0')).join('/').replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);return new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'numeric',day:'numeric'}).format(new Date(p[0],p[1]-1,p[2],12));};
   const faDateTime=v=>v?new Date(v).toLocaleDateString('fa-IR',{year:'numeric',month:'long',day:'numeric'}):'—';
   const faTime=v=>v?new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'}):'—';
   const num=v=>Number(v||0).toLocaleString('fa-IR');
@@ -18,9 +18,7 @@
     const sessions=t.sessions||[];
     if(!sessions.length){$('schedule').innerHTML='<div class="empty">برای این ترم هنوز جلسه منتشرشده‌ای ثبت نشده است.</div>';return;}
     const done=sessions.filter(s=>['present','absent','excused','makeup','cancelled'].includes(s.attendance)).length;
-    $('schedule').innerHTML='<div class="muted" style="margin-bottom:12px">جلسات برنامه‌ریزی‌شده: <span class="session-count">'+num(sessions.length)+'</span> · وضعیت ثبت‌شده: '+num(done)+'</div><div class="table-wrap"><table><thead><tr><th>جلسه</th><th>تاریخ</th><th>ساعت</th><th>مدت</th><th>محل برگزاری</th><th>حضور و غیاب</th></tr></thead><tbody>'+
-      sessions.map(s=>{const mins=Math.max(1,Math.round((new Date(s.ends_at)-new Date(s.starts_at))/60000));const a=att[s.attendance||'pending']||att.pending;return '<tr><td>'+num(s.session_number)+'</td><td>'+faDateTime(s.starts_at)+'</td><td>'+faTime(s.starts_at)+' تا '+faTime(s.ends_at)+'</td><td>'+num(mins)+' دقیقه</td><td>'+esc(s.venue||t.default_venue||'—')+'</td><td><span class="status '+a[1]+'">'+a[0]+'</span></td></tr>';}).join('')+
-      '</tbody></table></div>';
+    $('schedule').innerHTML='<div class="schedule-summary"><span>جلسات برنامه‌ریزی‌شده <b>'+num(sessions.length)+'</b></span><span>وضعیت ثبت‌شده <b>'+num(done)+'</b></span></div><div class="session-list">'+sessions.map(s=>{const mins=Math.max(1,Math.round((new Date(s.ends_at)-new Date(s.starts_at))/60000));const a=att[s.attendance||'pending']||att.pending;return '<article class="session-card"><div class="session-top"><b class="session-number">جلسه '+num(s.session_number)+'</b><span class="status '+a[1]+'">'+a[0]+'</span></div><div class="session-facts"><span><i>تاریخ</i><b>'+faDateTime(s.starts_at)+'</b></span><span><i>ساعت</i><b>'+faTime(s.starts_at)+'–'+faTime(s.ends_at)+'</b></span><span><i>مدت</i><b>'+num(mins)+' دقیقه</b></span></div><div class="session-bottom"><span>📍 '+esc(s.venue||t.default_venue||'محل ثبت نشده')+'</span><span class="coach">🏅 '+esc(s.coach_name||'مربی تعیین نشده')+'</span></div></article>';}).join('')+'</div>'
   }
   async function init(){
     const token=new URLSearchParams(location.search).get('t');
