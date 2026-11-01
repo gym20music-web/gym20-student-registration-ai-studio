@@ -416,6 +416,41 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .request-detail-grid{grid-template-columns:1fr}
 }
 
+
+/* GYM20 requests: compact responsive card layout on desktop and mobile */
+.requests-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(145px,.55fr) auto auto!important;gap:7px!important;align-items:center}
+.request-summary{font-size:11px;line-height:1.8;padding:8px 10px}
+.requests-table-wrap{border:0!important;background:transparent!important;overflow:visible!important}
+.requests-cards-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.request-card{min-width:0;padding:11px;border:1px solid var(--border);border-radius:12px;background:var(--surface-card);box-shadow:0 4px 14px rgba(0,0,0,.12);display:flex;flex-direction:column;gap:7px}
+.request-card-top{display:flex;align-items:center;gap:8px;min-width:0}
+.request-card-top time{margin-right:auto;color:var(--text-secondary);font-size:10px;white-space:nowrap}
+.request-card-name{font-size:13px;font-weight:850;color:var(--text-primary);overflow-wrap:anywhere}
+.request-card-phone{font-size:11px;color:var(--neon-blue);direction:ltr;text-align:right;text-decoration:none}
+.request-card-info{display:flex;flex-direction:column;gap:3px;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.025);font-size:10px;line-height:1.7}
+.request-card-info span,.request-card-meta{color:var(--text-secondary)}
+.request-card-info b{font-weight:650;color:var(--text-primary);overflow-wrap:anywhere}
+.request-card-meta{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:10px}
+.request-card-meta b{color:var(--text-primary)}
+.request-card-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;padding-top:7px;border-top:1px solid var(--border)}
+.request-card-actions .request-action-btn{width:100%;min-width:0;min-height:31px;padding:5px 6px;font-size:10px;white-space:normal}
+.request-action-btn.approve{border-color:rgba(52,211,153,.45);color:#34d399}
+.request-action-btn.reject{border-color:rgba(251,113,133,.4);color:#fb7185}
+.requests-select-all{margin:3px 0 8px;font-size:10px;color:var(--text-secondary)}
+.requests-select-all label{display:flex;align-items:center;gap:7px;cursor:pointer}
+.requests-empty{padding:18px;text-align:center;color:var(--text-secondary);border:1px dashed var(--border);border-radius:10px}
+@media(max-width:720px){
+ .requests-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+ .requests-toolbar input,.requests-toolbar select{width:100%;min-width:0;min-height:34px;font-size:10px}
+ .requests-toolbar button{width:100%;min-height:32px;font-size:10px;white-space:normal}
+ .requests-cards-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ .request-card{padding:8px;gap:6px;border-radius:10px}
+ .request-card-name{font-size:11px}
+ .request-card-top time{font-size:9px}
+ .request-card-actions{gap:4px}
+ .request-card-actions .request-action-btn{font-size:9px;min-height:30px}
+}
+@media(max-width:390px){.requests-cards-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -1172,45 +1207,43 @@ function renderRegistrationRequests(){
     return matchesStatus&&(!search||haystack.includes(search));
   });
   const pending=registrationRequestsCache.filter(r=>r.status==='pending').length;
-  const converted=registrationRequestsCache.filter(r=>r.status==='converted').length;
+  const converted=registrationRequestsCache.filter(r=>r.status==='converted'||r.converted_student_id).length;
   document.getElementById('requestsSummary').textContent=
     'کل درخواست‌ها: '+registrationRequestsCache.length+' | در انتظار بررسی: '+pending+' | تبدیل‌شده به هنرجو: '+converted+' | نمایش فعلی: '+filtered.length;
   const bulkBtn=document.getElementById('bulkDeleteRequestsBtn');
   const deletableSelected=[...selectedRegistrationRequestIds].filter(id=>{
-    const r=registrationRequestsCache.find(x=>x.id===id);return r&&!r.converted_student_id;
+    const r=registrationRequestsCache.find(x=>x.id===id);return r&&!r.converted_student_id&&r.status!=='converted';
   });
   bulkBtn.disabled=!deletableSelected.length;
   if(!filtered.length){
-    container.innerHTML='<div style="padding:16px;text-align:center;color:var(--text-secondary);">درخواستی با این فیلتر پیدا نشد.</div>';
+    container.innerHTML='<div class="requests-empty">درخواستی با این فیلتر پیدا نشد.</div>';
     return;
   }
-  const rows=filtered.map(r=>{
+  const cards=filtered.map(r=>{
     const isConverted=!!r.converted_student_id||r.status==='converted';
     const styles=(r.selected_styles||[]).join('، ');
     const statusClass=['pending','approved','rejected','converted'].includes(r.status)?r.status:'';
-    return `<tr>
-      <td><input type="checkbox" data-request-select="${escapeRequestHtml(r.id)}" ${selectedRegistrationRequestIds.has(r.id)?'checked':''} ${isConverted?'disabled':''}></td>
-      <td><span class="request-name">${escapeRequestHtml(r.full_name)}</span><span class="request-sub">${escapeRequestHtml(r.phone)}</span></td>
-      <td>${escapeRequestHtml(styles||'—')}</td>
-      <td>${escapeRequestHtml(r.total_sessions)} جلسه</td>
-      <td><span class="request-status ${statusClass}">${escapeRequestHtml(requestStatusLabels[r.status]||r.status)}</span></td>
-      <td>${escapeRequestHtml(formatRequestDate(r.created_at))}</td>
-      <td><div class="request-row-actions">
+    const canReview=!isConverted&&r.status!=='rejected';
+    return `<article class="request-card">
+      <div class="request-card-top">
+        <input type="checkbox" data-request-select="${escapeRequestHtml(r.id)}" ${selectedRegistrationRequestIds.has(r.id)?'checked':''} ${isConverted?'disabled':''} aria-label="انتخاب درخواست">
+        <span class="request-status ${statusClass}">${escapeRequestHtml(requestStatusLabels[r.status]||r.status)}</span>
+        <time>${escapeRequestHtml(formatRequestDate(r.created_at))}</time>
+      </div>
+      <div class="request-card-name">${escapeRequestHtml(r.full_name)}</div>
+      <a class="request-card-phone" href="tel:${escapeRequestHtml(r.phone)}">${escapeRequestHtml(r.phone)}</a>
+      <div class="request-card-info"><span>سبک‌ها</span><b>${escapeRequestHtml(styles||'—')}</b></div>
+      <div class="request-card-meta"><span>تعداد جلسات: <b>${escapeRequestHtml(r.total_sessions)} جلسه</b></span><span>نوع کلاس: <b>${escapeRequestHtml(r.class_type||'—')}</b></span></div>
+      <div class="request-card-actions">
         <button type="button" class="request-action-btn" data-request-action="details" data-request-id="${escapeRequestHtml(r.id)}">جزئیات</button>
-        <select class="request-status-select" data-request-action="status" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>
-          <option value="" disabled ${!['approved','rejected'].includes(r.status)?'selected':''}>تغییر وضعیت…</option>
-          <option value="approved" ${r.status==='approved'?'selected':''}>تأیید</option>
-          <option value="rejected" ${r.status==='rejected'?'selected':''}>رد</option>
-        </select>
+        ${canReview?'<button type="button" class="request-action-btn approve" data-request-action="approve" data-request-id="'+escapeRequestHtml(r.id)+'">تأیید</button>':''}
+        ${canReview?'<button type="button" class="request-action-btn reject" data-request-action="reject" data-request-id="'+escapeRequestHtml(r.id)+'">رد</button>':''}
         <button type="button" class="request-action-btn primary" data-request-action="convert" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>تبدیل به هنرجو</button>
         <button type="button" class="request-action-btn danger" data-request-action="delete" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>حذف</button>
-      </div></td>
-    </tr>`;
+      </div>
+    </article>`;
   }).join('');
-  container.innerHTML=`<table class="requests-table">
-    <thead><tr><th><input type="checkbox" id="selectAllVisibleRequests" aria-label="انتخاب همه موارد قابل حذف"></th><th>هنرجو / تماس</th><th>سبک‌های انتخابی</th><th>جلسات</th><th>وضعیت</th><th>تاریخ درخواست</th><th>عملیات</th></tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
+  container.innerHTML='<div class="requests-select-all"><label><input type="checkbox" id="selectAllVisibleRequests"> انتخاب همه درخواست‌های قابل حذف</label></div><div class="requests-cards-grid">'+cards+'</div>';
 }
 async function loadRegistrationRequests(){
   if(!gym20OwnerAuthorized||!gym20AdminClient){setRequestsFeedback('دسترسی مدیر تأیید نشده است.',true);return;}
@@ -1309,6 +1342,8 @@ document.getElementById('requestsTableContainer').addEventListener('click',e=>{
   if(action==='details')showRegistrationRequestDetails(id);
   if(action==='delete')deleteRegistrationRequest(id);
   if(action==='convert')convertRegistrationRequest(id);
+  if(action==='approve')updateRegistrationRequestStatus(id,'approved');
+  if(action==='reject')updateRegistrationRequestStatus(id,'rejected');
 });
 document.getElementById('requestsTableContainer').addEventListener('change',e=>{
   const target=e.target;
@@ -1316,8 +1351,6 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
     const id=target.getAttribute('data-request-select');
     if(target.checked)selectedRegistrationRequestIds.add(id);else selectedRegistrationRequestIds.delete(id);
     renderRegistrationRequests();
-  }else if(target.matches('select[data-request-action="status"]')){
-    updateRegistrationRequestStatus(target.getAttribute('data-request-id'),target.value);
   }else if(target.id==='selectAllVisibleRequests'){
     const search=toEnglishDigits((document.getElementById('requestsSearch').value||'').trim()).toLowerCase();
     const status=document.getElementById('requestsStatusFilter').value;
@@ -1890,6 +1923,6 @@ loadDataAndInit().then(()=>{
 });
 resumeGym20AdminSession();
 </script>
-<script src="student-terms.js?v=20261101-admin-tab-fix-v3"></script>
+<script src="student-terms.js?v=20261101-admin-tab-fix-v4"></script>
 </body>
 </html>
