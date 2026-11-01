@@ -1,5 +1,5 @@
 (() => {
-  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],publishedId:null,sessions:[]};
+  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],publishedId:null,sessions:[],termEnrollmentIds:[]};
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fa=v=>Number(v||0).toLocaleString('fa-IR');
@@ -112,7 +112,7 @@
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
-    const ids=(links||[]).map(x=>x.enrollment_id),selected=S.enrollments.filter(e=>ids.includes(e.id));
+    const ids=(links||[]).map(x=>x.enrollment_id),selected=S.enrollments.filter(e=>ids.includes(e.id));S.termEnrollmentIds=ids;
     $('stDraftMeta').textContent='پیش‌نویس فعال · '+fa(S.term.total_sessions)+' جلسه برای کل ترم · '+fa(S.term.duration_minutes)+' دقیقه';
     $('stWeekly').classList.toggle('st-hide',S.term.schedule_mode!=='weekly');$('stManual').classList.toggle('st-hide',S.term.schedule_mode!=='manual');
     $('stStyle').innerHTML=selected.map(e=>'<option value="'+e.id+'">'+esc(e.courses?.name||'سبک')+'</option>').join('');
@@ -122,7 +122,7 @@
   function drawDraft(){
     if(!S.rows.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای در پیش‌نویس ثبت نشده است.</p>';return;}
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
-    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>جلسه</th><th>سبک‌های این جلسه</th><th>تاریخ</th><th>ساعت</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+fa(r.session_number)+'</td><td><select multiple size="3" data-styles="'+r.session_number+'">'+S.enrollments.map(e=>'<option value="'+e.id+'" '+((r.enrollment_ids||[]).includes(e.id)?'selected':'')+'>'+esc(e.courses?.name||'سبک')+'</option>').join('')+'</select></td><td>'+dateFa(r.starts_at)+'</td><td>'+new Date(r.starts_at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(r.venue||S.term.default_venue||'—')+'</td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
+    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>جلسه</th><th>سبک‌های این جلسه</th><th>تاریخ</th><th>ساعت</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+fa(r.session_number)+'</td><td><select multiple size="3" data-styles="'+r.session_number+'">'+S.enrollments.filter(e=>(S.termEnrollmentIds||[]).includes(e.id)).map(e=>'<option value="'+e.id+'" '+((r.enrollment_ids||[]).includes(e.id)?'selected':'')+'>'+esc(e.courses?.name||'سبک')+'</option>').join('')+'</select></td><td>'+dateFa(r.starts_at)+'</td><td>'+new Date(r.starts_at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(r.venue||S.term.default_venue||'—')+'</td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
     $('stDraftTable').querySelectorAll('[data-styles]').forEach(el=>el.addEventListener('change',()=>{const row=sorted.find(x=>Number(x.session_number)===Number(el.dataset.styles));if(row)row.enrollment_ids=Array.from(el.selectedOptions).map(o=>o.value);}));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
   }
