@@ -100,6 +100,31 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:#10b981;color:#000;padding:6px 14px;border-radius:16px;font-size:.7rem;font-weight:700;box-shadow:0 4px 12px rgba(16,185,129,0.4);transition:transform .3s ease;z-index:1000;}
 .toast.show{transform:translateX(-50%) translateY(0);}
 
+.admin-login-modal{position:fixed;inset:0;z-index:2100;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(4,6,10,.84);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.admin-login-modal.open{display:flex;animation:adminLoginFade .2s ease;}
+.admin-login-card{position:relative;width:min(420px,100%);padding:34px 30px 24px;border:1px solid rgba(214,179,90,.3);border-radius:20px;background:linear-gradient(155deg,rgba(255,255,255,.055),transparent 48%),var(--surface);box-shadow:0 28px 90px rgba(0,0,0,.55),inset 0 1px rgba(255,255,255,.05);text-align:center;overflow:hidden;}
+.admin-login-card:before{content:"";position:absolute;top:0;right:12%;left:12%;height:2px;background:linear-gradient(90deg,transparent,#d6b35a,transparent);}
+.admin-login-close{position:absolute;top:13px;left:13px;width:32px;height:32px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card);color:var(--text-secondary);font-size:17px;cursor:pointer;}
+.admin-login-mark{font-size:2.3rem;font-weight:950;letter-spacing:-3px;line-height:1;color:var(--text-primary);direction:ltr;}
+.admin-login-mark span{color:#d6b35a;}
+.admin-login-kicker{margin-top:9px;color:#c7a957;font-size:.59rem;font-weight:800;letter-spacing:2px;direction:ltr;}
+.admin-login-card h2{margin-top:24px;color:var(--text-primary);font-size:1.25rem;font-weight:900;}
+.admin-login-subtitle{margin:8px 0 23px;color:var(--text-secondary);font-size:.78rem;line-height:1.8;}
+.admin-login-label{display:block;margin-bottom:8px;text-align:right;color:var(--text-primary);font-size:.74rem;font-weight:750;}
+.admin-login-input-wrap{display:flex;align-items:center;gap:8px;padding:0 12px;border:1px solid var(--border);border-radius:11px;background:var(--surface-card);transition:border-color .2s,box-shadow .2s;}
+.admin-login-input-wrap:focus-within{border-color:#c7a957;box-shadow:0 0 0 3px rgba(214,179,90,.12);}
+.admin-login-lock{color:#c7a957;font-size:1.15rem;}
+.admin-login-input-wrap input{width:100%;min-width:0;height:48px;border:0;outline:0;background:transparent;color:var(--text-primary);font:inherit;font-size:.86rem;direction:rtl;}
+.admin-login-input-wrap input::placeholder{color:var(--text-secondary);opacity:.7;}
+.admin-login-eye{border:0;background:transparent;color:var(--text-secondary);font-size:1.05rem;cursor:pointer;padding:6px;}
+.admin-login-error{min-height:22px;margin-top:7px;text-align:right;color:#fb7185;font-size:.7rem;}
+.admin-login-submit{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;margin-top:7px;border:1px solid rgba(214,179,90,.55);border-radius:11px;background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a;font-size:.84rem;font-weight:900;cursor:pointer;box-shadow:0 8px 22px rgba(190,150,60,.18);transition:transform .18s,filter .18s;}
+.admin-login-submit:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.admin-login-submit:disabled{opacity:.65;cursor:wait;transform:none;}
+.admin-login-foot{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:23px;color:var(--text-secondary);font-size:.65rem;}
+.admin-login-foot span{width:6px;height:6px;border-radius:50%;background:#c7a957;box-shadow:0 0 8px rgba(214,179,90,.7);}
+@keyframes adminLoginFade{from{opacity:0}to{opacity:1}}
+@media(max-width:480px){.admin-login-modal{padding:15px}.admin-login-card{padding:32px 22px 22px;border-radius:16px}.admin-login-card h2{font-size:1.15rem;}}
 .admin-modal{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:18px;z-index:2000;}
 .admin-content{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:min(1180px,96vw);height:min(900px,90vh);max-height:90vh;overflow:hidden;padding:0;display:flex;flex-direction:column;box-shadow:0 24px 80px rgba(0,0,0,.48);}
 .admin-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--border);background:var(--surface);}
@@ -126,17 +151,27 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .admin-workspace .admin-style-row input{padding:8px 10px;font-size:.8rem;}
 .admin-workspace #autoCommitBtn{position:sticky;bottom:0;z-index:5;box-shadow:0 -8px 18px rgba(0,0,0,.12);border:1px solid rgba(214,179,90,.32);border-radius:10px;}
 @media(max-width:720px){
- .admin-modal{padding:6px;align-items:center;}
- .admin-content{width:100%;height:96vh;max-height:96vh;border-radius:12px;}
- .admin-header{padding:10px 13px;}
+ .admin-modal{padding:0;align-items:stretch;justify-content:stretch;}
+ .admin-content{width:100%;height:100dvh;min-height:100vh;max-height:100dvh;border-radius:0;border:0;}
+ .admin-header{flex:0 0 auto;padding:11px 12px;}
  .admin-header h3{font-size:.88rem!important;}
- .admin-layout{flex-direction:column;}
- .admin-sidebar{width:100%;flex:0 0 auto;padding:8px 9px 7px;border-left:0;border-bottom:1px solid var(--border);gap:7px;overflow:visible;}
- .admin-sidebar-brand{display:none;}
- .admin-tabs{flex-direction:row;overflow-x:auto;white-space:nowrap;padding-bottom:3px;scrollbar-width:thin;}
- .admin-tab-btn{width:auto;min-height:36px;padding:8px 10px;font-size:.7rem;white-space:nowrap;box-shadow:none!important;}
- .admin-tab-btn.active{box-shadow:inset 0 -2px 0 #d6b35a!important;}
- .admin-workspace{padding:13px 12px 12px;}
+ .admin-layout{flex:1;min-height:0;flex-direction:row;align-items:stretch;}
+ .admin-sidebar{width:116px;flex:0 0 116px;min-width:116px;max-height:none;padding:9px 7px;border-left:1px solid var(--border);border-bottom:0;gap:9px;overflow-y:auto;overflow-x:hidden;}
+ .admin-sidebar-brand{display:block;padding:8px 7px;border-radius:9px;}
+ .admin-sidebar-brand strong{font-size:.72rem;letter-spacing:1px;}
+ .admin-sidebar-brand small{font-size:.57rem;line-height:1.4;}
+ .admin-tabs{display:flex;flex-direction:column;gap:6px;overflow:visible;white-space:normal;padding:0;}
+ .admin-tab-btn{width:100%;min-height:48px;padding:8px 7px;font-size:.64rem;line-height:1.45;white-space:normal;text-align:right;justify-content:flex-start;border-radius:8px;box-shadow:none!important;}
+ .admin-tab-btn.active{box-shadow:inset -3px 0 0 #d6b35a!important;}
+ .admin-workspace{flex:1;min-width:0;min-height:0;overflow-y:auto;padding:12px 10px calc(16px + env(safe-area-inset-bottom));}
+ .admin-workspace .admin-input-group label{font-size:.68rem;}
+ .admin-workspace .admin-input-group input,.admin-workspace .admin-input-group textarea,.admin-workspace .admin-select{font-size:16px;min-height:38px;}
+ .admin-workspace #autoCommitBtn{position:sticky;bottom:0;}
+}
+@media(max-width:380px){
+ .admin-sidebar{width:102px;flex-basis:102px;min-width:102px;padding:8px 5px;}
+ .admin-tab-btn{font-size:.6rem;padding:7px 5px;}
+ .admin-workspace{padding:10px 8px;}
 }
 @media(min-width:721px) and (max-height:650px){
  .admin-content{height:94vh;max-height:94vh;}
@@ -347,6 +382,28 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         </div>
         <a href="https://t.me/" target="_blank" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات 🛍️</a>
     </div>
+</div>
+
+<!-- ورود اختصاصی پنل مدیریت -->
+<div class="admin-login-modal" id="adminLoginModal" aria-hidden="true">
+  <div class="admin-login-card" role="dialog" aria-modal="true" aria-labelledby="adminLoginTitle">
+    <button type="button" class="admin-login-close" id="closeAdminLogin" aria-label="بستن">✕</button>
+    <div class="admin-login-mark">G<span>20</span></div>
+    <div class="admin-login-kicker">GYM20 ACADEMY · CONTROL CENTER</div>
+    <h2 id="adminLoginTitle">ورود مدیر</h2>
+    <p class="admin-login-subtitle">برای دسترسی به تنظیمات آکادمی، رمز مدیریت را وارد کنید.</p>
+    <form id="adminLoginForm" autocomplete="off">
+      <label class="admin-login-label" for="adminLoginPassword">رمز عبور مدیریت</label>
+      <div class="admin-login-input-wrap">
+        <span class="admin-login-lock">⌑</span>
+        <input id="adminLoginPassword" type="password" placeholder="رمز عبور را وارد کنید" autocomplete="current-password" required>
+        <button type="button" id="toggleAdminPassword" class="admin-login-eye" aria-label="نمایش رمز">◉</button>
+      </div>
+      <div class="admin-login-error" id="adminLoginError" role="alert" aria-live="polite"></div>
+      <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ورود به پنل مدیریت <span>←</span></button>
+    </form>
+    <div class="admin-login-foot"><span></span> دسترسی ویژه مدیران GYM20</div>
+  </div>
 </div>
 
 <!-- پنل مدیریت هوشمند -->
@@ -863,7 +920,17 @@ themeBtn.onclick=()=>{const l=document.body.getAttribute('data-theme')==='light'
 function switchAdminTab(tId){document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.admin-tab-btn').forEach(b=>b.classList.remove('active'));const tab=document.getElementById(tId);if(tab)tab.classList.add('active');const btn=Array.from(document.querySelectorAll('.admin-tab-btn')).find(b=>b.getAttribute('onclick')===`switchAdminTab('${tId}')`);if(btn)btn.classList.add('active');}
 function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea');if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=document.getElementById('ruleSelector').value;t.value=appData.rules[currentEditingRuleKey]||'';}
 
-adminBtn.onclick=()=>{const p=prompt('رمز پنل مدیر:');if(p==='1234'){loadAdminForm();adminModal.style.display='flex';}else if(p!==null)alert('رمز اشتباه است!');};
+const adminLoginModal=document.getElementById('adminLoginModal');
+const adminLoginForm=document.getElementById('adminLoginForm');
+const adminLoginPassword=document.getElementById('adminLoginPassword');
+const adminLoginError=document.getElementById('adminLoginError');
+function openAdminLogin(){adminLoginError.textContent='';adminLoginPassword.value='';adminLoginPassword.type='password';adminLoginModal.classList.add('open');adminLoginModal.setAttribute('aria-hidden','false');setTimeout(()=>adminLoginPassword.focus(),80);}
+function closeAdminLogin(){adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');}
+adminBtn.onclick=openAdminLogin;
+document.getElementById('closeAdminLogin').onclick=closeAdminLogin;
+document.getElementById('toggleAdminPassword').onclick=()=>{const visible=adminLoginPassword.type==='text';adminLoginPassword.type=visible?'password':'text';document.getElementById('toggleAdminPassword').setAttribute('aria-label',visible?'نمایش رمز':'مخفی کردن رمز');};
+adminLoginForm.addEventListener('submit',e=>{e.preventDefault();const p=adminLoginPassword.value;if(p==='1234'){closeAdminLogin();loadAdminForm();adminModal.style.display='flex';}else{adminLoginError.textContent='رمز عبور صحیح نیست؛ دوباره تلاش کنید.';adminLoginPassword.focus();adminLoginPassword.select();}});
+adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminLogin();});
 closeAdmin.onclick=()=>{adminModal.style.display='none';};
 function cleanLegacy(s){return (s||'').replace(/مرحله اول:\s*/g,'').replace(/برای مشاهده شرایط دوره، سبک‌ها و محاسبه شهریه،\s*/g,'').trim();}
 
