@@ -146,7 +146,6 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     selectObserver.observe(p,{childList:true,subtree:true});
     initTermCalendars(p);
     bindJalaliDates(p);
-    $('stStart').addEventListener('change',()=>{syncTermName();if(!$('stDate').value)$('stDate').value=$('stStart').value;});
       const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
       const renderDayPicks=(id,days)=>{$(id).innerHTML=days.map(i=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'" checked><span>'+weekNames[i]+'</span></label>').join('');};renderDayPicks('stEvenDays',[0,2,4]);renderDayPicks('stOddDays',[1,3,5]);
       p.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.mode;$('stManual').classList.toggle('st-hide',mode!=='manual');$('stWeekly').classList.toggle('st-hide',mode==='manual');$('stEvenPanel').classList.toggle('st-hide',mode!=='even');$('stOddPanel').classList.toggle('st-hide',mode!=='odd');p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===btn));}));
@@ -261,14 +260,12 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   function drawDraft(){
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
     if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز تاریخی انتخاب نشده است. از حالت دستی، چند تاریخ را در تقویم انتخاب کن.</p>';return;}
-    const styleOptions=S.enrollments.filter(e=>(S.termEnrollmentIds||[]).includes(e.id));
     const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
     $('stDraftTable').innerHTML=sorted.map((r,i)=>{
       const state=sessionState(r),d=new Date(r.starts_at),weekday=weekdays[d.getDay()];
       return '<article class="st-session-card"><header class="st-session-head"><b>جلسه '+fa(r.session_number)+' · '+weekday+'</b><span class="st-session-state '+state.cls+'">'+state.label+'</span></header><div class="st-session-fields"><label>تاریخ شمسی<input data-date="'+r.session_number+'" value="'+jalaliInput(localDate(r.starts_at))+'" data-jalali-date></label><label>ساعت کلاس<input type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'"></label><label>نام مربی<input type="text" maxlength="120" data-coach="'+r.session_number+'" value="'+esc(r.coach_name||'')+'" placeholder="نام مربی"></label><footer><button class="st-btn danger" type="button" data-del="'+i+'">حذف</button></footer></div></article>';
     }).join('');
     bindJalaliDates($('stDraftTable'));
-    $('stDraftTable').querySelectorAll('[data-styles]').forEach(el=>el.addEventListener('change',()=>{const row=sorted.find(x=>Number(x.session_number)===Number(el.dataset.styles));if(row)row.enrollment_ids=Array.from(el.selectedOptions).map(o=>o.value);}));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
   }
   function collectDraftPayload(){
