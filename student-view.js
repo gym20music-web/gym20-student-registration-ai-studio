@@ -24,7 +24,7 @@
   }
   async function init(){
     const token=new URLSearchParams(location.search).get('t');
-    const shortCode=(location.pathname.match(/\\/s\\/([0-9a-f]{12})\\/?$/i)||[])[1]||new URLSearchParams(location.search).get('c');
+    const shortCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||new URLSearchParams(location.search).get('c');
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
     try{
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
