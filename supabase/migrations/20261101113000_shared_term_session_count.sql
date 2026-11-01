@@ -26,7 +26,7 @@ declare
   v_student_id uuid;
   v_inserted integer := 0;
   v_session_id uuid;
-  x record;
+  v_session_rec record;
   v_course_id uuid;
   v_enrollment_id uuid;
 begin
@@ -51,72 +51,72 @@ begin
     raise exception 'تعداد جلسات باید دقیقاً برابر تعداد کل جلسات ترم باشد؛ تعداد سبک‌ها در این عدد ضرب نمی‌شود.';
   end if;
   if exists (
-    select 1 from jsonb_to_recordset(p_sessions) as x(
+    select 1 from jsonb_to_recordset(p_sessions) as session_row(
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, enrollment_ids uuid[]
     )
-    where x.session_number is null or x.session_number < 1 or x.session_number > v_total
-       or x.starts_at is null or x.ends_at is null or x.ends_at <= x.starts_at
-       or extract(epoch from (x.ends_at-x.starts_at)) <> v_duration*60
-       or char_length(coalesce(x.venue,''))>250 or char_length(coalesce(x.notes,''))>1000
-       or coalesce(cardinality(x.enrollment_ids),0)=0
+    where session_row.session_number is null or session_row.session_number < 1 or session_row.session_number > v_total
+       or session_row.starts_at is null or session_row.ends_at is null or session_row.ends_at <= session_row.starts_at
+       or extract(epoch from (session_row.ends_at-session_row.starts_at)) <> v_duration*60
+       or char_length(coalesce(session_row.venue,''))>250 or char_length(coalesce(session_row.notes,''))>1000
+       or coalesce(cardinality(session_row.enrollment_ids),0)=0
   ) then raise exception 'اطلاعات یکی از جلسات ناقص یا نامعتبر است؛ برای هر جلسه حداقل یک سبک انتخاب کنید.'; end if;
   if exists (
-    select 1 from jsonb_to_recordset(p_sessions) as x(
+    select 1 from jsonb_to_recordset(p_sessions) as session_row(
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, enrollment_ids uuid[]
-    ) group by x.session_number having count(*)>1
+    ) group by session_row.session_number having count(*)>1
   ) then raise exception 'شماره جلسه تکراری است.'; end if;
-  if (select count(distinct x.session_number) from jsonb_to_recordset(p_sessions) as x(
+  if (select count(distinct session_row.session_number) from jsonb_to_recordset(p_sessions) as session_row(
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, enrollment_ids uuid[]
     )) <> v_total then raise exception 'شماره جلسات باید از ۱ تا تعداد کل جلسات ترم کامل باشد.'; end if;
   if exists (
     select 1
-    from jsonb_to_recordset(p_sessions) as x(
+    from jsonb_to_recordset(p_sessions) as session_row(
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, enrollment_ids uuid[]
     )
-    cross join lateral unnest(x.enrollment_ids) as ids(enrollment_id)
+    cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)
     left join gym20.term_enrollments te on te.term_id=v_term_id and te.enrollment_id=ids.enrollment_id
     where te.enrollment_id is null
   ) then raise exception 'یکی از سبک‌های جلسه جزو سبک‌های انتخاب‌شده این ترم نیست.'; end if;
   if exists (
-    select 1 from jsonb_to_recordset(p_sessions) as x(
+    select 1 from jsonb_to_recordset(p_sessions) as session_row(
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, enrollment_ids uuid[]
-    ) cross join lateral unnest(x.enrollment_ids) as ids(enrollment_id)
-    group by x.session_number,ids.enrollment_id having count(*)>1
+    ) cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)
+    group by session_row.session_number,ids.enrollment_id having count(*)>1
   ) then raise exception 'یک سبک در یک جلسه دوبار انتخاب شده است.'; end if;
   if exists (
     select 1 from gym20.term_enrollments te
     where te.term_id=v_term_id and not exists (
-      select 1 from jsonb_to_recordset(p_sessions) as x(
+      select 1 from jsonb_to_recordset(p_sessions) as session_row(
         session_number integer, starts_at timestamptz, ends_at timestamptz,
         venue text, notes text, enrollment_ids uuid[]
-      ) cross join lateral unnest(x.enrollment_ids) as ids(enrollment_id)
+      ) cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)
       where ids.enrollment_id=te.enrollment_id
     )
   ) then raise exception 'برای همه سبک‌های انتخاب‌شده باید حداقل یک جلسه اختصاص داده شود.'; end if;
 
   delete from gym20.class_sessions where schedule_version_id=p_version_id;
-  for x in select * from jsonb_to_recordset(p_sessions) as s(
+  for v_session_rec in select * from jsonb_to_recordset(p_sessions) as session_row(
     session_number integer, starts_at timestamptz, ends_at timestamptz,
     venue text, notes text, enrollment_ids uuid[]
   ) order by session_number
   loop
-    v_enrollment_id := x.enrollment_ids[1];
+    v_enrollment_id := session_row.enrollment_ids[1];
     select e.course_id into v_course_id from gym20.enrollments e where e.id=v_enrollment_id;
     insert into gym20.class_sessions(
       course_id,enrollment_id,term_id,schedule_version_id,session_number,
       starts_at,ends_at,venue,notes,status,created_by
     ) values (
-      v_course_id,null,v_term_id,p_version_id,x.session_number,
-      x.starts_at,x.ends_at,nullif(btrim(coalesce(x.venue,'')),''),
-      nullif(btrim(coalesce(x.notes,'')),''),'scheduled',(select auth.uid())
+      v_course_id,null,v_term_id,p_version_id,session_row.session_number,
+      session_row.starts_at,session_row.ends_at,nullif(btrim(coalesce(session_row.venue,'')),''),
+      nullif(btrim(coalesce(session_row.notes,'')),''),'scheduled',(select auth.uid())
     ) returning id into v_session_id;
     insert into gym20.class_session_styles(session_id,enrollment_id)
-    select v_session_id,ids.enrollment_id from unnest(x.enrollment_ids) ids(enrollment_id);
+    select v_session_id,ids.enrollment_id from unnest(session_row.enrollment_ids) ids(enrollment_id);
     v_inserted:=v_inserted+1;
   end loop;
   return v_inserted;
