@@ -1198,6 +1198,7 @@ function renderRegistrationRequests(){
       <td><div class="request-row-actions">
         <button type="button" class="request-action-btn" data-request-action="details" data-request-id="${escapeRequestHtml(r.id)}">جزئیات</button>
         <select class="request-status-select" data-request-action="status" data-request-id="${escapeRequestHtml(r.id)}" ${isConverted?'disabled':''}>
+          <option value="" disabled ${!['approved','rejected'].includes(r.status)?'selected':''}>تغییر وضعیت…</option>
           <option value="approved" ${r.status==='approved'?'selected':''}>تأیید</option>
           <option value="rejected" ${r.status==='rejected'?'selected':''}>رد</option>
         </select>
@@ -1889,6 +1890,6 @@ loadDataAndInit().then(()=>{
 });
 resumeGym20AdminSession();
 </script>
-<script src="student-terms.js?v=20261101-public-link-v2"></script>
+<script src="student-terms.js?v=20261101-admin-tab-fix-v3"></script>
 </body>
 </html>
