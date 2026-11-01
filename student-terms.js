@@ -240,7 +240,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
-    $('stManual').classList.add('st-hide');
+    $('stManual').classList.remove('st-hide');
     $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
   }
