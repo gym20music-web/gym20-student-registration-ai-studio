@@ -18,10 +18,34 @@
   const classNames={normal:'عمومی',semi:'نیمه‌خصوصی',private:'خصوصی',vip:'VIP',online:'آنلاین'};
   const attNames={pending:'در انتظار',present:'حاضر',absent:'غایب',excused:'غیبت موجه',makeup:'جلسه جبرانی',cancelled:'لغوشده'};
 
+
+  function syncTermName(){const m=$('stMonth'),y=$('stYear');if(m&&y)$('stName').value='ترم '+m.selectedOptions[0].textContent+' '+enDigits(y.value);}
+  function initTermCalendars(root){
+    const monthsFa=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+    root.querySelectorAll('[data-calendar]').forEach(btn=>btn.addEventListener('click',()=>{
+      document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
+      const input=$(btn.dataset.calendar),raw=enDigits(input.value||'').split('/').map(Number);
+      let jy=raw.length===3&&raw[0]>1200?raw[0]:Number(enDigits($('stYear').value)||1405);
+      let jm=raw.length===3&&raw[1]>=1&&raw[1]<=12?raw[1]:Number($('stMonth').value);
+      const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
+      const rect=btn.getBoundingClientRect();pop.style.top=Math.min(innerHeight-280,rect.bottom+5)+'px';pop.style.left=Math.max(8,Math.min(innerWidth-253,rect.left-205))+'px';
+      const draw=()=>{
+        const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1);
+        const first=new Date(g+'T12:00:00'),last=new Date(next+'T12:00:00'),days=Math.round((last-first)/86400000),offset=(first.getDay()+1)%7,picked=enDigits(input.value).split('/').map(Number);
+        pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev>‹</button><b>'+monthsFa[jm-1]+' '+fa(jy)+'</b><button type="button" data-next>›</button></div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>'<button type="button" class="st-jcal-day '+(picked[0]===jy&&picked[1]===jm&&picked[2]===i+1?'selected':'')+'" data-day="'+(i+1)+'">'+fa(i+1)+'</button>').join('')+'</div>';
+        pop.querySelector('[data-prev]').onclick=()=>{if(--jm<1){jm=12;jy--;}draw();};
+        pop.querySelector('[data-next]').onclick=()=>{if(++jm>12){jm=1;jy++;}draw();};
+        pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{input.value=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0');input.dispatchEvent(new Event('change',{bubbles:true}));pop.remove();});
+      };draw();
+      const close=e=>{if(!pop.contains(e.target)&&e.target!==btn){pop.remove();document.removeEventListener('pointerdown',close);}};
+      setTimeout(()=>document.addEventListener('pointerdown',close),0);
+    }));
+  }
   function mount(){
     if($(TAB))return;
     const nav=document.querySelector('.admin-tabs'),work=document.querySelector('.admin-workspace');
     if(!nav||!work)return;
+    const termCss=document.createElement('style');termCss.textContent='.st-term-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important}.st-term-grid .st-field{min-width:0;margin:0!important}.st-term-grid label{font-size:10px!important;margin-bottom:3px!important}.st-term-grid input,.st-term-grid select{height:32px!important;min-height:32px!important;padding:4px 7px!important;font-size:11px!important;width:100%!important;min-width:0!important}.st-create-compact{padding:10px!important}.st-date-wrap{display:flex;gap:3px;align-items:center}.st-date-wrap input{flex:1;min-width:0}.st-calendar-btn{height:32px;min-width:31px;border:1px solid #9b7938;border-radius:7px;background:#24202a;color:#f1ce7c;font-size:16px}.st-jcal{position:fixed;z-index:999999;width:245px;padding:9px;border:1px solid #94743a;border-radius:10px;background:#111722;box-shadow:0 12px 30px #000b;color:#fff}.st-jcal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}.st-jcal-head button,.st-jcal-day{border:1px solid #354153;border-radius:6px;background:#1c2634;color:#fff;padding:4px 7px}.st-jcal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}.st-jcal-grid span{font-size:9px;color:#d8bc78;padding:4px 0}.st-jcal-day{font-size:10px;padding:5px 0}.st-jcal-day.selected{background:#b68b3b;color:#111;font-weight:800}@media(max-width:600px){.st-term-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}.st-create-compact{padding:8px!important}}@media(min-width:601px) and (max-width:900px){.st-term-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}';document.head.appendChild(termCss);
     const css=document.createElement('style');css.id='studentTermsCss';
     css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;height:34px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:7px;padding:5px 7px;font-size:.72rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:7px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:6px 9px;font-size:.66rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.st-check{display:flex;align-items:center;gap:6px;padding:6px 7px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-size:.66rem;line-height:1.5;min-width:0}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select,.st-table input{max-width:150px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:.68rem}.st-table small{display:block;color:var(--text-secondary);font-size:.6rem}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}.st-short-url{direction:ltr;text-align:left;word-break:break-all;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:9px;margin:7px 0;font-size:.78rem;color:#e7c875}.st-public-link{margin-top:8px}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:repeat(2,minmax(0,1fr))}.st-card{padding:8px}}@media(max-width:390px){.st-grid,.st-checks{grid-template-columns:1fr}}';
     css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!important;direction:rtl!important;align-items:stretch!important}.admin-sidebar{width:102px!important;flex:0 0 102px!important;min-width:102px!important;max-height:none!important;padding:7px 5px!important;border-left:1px solid var(--border)!important;border-bottom:0!important;gap:7px!important;overflow-y:auto!important;overflow-x:hidden!important}.admin-sidebar-brand{display:block!important;padding:6px 5px!important}.admin-sidebar-brand strong{font-size:.66rem!important}.admin-sidebar-brand small{font-size:.52rem!important}.admin-tabs{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;gap:5px!important;justify-content:flex-start!important}.admin-tab-btn{width:100%!important;min-height:38px!important;flex:0 0 auto!important;padding:6px 5px!important;font-size:.61rem!important;line-height:1.35!important;white-space:normal!important;text-align:right!important;border-radius:7px!important}.admin-tab-btn.active{box-shadow:inset -3px 0 0 #d6b35a!important}.admin-workspace{flex:1!important;min-width:0!important;padding:8px 7px calc(14px + env(safe-area-inset-bottom))!important}.st-card{padding:7px!important;margin:6px 0!important}.st-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}.st-field{gap:3px!important;margin-bottom:5px!important}.st-field label{font-size:.63rem!important}.st-field input,.st-field select{height:32px!important;padding:4px 6px!important;font-size:12px!important}.st-btn{padding:5px 7px!important;font-size:.62rem!important}.st-table{min-width:680px!important}.st-table th,.st-table td{padding:5px!important}.st-table input,.st-table select{padding:4px!important;font-size:11px!important}}@media(max-width:390px){.admin-sidebar{width:90px!important;flex-basis:90px!important;min-width:90px!important}.admin-tab-btn{font-size:.57rem!important;padding:5px 4px!important}.st-grid{grid-template-columns:1fr!important}}';
@@ -34,17 +58,15 @@
       '<p class="st-muted">پیش‌نویس از برنامه منتشرشده جداست؛ تغییرات فقط پس از انتشار برای هنرجو قابل مشاهده می‌شود.</p>'+
       '<div class="st-card"><div class="st-title">۱. انتخاب هنرجو</div><div class="st-field"><label>هنرجو</label><select id="stStudent"><option value="">در حال دریافت…</option></select></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
-      '<div class="st-card"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+
-      '<div class="st-grid">'+
-      '<div class="st-field"><label>نام ترم</label><input id="stName" required maxlength="100" placeholder="مثلاً ترم ۱ آبان ۱۴۰۵"></div>'+
-      '<div class="st-field"><label>تعداد اولیه جلسات (قابل تغییر در برنامه)</label><select id="stCount"><option value="8">۸ جلسه (پیش‌فرض)</option><option value="10">۱۰ جلسه</option><option value="12">۱۲ جلسه</option><option value="custom">تعداد دلخواه</option></select></div>'+
-      '<div class="st-field st-hide" id="stCustomWrap"><label>تعداد دلخواه</label><input id="stCustom" type="number" min="1" max="1000" value="8"></div>'+
-      '<div class="st-field"><label>مدت پیش‌فرض جلسه (دقیقه)</label><input id="stDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
-      '<div class="st-field"><label>شروع ترم</label><input id="stStart" data-jalali-date type="text"></div>'+
-      '<div class="st-field"><label>پایان ترم</label><input id="stEnd" data-jalali-date type="text"></div>'+
+      '<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+
+      '<div class="st-grid st-term-grid">'+
+      '<div class="st-field"><label>ماه ترم</label><select id="stMonth" required><option value="1">فروردین</option><option value="2">اردیبهشت</option><option value="3">خرداد</option><option value="4">تیر</option><option value="5">مرداد</option><option value="6">شهریور</option><option value="7">مهر</option><option value="8">آبان</option><option value="9">آذر</option><option value="10">دی</option><option value="11">بهمن</option><option value="12">اسفند</option></select></div>'+
+      '<div class="st-field"><label>سال</label><select id="stYear"><option value="1405">۱۴۰۵</option><option value="1406">۱۴۰۶</option><option value="1404">۱۴۰۴</option></select></div>'+
+      '<div class="st-field"><label>مدت پیش‌فرض (دقیقه)</label><input id="stDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
+      '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="۱۴۰۵/۰۸/۰۱"><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
+      '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="۱۴۰۵/۰۸/۳۰"><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
       '<div class="st-field"><label>محل پیش‌فرض</label><input id="stVenue" maxlength="250" placeholder="مثلاً سالن نیاوران"></div>'+
       '<div class="st-field"><label>روش برنامه‌ریزی</label><select id="stMode"><option value="manual">ویرایش دستی هر جلسه</option><option value="weekly">برنامه ثابت هفتگی</option></select></div></div>'+
-      '<div class="st-field"><label>سبک‌های این ترم</label><div id="stEnrollments" class="st-checks"></div></div>'+
       '<div class="st-actions"><button class="st-btn primary" type="submit">ثبت ترم</button></div></form></div>'+
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div><div id="stTermInfo" class="st-muted"></div><div id="stVersions"></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
@@ -59,9 +81,10 @@
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     bindJalaliDates(p);
+    initTermCalendars(p);
+    $('stMonth').addEventListener('change',syncTermName);$('stYear').addEventListener('change',syncTermName);syncTermName();
     $('stStudent').addEventListener('change',e=>loadStudent(e.target.value));
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
-    $('stCount').addEventListener('change',e=>$('stCustomWrap').classList.toggle('st-hide',e.target.value!=='custom'));
     $('stCreate').addEventListener('submit',createTerm);
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
     $('stMakeWeekly').addEventListener('click',makeWeekly);
@@ -88,8 +111,7 @@
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];
       $('stSummary').innerHTML='<b>'+esc(student?.full_name||'')+'</b> · '+esc(student?.phone||'—')+'<br>تعداد سبک‌ها: '+fa(S.enrollments.length)+' · تولد: '+esc(student?.birth_date||'ثبت نشده')+'<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
       loadStudentPublicLink();
-      $('stEnrollments').innerHTML=S.enrollments.map(e=>'<label class="st-check"><input type="checkbox" name="stEnroll" value="'+e.id+'" '+(e.status==='active'?'checked':'')+'><span>'+esc(e.courses?.name||'سبک')+' <small>('+esc(classNames[e.class_type]||e.class_type||'عمومی')+' · '+(e.age_group==='kids'?'کودک':'بزرگسال')+')</small></span></label>').join('')||'ثبت‌نام فعالی وجود ندارد.';
-      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(t.term_name)+' · '+fa(t.total_sessions)+' جلسه</option>').join('');
+      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(t.term_name)+'</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
@@ -125,10 +147,11 @@
 
   async function createTerm(ev){
     ev.preventDefault();try{
-      const ids=Array.from(document.querySelectorAll('input[name="stEnroll"]:checked')).map(x=>x.value);
-      const count=$('stCount').value==='custom'?Number($('stCustom').value):Number($('stCount').value);
-      if(!ids.length)throw Error('حداقل یک سبک را انتخاب کنید.');if(!Number.isInteger(count)||count<1||count>1000)throw Error('تعداد اولیه جلسات معتبر نیست.');
-      const termName=$('stName').value.trim();const exists=await db().from('student_terms').select('id').eq('student_id',S.studentId).ilike('term_name',termName).limit(1);if(exists.error)throw exists.error;if(exists.data?.length){throw Error('این نام ترم قبلاً برای این هنرجو ثبت شده است؛ از فهرست ترم‌ها همان ترم را انتخاب کن یا نام دیگری وارد کن.');}
+      const activeEnrollments=S.enrollments.filter(e=>e.status==='active');
+      const ids=activeEnrollments.map(x=>x.id);
+      if(!ids.length)throw Error('برای این هنرجو سبک فعالی در ثبت‌نام اولیه پیدا نشد.');
+      const count=Math.max(1,...activeEnrollments.map(e=>Number(e.total_sessions)||1));
+      const termName='ترم '+$('stMonth').selectedOptions[0].textContent+' '+enDigits($('stYear').value);const exists=await db().from('student_terms').select('id').eq('student_id',S.studentId).ilike('term_name',termName).limit(1);if(exists.error)throw exists.error;if(exists.data?.length){throw Error('این نام ترم قبلاً برای این هنرجو ثبت شده است؛ از فهرست ترم‌ها همان ترم را انتخاب کن یا نام دیگری وارد کن.');}
       say('در حال ثبت ترم…');
       const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:gregorianInput($('stStart').value)||null,p_end_date:gregorianInput($('stEnd').value)||null,p_total_sessions:count,p_duration_minutes:Number($('stDuration').value),p_default_venue:$('stVenue').value.trim()||null,p_schedule_mode:$('stMode').value,p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
