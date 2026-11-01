@@ -1110,7 +1110,7 @@ function setRequestsFeedback(message,isError=false){
 }
 function renderRegistrationRequests(){
   const container=document.getElementById('requestsTableContainer');
-  const search=(document.getElementById('requestsSearch')?.value||'').trim().toLowerCase();
+  const search=toEnglishDigits((document.getElementById('requestsSearch')?.value||'').trim()).toLowerCase();
   const status=document.getElementById('requestsStatusFilter')?.value||'all';
   const filtered=registrationRequestsCache.filter(r=>{
     const matchesStatus=status==='all'||r.status===status;
@@ -1265,10 +1265,11 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
   }else if(target.matches('select[data-request-action="status"]')){
     updateRegistrationRequestStatus(target.getAttribute('data-request-id'),target.value);
   }else if(target.id==='selectAllVisibleRequests'){
-    const search=(document.getElementById('requestsSearch').value||'').trim().toLowerCase();
+    const search=toEnglishDigits((document.getElementById('requestsSearch').value||'').trim()).toLowerCase();
     const status=document.getElementById('requestsStatusFilter').value;
-    registrationRequestsCache.filter(r=>(status==='all'||r.status===status)&&(!search||[r.full_name,r.phone].join(' ').toLowerCase().includes(search))&&!r.converted_student_id)
-      .forEach(r=>selectedRegistrationRequestIds.add(r.id));
+    const visible=registrationRequestsCache.filter(r=>(status==='all'||r.status===status)&&(!search||[r.full_name,r.phone].join(' ').toLowerCase().includes(search))&&!r.converted_student_id);
+    if(target.checked)visible.forEach(r=>selectedRegistrationRequestIds.add(r.id));
+    else visible.forEach(r=>selectedRegistrationRequestIds.delete(r.id));
     renderRegistrationRequests();
   }
 });
