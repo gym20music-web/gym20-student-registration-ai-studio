@@ -75,7 +75,7 @@
       .st-student-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:42px;padding:9px 11px;border:1px solid rgba(214,179,90,.55);border-radius:10px;background:#111a27;color:#f3f0e8;font:inherit;font-size:13px;text-align:right;cursor:pointer}
       .st-student-trigger span:first-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
       .st-picker-arrow{color:#d6b35a;font-size:18px}
-      .st-student-menu{position:fixed!important;z-index:2147483000!important;top:0;left:8px;right:auto;width:min(420px,calc(100vw - 16px));max-height:min(48vh,300px);overflow-y:auto;overflow-x:hidden;padding:5px;border:1px solid rgba(214,179,90,.5);border-radius:11px;background:#171e2b;box-shadow:0 14px 32px #000b;box-sizing:border-box;direction:rtl}.st-student-option{display:flex!important;min-height:40px;box-sizing:border-box;line-height:1.5}.st-student-option span{min-width:0;overflow:hidden;text-overflow:ellipsis}.st-student-option small{flex:0 0 auto}
+      .st-student-menu{position:absolute!important;z-index:10050!important;top:calc(100% + 6px)!important;right:0!important;left:0!important;width:100%!important;max-height:min(48vh,300px);overflow-y:auto;overflow-x:hidden;padding:5px;border:1px solid rgba(214,179,90,.65);border-radius:11px;background:#171e2b!important;color:#f3f0e8!important;box-shadow:0 14px 32px #000b;box-sizing:border-box;direction:rtl}.st-student-option{display:flex!important;min-height:40px;box-sizing:border-box;line-height:1.5}.st-student-option span{min-width:0;overflow:hidden;text-overflow:ellipsis}.st-student-option small{flex:0 0 auto}
       .st-student-menu[hidden]{display:none!important}
       .st-student-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 9px;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#eee;text-align:right;font:inherit;font-size:12px;cursor:pointer}
       .st-student-option:last-child{border-bottom:0}
@@ -138,7 +138,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
-    const studentMenu=p.querySelector('#stStudentMenu');if(studentMenu)document.body.appendChild(studentMenu);
+    /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
     bindJalaliDates(p);
     enhanceAllSelects(p);
@@ -150,9 +150,9 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
      const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
      const renderDayPicks=id=>{$(id).innerHTML=weekNames.map((n,i)=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'"><span>'+n+'</span></label>').join('');};renderDayPicks('stEvenDays');renderDayPicks('stOddDays');
      const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stDate').value=todayFa;
-    $('stStudentTrigger').addEventListener('click',()=>{const menu=$('stStudentMenu'),open=menu.hidden;if(open){const rect=$('stStudentTrigger').getBoundingClientRect(),vw=document.documentElement.clientWidth,vh=document.documentElement.clientHeight,w=Math.min(rect.width,vw-16),h=Math.min(menu.scrollHeight||300,Math.min(vh*.48,300));menu.style.width=w+'px';menu.style.left=Math.max(8,Math.min(vw-w-8,rect.left))+'px';menu.style.top=Math.max(8,Math.min(vh-h-8,rect.bottom+6))+'px';}menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
+    $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
-    document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')&&!e.target.closest('#stStudentMenu')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
+    document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',createTerm);
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
