@@ -119,7 +119,7 @@
     $('stDraftMeta').textContent='پیش‌نویس فعال · '+fa(S.term.total_sessions)+' جلسه برای کل ترم · '+fa(S.term.duration_minutes)+' دقیقه';
     $('stWeekly').classList.toggle('st-hide',S.term.schedule_mode!=='weekly');$('stManual').classList.toggle('st-hide',S.term.schedule_mode!=='manual');
     $('stStyle').innerHTML=selected.map(e=>'<option value="'+e.id+'">'+esc(e.courses?.name||'سبک')+'</option>').join('');
-    $('stWeeklyDate').value=S.term.start_date||'';$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';
+    $('stWeeklyDate').value=S.term.start_date||'';$('stWeeklyVenue').placeholder=S.term.default_venue||'خالی = محل پیش‌فرض';$('stSessionDuration').value=String(S.term.duration_minutes||60);
     drawDraft();
   }
   function drawDraft(){
