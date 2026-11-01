@@ -24,10 +24,13 @@
   }
   async function init(){
     const token=new URLSearchParams(location.search).get('t');
-    if(!token||!/^[0-9a-f]{64}$/.test(token)){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
+    const shortCode=(location.pathname.match(/\\/s\\/([0-9a-f]{12})\\/?$/i)||[])[1]||new URLSearchParams(location.search).get('c');
+    if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
     try{
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-      const {data,error}=await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
+      const {data,error}=shortCode
+        ?await client.schema('gym20').rpc('get_student_public_schedule_by_code',{p_code:shortCode})
+        :await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
       if(error)throw error;if(!data||!data.student){$('studentName').textContent='این لینک معتبر نیست یا غیرفعال شده است.';$('schedule').textContent='برای دریافت لینک جدید با مربی تماس بگیرید.';return;}
       $('studentName').textContent='هنرجو: '+data.student.full_name+' · برنامه ترم‌های منتشرشده';
       terms=data.terms||[];
