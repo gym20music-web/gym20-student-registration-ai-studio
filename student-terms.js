@@ -327,7 +327,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
   async function persistDraft(){
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
-    const payload=collectDraftPayload();if(!payload.length)throw Error('برای ذخیره، حداقل یک جلسه اضافه کنید.');
+    const payload=collectDraftPayload();if(!payload.length)throw Error('برای این ترم هنوز جلسه‌ای انتخاب نشده؛ ابتدا روی «افزودن تاریخ جلسات» بزن.');
     const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;
     S.term.total_sessions=payload.length;await loadDraftRows();drawDraft();return data;
   }
