@@ -164,7 +164,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
 
   async function loadStudent(id){
-    S.studentId=id;S.termId='';S.terms=[];S.enrollments=[];$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');if(!id)return;
+    S.studentId=id;S.termId='';S.terms=[];S.enrollments=[];$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
@@ -255,6 +255,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
 
   async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
+    $('stManualCalendar').textContent=id?'▦ افزودن جلسات به ترم انتخاب‌شده':'▦ انتخاب جلسات از تقویم';
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
@@ -281,7 +282,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
   function drawDraft(){
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
-    if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای ساخته نشده؛ برای انتخاب چند تاریخ، از دکمه «انتخاب تاریخ جلسات از تقویم» استفاده کن.</p>';return;}
+    if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای برای این ترم ثبت نشده است؛ از دکمه «انتخاب جلسات از تقویم» بالای صفحه استفاده کن.</p>';return;}
     const weekdays=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
     $('stDraftTable').innerHTML='<div class="st-schedule-table-wrap"><table class="st-schedule-table"><thead><tr><th>جلسه</th><th>روز</th><th>تاریخ شمسی</th><th>ساعت کلاس</th><th>نام مربی</th><th>وضعیت</th><th></th></tr></thead><tbody>'+sorted.map((r,i)=>{
       const state=sessionState(r),d=new Date(r.starts_at),weekday=weekdays[d.getDay()];
@@ -315,11 +316,12 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     }catch(e){say(e.message,true);}
   }
   function initManualMultiCalendar(root){
-    const openCalendar=(trigger,existing)=>{
+    const openCalendar=trigger=>{
       trigger.addEventListener('click',()=>{
+        const addingToExisting=Boolean(S.termId);
         const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
         if(!startDate||!endDate||endDate<startDate){say('ابتدا تاریخ شروع و پایان ترم را درست انتخاب کن.',true);return;}
-        if(existing&&!S.draftId){say('ابتدا برای این ترم پیش‌نویس بساز.',true);return;}
+        if(addingToExisting&&!S.draftId){say('برای این ترم هنوز پیش‌نویس قابل ویرایش وجود ندارد؛ ابتدا روی «ساخت پیش‌نویس از نسخه منتشرشده» بزن.',true);return;}
         document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
         const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
         const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
@@ -327,13 +329,13 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
         const minKey=startDate,maxKey=endDate;
         const draw=()=>{
           const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7,monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
-          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),valid=iso>=minKey&&iso<=maxKey&&!existingDates.has(iso),selected=chosen.has(iso);return '<button type="button" class="st-jcal-day '+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!selected?'disabled':'')+'>'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ (existing?'افزودن تاریخ‌های انتخاب‌شده':'ساخت جدول جلسات')+' ('+fa(chosen.size)+')</button></div>';
+          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),valid=iso>=minKey&&iso<=maxKey&&!existingDates.has(iso),selected=chosen.has(iso);return '<button type="button" class="st-jcal-day '+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!selected?'disabled':'')+'>'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ (addingToExisting?'افزودن تاریخ‌های انتخاب‌شده به ترم':'ساخت جدول جلسات')+' ('+fa(chosen.size)+')</button></div>';
           pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
           pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
           pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
           pop.querySelector('[data-confirm]').onclick=async()=>{
             if(!chosen.size)return;const dates=Array.from(chosen).sort();pop.remove();
-            if(!existing){await createTerm(dates);return;}
+            if(!addingToExisting){await createTerm(dates);return;}
             const ids=S.termEnrollmentIds.length?S.termEnrollmentIds:S.enrollments.filter(e=>e.status==='active').map(e=>e.id),mins=Number(S.term?.duration_minutes)||60;
             let n=S.rows.reduce((m,r)=>Math.max(m,Number(r.session_number)||0),0);
             dates.forEach(d=>{const starts=localISO(d,'18:00');S.rows.push({enrollment_ids:ids,session_number:++n,starts_at:starts,ends_at:new Date(new Date(starts).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null});});
@@ -345,7 +347,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
         setTimeout(()=>document.addEventListener('pointerdown',close),0);
       });
     };
-    const create=$('stManualCalendar');if(create)openCalendar(create,false);
+    const create=$('stManualCalendar');if(create)openCalendar(create);
   }
   async function persistDraft(){
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
