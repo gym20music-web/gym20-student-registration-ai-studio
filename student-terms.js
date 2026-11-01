@@ -7,6 +7,9 @@
   const say=(m,bad)=>{const e=$('stFeedback');if(e){e.textContent=m||'';e.style.color=bad?'#fb7185':'#34d399';}};
   const dateFa=v=>v?new Date(String(v).slice(0,10)+'T12:00:00').toLocaleDateString('fa-IR'):'—';
   const localISO=(d,t)=>{const x=new Date(d+'T'+t+':00');if(isNaN(x))throw Error('تاریخ یا ساعت نامعتبر است.');return x.toISOString();};
+  const localDate=v=>{const d=new Date(v);return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');};
+  const localTime=v=>{const d=new Date(v);return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');};
+  const rowMinutes=r=>Math.max(1,Math.round((new Date(r.ends_at)-new Date(r.starts_at))/60000));
   const plus7=(d,n)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+7*n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
   const classNames={normal:'عمومی',semi:'نیمه‌خصوصی',private:'خصوصی',vip:'VIP',online:'آنلاین'};
   const attNames={pending:'در انتظار',present:'حاضر',absent:'غایب',excused:'غیبت موجه',makeup:'جلسه جبرانی',cancelled:'لغوشده'};
@@ -16,7 +19,7 @@
     const nav=document.querySelector('.admin-tabs'),work=document.querySelector('.admin-workspace');
     if(!nav||!work)return;
     const css=document.createElement('style');css.id='studentTermsCss';
-    css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.8rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:8px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:8px 11px;font-size:.72rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-check{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:.72rem}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select{background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:1fr}.st-card{padding:9px}}';
+    css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:8px;padding:8px;font-size:.8rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:8px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:8px 11px;font-size:.72rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-check{display:flex;align-items:center;gap:7px;padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--surface);font-size:.72rem}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select,.st-table input{max-width:150px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:.68rem}.st-table small{display:block;color:var(--text-secondary);font-size:.6rem}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:1fr}.st-card{padding:9px}}';
     document.head.appendChild(css);
     const b=document.createElement('button');b.className='admin-tab-btn';b.type='button';b.textContent='👥 هنرجویان و ترم‌ها';b.setAttribute('onclick',"switchAdminTab('"+TAB+"')");
     nav.insertBefore(b,nav.querySelector('[onclick*="requestsTab"]')||null);
@@ -29,9 +32,9 @@
       '<div class="st-card"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+
       '<div class="st-grid">'+
       '<div class="st-field"><label>نام ترم</label><input id="stName" required maxlength="100" placeholder="مثلاً ترم ۱ آبان ۱۴۰۵"></div>'+
-      '<div class="st-field"><label>تعداد جلسات</label><select id="stCount"><option value="8">۸ جلسه (پیش‌فرض)</option><option value="10">۱۰ جلسه</option><option value="12">۱۲ جلسه</option><option value="custom">تعداد دلخواه</option></select></div>'+
-      '<div class="st-field st-hide" id="stCustomWrap"><label>تعداد دلخواه</label><input id="stCustom" type="number" min="1" max="100" value="8"></div>'+
-      '<div class="st-field"><label>مدت جلسه</label><select id="stDuration"><option value="60">۶۰ دقیقه</option><option value="90">۹۰ دقیقه</option></select></div>'+
+      '<div class="st-field"><label>تعداد اولیه جلسات (قابل تغییر در برنامه)</label><select id="stCount"><option value="8">۸ جلسه (پیش‌فرض)</option><option value="10">۱۰ جلسه</option><option value="12">۱۲ جلسه</option><option value="custom">تعداد دلخواه</option></select></div>'+
+      '<div class="st-field st-hide" id="stCustomWrap"><label>تعداد دلخواه</label><input id="stCustom" type="number" min="1" max="1000" value="8"></div>'+
+      '<div class="st-field"><label>مدت پیش‌فرض جلسه (دقیقه)</label><input id="stDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
       '<div class="st-field"><label>شروع ترم</label><input id="stStart" type="date"></div>'+
       '<div class="st-field"><label>پایان ترم</label><input id="stEnd" type="date"></div>'+
       '<div class="st-field"><label>محل پیش‌فرض</label><input id="stVenue" maxlength="250" placeholder="مثلاً سالن نیاوران"></div>'+
@@ -41,10 +44,10 @@
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div><div id="stTermInfo" class="st-muted"></div><div id="stVersions"></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">۴. برنامه جلسات پیش‌نویس</div><div id="stDraftMeta" class="st-muted"></div>'+
-      '<div id="stWeekly" class="st-hide"><p class="st-muted">تاریخ و ساعت اولین جلسه را وارد کنید؛ دقیقاً به تعداد کل جلسات ترم، جلسه هفتگی ساخته می‌شود. سپس سبک هر جلسه را انتخاب کنید.</p><div class="st-grid"><div class="st-field"><label>تاریخ اولین جلسه</label><input type="date" id="stWeeklyDate"></div><div class="st-field"><label>ساعت شروع</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت جلسات هفتگی</button></div>'+
-      '<div id="stManual" class="st-hide"><p class="st-muted">جلسات را تک‌به‌تک اضافه کنید؛ هر جلسه یک شماره دارد و می‌توانید یک یا چند سبک به آن اختصاص دهید.</p><div class="st-grid">'+
-      '<div class="st-field"><label>سبک‌های این جلسه (چندانتخابی)</label><select id="stStyle" multiple size="4"></select></div><div class="st-field"><label>شماره جلسه</label><input id="stNumber" type="number" min="1" value="1"></div>'+
-      '<div class="st-field"><label>تاریخ</label><input id="stDate" type="date"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div>'+
+      '<div id="stWeekly" class="st-hide"><p class="st-muted">تعداد اولیه جلسات ساخته می‌شود؛ بعد از ساخت می‌توانی هر جلسه را حذف یا ویرایش کنی. انتخاب سبک اجباری نیست.</p><div class="st-grid"><div class="st-field"><label>تاریخ اولین جلسه</label><input type="date" id="stWeeklyDate"></div><div class="st-field"><label>ساعت شروع</label><input type="time" id="stWeeklyTime" value="18:00"></div><div class="st-field"><label>محل جلسات</label><input id="stWeeklyVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stMakeWeekly">ساخت جلسات هفتگی</button></div>'+
+      '<div id="stManual" class="st-hide"><p class="st-muted">هر تعداد جلسه خواستی اضافه کن. سبک اختیاری است و مدت هر جلسه جداگانه تعیین می‌شود.</p><div class="st-grid">'+
+      '<div class="st-field"><label>سبک‌های این جلسه (اختیاری)</label><select id="stStyle" multiple size="4"></select></div><div class="st-field"><label>شماره جلسه</label><input id="stNumber" type="number" min="1" max="1000" value="1"></div>'+
+      '<div class="st-field"><label>تاریخ</label><input id="stDate" type="date"></div><div class="st-field"><label>ساعت شروع</label><input id="stTime" type="time" value="18:00"></div><div class="st-field"><label>مدت این جلسه (دقیقه)</label><input id="stSessionDuration" type="number" min="15" max="720" step="5" value="60"></div>'+
       '<div class="st-field"><label>محل این جلسه</label><input id="stSessionVenue" placeholder="خالی = محل پیش‌فرض"></div></div><button class="st-btn" type="button" id="stAdd">افزودن جلسه</button></div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stSave">ذخیره پیش‌نویس</button><button class="st-btn" type="button" id="stPublish">انتشار برنامه برای هنرجو</button></div></div>'+
       '<div class="st-card"><div class="st-title">۵. حضور و غیاب</div><p class="st-muted">ثبت حضور و غیاب فقط برای نسخه منتشرشده فعال است.</p><div id="stAttendance" class="st-muted">برنامه‌ای منتشر نشده است.</div></div></div></div>'+
@@ -122,29 +125,50 @@
   function drawDraft(){
     if(!S.rows.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای در پیش‌نویس ثبت نشده است.</p>';return;}
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
-    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>جلسه</th><th>سبک‌های این جلسه</th><th>تاریخ</th><th>ساعت</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+fa(r.session_number)+'</td><td><select multiple size="3" data-styles="'+r.session_number+'">'+S.enrollments.filter(e=>(S.termEnrollmentIds||[]).includes(e.id)).map(e=>'<option value="'+e.id+'" '+((r.enrollment_ids||[]).includes(e.id)?'selected':'')+'>'+esc(e.courses?.name||'سبک')+'</option>').join('')+'</select></td><td>'+dateFa(r.starts_at)+'</td><td>'+new Date(r.starts_at).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(r.venue||S.term.default_venue||'—')+'</td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
+    const styleOptions=S.enrollments.filter(e=>(S.termEnrollmentIds||[]).includes(e.id));
+    $('stDraftTable').innerHTML='<table class="st-table"><thead><tr><th>جلسه</th><th>سبک‌ها (اختیاری)</th><th>تاریخ</th><th>ساعت</th><th>مدت (دقیقه)</th><th>محل</th><th>حذف</th></tr></thead><tbody>'+sorted.map((r,i)=>'<tr><td>'+fa(r.session_number)+'</td><td><select multiple size="3" data-styles="'+r.session_number+'">'+styleOptions.map(e=>'<option value="'+e.id+'" '+((r.enrollment_ids||[]).includes(e.id)?'selected':'')+'>'+esc(e.courses?.name||'سبک')+'</option>').join('')+'</select><small>بدون انتخاب هم مجاز است</small></td><td><input type="date" data-date="'+r.session_number+'" value="'+localDate(r.starts_at)+'"></td><td><input type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'"></td><td><input type="number" min="15" max="720" step="5" data-duration="'+r.session_number+'" value="'+rowMinutes(r)+'"></td><td><input type="text" maxlength="250" data-venue="'+r.session_number+'" value="'+esc(r.venue||'')+'" placeholder="'+esc(S.term.default_venue||'محل')+'"></td><td><button class="st-btn danger" data-del="'+i+'">حذف</button></td></tr>').join('')+'</tbody></table>';
     $('stDraftTable').querySelectorAll('[data-styles]').forEach(el=>el.addEventListener('change',()=>{const row=sorted.find(x=>Number(x.session_number)===Number(el.dataset.styles));if(row)row.enrollment_ids=Array.from(el.selectedOptions).map(o=>o.value);}));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
   }
+  function collectDraftPayload(){
+    const seen=new Set();
+    return S.rows.map(r=>{
+      const n=Number(r.session_number),key=String(n);
+      if(!Number.isInteger(n)||n<1||n>1000||seen.has(key))throw Error('شماره جلسات باید مثبت و غیرتکراری باشد.');
+      seen.add(key);
+      const d=$('stDraftTable').querySelector('[data-date="'+n+'"]')?.value||localDate(r.starts_at);
+      const t=$('stDraftTable').querySelector('[data-time="'+n+'"]')?.value||localTime(r.starts_at);
+      const mins=Number($('stDraftTable').querySelector('[data-duration="'+n+'"]')?.value||rowMinutes(r));
+      const venueInput=$('stDraftTable').querySelector('[data-venue="'+n+'"]');
+      if(!d||!t||!Number.isInteger(mins)||mins<15||mins>720)throw Error('تاریخ، ساعت یا مدت یکی از جلسات معتبر نیست.');
+      const start=localISO(d,t);
+      return {enrollment_ids:r.enrollment_ids||[],session_number:n,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:venueInput?venueInput.value.trim():(r.venue||''),notes:r.notes||null};
+    });
+  }
   function makeWeekly(){
-    try{const d=$('stWeeklyDate').value,t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!d||!t)throw Error('تاریخ اولین جلسه و ساعت شروع را وارد کنید.');if(!S.enrollments.length)throw Error('برای این ترم سبکی انتخاب نشده است.');
-      S.rows=Array.from({length:n},(_,i)=>{const start=localISO(plus7(d,i),t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,notes:null};});drawDraft();say(fa(n)+' جلسه برای کل ترم ساخته شد؛ سبک هر جلسه را در جدول انتخاب کنید.');
+    try{const d=$('stWeeklyDate').value,t=$('stWeeklyTime').value,v=$('stWeeklyVenue').value.trim()||S.term.default_venue||null,n=Number(S.term.total_sessions),mins=Number(S.term.duration_minutes);if(!d||!t)throw Error('تاریخ اولین جلسه و ساعت شروع را وارد کنید.');if(!Number.isInteger(n)||n<1||n>1000)throw Error('تعداد اولیه جلسات معتبر نیست.');
+      S.rows=Array.from({length:n},(_,i)=>{const start=localISO(plus7(d,i),t);return {enrollment_ids:[],session_number:i+1,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:v,notes:null};});drawDraft();say(fa(n)+' جلسه ساخته شد؛ تعداد و مدت هر جلسه قابل ویرایش است و انتخاب سبک اجباری نیست.');
     }catch(e){say(e.message,true);}
   }
   function addManual(){
-    try{const ids=Array.from($('stStyle').selectedOptions).map(o=>o.value),n=Number($('stNumber').value),d=$('stDate').value,t=$('stTime').value;if(!ids.length||!d||!t||!Number.isInteger(n)||n<1||n>Number(S.term.total_sessions))throw Error('حداقل یک سبک، شماره جلسه، تاریخ و ساعت را کامل وارد کنید.');
-      if(S.rows.some(x=>Number(x.session_number)===n))throw Error('این شماره جلسه قبلاً ثبت شده است؛ هر جلسه فقط یک شماره دارد.');
-      const start=localISO(d,t);S.rows.push({enrollment_ids:ids,session_number:n,starts_at:start,ends_at:new Date(new Date(start).getTime()+Number(S.term.duration_minutes)*60000).toISOString(),venue:$('stSessionVenue').value.trim()||S.term.default_venue||null,notes:null});
-      $('stNumber').value=String(Math.min(n+1,Number(S.term.total_sessions)));drawDraft();say('جلسه به پیش‌نویس اضافه شد.');
+    try{const ids=Array.from($('stStyle').selectedOptions).map(o=>o.value),n=Number($('stNumber').value),d=$('stDate').value,t=$('stTime').value,mins=Number($('stSessionDuration').value);if(!d||!t||!Number.isInteger(n)||n<1||n>1000||!Number.isInteger(mins)||mins<15||mins>720)throw Error('شماره جلسه، تاریخ، ساعت و مدت معتبر را وارد کنید. سبک اختیاری است.');
+      if(S.rows.some(x=>Number(x.session_number)===n))throw Error('این شماره جلسه قبلاً ثبت شده است.');
+      const start=localISO(d,t);S.rows.push({enrollment_ids:ids,session_number:n,starts_at:start,ends_at:new Date(new Date(start).getTime()+mins*60000).toISOString(),venue:$('stSessionVenue').value.trim()||S.term.default_venue||null,notes:null});
+      $('stNumber').value=String(Math.max(...S.rows.map(x=>Number(x.session_number)+1)));drawDraft();say('جلسه اضافه شد؛ سبک و مدت هر جلسه مستقل است.');
     }catch(e){say(e.message,true);}
   }
+  async function persistDraft(){
+    if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
+    const payload=collectDraftPayload();if(!payload.length)throw Error('برای ذخیره، حداقل یک جلسه اضافه کنید.');
+    const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;
+    S.term.total_sessions=payload.length;await loadDraftRows();drawDraft();return data;
+  }
   async function saveDraft(){
-    try{if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');const payload=S.rows.map(r=>({enrollment_ids:r.enrollment_ids||[],session_number:Number(r.session_number),starts_at:r.starts_at,ends_at:r.ends_at,venue:r.venue||S.term.default_venue||null,notes:r.notes||null}));
-      say('در حال ذخیره پیش‌نویس…');const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;await loadDraftRows();drawDraft();say(fa(data)+' جلسه در پیش‌نویس ذخیره شد.');
-    }catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
+    try{say('در حال ذخیره پیش‌نویس…');const count=await persistDraft();say(fa(count)+' جلسه ذخیره شد. تعداد جلسات از روی برنامه شما ثبت شد؛ سبک‌ها و مدت‌ها مستقل هستند.');}
+    catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
   async function publish(){
-    try{if(!S.draftId)throw Error('پیش‌نویسی برای انتشار وجود ندارد.');if(!confirm('این نسخه برای هنرجو قابل مشاهده می‌شود. ادامه می‌دهید؟'))return;say('در حال بررسی و انتشار…');const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;await loadStudent(S.studentId);$('stTerm').value=S.termId;await loadTerm(S.termId);say('برنامه با موفقیت منتشر شد.');
+    try{if(!S.draftId)throw Error('پیش‌نویسی برای انتشار وجود ندارد.');if(!confirm('این برنامه با تعداد و مدت دلخواه شما برای هنرجو منتشر می‌شود. ادامه می‌دهید؟'))return;say('در حال ذخیره و انتشار…');await persistDraft();const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;await loadStudent(S.studentId);$('stTerm').value=S.termId;await loadTerm(S.termId);say('برنامه با موفقیت منتشر شد.');
     }catch(e){say(e.message||'انتشار ناموفق بود.',true);}
   }
   async function createDraft(){
