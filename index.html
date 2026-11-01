@@ -231,6 +231,53 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .promo-copy-btn{background:var(--neon-blue);color:#000;border:none;padding:3px 14px;border-radius:12px;font-size:.62rem;font-weight:800;cursor:pointer;transition:all .15s;}
 .promo-copy-btn:active{transform:scale(.92);}
 .promo-action-btn{display:block;width:100%;padding:8px;background:var(--btn-active);color:#fff;border-radius:var(--radius-sm);text-decoration:none;font-weight:800;font-size:.74rem;box-shadow:var(--neon-shadow);}
+
+/* Admin typography refinement — scoped only to the management interface */
+.admin-content{font-family:'Vazirmatn',sans-serif;font-size:13px;line-height:1.65;}
+.admin-header{padding:12px 18px;min-height:54px;}
+.admin-header h3{font-size:.9rem!important;font-weight:800;letter-spacing:-.25px;}
+.admin-sidebar{gap:11px;padding:15px 11px;}
+.admin-sidebar-brand{padding:10px 11px;}
+.admin-sidebar-brand strong{font-size:.82rem;letter-spacing:1.2px;}
+.admin-sidebar-brand small{font-size:.62rem;line-height:1.6;}
+.admin-tab-btn{font-size:.71rem;line-height:1.55;padding:9px 10px;gap:8px;font-weight:650;}
+.admin-workspace{padding:19px 21px 16px;font-size:13px;line-height:1.75;}
+.admin-workspace h1,.admin-workspace h2,.admin-workspace h3,.admin-workspace h4{font-size: .94rem;line-height:1.6;font-weight:800;letter-spacing:-.2px;margin-top:0;margin-bottom:10px;}
+.admin-workspace p,.admin-workspace small,.admin-workspace .hint,.admin-workspace .description{font-size:.72rem;line-height:1.8;}
+.admin-workspace .admin-input-group{margin-bottom:9px;}
+.admin-workspace .admin-input-group label{font-size:.68rem;font-weight:650;line-height:1.6;margin-bottom:4px;}
+.admin-workspace .admin-input-group input,.admin-workspace .admin-input-group textarea,.admin-workspace .admin-select,.admin-workspace .admin-style-row input{font-size:.76rem;line-height:1.6;padding:7px 9px;}
+.admin-workspace button:not(.admin-tab-btn){font-size:.75rem;line-height:1.5;}
+.admin-workspace table{font-size:.72rem;}
+.admin-workspace th,.admin-workspace td{padding:7px 8px;}
+.admin-login-card h2{font-size:1.12rem;}
+.admin-login-subtitle{font-size:.72rem;}
+.admin-login-label{font-size:.69rem;}
+.admin-login-submit{font-size:.78rem;}
+@media(max-width:720px){
+ .admin-header{padding:10px 11px;min-height:48px;}
+ .admin-header h3{font-size:.82rem!important;}
+ .admin-sidebar{padding:8px 6px;gap:8px;}
+ .admin-sidebar-brand{padding:7px 6px;}
+ .admin-sidebar-brand strong{font-size:.68rem;}
+ .admin-sidebar-brand small{font-size:.54rem;line-height:1.45;}
+ .admin-tab-btn{font-size:.61rem;line-height:1.45;padding:7px 6px;min-height:44px;gap:6px;}
+ .admin-workspace{padding:11px 10px calc(15px + env(safe-area-inset-bottom));font-size:12px;line-height:1.7;}
+ .admin-workspace h1,.admin-workspace h2,.admin-workspace h3,.admin-workspace h4{font-size:.86rem;margin-bottom:8px;}
+ .admin-workspace p,.admin-workspace small,.admin-workspace .hint,.admin-workspace .description{font-size:.68rem;}
+ .admin-workspace .admin-input-group label{font-size:.64rem;}
+ .admin-workspace .admin-input-group input,.admin-workspace .admin-input-group textarea,.admin-workspace .admin-select,.admin-workspace .admin-style-row input{font-size:16px;min-height:38px;}
+ .admin-workspace button:not(.admin-tab-btn){font-size:.7rem;}
+ .admin-workspace table{font-size:.66rem;}
+ .admin-workspace th,.admin-workspace td{padding:6px 5px;}
+ .admin-login-card h2{font-size:1.06rem;}
+ .admin-login-subtitle{font-size:.69rem;}
+}
+@media(max-width:380px){
+ .admin-tab-btn{font-size:.58rem;padding:6px 5px;}
+ .admin-workspace{padding:10px 8px;}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
