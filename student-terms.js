@@ -131,9 +131,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">افزودن و تنظیم جلسات ترم</div>'+
-      '<div class="st-mode-switch"><button type="button" class="st-mode-btn" data-mode="manual">دستی</button><button type="button" class="st-mode-btn" data-mode="even">کلاس زوج</button><button type="button" class="st-mode-btn" data-mode="odd">کلاس فرد</button></div>'+
-      '<div id="stManual" class="st-mode-panel st-hide"><div class="st-manual-pick"><button class="st-btn" type="button" id="stManualCalendar">انتخاب تاریخ جلسات از تقویم</button><span id="stManualCount" class="st-muted">هنوز تاریخی انتخاب نشده</span></div><div id="stManualSelected" class="st-muted"></div></div>'+
-      '<div id="stWeekly" class="st-mode-panel st-hide"><div class="st-weekly-top"><label class="st-compact-field">ساعت شروع <input type="time" id="stWeeklyTime" value="18:00"></label></div><div id="stEvenPanel" class="st-day-panel st-hide"><div class="st-muted">روزهای زوج را انتخاب کن</div><div id="stEvenDays" class="st-day-picks"></div><button class="st-btn" type="button" id="stMakeEven">ساخت جلسات زوج</button></div><div id="stOddPanel" class="st-day-panel st-hide"><div class="st-muted">روزهای فرد را انتخاب کن</div><div id="stOddDays" class="st-day-picks"></div><button class="st-btn" type="button" id="stMakeOdd">ساخت جلسات فرد</button></div></div>'+
+      '<div id="stManual" class="st-mode-panel"><div class="st-manual-pick"><button class="st-btn" type="button" id="stManualCalendar">انتخاب تاریخ جلسات از تقویم</button><span id="stManualCount" class="st-muted">هنوز تاریخی انتخاب نشده</span></div><div id="stManualSelected" class="st-muted"></div></div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn" type="button" id="stSave">ذخیره موقت جلسات</button><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی ترم و نمایش برنامه به هنرجو</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
@@ -146,9 +144,6 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     selectObserver.observe(p,{childList:true,subtree:true});
     initTermCalendars(p);
     bindJalaliDates(p);
-      const weekNames=['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'];
-      const renderDayPicks=(id,days)=>{$(id).innerHTML=days.map(i=>'<label class="st-day-chip"><input type="checkbox" value="'+i+'" checked><span>'+weekNames[i]+'</span></label>').join('');};renderDayPicks('stEvenDays',[0,2,4]);renderDayPicks('stOddDays',[1,3,5]);
-      p.querySelectorAll('[data-mode]').forEach(btn=>btn.addEventListener('click',()=>{const mode=btn.dataset.mode;$('stManual').classList.toggle('st-hide',mode!=='manual');$('stWeekly').classList.toggle('st-hide',mode==='manual');$('stEvenPanel').classList.toggle('st-hide',mode!=='even');$('stOddPanel').classList.toggle('st-hide',mode!=='odd');p.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===btn));}));
       const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
@@ -156,8 +151,6 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',createTerm);
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
-     $('stMakeEven').addEventListener('click',()=>makeWeekly('even'));
-     $('stMakeOdd').addEventListener('click',()=>makeWeekly('odd'));
      initManualMultiCalendar(p);
     $('stSave').addEventListener('click',saveDraft);
     $('stPublish').addEventListener('click',publish);
@@ -237,7 +230,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term.published_version_id||null;
-      if(S.draftId){await loadDraftRows();await renderBuilder();}else if(S.publishedId){$('stDraftTable').innerHTML='<button class="st-btn" id="stNewDraft">ساخت پیش‌نویس از نسخه منتشرشده</button>';$('stNewDraft').onclick=createDraft;$('stWeekly').classList.add('st-hide');$('stManual').classList.add('st-hide');}else{say('پیش‌نویس این ترم موجود نیست.',true);}
+      if(S.draftId){await loadDraftRows();await renderBuilder();}else if(S.publishedId){$('stDraftTable').innerHTML='<button class="st-btn" id="stNewDraft">ساخت پیش‌نویس از نسخه منتشرشده</button>';$('stNewDraft').onclick=createDraft;$('stManual').classList.add('st-hide');}else{say('پیش‌نویس این ترم موجود نیست.',true);}
     }catch(e){say(e.message||'دریافت ترم ناموفق بود.',true);}
   }
 
@@ -247,7 +240,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
     const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
-    $('stWeekly').classList.add('st-hide');$('stManual').classList.add('st-hide');
+    $('stManual').classList.add('st-hide');
     $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
   }
