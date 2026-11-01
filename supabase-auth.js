@@ -34,15 +34,16 @@ window.GYM20AdminAuth = (() => {
       return true;
     }
 
-    async function sendMagicLink(email, redirectTo = window.location.href) {
-      if (!email?.trim()) throw new Error('ایمیل را وارد کنید.');
-      onStatus('در حال ارسال لینک ورود…', false);
-      const { error } = await client.auth.signInWithOtp({
+    async function signInWithPassword(email, password) {
+      if (!email?.trim()) throw new Error('ایمیل حساب مدیر را وارد کنید.');
+      if (!password) throw new Error('رمز عبور را وارد کنید.');
+      onStatus('در حال بررسی اطلاعات ورود…', false);
+      const { error } = await client.auth.signInWithPassword({
         email: email.trim(),
-        options: { emailRedirectTo: redirectTo }
+        password
       });
       if (error) throw error;
-      onStatus('لینک ورود به ایمیل شما ارسال شد. ایمیل را باز کنید و لینک را بزنید.', false);
+      onStatus('ورود انجام شد؛ در حال بررسی دسترسی مدیر…', false);
     }
 
     async function signOut() {
@@ -51,7 +52,7 @@ window.GYM20AdminAuth = (() => {
       if (error) throw error;
     }
 
-    return { verifyOwner, sendMagicLink, signOut, getClient: () => client };
+    return { verifyOwner, signInWithPassword, signOut, getClient: () => client };
   }
 
   return { init };
