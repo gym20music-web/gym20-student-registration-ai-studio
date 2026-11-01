@@ -278,6 +278,30 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .admin-workspace{padding:10px 8px;}
 }
 
+
+/* Smaller text inside admin form controls */
+.admin-content .admin-workspace input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+.admin-content .admin-workspace textarea,
+.admin-content .admin-workspace select,
+.admin-content .admin-workspace .admin-select,
+.admin-content .admin-workspace .admin-style-row input{
+ font-size:12px!important;
+ font-weight:500;
+ line-height:1.55;
+}
+.admin-content .admin-workspace input::placeholder,
+.admin-content .admin-workspace textarea::placeholder{font-size:11px!important;opacity:.72;}
+.admin-content .admin-workspace .price-input-wrapper input{font-size:12px!important;font-weight:600;}
+@media(max-width:720px){
+ .admin-content .admin-workspace input:not([type="checkbox"]):not([type="radio"]):not([type="color"]),
+ .admin-content .admin-workspace textarea,
+ .admin-content .admin-workspace select,
+ .admin-content .admin-workspace .admin-select,
+ .admin-content .admin-workspace .admin-style-row input{font-size:14px!important;}
+ .admin-content .admin-workspace input::placeholder,
+ .admin-content .admin-workspace textarea::placeholder{font-size:12px!important;}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
