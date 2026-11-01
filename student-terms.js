@@ -225,8 +225,14 @@ document.head.appendChild(css);
       const p=enDigits($('stStart').value).split('/').map(Number),termName='ترم '+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][p[1]-1]+' '+p[0];
       const exists=await db().from('student_terms').select('id,term_name').eq('student_id',S.studentId).eq('term_name',termName);
       if(exists.error)throw exists.error;
-      const exactDuplicate=(exists.data||[]).some(t=>String(t.term_name||'').trim()===termName);
-      if(exactDuplicate)throw Error('ترم «'+termName+'» قبلاً برای این هنرجو ساخته شده است؛ از فهرست ترم‌ها انتخابش کن.');
+      const duplicate=(exists.data||[]).find(t=>String(t.term_name||'').trim()===termName);
+      if(duplicate){
+        await loadStudent(S.studentId);
+        $('stTerm').value=duplicate.id;
+        await loadTerm(duplicate.id);
+        say('ترم «'+termName+'» از قبل ثبت شده بود؛ فهرست به‌روز شد و همان ترم انتخاب شد.');
+        return;
+      }
       say('در حال ساخت ترم و جدول جلسات…');
       const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:selectedDates.length,p_duration_minutes:duration,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
