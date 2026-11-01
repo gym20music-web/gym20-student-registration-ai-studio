@@ -121,14 +121,13 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '<div class="admin-section-subhead">👥 مدیریت هنرجویان، ترم‌ها و برنامه جلسات</div>'+
       '<div class="st-card st-student-card"><div class="st-title">۱. انتخاب هنرجو</div><div class="st-field st-student-select-wrap"><label>هنرجو</label><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">در حال دریافت هنرجویان…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
-      '<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
+      '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><div class="st-actions"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger" id="stDeleteTerm" disabled>حذف کل ترم</button></div></div></div>'+'<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
       '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
       '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
       '<div class="st-field"><label>تعداد جلسات</label><input id="stCount" type="number" min="1" step="1" value="8" required></div>'+
       '</div>'+
       '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted">ابتدا تاریخ شروع و پایان ترم را مشخص کن</span></div></form></div>'+
-      '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
       '<div class="st-actions"><button class="st-btn" type="button" id="stAddDates" hidden>▦ افزودن تاریخ جلسات</button></div><div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی جلسات و انتشار برنامه برای هنرجو</button></div></div>'+
@@ -150,6 +149,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
     $('stTerm').addEventListener('change',e=>loadTerm(e.target.value));
+    $('stDeleteTerm').addEventListener('click',deleteSelectedTerm);
     initManualMultiCalendar(p);
     $('stPublish').addEventListener('click',publish);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
@@ -231,7 +231,29 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     }catch(e){say(e.message||'ساخت ترم و جلسات ناموفق بود.',true);}
   }
 
-    async function loadTerm(id){
+    async function deleteSelectedTerm(){
+    const id=S.termId,term=S.terms.find(t=>t.id===id);
+    if(!id||!term){say('ابتدا ترم موردنظر را انتخاب کن.',true);return;}
+    const name=term.term_name||'این ترم';
+    if(!confirm('هشدار: با حذف «'+name+'»، تمام جلسات، برنامه‌های منتشرشده و پیش‌نویس‌ها و سوابق حضور و غیاب همین ترم نیز حذف می‌شوند. ثبت‌نام سبک‌ها و پرونده هنرجو حذف نمی‌شود. آیا مطمئنی؟'))return;
+    const btn=$('stDeleteTerm');btn.disabled=true;
+    try{
+      say('در حال حذف ترم و اطلاعات وابسته…');
+      const {data:sessions,error:se}=await db().from('class_sessions').select('id').eq('term_id',id);if(se)throw se;
+      const sessionIds=(sessions||[]).map(x=>x.id);
+      if(sessionIds.length){const {error}=await db().from('attendance').delete().in('session_id',sessionIds);if(error)throw error;}
+      const {error:ce}=await db().from('class_sessions').delete().eq('term_id',id);if(ce)throw ce;
+      const {error:ue}=await db().from('student_terms').update({published_version_id:null}).eq('id',id);if(ue)throw ue;
+      const {error:ve}=await db().from('term_schedule_versions').delete().eq('term_id',id);if(ve)throw ve;
+      const {error:te}=await db().from('student_terms').delete().eq('id',id);if(te)throw te;
+      S.termId='';S.term=null;S.draftId='';S.rows=[];S.publishedId=null;
+      await loadStudent(S.studentId);$('stTerm').value='';$('stSchedule').classList.add('st-hide');
+      say('ترم «'+name+'» و تمام جلسات و سوابق حضور و غیاب وابسته حذف شد.');
+    }catch(e){say(e.message||'حذف ترم انجام نشد.',true);}
+    finally{btn.disabled=!S.termId;}
+  }
+
+  async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stAddDates').hidden=true;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
     try{
