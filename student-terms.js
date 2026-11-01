@@ -233,7 +233,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
 
   async function loadTerm(id){
-    S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
+    S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
