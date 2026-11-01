@@ -527,15 +527,20 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
     <div class="admin-login-mark">G<span>20</span></div>
     <div class="admin-login-kicker">GYM20 ACADEMY · CONTROL CENTER</div>
     <h2 id="adminLoginTitle">ورود مدیر</h2>
-    <p class="admin-login-subtitle">برای ورود مدیر، لینک یک‌بارمصرف به ایمیل حساب مالک آکادمی ارسال می‌شود.</p>
+    <p class="admin-login-subtitle">برای ورود به پنل مدیریت، ایمیل حساب و رمز عبور خود را وارد کنید.</p>
     <form id="adminLoginForm" autocomplete="on">
       <label class="admin-login-label" for="adminLoginEmail">ایمیل حساب مدیر</label>
       <div class="admin-login-input-wrap">
         <span class="admin-login-lock">✉</span>
-        <input id="adminLoginEmail" type="email" placeholder="ایمیل مدیر" autocomplete="email" required>
+        <input id="adminLoginEmail" type="email" placeholder="ایمیل حساب مدیر" autocomplete="username" required>
+      </div>
+      <label class="admin-login-label" for="adminLoginPassword" style="margin-top:14px;">رمز عبور</label>
+      <div class="admin-login-input-wrap">
+        <span class="admin-login-lock">🔒</span>
+        <input id="adminLoginPassword" type="password" placeholder="رمز عبور" autocomplete="current-password" required minlength="6">
       </div>
       <div class="admin-login-error" id="adminLoginError" role="status" aria-live="polite"></div>
-      <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ارسال لینک ورود <span>←</span></button>
+      <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ورود به پنل مدیریت <span>←</span></button>
     </form>
     <div class="admin-login-foot"><span></span> دسترسی ویژه مدیران GYM20</div>
   </div>
@@ -1282,6 +1287,7 @@ const closeAdmin=document.getElementById('closeAdmin');
 const adminLoginModal=document.getElementById('adminLoginModal');
 const adminLoginForm=document.getElementById('adminLoginForm');
 const adminLoginEmail=document.getElementById('adminLoginEmail');
+const adminLoginPassword=document.getElementById('adminLoginPassword');
 const adminLoginError=document.getElementById('adminLoginError');
 let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false,gym20AppDataLoaded=false;
 function setAdminLoginStatus(message,isError=false){
@@ -1323,11 +1329,13 @@ adminLoginForm.addEventListener('submit',async e=>{
   e.preventDefault();
   const submit=document.getElementById('adminLoginSubmit');
   const old=submit.textContent;
-  submit.disabled=true;submit.textContent='در حال ارسال…';
+  submit.disabled=true;submit.textContent='در حال بررسی…';
   try{
     const auth=ensureGym20AdminAuth();
-    await auth.sendMagicLink(adminLoginEmail.value.trim(),window.location.href.split('#')[0]);
-  }catch(err){setAdminLoginStatus(err.message||'ارسال لینک ورود ناموفق بود.',true);}
+    await auth.signInWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
+    adminLoginPassword.value='';
+    await auth.verifyOwner();
+  }catch(err){setAdminLoginStatus(err.message||'ایمیل یا رمز عبور صحیح نیست.',true);}
   finally{submit.disabled=false;submit.textContent=old;}
 });
 adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminLogin();});
