@@ -1276,6 +1276,9 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
 
 function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea');if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=document.getElementById('ruleSelector').value;t.value=appData.rules[currentEditingRuleKey]||'';}
 
+const adminBtn=document.getElementById('adminBtn');
+const adminModal=document.getElementById('adminModal');
+const closeAdmin=document.getElementById('closeAdmin');
 const adminLoginModal=document.getElementById('adminLoginModal');
 const adminLoginForm=document.getElementById('adminLoginForm');
 const adminLoginEmail=document.getElementById('adminLoginEmail');
