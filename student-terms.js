@@ -125,13 +125,13 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
       '<div class="st-grid st-term-grid">'+
       '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
       '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
-      '<div class="st-field"><label>تعداد جلسات</label><input id="stCount" type="number" min="1" max="100" step="1" value="8" required></div>'+
+      '<div class="st-field"><label>تعداد جلسات</label><input id="stCount" type="number" min="1" step="1" value="8" required></div>'+
       '</div>'+
       '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted">ابتدا تاریخ شروع و پایان ترم را مشخص کن</span></div></form></div>'+
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><select id="stTerm"><option value="">انتخاب ترم…</option></select></div></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
-      '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی جلسات و انتشار برنامه برای هنرجو</button></div></div>'+
+      '<div class="st-actions"><button class="st-btn" type="button" id="stAddDates" hidden>▦ افزودن تاریخ جلسات</button></div><div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی جلسات و انتشار برنامه برای هنرجو</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
@@ -211,19 +211,19 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     try{
       const activeEnrollments=S.enrollments.filter(e=>e.status==='active'),ids=activeEnrollments.map(x=>x.id);
       if(!ids.length)throw Error('برای این هنرجو سبک فعالی در ثبت‌نام اولیه پیدا نشد.');
-      const count=Number($('stCount').value),duration=60,startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
-      if(!Number.isInteger(count)||count<1||count>100)throw Error('تعداد جلسات باید بین ۱ تا ۱۰۰ باشد.');
+      const duration=60,startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+      if(!Array.isArray(selectedDates)||!selectedDates.length)throw Error('حداقل یک تاریخ جلسه انتخاب کن.');
       if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
-      if(!Array.isArray(selectedDates)||selectedDates.length!==count)throw Error('به تعداد جلسات تعیین‌شده، تاریخ انتخاب کن.');
+      if(new Set(selectedDates).size!==selectedDates.length)throw Error('تاریخ تکراری انتخاب شده است.');
       if(selectedDates.some(d=>d<startDate||d>endDate))throw Error('همه تاریخ‌ها باید داخل بازه شروع و پایان ترم باشند.');
       const p=enDigits($('stStart').value).split('/').map(Number),termName='ترم '+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][p[1]-1]+' '+p[0];
       const exists=await db().from('student_terms').select('id').eq('student_id',S.studentId).ilike('term_name',termName).limit(1);
       if(exists.error)throw exists.error;if(exists.data?.length)throw Error('این ترم برای این هنرجو قبلاً ثبت شده است؛ از فهرست ترم‌ها انتخابش کن.');
       say('در حال ساخت ترم و جدول جلسات…');
-      const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:count,p_duration_minutes:duration,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
+      const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:selectedDates.length,p_duration_minutes:duration,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
       await loadStudent(S.studentId);$('stTerm').value=x.term_id;await loadTerm(x.term_id);
-      S.manualDates=selectedDates.slice().sort();const mins=Number(S.term?.duration_minutes)||60;
+      S.manualDates=selectedDates.slice().sort();$('stCount').value=String(S.manualDates.length);const mins=Number(S.term?.duration_minutes)||60;
       S.rows=S.manualDates.map((d,i)=>{const startAt=localISO(d,'18:00');return {enrollment_ids:ids,session_number:i+1,starts_at:startAt,ends_at:new Date(new Date(startAt).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null};});
       $('stManualCount').textContent=fa(S.rows.length)+' جلسه برای ترم انتخاب شد';
       drawDraft();$('stSchedule').classList.remove('st-hide');
@@ -233,7 +233,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
 
     async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
-    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
+    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stAddDates').hidden=true;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term.published_version_id||null;
@@ -246,7 +246,7 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
-    const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;
+    const ids=(links||[]).map(x=>x.enrollment_id);S.termEnrollmentIds=ids;$('stAddDates').hidden=false;
     $('stManual')?.classList.remove('st-hide');
     $('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();$('stCount').value=String(S.term.total_sessions||8);
     drawDraft();
@@ -293,29 +293,37 @@ css.textContent += '@media(max-width:720px){.admin-layout{flex-direction:row!imp
     }catch(e){say(e.message,true);}
   }
   function initManualMultiCalendar(root){
-    const trigger=$('stManualCalendar');if(!trigger)return;
-    trigger.addEventListener('click',()=>{
-      const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value),count=Number($('stCount').value);
-      if(!startDate||!endDate||endDate<startDate){say('ابتدا تاریخ شروع و پایان ترم را درست انتخاب کن.',true);return;}
-      if(!Number.isInteger(count)||count<1||count>100){say('تعداد جلسات باید بین ۱ تا ۱۰۰ باشد.',true);return;}
-      document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
-      const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
-      const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
-      let jy=startJ[0],jm=startJ[1];const chosen=new Set();
-      const minKey=startDate,maxKey=endDate;
-      const draw=()=>{
-        const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7;
-        const monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
-        pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">از '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · '+fa(count)+' جلسه</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),valid=iso>=minKey&&iso<=maxKey,selected=chosen.has(iso);return '<button type="button" class="st-jcal-day '+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid||(!selected&&chosen.size>=count)?'disabled':'')+'>'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(chosen.size!==count?'disabled':'')+'>ساخت جدول جلسات ('+fa(chosen.size)+' از '+fa(count)+')</button></div>';
-        pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
-        pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
-        pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(chosen.size<count)chosen.add(iso);draw();});
-        pop.querySelector('[data-confirm]').onclick=async()=>{if(chosen.size!==count)return;const dates=Array.from(chosen).sort();pop.remove();await createTerm(dates);};
-      };
-      const rect=trigger.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-268,rect.left+rect.width/2-126))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-390,rect.bottom+5))+'px';draw();
-      const close=e=>{if(!pop.contains(e.target)&&e.target!==trigger){pop.remove();document.removeEventListener('pointerdown',close);}};
-      setTimeout(()=>document.addEventListener('pointerdown',close),0);
-    });
+    const openCalendar=(trigger,existing)=>{
+      trigger.addEventListener('click',()=>{
+        const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+        if(!startDate||!endDate||endDate<startDate){say('ابتدا تاریخ شروع و پایان ترم را درست انتخاب کن.',true);return;}
+        if(existing&&!S.draftId){say('ابتدا برای این ترم پیش‌نویس بساز.',true);return;}
+        document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
+        const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
+        const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
+        let jy=startJ[0],jm=startJ[1];const chosen=new Set(),existingDates=new Set(S.rows.map(r=>localDate(r.starts_at)));
+        const minKey=startDate,maxKey=endDate;
+        const draw=()=>{
+          const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7,monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
+          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),valid=iso>=minKey&&iso<=maxKey&&!existingDates.has(iso),selected=chosen.has(iso);return '<button type="button" class="st-jcal-day '+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!selected?'disabled':'')+'>'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ (existing?'افزودن تاریخ‌های انتخاب‌شده':'ساخت جدول جلسات')+' ('+fa(chosen.size)+')</button></div>';
+          pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
+          pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
+          pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
+          pop.querySelector('[data-confirm]').onclick=async()=>{
+            if(!chosen.size)return;const dates=Array.from(chosen).sort();pop.remove();
+            if(!existing){await createTerm(dates);return;}
+            const ids=S.termEnrollmentIds.length?S.termEnrollmentIds:S.enrollments.filter(e=>e.status==='active').map(e=>e.id),mins=Number(S.term?.duration_minutes)||60;
+            let n=S.rows.reduce((m,r)=>Math.max(m,Number(r.session_number)||0),0);
+            dates.forEach(d=>{const starts=localISO(d,'18:00');S.rows.push({enrollment_ids:ids,session_number:++n,starts_at:starts,ends_at:new Date(new Date(starts).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null});});
+            $('stCount').value=String(S.rows.length);drawDraft();say(fa(dates.length)+' جلسه به ترم موجود اضافه شد؛ ساعت و مربی هر جلسه را تنظیم کن و ثبت نهایی را بزن.');
+          };
+        };
+        const rect=trigger.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-268,rect.left+rect.width/2-126))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-390,rect.bottom+5))+'px';draw();
+        const close=e=>{if(!pop.contains(e.target)&&e.target!==trigger){pop.remove();document.removeEventListener('pointerdown',close);}};
+        setTimeout(()=>document.addEventListener('pointerdown',close),0);
+      });
+    };
+    const create=$('stManualCalendar'),add=$('stAddDates');if(create)openCalendar(create,false);if(add)openCalendar(add,true);
   }
   async function persistDraft(){
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
