@@ -90,7 +90,7 @@
     ev.preventDefault();try{
       const ids=Array.from(document.querySelectorAll('input[name="stEnroll"]:checked')).map(x=>x.value);
       const count=$('stCount').value==='custom'?Number($('stCustom').value):Number($('stCount').value);
-      if(!ids.length)throw Error('حداقل یک سبک را انتخاب کنید.');if(!Number.isInteger(count)||count<1||count>100)throw Error('تعداد جلسات سفارشی معتبر نیست.');
+      if(!ids.length)throw Error('حداقل یک سبک را انتخاب کنید.');if(!Number.isInteger(count)||count<1||count>1000)throw Error('تعداد اولیه جلسات معتبر نیست.');
       say('در حال ساخت ترم…');
       const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:$('stName').value.trim(),p_start_date:$('stStart').value||null,p_end_date:$('stEnd').value||null,p_total_sessions:count,p_duration_minutes:Number($('stDuration').value),p_default_venue:$('stVenue').value.trim()||null,p_schedule_mode:$('stMode').value,p_enrollment_ids:ids});
       if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
@@ -176,7 +176,7 @@
   }
   async function loadAttendance(){
     const box=$('stAttendance');if(!S.publishedId){box.textContent='برای این ترم هنوز برنامه‌ای منتشر نشده است.';return;}
-    try{const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,venue,courses(name),class_session_styles(enrollment_id,enrollments(courses(name)))').eq('schedule_version_id',S.publishedId).order('starts_at');if(error)throw error;S.sessions=data||[];const ids=S.sessions.map(x=>x.id);let ats=[];
+    try{const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,ends_at,venue,courses(name),class_session_styles(enrollment_id,enrollments(courses(name)))').eq('schedule_version_id',S.publishedId).order('starts_at');if(error)throw error;S.sessions=data||[];const ids=S.sessions.map(x=>x.id);let ats=[];
       if(ids.length){const r=await db().from('attendance').select('session_id,status').in('session_id',ids).eq('student_id',S.studentId);if(r.error)throw r.error;ats=r.data||[];}
       const map={};ats.forEach(a=>map[a.session_id]=a.status);
       if(!S.sessions.length){box.textContent='جلسه منتشرشده‌ای پیدا نشد.';return;}
