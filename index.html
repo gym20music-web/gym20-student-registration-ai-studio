@@ -468,6 +468,63 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .admin-tab-btn{min-height:32px!important;padding:6px 8px!important;font-size:9px!important}
  .admin-workspace{padding:9px 8px calc(14px + env(safe-area-inset-bottom))!important}
 }
+
+
+/* GYM20 Admin UI refresh: aligned controls, compact action rows, bottom-opening selects */
+.admin-content .admin-workspace{--admin-gap:9px}
+.admin-content .admin-workspace .admin-card-section{padding:12px;margin:0 0 10px;border-radius:11px}
+.admin-content .admin-workspace .admin-section-subhead{font-size:12px;line-height:1.7;margin:0 0 9px;font-weight:800}
+.admin-content .admin-workspace .admin-grid-2,
+.admin-content .admin-workspace .admin-grid-3{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;align-items:end}
+.admin-content .admin-workspace .admin-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.admin-content .admin-workspace .admin-input-group{min-width:0;width:100%;margin:0 0 8px}
+.admin-content .admin-workspace .admin-input-group label{display:block;min-height:1.5em;margin:0 0 5px;font-size:11px;line-height:1.6;font-weight:700}
+.admin-content .admin-workspace .admin-input-group input,
+.admin-content .admin-workspace .admin-input-group textarea,
+.admin-content .admin-workspace .admin-input-group select,
+.admin-content .admin-workspace .admin-select{width:100%;min-width:0;max-width:100%;border-radius:8px}
+.admin-content .admin-workspace .admin-style-row{display:grid;grid-template-columns:minmax(0,1fr) 34px;gap:7px;align-items:center;margin:0 0 7px}
+.admin-content .admin-workspace .admin-style-row input{width:100%;min-width:0}
+.admin-content .admin-workspace button:not(.admin-tab-btn):not(.circle-btn){max-width:100%;white-space:normal;line-height:1.45}
+.admin-content .admin-workspace .admin-card-section button{min-height:34px;padding:7px 11px;border-radius:8px}
+.admin-content .admin-workspace .admin-grid-2 button,
+.admin-content .admin-workspace .admin-grid-3 button{width:100%;min-width:0}
+.admin-content .admin-workspace .admin-grid-2> *,
+.admin-content .admin-workspace .admin-grid-3> *{min-width:0}
+.admin-content .admin-workspace .admin-input-group textarea{min-height:66px}
+.admin-content .admin-workspace input:focus,
+.admin-content .admin-workspace textarea:focus,
+.admin-content .admin-workspace .admin-select:focus{outline:none;border-color:#d6b35a;box-shadow:0 0 0 2px rgba(214,179,90,.13)}
+.admin-content .admin-workspace .admin-dropdown{position:relative;display:block;width:100%;min-width:0}
+.admin-content .admin-workspace .admin-dropdown-native{position:absolute!important;inset:0 auto auto 0!important;width:1px!important;height:1px!important;min-height:1px!important;opacity:0!important;pointer-events:none!important;padding:0!important;border:0!important}
+.admin-content .admin-workspace .admin-dropdown-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:36px;padding:7px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:11px;text-align:right;cursor:pointer}
+.admin-content .admin-workspace .admin-dropdown-trigger:focus-visible{outline:2px solid #d6b35a;outline-offset:2px}
+.admin-content .admin-workspace .admin-dropdown-trigger .admin-dropdown-label{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.admin-content .admin-workspace .admin-dropdown-trigger .admin-dropdown-arrow{color:#d6b35a;flex:none}
+.admin-content .admin-workspace .admin-dropdown-menu{position:absolute!important;top:calc(100% + 5px)!important;bottom:auto!important;right:0!important;left:0!important;z-index:12000!important;display:none;max-height:230px;overflow-y:auto;overscroll-behavior:contain;padding:5px;border:1px solid rgba(214,179,90,.58);border-radius:9px;background:#151d29!important;color:#f5f5f5!important;box-shadow:0 14px 30px rgba(0,0,0,.55);direction:rtl}
+.admin-content .admin-workspace .admin-dropdown.open .admin-dropdown-menu{display:block}
+.admin-content .admin-workspace .admin-dropdown-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:34px;padding:7px 9px;border:0;border-bottom:1px solid rgba(255,255,255,.07);border-radius:6px;background:transparent;color:#f5f5f5;text-align:right;font:inherit;font-size:11px;cursor:pointer}
+.admin-content .admin-workspace .admin-dropdown-option:last-child{border-bottom:0}
+.admin-content .admin-workspace .admin-dropdown-option:hover,
+.admin-content .admin-workspace .admin-dropdown-option.selected{background:rgba(214,179,90,.14);color:#f2d48b}
+.admin-content .admin-workspace .admin-dropdown-option:disabled{opacity:.4;cursor:not-allowed}
+.admin-content .admin-workspace .requests-toolbar{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(125px,.8fr) auto auto;gap:7px;align-items:center}
+.admin-content .admin-workspace .requests-toolbar>*{min-width:0}
+@media(max-width:720px){
+ .admin-content .admin-workspace .admin-grid-2{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .admin-content .admin-workspace .admin-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ .admin-content .admin-workspace .admin-card-section{padding:9px;margin-bottom:8px}
+ .admin-content .admin-workspace .admin-input-group{margin-bottom:7px}
+ .admin-content .admin-workspace .admin-input-group label{font-size:10px}
+ .admin-content .admin-workspace .admin-card-section button{font-size:10px}
+ .admin-content .admin-workspace .requests-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:360px){
+ .admin-content .admin-workspace .admin-grid-2,
+ .admin-content .admin-workspace .admin-grid-3{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ .admin-content .admin-workspace .admin-card-section{padding:8px}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -1882,5 +1939,74 @@ loadDataAndInit().then(()=>{
 resumeGym20AdminSession();
 </script>
 <script src="student-terms.js?v=20261101-session-cards-v29"></script>
+
+<script>
+/* Accessible custom admin dropdowns: every menu is anchored below its field. */
+(function(){
+  const root=document.querySelector('.admin-content .admin-workspace');
+  if(!root||root.dataset.bottomDropdownsReady==='1')return;
+  root.dataset.bottomDropdownsReady='1';
+  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function sync(wrap){
+    const select=wrap.querySelector('select'),label=wrap.querySelector('.admin-dropdown-label'),menu=wrap.querySelector('.admin-dropdown-menu');
+    if(!select||!label||!menu)return;
+    const option=select.options[select.selectedIndex];
+    label.textContent=option?option.textContent:'انتخاب کنید…';
+    menu.querySelectorAll('[data-index]').forEach(b=>{
+      const i=Number(b.dataset.index);
+      b.classList.toggle('selected',i===select.selectedIndex);
+      b.disabled=!!select.options[i]?.disabled;
+    });
+  }
+  function rebuild(select){
+    const wrap=select.closest('.admin-dropdown');if(!wrap)return;
+    const menu=wrap.querySelector('.admin-dropdown-menu');
+    menu.innerHTML=Array.from(select.options,(o,i)=>'<button type="button" class="admin-dropdown-option" data-index="'+i+'" '+(o.disabled?'disabled':'')+'>'+esc(o.textContent)+'</button>').join('');
+    sync(wrap);
+  }
+  function enhance(select){
+    if(select.multiple||select.dataset.bottomDropdown==='1')return;
+    if(select.closest('.admin-dropdown'))return;
+    select.dataset.bottomDropdown='1';
+    const wrap=document.createElement('div');wrap.className='admin-dropdown';
+    select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);
+    select.classList.add('admin-dropdown-native');
+    const trigger=document.createElement('button');trigger.type='button';trigger.className='admin-dropdown-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+    trigger.innerHTML='<span class="admin-dropdown-label"></span><span class="admin-dropdown-arrow">⌄</span>';
+    const menu=document.createElement('div');menu.className='admin-dropdown-menu';menu.setAttribute('role','listbox');
+    wrap.append(trigger,menu);
+    trigger.addEventListener('click',()=>{
+      const open=!wrap.classList.contains('open');
+      root.querySelectorAll('.admin-dropdown.open').forEach(x=>{x.classList.remove('open');x.querySelector('.admin-dropdown-trigger')?.setAttribute('aria-expanded','false');});
+      if(open){rebuild(select);wrap.classList.add('open');trigger.setAttribute('aria-expanded','true');}
+    });
+    menu.addEventListener('click',e=>{
+      const b=e.target.closest('[data-index]');if(!b||b.disabled)return;
+      select.selectedIndex=Number(b.dataset.index);
+      select.dispatchEvent(new Event('change',{bubbles:true}));
+      sync(wrap);wrap.classList.remove('open');trigger.setAttribute('aria-expanded','false');trigger.focus();
+    });
+    select.addEventListener('change',()=>sync(wrap));
+    const observer=new MutationObserver(()=>rebuild(select));
+    observer.observe(select,{childList:true,subtree:true,attributes:true,characterData:true});
+    rebuild(select);
+  }
+  function scan(scope){(scope||root).querySelectorAll('select').forEach(enhance);}
+  scan();
+  new MutationObserver(records=>records.forEach(r=>r.addedNodes.forEach(n=>{
+    if(n.nodeType!==1)return;
+    if(n.matches?.('select'))enhance(n);
+    scan(n);
+  }))).observe(root,{childList:true,subtree:true});
+  document.addEventListener('click',e=>{
+    if(!root.contains(e.target))return;
+    if(!e.target.closest('.admin-dropdown'))root.querySelectorAll('.admin-dropdown.open').forEach(x=>{x.classList.remove('open');x.querySelector('.admin-dropdown-trigger')?.setAttribute('aria-expanded','false');});
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape')root.querySelectorAll('.admin-dropdown.open').forEach(x=>{x.classList.remove('open');x.querySelector('.admin-dropdown-trigger')?.setAttribute('aria-expanded','false');});
+  });
+})();
+</script>
+
 </body>
 </html>
