@@ -11,9 +11,9 @@
     try{
       const db=client(),studentId=$('stStudentSelected')?.dataset.studentId||'';
       if(!db||!studentId){if(dot)dot.className='st-push-dot unknown';if(label)label.textContent='ابتدا هنرجو را انتخاب کنید';return;}
-      const {count,error}=await db.from('student_push_subscriptions').select('endpoint',{count:'exact',head:true}).eq('student_id',studentId).eq('is_active',true);
+      const {data,error}=await db.rpc('get_student_push_subscription_status',{p_student_id:studentId});
       if(error)throw error;
-      const active=Number(count||0)>0;
+      const active=data===true;
       if(dot)dot.className='st-push-dot '+(active?'active':'inactive');
       if(label)label.textContent=active?'اعلان روی گوشی این هنرجو فعال است':'اعلان روی گوشی این هنرجو تأیید نشده است';
     }catch(e){if(dot)dot.className='st-push-dot unknown';if(label)label.textContent='وضعیت اعلان قابل دریافت نیست';}
