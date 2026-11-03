@@ -285,10 +285,7 @@ document.head.appendChild(css);
         await loadDraftRows();await renderBuilder();
         say(S.publishedId?'نسخه ویرایشی آماده است؛ تغییرات را انجام بده و «ثبت نهایی و انتشار تغییرات» را بزن.':'پیش‌نویس ترم آماده و قابل ویرایش است.');
       }else if(S.publishedId){
-        S.publishedReadOnly=true;$('stPublish').hidden=true;$('stManualCalendar').hidden=true;
-        $('stDraftTable').innerHTML='<div class="st-muted" style="margin-bottom:8px">برنامه منتشرشده این ترم</div>';
-        drawPublishedSessions();
-        $('stSchedule').classList.remove('st-hide');
+        throw Error('نسخه ویرایشی این ترم آماده نشد؛ دوباره ترم را انتخاب کن یا وضعیت دسترسی مدیر را بررسی کن.');
       }else{
         $('stPublish').hidden=true;$('stManualCalendar').hidden=false;
         $('stDraftTable').innerHTML='<p class="st-muted">برای این ترم هنوز برنامه‌ای ثبت نشده است.</p>';
