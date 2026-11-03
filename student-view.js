@@ -141,6 +141,7 @@
       enhanceTermPicker($('termSelect'));
       $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
       showTerm(terms[0].id);
+      window.setInterval(()=>{const selected=$('termSelect')?.value||terms[0]?.id;if(selected)showTerm(selected);},15000);
     }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.';}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
