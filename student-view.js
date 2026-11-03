@@ -23,7 +23,7 @@
     }
     const api=client.schema("gym20");
     let registration=null,publicKey="";
-    const paint=active=>{button.dataset.active=active?"1":"0";button.textContent=active?"غیرفعال‌سازی اعلان‌ها":"فعال‌سازی اعلان کلاس‌ها";status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری کلاس‌ها، اعلان گوشی را فعال کن.";};
+    const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری کلاس‌ها، اعلان گوشی را فعال کن.";};
     const saveSubscription=async subscription=>{
       const keys=subscription.toJSON().keys||{};
       const {error}=await api.rpc("subscribe_student_push",{
