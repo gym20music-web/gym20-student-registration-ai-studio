@@ -125,6 +125,39 @@ document.head.appendChild(css);
     const compactSessionsCssExtra=document.createElement('style');compactSessionsCssExtra.id='stCompactSessionsCssExtra';compactSessionsCssExtra.textContent="\n/* Compact session editor: avoid oversized cards and keep fields aligned */\n.st-sessions-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important;align-items:stretch!important}\n.st-session-card{min-width:0!important;padding:7px 8px!important;margin:0!important;border-radius:8px!important;box-shadow:none!important}\n.st-session-head{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;gap:5px!important;margin-bottom:6px!important;align-items:center!important}\n.st-session-head strong{font-size:10px!important}\n.st-session-head .st-session-state{margin:0!important;justify-self:start!important;font-size:8px!important;padding:2px 5px!important}\n.st-session-head .st-row-delete{min-height:23px!important;padding:2px 6px!important;font-size:9px!important}\n.st-session-fields{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;align-items:end!important}\n.st-session-fields label{min-width:0!important;font-size:9px!important;white-space:normal!important;line-height:1.35!important}\n.st-session-fields input,.st-session-fields select{width:100%!important;min-width:0!important;max-width:100%!important;height:30px!important;min-height:30px!important;padding:3px 5px!important;border-radius:6px!important;font-size:10px!important}\n.st-session-fields .st-date-input{width:100%!important;max-width:100%!important;font-size:10px!important}\n.st-session-fields .st-time-input{width:100%!important;max-width:100%!important;font-size:12px!important;letter-spacing:0!important}\n@media(min-width:1000px){.st-sessions-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}\n@media(max-width:720px){\n .st-sessions-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}\n .st-session-card{padding:6px!important}\n .st-session-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}\n .st-session-fields input,.st-session-fields select{height:29px!important;min-height:29px!important;font-size:10px!important}\n}\n@media(max-width:390px){\n .st-sessions-grid{grid-template-columns:minmax(0,1fr)!important}\n .st-session-fields{grid-template-columns:repeat(3,minmax(0,1fr))!important}\n .st-session-fields label{font-size:9px!important}\n}\n#studentTermsTab .st-table-wrap{width:100%;overflow-x:auto}\n#studentTermsTab .st-table{min-width:0!important;width:100%!important;table-layout:fixed!important;font-size:10px!important}\n#studentTermsTab .st-table th,#studentTermsTab .st-table td{padding:5px 4px!important;white-space:normal!important;overflow-wrap:anywhere}\n#studentTermsTab .st-table select,#studentTermsTab .st-table input{width:100%!important;max-width:100%!important;min-width:0!important;padding:4px!important;font-size:10px!important}\n@media(max-width:600px){#studentTermsTab .st-table{font-size:9px!important}#studentTermsTab .st-table th,#studentTermsTab .st-table td{padding:4px 2px!important}}\n";
     document.head.appendChild(compactSessionsCssExtra);
 
+    const adminSessionPolish=document.createElement('style');adminSessionPolish.id='stAdminSessionPolish';adminSessionPolish.textContent=`
+      /* Live class: yellow/gold in both editable cards and published schedule rows */
+      #studentTermsTab .st-session-card.live{border:1px solid #d6a72d!important;background:linear-gradient(145deg,#493812,#241d10)!important;box-shadow:inset 3px 0 0 #facc15!important}
+      #studentTermsTab .st-session-card.live .st-session-state.live{background:#8a641b!important;color:#fff1a6!important;border:1px solid #d6a72d!important}
+      #studentTermsTab .st-schedule-row.live td{background:rgba(161,98,7,.24)!important;color:#fff1a6!important}
+      #studentTermsTab .st-schedule-row.live .st-session-state.live{background:#8a641b!important;color:#fff1a6!important;border-color:#d6a72d!important}
+      /* One consistent, readable card system; prevent conflicting older grid overrides */
+      #studentTermsTab .st-sessions-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;align-items:stretch!important}
+      #studentTermsTab .st-session-card{min-width:0!important;padding:9px!important;border-radius:9px!important;box-shadow:none!important}
+      #studentTermsTab .st-session-head{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:7px!important;margin:0 0 8px!important}
+      #studentTermsTab .st-session-head strong{font-size:11px!important;white-space:nowrap!important}
+      #studentTermsTab .st-session-head .st-session-state{justify-self:start!important;margin:0!important;font-size:9px!important;line-height:1.5!important}
+      #studentTermsTab .st-session-head .st-row-delete{min-height:26px!important;height:26px!important;padding:3px 7px!important;font-size:9px!important}
+      #studentTermsTab .st-session-fields{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;align-items:end!important}
+      #studentTermsTab .st-session-fields label{display:flex!important;flex-direction:column!important;gap:4px!important;min-width:0!important;white-space:normal!important;line-height:1.5!important;font-size:10px!important;color:#c9c2b1!important}
+      #studentTermsTab .st-session-fields input,#studentTermsTab .st-session-fields select,#studentTermsTab .st-session-fields .st-custom-select-trigger{width:100%!important;min-width:0!important;max-width:100%!important;height:34px!important;min-height:34px!important;padding:5px 7px!important;border-radius:7px!important;font-size:11px!important}
+      #studentTermsTab .st-session-fields .st-time-input{font-size:13px!important;letter-spacing:0!important}
+      @media(max-width:720px){
+        #studentTermsTab .st-sessions-grid{grid-template-columns:minmax(0,1fr)!important;gap:7px!important}
+        #studentTermsTab .st-session-card{padding:8px!important}
+        #studentTermsTab .st-session-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+        #studentTermsTab .st-session-fields label:first-child{grid-column:1/-1!important}
+        #studentTermsTab .st-session-fields label{font-size:10px!important}
+        #studentTermsTab .st-session-fields input,#studentTermsTab .st-session-fields select,#studentTermsTab .st-session-fields .st-custom-select-trigger{height:33px!important;min-height:33px!important;font-size:11px!important}
+      }
+      @media(max-width:360px){
+        #studentTermsTab .st-session-head{gap:5px!important}
+        #studentTermsTab .st-session-head strong{font-size:10px!important}
+        #studentTermsTab .st-session-fields{gap:5px!important}
+      }`;
+    document.head.appendChild(adminSessionPolish);
+
+
     const finalSessionLayoutCss=document.createElement('style');finalSessionLayoutCss.id='stFinalSessionLayoutCss';finalSessionLayoutCss.textContent=`
       #studentTermsTab .st-sessions-grid{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important;width:100%!important;align-items:stretch!important}
       #studentTermsTab .st-session-card{display:block!important;min-width:0!important;width:100%!important;padding:8px 10px!important;margin:0!important;border:1px solid #344052!important;border-radius:9px!important;background:#151e2b!important;box-shadow:none!important}
