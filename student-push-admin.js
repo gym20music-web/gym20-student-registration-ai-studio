@@ -7,18 +7,6 @@
     const el = $('stPushAdminStatus');
     if (el) { el.textContent = message || ''; el.style.color = error ? '#fb7185' : '#34d399'; }
   };
-  const b64url = bytes => {
-    let binary = '';
-    new Uint8Array(bytes).forEach(v => binary += String.fromCharCode(v));
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
-  };
-  async function createVapidPair() {
-    const pair = await crypto.subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
-    const jwk = await crypto.subtle.exportKey('jwk', pair.privateKey);
-    const publicRaw = await crypto.subtle.exportKey('raw', pair.publicKey);
-    if (!jwk.d) throw new Error('ساخت کلید خصوصی اعلان ناموفق بود.');
-    return { vapid_public_key: b64url(publicRaw), vapid_private_key: jwk.d };
-  }
   async function loadConfig() {
     if (!(typeof gym20OwnerAuthorized !== 'undefined' && gym20OwnerAuthorized) || !(typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null)) return;
     try {
@@ -29,7 +17,10 @@
       $('stPushEnabled').checked = c.enabled !== false;
       $('stPushReminder1').value = String(c.reminder_1_hours ?? 6);
       $('stPushReminder2').value = String(c.reminder_2_hours ?? 2);
-      $('stPushKeyStatus').textContent = (c.vapid_public_key && c.vapid_private_key) ? 'کلید امن اعلان آماده است.' : 'کلید امن هنگام اولین ذخیره ساخته یا تکمیل می‌شود.';
+      const { data: keyData, error: keyError } = await (typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null).schema('gym20').rpc('get_student_push_public_config');
+      if (keyError) throw keyError;
+      const keyInfo = Array.isArray(keyData) ? keyData[0] : keyData;
+      $('stPushKeyStatus').textContent = keyInfo?.public_key ? 'کلیدهای اعلان به‌صورت امن در Supabase نگهداری می‌شوند.' : 'کلید امن اعلان هنوز در تنظیمات سرور آماده نشده است.';
       note('تنظیمات اعلان دریافت شد.');
     } catch (e) { note(e.message || 'دریافت تنظیمات اعلان ناموفق بود.', true); }
   }
@@ -57,16 +48,18 @@
       const config = { ...(current?.value || {}), enabled: $('stPushEnabled').checked,
         reminder_1_hours: first, reminder_2_hours: second,
         subject: 'mailto:admin@gym20.ir', updated_at: new Date().toISOString() };
-      if (!config.vapid_public_key || !config.vapid_private_key) {
-        Object.assign(config, await createVapidPair());
-      }
+      delete config.vapid_public_key;
+      delete config.vapid_private_key;
       const { data: authData, error: authError } = await (typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null).auth.getUser();
       if (authError) throw authError;
       const { error } = await client.from('site_settings').upsert({
         key: KEY, value: config, updated_at: new Date().toISOString(), updated_by: authData.user?.id || null
       }, { onConflict: 'key' });
       if (error) throw error;
-      $('stPushKeyStatus').textContent = 'کلید امن اعلان آماده است.';
+      const { data: keyData, error: keyError } = await client.rpc('get_student_push_public_config');
+      if (keyError) throw keyError;
+      const keyInfo = Array.isArray(keyData) ? keyData[0] : keyData;
+      $('stPushKeyStatus').textContent = keyInfo?.public_key ? 'کلیدهای اعلان به‌صورت امن در Supabase نگهداری می‌شوند.' : 'تنظیمات ذخیره شد؛ کلید امن سرور هنوز آماده نیست.';
       note('تنظیمات ذخیره شد؛ یادآوری‌ها برای تمام جلسات منتشرشده اعمال می‌شوند.');
     } catch (e) { note(e.message || 'ذخیره تنظیمات ناموفق بود.', true); }
     finally { button.disabled = false; button.textContent = old; }
@@ -84,7 +77,7 @@
       '<div class="st-grid">' +
       '<div class="st-field"><label>یادآوری اول · چند ساعت قبل؟</label><input id="stPushReminder1" type="number" min="0" max="168" step="1" value="6"></div>' +
       '<div class="st-field"><label>یادآوری دوم · چند ساعت قبل؟</label><input id="stPushReminder2" type="number" min="0" max="168" step="1" value="2"></div>' +
-      '</div><div class="st-muted" id="stPushKeyStatus" style="margin:3px 0 7px">کلید امن هنگام اولین ذخیره ساخته می‌شود.</div>' +
+      '</div><div class="st-muted" id="stPushKeyStatus" style="margin:3px 0 7px">کلیدهای رمزنگاری در فضای امن سرور نگهداری می‌شوند.</div>' +
       '<div class="st-actions"><button type="button" class="st-btn primary" id="stPushSave">ذخیره تنظیمات اعلان</button></div>' +
       '<div id="stPushAdminStatus" class="st-muted" role="status" aria-live="polite" style="margin-top:7px"></div>';
     const anchor = tab.querySelector('#stMain');
