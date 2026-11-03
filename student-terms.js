@@ -262,7 +262,7 @@ document.head.appendChild(css);
     S.draftId='';S.rows=[];S.publishedId=null;S.publishedReadOnly=false;
     if(S.term){$('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');syncTermName();}
     $('stSchedule').classList.toggle('st-hide',!id);
-    $('stManualCalendar').textContent=id?'▦ افزودن جلسات به ترم انتخاب‌شده':'▦ انتخاب جلسات از تقویم';
+    $('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);
     if(!id){$('stPublish').hidden=false;$('stManualCalendar').hidden=false;return;}
     try{
