@@ -11,6 +11,56 @@
     pending:['در انتظار ثبت','pending'],present:['حاضر','present'],absent:['غایب','absent'],
     excused:['غیبت موجه','pending'],makeup:['جلسه جبرانی','present'],cancelled:['لغوشده','absent']
   };
+
+  const PUSH_PUBLIC_KEY="BHE6oTuxtnzInhNY-9nISYBrM5UM7A_s-tbU_3GacNY87krUaqgzAjFMxDtXWP_REBvaS1h8L4vWoDsXPJgV5wA";
+  const PUSH_ENDPOINT="https://iqjujumhoawlugrmjvyj.supabase.co/functions/v1/class-push";
+  const decodePushKey=value=>{const pad="=".repeat((4-value.length%4)%4),raw=atob((value+pad).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(raw,c=>c.charCodeAt(0));};
+  async function pushRequest(payload){
+    const response=await fetch(PUSH_ENDPOINT,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    let data={};try{data=await response.json();}catch(_){}
+    if(!response.ok)throw new Error(data.error||"اتصال به سرویس اعلان ناموفق بود.");
+    return data;
+  }
+  async function setupPush(shortCode){
+    const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus");
+    if(!box||!button||!status||!shortCode)return;
+    box.classList.remove("hide");
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
+      button.disabled=true;status.textContent="این مرورگر از اعلان مستقیم پشتیبانی نمی‌کند.";return;
+    }
+    let registration=null;
+    const paint=active=>{button.dataset.active=active?"1":"0";button.textContent=active?"غیرفعال‌سازی اعلان‌ها":"فعال‌سازی اعلان کلاس‌ها";status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری ۶ و ۲ ساعت قبل، اعلان‌ها را فعال کن.";};
+    try{
+      registration=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+      const existing=await registration.pushManager.getSubscription();
+      if(Notification.permission==="granted"&&existing){
+        await pushRequest({action:"subscribe",code:shortCode,subscription:existing.toJSON(),userAgent:navigator.userAgent});
+        paint(true);
+      }else paint(false);
+    }catch(error){status.textContent=error.message||"آماده‌سازی اعلان‌ها ناموفق بود.";}
+    button.addEventListener("click",async()=>{
+      if(button.disabled)return;
+      button.disabled=true;
+      try{
+        registration=registration||await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+        let subscription=await registration.pushManager.getSubscription();
+        if(button.dataset.active==="1"&&subscription){
+          await pushRequest({action:"unsubscribe",code:shortCode,endpoint:subscription.endpoint});
+          await subscription.unsubscribe();
+          paint(false);
+        }else{
+          let permission=Notification.permission;
+          if(permission==="default")permission=await Notification.requestPermission();
+          if(permission!=="granted")throw new Error("اجازه اعلان در تنظیمات گوشی داده نشده است.");
+          subscription=subscription||await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(PUSH_PUBLIC_KEY)});
+          await pushRequest({action:"subscribe",code:shortCode,subscription:subscription.toJSON(),userAgent:navigator.userAgent});
+          paint(true);
+        }
+      }catch(error){status.textContent=error.message||"فعال‌سازی اعلان ناموفق بود.";}
+      finally{button.disabled=false;}
+    });
+  }
+
   let terms=[];
   let activeView="grid";
   let viewStorageKey="gym20-session-view";
@@ -39,6 +89,7 @@
         :await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
       if(error)throw error;if(!data||!data.student){$('studentName').textContent='این لینک معتبر نیست یا غیرفعال شده است.';$('schedule').textContent='برای دریافت لینک جدید با مربی تماس بگیرید.';return;}
       $('studentName').textContent='هنرجو: '+data.student.full_name+' · برنامه ترم‌های منتشرشده';
+      if(shortCode)setupPush(shortCode);
       terms=data.terms||[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
