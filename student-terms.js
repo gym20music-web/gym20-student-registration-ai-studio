@@ -401,7 +401,7 @@ document.head.appendChild(css);
     catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
   async function publish(){
-    const pendingReminderSettings={...S.reminderDraft};
+    const pendingReminderSettings={};S.rows.forEach(r=>{pendingReminderSettings['new:'+r.session_number]=reminderConfig(r);});
     try{
       if(S.publishedReadOnly)throw Error('این ترم قبلاً منتشر شده و فقط برای مشاهده است.');
       if(!S.termId){
