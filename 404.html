@@ -20,66 +20,17 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .status{display:inline-flex;align-items:center;border-radius:20px;padding:2px 6px;background:#ffffff12;font-size:9px;line-height:1.5;white-space:nowrap}.present{color:#6ee7b7;background:#064e3b66}.absent{color:#fda4af;background:#88133766}.pending{color:#fcd34d;background:#78350f66}
 .session-facts{display:grid;grid-template-columns:1.15fr 1fr .75fr;gap:4px;padding-bottom:4px;border-bottom:1px solid #ffffff12}.session-facts span{display:flex;flex-direction:column;min-width:0}.session-facts i{font-style:normal;color:#8290a2;font-size:8px}.session-facts b{font-size:9px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .session-bottom{display:flex;justify-content:space-between;gap:5px;padding-top:4px;color:#aab5c3;font-size:8.5px;line-height:1.5}.session-bottom span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.session-bottom .coach{color:#e7ca83}
-
-.view-switch{display:flex;gap:4px;margin:0 0 7px;padding:3px;border:1px solid #30394a;border-radius:9px;background:#090e16}
-.view-btn{flex:1;min-width:0;border:1px solid transparent;border-radius:7px;background:transparent;color:#9aa7b8;padding:6px 4px;font:600 10px Vazirmatn,sans-serif;cursor:pointer}
-.view-btn[aria-pressed="true"]{background:linear-gradient(135deg,#3b3020,#211d17);border-color:#9a7b3e;color:#f5d98e}
-.session-list.view-list{grid-template-columns:1fr;gap:5px}
-.session-list.view-list .session-card{display:grid;grid-template-columns:minmax(82px,.7fr) minmax(0,2fr) minmax(0,1.2fr);align-items:center;gap:9px;padding:8px 10px}
-.session-list.view-list .session-top{margin:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
-.session-list.view-list .session-facts{border:0;padding:0;grid-template-columns:1.1fr 1fr .8fr}
-.session-list.view-list .session-bottom{padding:0;display:flex;flex-direction:column;gap:2px}
-
 .empty{text-align:center;padding:22px 8px;color:var(--muted);font-size:10px}.hide{display:none!important}footer{font-size:9px!important;text-align:center;padding:2px 0 5px}
 @media(max-width:700px){.session-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}}@media(max-width:520px){body{padding:7px 6px}.brand{font-size:9px;margin:2px 0 7px}header,.card{padding:8px;border-radius:10px;margin-bottom:6px}h1{font-size:13px}.muted{font-size:9px}select{height:29px;font-size:10px}.session-list{grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.session-card{padding:5px 6px}.session-top{margin-bottom:3px}.session-number{font-size:9.5px}.status{font-size:8px;padding:1px 5px}.session-facts{grid-template-columns:1.1fr 1fr .8fr;gap:3px;padding-bottom:3px}.session-facts i{font-size:7px}.session-facts b{font-size:8px}.session-bottom{padding-top:3px;font-size:7.5px;gap:3px}.schedule-summary{font-size:8px;margin-bottom:5px;padding:4px 7px}.schedule-summary b{font-size:9px}}@media(max-width:350px){.session-list{grid-template-columns:1fr}}
 @media(max-height:760px) and (max-width:520px){body{padding-top:4px}.brand{margin-bottom:4px}header,.card{padding:6px;margin-bottom:4px}.session-list{gap:3px}.session-card{padding:4px 6px}.session-facts{gap:3px}}
 
-/* GYM20 student dashboard refinement */
-header{position:relative;overflow:hidden;padding:15px 15px 13px;border-color:#59482a;background:linear-gradient(125deg,#1c2430 0%,#121923 58%,#211c13 100%);box-shadow:0 10px 28px #0006}
-header:after{content:"";position:absolute;left:-28px;top:-38px;width:112px;height:112px;border:1px solid #e8c46b22;border-radius:50%;box-shadow:0 0 0 13px #e8c46b08,0 0 0 27px #e8c46b05;pointer-events:none}
-.header-kicker{display:flex;align-items:center;gap:6px;color:#d9b96c;font-size:9px;font-weight:800;letter-spacing:.7px;margin-bottom:5px}
-.header-kicker:before{content:"";width:16px;height:2px;background:#e8c46b;border-radius:3px}
-h1{font-size:17px;letter-spacing:-.3px;margin:0 0 5px}
-#studentName{font-size:10px;color:#c1cad6}
-#termPanel{padding:10px 12px;background:linear-gradient(145deg,#151d29,#10151e);border-color:#343f50}
-#termPanel label{display:block;font-size:10px;margin-bottom:2px}
-#termPanel{position:relative;overflow:hidden}
-.term-label-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
-.term-label-row label{font-size:10px;letter-spacing:.1px}
-.term-label-note{font-size:8px;color:#8290a2}
-.term-select-wrap{position:relative;display:flex;align-items:center;min-height:43px;border:1px solid #6c5833;border-radius:11px;background:linear-gradient(110deg,#202a38,#151c27 72%,#211d15);box-shadow:inset 0 1px 0 #ffffff0b,0 4px 14px #0003;overflow:hidden}
-.term-select-mark{display:grid;place-items:center;flex:0 0 35px;height:25px;margin-right:9px;border-left:1px solid #ffffff18;color:#d9b96c;font:800 10px Montserrat,sans-serif;direction:ltr}
-#termSelect{appearance:none;-webkit-appearance:none;flex:1;width:100%;height:41px;margin:0;padding:0 10px;background:transparent;border:0;border-radius:0;color:#f7e5b4;font:700 11px Vazirmatn,sans-serif;outline:none;cursor:pointer}
-#termSelect option{background:#151c27;color:#f7f8fb}
-.term-chevron{pointer-events:none;position:absolute;left:12px;top:50%;transform:translateY(-58%);color:#e8c46b;font-size:19px;line-height:1}
-#termMeta{margin:8px 0 0;padding-top:7px;border-top:1px solid #ffffff12;font-size:9px;line-height:1.9;color:#bdc6d2}
-.schedule-summary{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;padding:0;border:0;background:transparent}
-.schedule-summary span{display:flex;align-items:center;justify-content:space-between;gap:5px;padding:8px 10px;border:1px solid #343e4d;border-radius:9px;background:linear-gradient(130deg,#182231,#111722);font-size:9px;color:#aeb9c8}
-.schedule-summary span:last-child{background:linear-gradient(130deg,#211f19,#141820)}
-.schedule-summary b{font-size:15px;color:#f1d38a}
-.view-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 1px 6px}
-.view-heading strong{font-size:11px;color:#f1d38a}
-.view-heading small{font-size:8px;color:#8290a2}
-.view-switch{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0 0 9px;padding:4px;border:1px solid #354052;border-radius:11px;background:#090e16;box-shadow:inset 0 1px 4px #0008}
-.view-btn{display:flex;align-items:center;justify-content:center;gap:6px;min-height:34px;border:1px solid transparent;border-radius:8px;background:transparent;color:#aab5c4;padding:6px 3px;font:700 10px Vazirmatn,sans-serif;cursor:pointer;white-space:nowrap;transition:all .18s}
-.view-btn[aria-pressed="true"]{background:linear-gradient(135deg,#4a3b20,#282116);border-color:#b28d49;color:#ffe4a0;box-shadow:0 2px 10px #0006,inset 0 0 0 1px #e8c46b20}
-.view-btn:focus-visible{outline:2px solid #e8c46b;outline-offset:2px}\n.view-icon{font-size:13px;line-height:1;color:#d8b96f}
-.session-list{margin-top:0}
-@media(max-width:520px){
- body{padding:7px 6px}
- header{padding:12px 11px}
- h1{font-size:15px}
- #termPanel{padding:9px}
- .schedule-summary span{padding:7px 8px;font-size:8px}
- .schedule-summary b{font-size:14px}
- .view-btn{font-size:9px;min-height:33px}
-}
-
+.push-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px}.push-toggle{border:1px solid #8f7139;border-radius:8px;background:linear-gradient(135deg,#e8c46b,#a77a2e);color:#17130b;font:800 10px Vazirmatn,sans-serif;padding:7px 11px;cursor:pointer}.push-toggle:disabled{opacity:.55;cursor:wait}.push-status{font-size:9px;color:#9aa7b8;line-height:1.6}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
-<header><div class="header-kicker">GYM20 ACADEMY · STUDENT AREA</div><h1>برنامه تمرینی اختصاصی</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div></header>
-<section id="termPanel" class="card hide"><div class="term-label-row"><label for="termSelect">ترم فعال</label><span class="term-label-note">سوابق و جلسات منتشرشده</span></div><div class="term-select-wrap"><span class="term-select-mark">01</span><select id="termSelect" aria-label="انتخاب ترم"></select><span class="term-chevron">⌄</span></div><p id="termMeta" class="muted"></p></section>
+<header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
+<section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="../student-view.js?v=20261101-student-views-v6"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="/student-view.js?v=20261104-push-link-fix-v1"></script>
+
 </body></html>
