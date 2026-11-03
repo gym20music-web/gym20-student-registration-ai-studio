@@ -35,12 +35,20 @@
     const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus"),testButton=$("pushTest");
     if(!box||!button||!status||!shortCode)return;
     box.classList.remove("hide");
+    button.disabled=true;
+    button.textContent="در حال آماده‌سازی اعلان…";
     if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
-      button.disabled=true;status.textContent="این مرورگر از اعلان مستقیم پشتیبانی نمی‌کند.";return;
+      button.disabled=true;
+      status.textContent="این مرورگر از اعلان وب پشتیبانی نمی‌کند. در اندروید از Chrome به‌روز استفاده کن.";
+      return;
     }
     const api=client.schema("gym20");
-    let registration=null,publicKey="";
-    const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;if(testButton)testButton.classList.toggle("visible",!!active);status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری کلاس‌ها، اعلان گوشی را فعال کن.";};
+    let registration=null,publicKey="",configReady=false;
+    const paint=active=>{
+      button.dataset.active=active?"1":"0";
+      button.hidden=!!active;
+      if(testButton)testButton.classList.toggle("visible",!!active);
+    };
     const saveSubscription=async subscription=>{
       const keys=subscription.toJSON().keys||{};
       const {error}=await api.rpc("subscribe_student_push",{
@@ -48,28 +56,44 @@
       });
       if(error)throw error;
     };
-    try{
-      const {data,error}=await api.rpc("get_student_push_public_config");
-      if(error)throw error;
-      const config=Array.isArray(data)?data[0]:data;
-      if(!config?.enabled||!config?.public_key){box.classList.add("hide");return;}
-      publicKey=config.public_key;
-      registration=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+    const ensureReady=async()=>{
+      if(!registration){
+        registration=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
+      }
       registration=await navigator.serviceWorker.ready;
-      const existing=await registration.pushManager.getSubscription();
-      if(Notification.permission==="granted"&&existing){await saveSubscription(existing);paint(true);}
-      else paint(false);
-    }catch(error){status.textContent=error.message||"آماده‌سازی اعلان‌ها ناموفق بود.";}
+      return registration;
+    };
+    button.addEventListener("click",async()=>{
+      if(button.disabled||!configReady)return;
+      button.disabled=true;
+      try{
+        if(Notification.permission==="denied"){
+          throw new Error("اعلان در تنظیمات گوشی مسدود شده است. از تنظیمات Android > Apps > Chrome > Notifications و سپس تنظیمات Site settings در Chrome، اجازه اعلان gym20.ir را روشن کن.");
+        }
+        let permission=Notification.permission;
+        if(permission!=="granted")permission=await Notification.requestPermission();
+        if(permission!=="granted")throw new Error("اجازه اعلان داده نشد. مجوز Notifications برای gym20.ir را در تنظیمات Chrome فعال کن.");
+        await ensureReady();
+        if(!publicKey)throw new Error("کلید اعلان از سرور دریافت نشد؛ صفحه را تازه‌سازی کن و دوباره تلاش کن.");
+        let subscription=await registration.pushManager.getSubscription();
+        if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
+        await saveSubscription(subscription);
+        paint(true);
+        status.textContent="اشتراک این گوشی ثبت شد. برای اطمینان، «ارسال اعلان آزمایشی» را بزن.";
+      }catch(error){
+        status.textContent=error.message||"فعال‌سازی اعلان ناموفق بود.";
+      }finally{button.disabled=false;}
+    });
     if(testButton)testButton.addEventListener("click",async()=>{
+      if(!configReady)return;
       testButton.disabled=true;
       const oldLabel=testButton.textContent;
       testButton.textContent="در حال ارسال…";
       try{
-        registration=registration||await navigator.serviceWorker.register("/sw.js",{scope:"/"});
-        registration=await navigator.serviceWorker.ready;
-        if(Notification.permission!=="granted")throw new Error("اجازه اعلان در تنظیمات گوشی فعال نیست.");
+        await ensureReady();
+        if(Notification.permission!=="granted")throw new Error("مجوز اعلان گوشی فعال نیست؛ ابتدا اعلان را فعال کن.");
         const subscription=await registration.pushManager.getSubscription();
-        if(!subscription)throw new Error("اشتراک این گوشی پیدا نشد؛ اعلان را یک‌بار خاموش و دوباره فعال کن.");
+        if(!subscription)throw new Error("اشتراک این گوشی پیدا نشد؛ اعلان را دوباره فعال کن.");
         const response=await fetch(SUPABASE_URL+"/functions/v1/student-push-test",{
           method:"POST",
           headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY},
@@ -77,33 +101,35 @@
         });
         const result=await response.json().catch(()=>({}));
         if(!response.ok||!result.ok)throw new Error(result.error||"سرور نتوانست اعلان را ارسال کند.");
-        status.textContent="درخواست Push واقعی از سرور ارسال شد؛ نوار اعلان گوشی را بررسی کن.";
+        status.textContent="سرور اعلان آزمایشی را پذیرفت. اگر روی گوشی نمایش داده نشد، مجوز اعلان Chrome و اعلان‌های خود برنامه Chrome را در تنظیمات Android بررسی کن.";
       }catch(error){status.textContent=error.message||"ارسال اعلان آزمایشی ناموفق بود.";}
       finally{testButton.disabled=false;testButton.textContent=oldLabel;}
     });
-    button.addEventListener("click",async()=>{
-      if(button.disabled)return;
+    try{
+      const {data,error}=await api.rpc("get_student_push_public_config");
+      if(error)throw error;
+      const config=Array.isArray(data)?data[0]:data;
+      if(!config?.enabled||!config?.public_key){box.classList.add("hide");return;}
+      publicKey=config.public_key;
+      await ensureReady();
+      const existing=await registration.pushManager.getSubscription();
+      if(Notification.permission==="granted"&&existing){
+        await saveSubscription(existing);
+        paint(true);
+        status.textContent="اعلان این گوشی فعال است. برای بررسی نمایش اعلان، دکمه آزمایش را بزن.";
+      }else{
+        paint(false);
+        status.textContent=Notification.permission==="denied"
+          ?"اجازه اعلان در گوشی مسدود است؛ از تنظیمات Android و Chrome آن را فعال کن."
+          :"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";
+      }
+      configReady=true;
+      button.disabled=false;
+      button.textContent="فعال‌سازی اعلان کلاس‌ها";
+    }catch(error){
       button.disabled=true;
-      try{
-        registration=registration||await navigator.serviceWorker.register("/sw.js",{scope:"/"});
-        registration=await navigator.serviceWorker.ready;
-        let subscription=await registration.pushManager.getSubscription();
-        if(button.dataset.active==="1"&&subscription){
-          const {error}=await api.rpc("unsubscribe_student_push",{p_code:shortCode,p_endpoint:subscription.endpoint});
-          if(error)throw error;
-          await subscription.unsubscribe();
-          paint(false);
-        }else{
-          let permission=Notification.permission;
-          if(permission==="default")permission=await Notification.requestPermission();
-          if(permission!=="granted")throw new Error("اجازه اعلان در تنظیمات گوشی داده نشده است.");
-          subscription=subscription||await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
-          await saveSubscription(subscription);
-          paint(true);
-        }
-      }catch(error){status.textContent=error.message||"فعال‌سازی اعلان ناموفق بود.";}
-      finally{button.disabled=false;}
-    });
+      status.textContent=(error.message||"آماده‌سازی اعلان ناموفق بود.")+" صفحه را تازه‌سازی کن؛ اگر ادامه داشت، مرورگر را به‌روز کن.";
+    }
   }
   let terms=[];
   let activeView="grid";
