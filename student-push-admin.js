@@ -35,8 +35,8 @@
     if (!Number.isInteger(first) || first < 0 || first > 168 || !Number.isInteger(second) || second < 0 || second > 168) {
       note('زمان یادآوری باید عددی بین صفر تا ۱۶۸ ساعت باشد.', true); return;
     }
-    if (first > 0 && second > 0 && first === second) {
-      note('زمان یادآوری اول و دوم نباید یکسان باشد.', true); return;
+    if (first > 0 && second > 0 && first <= second) {
+      note('یادآوری اول باید زودتر از یادآوری دوم باشد؛ مثلاً ۶ ساعت و سپس ۲ ساعت قبل.', true); return;
     }
     const old = button.textContent;
     button.disabled = true; button.textContent = 'در حال ذخیره…';
