@@ -55,7 +55,33 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .status.time-live{display:inline-flex;align-items:center;gap:6px}
 .status.time-live::before{content:"";display:inline-block;width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#fde047;box-shadow:0 0 0 0 rgba(253,224,71,.65);animation:gym20StudentLivePulse 1.25s ease-in-out infinite}
 @keyframes gym20StudentLivePulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(253,224,71,.55)}50%{opacity:.42;transform:scale(.78);box-shadow:0 0 0 4px rgba(253,224,71,0)}}
-@media(prefers-reduced-motion:reduce){.status.time-live::before{animation:none;opacity:1;box-shadow:none}}</style></head>
+@media(prefers-reduced-motion:reduce){.status.time-live::before{animation:none;opacity:1;box-shadow:none}}
+/* GYM20 unified session status palette and cleaner responsive student schedule */
+.session-list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;align-items:stretch!important}
+.session-card{display:flex!important;flex-direction:column!important;justify-content:flex-start!important;min-width:0!important;padding:10px 11px!important;border-radius:11px!important;box-shadow:none!important;transition:border-color .2s,background .2s!important}
+.session-card.time-past{border:1px solid rgba(239,68,68,.62)!important;background:linear-gradient(115deg,rgba(127,29,29,.28),#111722 78%)!important;box-shadow:inset 3px 0 0 #ef4444!important}
+.session-card.time-next{border:1px solid rgba(34,197,94,.68)!important;background:linear-gradient(115deg,rgba(20,83,45,.30),#111722 78%)!important;box-shadow:inset 3px 0 0 #22c55e!important}
+.session-card.time-live{border:1px solid rgba(234,179,8,.78)!important;background:linear-gradient(115deg,rgba(133,77,14,.36),#111722 78%)!important;box-shadow:inset 3px 0 0 #facc15!important}
+.session-card.time-future{border:1px solid rgba(59,130,246,.58)!important;background:linear-gradient(115deg,rgba(30,64,115,.28),#111722 78%)!important;box-shadow:inset 3px 0 0 #3b82f6!important}
+.session-card .status.time-past{background:rgba(153,27,27,.38)!important;color:#fecaca!important;border:1px solid rgba(248,113,113,.5)!important}
+.session-card .status.time-next{background:rgba(22,101,52,.4)!important;color:#bbf7d0!important;border:1px solid rgba(74,222,128,.5)!important}
+.session-card .status.time-live{background:rgba(161,98,7,.48)!important;color:#fef3c7!important;border:1px solid rgba(250,204,21,.6)!important}
+.session-card .status.time-future{background:rgba(30,64,175,.34)!important;color:#bfdbfe!important;border:1px solid rgba(96,165,250,.48)!important}
+.session-card .session-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin:0 0 8px!important}
+.session-card .session-number{font-size:11px!important;color:#f0d48a!important}
+.session-card .status.time-live,.session-card .status.time-next{display:inline-flex!important;align-items:center!important;gap:6px!important}
+.session-card .status.time-live:before,.session-card .status.time-next:before{content:"";display:inline-block;width:6px;height:6px;flex:0 0 6px;border-radius:50%;animation:gym20PublicPulse 1.4s ease-in-out infinite}
+.session-card .status.time-live:before{background:#fde047;box-shadow:0 0 0 0 rgba(253,224,71,.55)}
+.session-card .status.time-next:before{background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.5)}
+.session-card .session-facts-clear{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;padding:0!important;border:0!important}
+.session-card .session-facts-clear span{display:grid!important;grid-template-columns:76px minmax(0,1fr)!important;align-items:center!important;gap:8px!important;min-width:0!important}
+.session-card .session-facts-clear i{font-size:9px!important;color:#93a1b3!important}
+.session-card .session-facts-clear b{font-size:10px!important;color:#edf1f7!important;white-space:normal!important;overflow-wrap:anywhere!important}
+@keyframes gym20PublicPulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 currentColor}50%{opacity:.48;transform:scale(.82);box-shadow:0 0 0 4px transparent}}
+@media(max-width:520px){.session-list{grid-template-columns:minmax(0,1fr)!important;gap:6px!important}.session-card{padding:8px 9px!important}.session-card .session-top{margin-bottom:6px!important}.session-card .session-facts-clear span{grid-template-columns:70px minmax(0,1fr)!important}.session-card .session-facts-clear i{font-size:8px!important}.session-card .session-facts-clear b{font-size:9px!important}}
+@media(prefers-reduced-motion:reduce){.session-card .status.time-live:before,.session-card .status.time-next:before{animation:none;opacity:1;box-shadow:none}}
+
+</style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><button type="button" id="pushTest" class="push-test">ارسال اعلان آزمایشی</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
