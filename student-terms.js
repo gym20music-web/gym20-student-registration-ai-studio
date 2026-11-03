@@ -195,6 +195,25 @@ document.head.appendChild(css);
       }`;
     document.head.appendChild(finalSessionLayoutCss);
 
+    const statusPaletteCss=document.createElement('style');statusPaletteCss.id='stStatusPaletteCss';statusPaletteCss.textContent=`
+      #studentTermsTab .st-session-card{transition:background-color .2s,border-color .2s!important}
+      #studentTermsTab .st-session-card.past{border:1px solid rgba(239,68,68,.62)!important;background:linear-gradient(115deg,rgba(127,29,29,.28),#151e2b 78%)!important;box-shadow:inset 3px 0 0 #ef4444!important}
+      #studentTermsTab .st-session-state.past{background:rgba(153,27,27,.38)!important;color:#fecaca!important;border:1px solid rgba(248,113,113,.5)!important}
+      #studentTermsTab .st-session-card.next{border:1px solid rgba(34,197,94,.68)!important;background:linear-gradient(115deg,rgba(20,83,45,.30),#151e2b 78%)!important;box-shadow:inset 3px 0 0 #22c55e!important}
+      #studentTermsTab .st-session-state.next{background:rgba(22,101,52,.4)!important;color:#bbf7d0!important;border:1px solid rgba(74,222,128,.5)!important}
+      #studentTermsTab .st-session-card.live{border:1px solid rgba(234,179,8,.78)!important;background:linear-gradient(115deg,rgba(133,77,14,.36),#151e2b 78%)!important;box-shadow:inset 3px 0 0 #facc15!important}
+      #studentTermsTab .st-session-state.live{background:rgba(161,98,7,.48)!important;color:#fef3c7!important;border:1px solid rgba(250,204,21,.6)!important}
+      #studentTermsTab .st-session-card.future{border:1px solid rgba(59,130,246,.58)!important;background:linear-gradient(115deg,rgba(30,64,115,.28),#151e2b 78%)!important;box-shadow:inset 3px 0 0 #3b82f6!important}
+      #studentTermsTab .st-session-state.future{background:rgba(30,64,175,.34)!important;color:#bfdbfe!important;border:1px solid rgba(96,165,250,.48)!important}
+      #studentTermsTab .st-session-state.live:before,#studentTermsTab .st-session-state.next:before{content:"";display:inline-block;width:6px;height:6px;flex:0 0 6px;margin-left:5px;border-radius:50%;animation:gym20StatusPulse 1.4s ease-in-out infinite}
+      #studentTermsTab .st-session-state.live:before{background:#fde047;box-shadow:0 0 0 0 rgba(253,224,71,.55)}
+      #studentTermsTab .st-session-state.next:before{background:#4ade80;box-shadow:0 0 0 0 rgba(74,222,128,.5)}
+      @keyframes gym20StatusPulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 currentColor}50%{opacity:.48;transform:scale(.82);box-shadow:0 0 0 4px transparent}}
+      @media(prefers-reduced-motion:reduce){#studentTermsTab .st-session-state.live:before,#studentTermsTab .st-session-state.next:before{animation:none;opacity:1;box-shadow:none}}
+    `;
+    document.head.appendChild(statusPaletteCss);
+
+
     const b=document.createElement('button');b.className='admin-tab-btn';b.type='button';b.textContent='👥 هنرجویان و ترم‌ها';b.setAttribute('onclick',"switchAdminTab('"+TAB+"')");
     nav.insertBefore(b,nav.querySelector('[onclick*="requestsTab"]')||null);
     const p=document.createElement('div');p.className='admin-panel-tab';p.id=TAB;
@@ -389,12 +408,21 @@ document.head.appendChild(css);
     if(next&&Number(next.session_number)===Number(r.session_number))return {label:'جلسه آینده',cls:'next'};
     return {label:'جلسه برگزار نشده',cls:'future'};
   }
+  function refreshDraftSessionStates(){
+    const root=$('stDraftTable');if(!root)return;
+    root.querySelectorAll('.st-session-card[data-session-number]').forEach(card=>{
+      const n=Number(card.dataset.sessionNumber),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;
+      const state=sessionState(row),badge=card.querySelector('.st-session-state');
+      card.className='st-session-card '+state.cls;
+      if(badge){badge.className='st-session-state '+state.cls;badge.textContent=state.label;}
+    });
+  }
   function drawDraft(){
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
     if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای برای این ترم ثبت نشده است؛ از دکمه «انتخاب جلسات از تقویم» بالای صفحه استفاده کن.</p>';return;}
     $('stDraftTable').innerHTML='<div class="st-sessions-grid">'+sorted.map((r,i)=>{
       const state=sessionState(r),isoDate=localDate(r.starts_at),weekday=weekdayFa(isoDate);
-      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields"><label>تاریخ · '+weekday+'<input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label>ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label>نام مربی<select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div>'+'</article>';
+      return '<article data-session-number="'+r.session_number+'" class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields"><label>تاریخ · '+weekday+'<input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label>ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label>نام مربی<select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div>'+'</article>';
     }).join('')+'</div>';
     bindJalaliDates($('stDraftTable'));
     enhanceAllSelects($('stDraftTable'));
@@ -528,5 +556,6 @@ document.head.appendChild(css);
     const p=$(TAB);if(p)activeObserver.observe(p,{attributes:true,attributeFilter:['class']});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  window.setInterval(refreshDraftSessionStates,15000);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
