@@ -354,7 +354,7 @@ document.head.appendChild(css);
         const addingToExisting=Boolean(S.termId);
         const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
         if(!startDate||!endDate||endDate<startDate){say('ابتدا تاریخ شروع و پایان ترم را درست انتخاب کن.',true);return;}
-        if(addingToExisting&&!S.draftId){say('برای این ترم هنوز پیش‌نویس قابل ویرایش وجود ندارد؛ ابتدا روی «ساخت پیش‌نویس از نسخه منتشرشده» بزن.',true);return;}
+        if(addingToExisting&&!S.draftId){say('این ترم منتشرشده است و در این بخش فقط نمایش داده می‌شود.',true);return;}
         document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
         const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
         const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
