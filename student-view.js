@@ -14,8 +14,25 @@
 
 
   const decodePushKey=value=>{const pad="=".repeat((4-value.length%4)%4),raw=atob((value+pad).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from(raw,c=>c.charCodeAt(0));};
+  function enhanceTermPicker(select){
+    if(!select||select.dataset.customized==='1')return;
+    select.dataset.customized='1';
+    const wrap=document.createElement('div');wrap.className='term-select-wrap';
+    select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('term-select-native');
+    const trigger=document.createElement('button');trigger.type='button';trigger.className='term-select-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+    trigger.innerHTML='<span class="term-select-label"></span><span class="term-select-arrow">⌄</span>';
+    const menu=document.createElement('div');menu.className='term-select-menu';menu.hidden=true;menu.setAttribute('role','listbox');
+    wrap.append(trigger,menu);
+    const sync=()=>{const opt=select.options[select.selectedIndex];trigger.querySelector('.term-select-label').textContent=opt?opt.textContent:'انتخاب ترم';menu.querySelectorAll('.term-option').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.value===select.value)));};
+    menu.innerHTML=Array.from(select.options,o=>'<button type="button" class="term-option" role="option" data-value="'+esc(o.value)+'">'+esc(o.textContent)+'</button>').join('');
+    trigger.addEventListener('click',()=>{const opening=menu.hidden;document.querySelectorAll('.term-select-menu').forEach(m=>{m.hidden=true;m.parentElement.querySelector('.term-select-trigger')?.setAttribute('aria-expanded','false');});menu.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));});
+    menu.addEventListener('click',e=>{const b=e.target.closest('.term-option');if(!b)return;select.value=b.dataset.value;select.dispatchEvent(new Event('change',{bubbles:true}));menu.hidden=true;trigger.setAttribute('aria-expanded','false');sync();});
+    select.addEventListener('change',sync);
+    document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target)){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}});
+    sync();
+  }
   async function setupPush(shortCode,client){
-    const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus");
+    const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus"),testButton=$("pushTest");
     if(!box||!button||!status||!shortCode)return;
     box.classList.remove("hide");
     if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
@@ -23,7 +40,7 @@
     }
     const api=client.schema("gym20");
     let registration=null,publicKey="";
-    const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری کلاس‌ها، اعلان گوشی را فعال کن.";};
+    const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;if(testButton)testButton.classList.toggle("visible",!!active);status.textContent=active?"اعلان یادآوری کلاس‌ها روی این گوشی فعال است.":"برای دریافت یادآوری کلاس‌ها، اعلان گوشی را فعال کن.";};
     const saveSubscription=async subscription=>{
       const keys=subscription.toJSON().keys||{};
       const {error}=await api.rpc("subscribe_student_push",{
@@ -43,6 +60,17 @@
       if(Notification.permission==="granted"&&existing){await saveSubscription(existing);paint(true);}
       else paint(false);
     }catch(error){status.textContent=error.message||"آماده‌سازی اعلان‌ها ناموفق بود.";}
+    if(testButton)testButton.addEventListener("click",async()=>{
+      testButton.disabled=true;
+      try{
+        registration=registration||await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+        registration=await navigator.serviceWorker.ready;
+        if(Notification.permission!=="granted")throw new Error("اجازه اعلان فعال نیست؛ ابتدا اعلان را فعال کن.");
+        await registration.showNotification("اعلان آزمایشی GYM20",{body:"اگر این پیام را می‌بینی، نمایش اعلان روی این دستگاه کار می‌کند.",icon:"/favicon.ico",badge:"/favicon.ico",dir:"rtl",lang:"fa",tag:"gym20-push-test-"+Date.now(),data:{url:location.href}});
+        status.textContent="اعلان آزمایشی برای همین دستگاه ارسال شد.";
+      }catch(error){status.textContent=error.message||"ارسال اعلان آزمایشی ناموفق بود.";}
+      finally{testButton.disabled=false;}
+    });
     button.addEventListener("click",async()=>{
       if(button.disabled)return;
       button.disabled=true;
@@ -136,6 +164,7 @@
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
       $('termSelect').innerHTML=terms.map((t,i)=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
+      enhanceTermPicker($('termSelect'));
       $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
       enhanceTermSelect();
       showTerm(terms[0].id);
