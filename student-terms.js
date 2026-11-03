@@ -260,6 +260,7 @@ document.head.appendChild(css);
   async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
     S.draftId='';S.rows=[];S.publishedId=null;S.publishedReadOnly=false;
+    if(S.term){$('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');$('stCount').value=String(S.term.total_sessions||8);syncTermName();}
     $('stSchedule').classList.toggle('st-hide',!id);
     $('stManualCalendar').textContent=id?'▦ افزودن جلسات به ترم انتخاب‌شده':'▦ انتخاب جلسات از تقویم';
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);
