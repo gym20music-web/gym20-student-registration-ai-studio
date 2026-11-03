@@ -293,14 +293,11 @@ document.head.appendChild(css);
       }
     }catch(e){say(e.message||'دریافت ترم ناموفق بود.',true);}
   }
+  // Published schedules are never edited in place. This renderer now always
+  // uses the separate draft editor created by create_term_edit_draft().
   function drawPublishedSessions(){
-    const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
-    const box=$('stDraftTable');
-    if(!sorted.length){box.innerHTML='<p class="st-muted">برای این ترم جلسه منتشرشده‌ای پیدا نشد.</p>';return;}
-    box.innerHTML='<div class="st-sessions-grid">'+sorted.map(r=>{
-      const iso=localDate(r.starts_at),state=sessionState(r);
-      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span></div><div class="st-session-fields"><label>تاریخ · '+weekdayFa(iso)+'<span class="st-table-input">'+esc(jalaliInput(iso))+'</span></label><label>ساعت کلاس<span class="st-table-input">'+esc(localTime(r.starts_at))+'</span></label><label>نام مربی<span class="st-table-input">'+esc(r.coach_name||'—')+'</span></label></div>'+'</article>';
-    }).join('')+'</div>';
+    S.publishedReadOnly=false;
+    drawDraft();
   }
 
   async function loadDraftRows(){
