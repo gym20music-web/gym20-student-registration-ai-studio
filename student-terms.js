@@ -397,7 +397,6 @@ document.head.appendChild(css);
     catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
   async function publish(){
-    const pendingReminderSettings={};S.rows.forEach(r=>{pendingReminderSettings['new:'+r.session_number]=reminderConfig(r);});
     try{
       if(S.publishedReadOnly)throw Error('این ترم قبلاً منتشر شده و فقط برای مشاهده است.');
       if(!S.termId){
@@ -420,14 +419,14 @@ document.head.appendChild(css);
         const saved=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(saved.error)throw saved.error;
         const pub=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(pub.error)throw pub.error;
         const newTermId=S.termId;
-        await loadStudent(S.studentId);$('stTerm').value=newTermId;await loadTerm(newTermId);await applyPendingReminderSettings(pendingReminderSettings);
+        await loadStudent(S.studentId);$('stTerm').value=newTermId;await loadTerm(newTermId);
         say('ترم جدید و '+fa(payload.length)+' جلسه با موفقیت ثبت و منتشر شد.');
         return;
       }
       if(!S.draftId)throw Error('برای این ترم پیش‌نویس قابل ثبت وجود ندارد.');
       say('در حال ذخیره و انتشار برنامه…');await persistDraft();
       const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;
-      const termId=S.termId;await loadStudent(S.studentId);$('stTerm').value=termId;await loadTerm(termId);await applyPendingReminderSettings(pendingReminderSettings);say('برنامه با موفقیت منتشر شد.');
+      const termId=S.termId;await loadStudent(S.studentId);$('stTerm').value=termId;await loadTerm(termId);say('برنامه با موفقیت منتشر شد.');
     }catch(e){say(e.message||'ثبت نهایی ناموفق بود.',true);}
   }
   async function loadAttendance(){
