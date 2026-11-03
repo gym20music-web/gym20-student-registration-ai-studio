@@ -2015,10 +2015,14 @@ function triggerPromoPopupIfEnabled(){
 
 const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
 function resumeGym20AdminSession(){
+  let hasSavedAdminSession=false;
+  try{hasSavedAdminSession=localStorage.getItem('sb-iqjujumhoawlugrmjvyj-auth-token')!==null;}
+  catch(e){}
+  if(!hasSavedAdminSession)return;
   setTimeout(async()=>{
     try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner();}
     catch(err){console.warn('Admin session check failed:',err);}
-  },1800);
+  },700);
 }
 const registrationForm = document.getElementById('publicRegistrationForm'), registrationStatus = document.getElementById('regStatus'), registrationSubmit = document.getElementById('regSubmitBtn'), paymentConfirmedEl = document.getElementById('regPaymentConfirmed');
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
