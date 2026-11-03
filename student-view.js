@@ -67,6 +67,42 @@
       finally{button.disabled=false;}
     });
   }
+  const viewStyle=document.createElement('style');
+  viewStyle.textContent=`
+    .view-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:8px 1px 6px}
+    .view-heading strong{font-size:11px;color:#e8c46b}.view-heading small{font-size:9px;color:#8e9aaa}
+    .view-switch{display:flex;gap:5px;margin:0 0 8px;padding:4px;border:1px solid #30394a;border-radius:9px;background:#0d131d}
+    .view-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:31px;padding:5px 8px;border:1px solid transparent;border-radius:7px;background:transparent;color:#aab5c3;font:600 10px Vazirmatn,sans-serif;cursor:pointer;transition:.15s}
+    .view-btn[aria-pressed=true]{border-color:#a98645;background:linear-gradient(135deg,#4a3920,#282216);color:#f3d78e;box-shadow:inset 0 1px #ffffff12}
+    .view-icon{font-size:13px;color:#e8c46b}.session-list.view-list{display:flex;flex-direction:column;gap:5px}
+    .session-list.view-list .session-card{display:grid;grid-template-columns:minmax(68px,.65fr) minmax(0,2fr) minmax(80px,.8fr);align-items:center;gap:8px;padding:7px 9px}
+    .session-list.view-list .session-top{margin:0;flex-direction:column;align-items:flex-start;gap:3px}
+    .session-list.view-list .session-facts{border:0;padding:0;grid-template-columns:1.15fr 1fr .7fr}
+    .session-list.view-list .session-bottom{padding:0;justify-content:flex-end}
+    .term-select-wrap{position:relative;margin-top:4px}
+    .term-select-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}
+    .term-select-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:32px;padding:5px 9px;border:1px solid #806b43;border-radius:8px;background:linear-gradient(145deg,#1b2432,#111722);color:#f5f2e9;font:600 11px Vazirmatn,sans-serif;text-align:right;cursor:pointer}
+    .term-select-trigger:after{content:'⌄';color:#e8c46b;font-size:16px}
+    .term-select-menu{position:absolute;z-index:1000;top:calc(100% + 4px);right:0;left:0;max-height:220px;overflow:auto;padding:4px;border:1px solid #806b43;border-radius:9px;background:#151d29;box-shadow:0 12px 28px #000b}
+    .term-select-menu[hidden]{display:none!important}
+    .term-select-option{display:block;width:100%;padding:7px 9px;border:0;border-bottom:1px solid #ffffff10;border-radius:6px;background:transparent;color:#e8eaf0;font:500 10px Vazirmatn,sans-serif;text-align:right;cursor:pointer}
+    .term-select-option:last-child{border-bottom:0}.term-select-option.selected{background:#5b4727;color:#ffe3a0}
+    @media(max-width:520px){.view-btn{min-height:29px;font-size:9px}.session-list.view-list .session-card{grid-template-columns:60px minmax(0,1fr);gap:5px;padding:6px}.session-list.view-list .session-bottom{grid-column:2;justify-content:flex-start}.session-list.view-list .session-facts{gap:3px}.session-list.view-list .session-facts b{font-size:8px}}
+  `;
+  document.head.appendChild(viewStyle);
+  function enhanceTermSelect(){
+    const select=$('termSelect');if(!select||select.dataset.enhanced==='1')return;
+    select.dataset.enhanced='1';const wrap=document.createElement('div');wrap.className='term-select-wrap';
+    select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('term-select-native');
+    const trigger=document.createElement('button');trigger.type='button';trigger.className='term-select-trigger';trigger.setAttribute('aria-expanded','false');
+    const menu=document.createElement('div');menu.className='term-select-menu';menu.hidden=true;wrap.append(trigger,menu);
+    const sync=()=>{trigger.textContent=select.options[select.selectedIndex]?.textContent||'انتخاب ترم';menu.querySelectorAll('button').forEach((b,i)=>b.classList.toggle('selected',i===select.selectedIndex));};
+    const fill=()=>{menu.innerHTML=Array.from(select.options,(o,i)=>'<button type="button" class="term-select-option '+(i===select.selectedIndex?'selected':'')+'" data-index="'+i+'">'+esc(o.textContent)+'</button>').join('');sync();};
+    trigger.addEventListener('click',()=>{menu.hidden=!menu.hidden;trigger.setAttribute('aria-expanded',String(!menu.hidden));});
+    menu.addEventListener('click',e=>{const b=e.target.closest('[data-index]');if(!b)return;select.selectedIndex=Number(b.dataset.index);select.dispatchEvent(new Event('change',{bubbles:true}));menu.hidden=true;trigger.setAttribute('aria-expanded','false');sync();});
+    document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target)){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}});
+    select.addEventListener('change',sync);fill();
+  }
   let terms=[];
   let activeView="grid";
   let viewStorageKey="gym20-session-view";
@@ -101,6 +137,7 @@
       $('termPanel').classList.remove('hide');
       $('termSelect').innerHTML=terms.map((t,i)=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
       $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
+      enhanceTermSelect();
       showTerm(terms[0].id);
     }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.';}
   }
