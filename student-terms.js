@@ -174,7 +174,7 @@ document.head.appendChild(css);
   }
 
   async function loadStudent(id){
-    S.studentId=id;S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');if(!id)return;
+    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
