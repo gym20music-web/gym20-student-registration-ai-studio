@@ -290,7 +290,6 @@ document.head.appendChild(css);
           }).filter(Boolean);
           if(copiedStyles.length){const {error}=await db().from('class_session_styles').insert(copiedStyles);if(error)throw error;}
         }catch(copyError){
-          await db().from('class_session_styles').delete().in('session_id',source.map(x=>x.id));
           await db().from('class_sessions').delete().eq('schedule_version_id',S.draftId);
           await db().from('term_schedule_versions').delete().eq('id',S.draftId);
           S.draftId='';
