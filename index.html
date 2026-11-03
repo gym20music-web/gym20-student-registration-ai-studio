@@ -596,6 +596,99 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  .admin-content .admin-header button:not(.circle-btn){min-height:29px!important;padding:5px 7px!important;font-size:9px!important}
 }
 
+
+/* GYM20 ADMIN DESIGN SYSTEM — unified compact controls */
+#adminModal .admin-content{
+ --adm-gold:#d6b35a;--adm-gold-soft:rgba(214,179,90,.14);
+ --adm-bg:#111722;--adm-card:#171f2c;--adm-border:rgba(214,179,90,.25);
+ font-family:'Vazirmatn',Tahoma,sans-serif!important;
+}
+#adminModal .admin-content :is(button,input,textarea,select){font-family:'Vazirmatn',Tahoma,sans-serif!important;box-sizing:border-box}
+#adminModal .admin-header{padding:10px 14px!important;min-height:48px}
+#adminModal .admin-sidebar{padding:12px 10px!important;gap:10px!important}
+#adminModal .admin-tab-btn{min-height:34px!important;padding:6px 9px!important;border-radius:7px!important;font-size:11px!important;line-height:1.5!important}
+#adminModal .admin-workspace{padding:14px 16px 14px!important}
+#adminModal .admin-workspace :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select,.admin-select,[contenteditable=true]){
+ min-height:34px!important;height:auto;max-width:100%;padding:6px 8px!important;
+ border:1px solid var(--adm-border)!important;border-radius:7px!important;
+ background-color:#141c29!important;color:#f4f0e6!important;
+ font-size:11px!important;line-height:1.5!important;box-shadow:none!important;
+}
+#adminModal .admin-workspace textarea{min-height:58px!important}
+#adminModal .admin-workspace :is(input,textarea,select):focus{outline:none!important;border-color:#d6b35a!important;box-shadow:0 0 0 2px rgba(214,179,90,.12)!important}
+#adminModal .admin-workspace :is(input,textarea)::placeholder{color:#8993a3!important;font-size:10px!important;opacity:1}
+#adminModal .admin-workspace select,
+#adminModal .admin-workspace .admin-select{
+ appearance:none!important;-webkit-appearance:none!important;
+ padding-left:30px!important;padding-right:9px!important;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23d6b35a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")!important;
+ background-repeat:no-repeat!important;background-position:left 9px center!important;background-size:13px!important;
+}
+#adminModal .admin-workspace select option{background:#171f2c!important;color:#f4f0e6!important}
+#adminModal .admin-workspace button:not(.st-custom-option){
+ min-height:30px!important;padding:5px 9px!important;border:1px solid rgba(214,179,90,.48)!important;
+ border-radius:7px!important;background:#24202a!important;color:#e8cb82!important;
+ font-size:10px!important;font-weight:700!important;line-height:1.45!important;
+ box-shadow:none!important;transition:background .15s,border-color .15s,transform .15s;
+}
+#adminModal .admin-workspace button:not(.st-custom-option):hover:not(:disabled){background:#332b1d!important;border-color:#d6b35a!important}
+#adminModal .admin-workspace button:disabled{opacity:.42!important;cursor:not-allowed!important}
+#adminModal .admin-workspace button.primary,
+#adminModal .admin-workspace button.st-btn.primary,
+#adminModal .admin-workspace #autoCommitBtn{
+ background:linear-gradient(110deg,#a98235,#e0c16e)!important;color:#17130a!important;border-color:#d6b35a!important;
+}
+#adminModal .admin-workspace button.danger{background:#2a1b20!important;color:#f1a0a8!important;border-color:rgba(239,68,68,.42)!important}
+#adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.request-detail-panel,.request-summary,.requests-table-wrap,.st-card){
+ border-radius:9px!important;box-shadow:none!important
+}
+#adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card){padding:9px!important;margin:7px 0!important}
+#adminModal .admin-workspace .admin-section-subhead{font-size:11px!important;margin-bottom:6px!important}
+#adminModal .admin-workspace .admin-input-group{margin-bottom:7px!important}
+#adminModal .admin-workspace .admin-input-group label{font-size:10px!important;margin-bottom:3px!important}
+#adminModal .admin-workspace .admin-grid-2,
+#adminModal .admin-workspace .admin-grid-3{gap:7px!important}
+#adminModal .admin-workspace .theme-card-option{padding:6px 8px!important;border-width:1px!important;border-radius:8px!important}
+#adminModal .admin-workspace .theme-card-option>div:first-child{font-size:11px!important}
+#adminModal .admin-workspace .requests-toolbar{gap:6px!important;margin:7px 0!important}
+#adminModal .admin-workspace .requests-table th,
+#adminModal .admin-workspace .requests-table td{padding:5px 5px!important}
+#adminModal .admin-workspace .request-card{padding:8px!important;border-radius:9px!important;gap:6px!important}
+#adminModal .admin-workspace .request-action-btn{min-height:28px!important;padding:4px 7px!important;font-size:10px!important}
+#adminModal .admin-workspace #autoCommitBtn{min-height:36px!important;margin-top:9px!important}
+#adminModal .admin-workspace input[type=checkbox],
+#adminModal .admin-workspace input[type=radio]{accent-color:#d6b35a}
+#adminModal #studentTermsTab .st-custom-select-trigger{
+ min-height:34px!important;height:34px!important;padding:5px 8px!important;
+ border:1px solid rgba(214,179,90,.45)!important;border-radius:7px!important;
+ background:#141c29!important;color:#f4f0e6!important;font-size:11px!important;
+}
+#adminModal #studentTermsTab .st-custom-select-menu{
+ padding:4px!important;border:1px solid rgba(214,179,90,.45)!important;
+ border-radius:8px!important;background:#171f2c!important;box-shadow:0 10px 24px #0009!important;
+}
+#adminModal #studentTermsTab .st-custom-option{
+ min-height:29px!important;padding:5px 8px!important;border-radius:5px!important;
+ background:transparent!important;color:#eee!important;font-size:10px!important;
+}
+#adminModal #studentTermsTab .st-custom-option.selected{background:rgba(214,179,90,.16)!important;color:#f2d48b!important}
+#adminModal #studentTermsTab .st-student-trigger{min-height:34px!important;padding:6px 9px!important;font-size:11px!important}
+#adminModal #studentTermsTab .st-student-option{min-height:32px!important;padding:6px 8px!important;font-size:10px!important}
+#adminModal #studentTermsTab .st-session-card{padding:7px!important;margin:5px 0!important;border-radius:8px!important}
+#adminModal #studentTermsTab .st-session-fields :is(input,select){min-height:32px!important;height:32px!important;font-size:10px!important;padding:4px 6px!important}
+#adminModal #studentTermsTab .st-session-fields .st-time-input{font-size:12px!important}
+@media(max-width:720px){
+ #adminModal .admin-header{padding:8px 10px!important}
+ #adminModal .admin-workspace{padding:9px 8px 12px!important}
+ #adminModal .admin-sidebar{padding:6px 7px 4px!important}
+ #adminModal .admin-tab-btn{min-height:31px!important;padding:4px 8px!important;font-size:10px!important}
+ #adminModal .admin-workspace :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select,.admin-select,[contenteditable=true]){min-height:34px!important;font-size:11px!important;padding:5px 7px!important}
+ #adminModal .admin-workspace :is(input,textarea)::placeholder{font-size:9px!important}
+ #adminModal .admin-workspace button:not(.st-custom-option){min-height:29px!important;padding:4px 7px!important;font-size:10px!important}
+ #adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card){padding:8px!important;margin:6px 0!important}
+ #adminModal .admin-workspace .requests-table td{padding:4px 3px!important}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
