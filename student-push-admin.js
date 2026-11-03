@@ -20,9 +20,9 @@
     return { vapid_public_key: b64url(publicRaw), vapid_private_key: jwk.d };
   }
   async function loadConfig() {
-    if (!window.gym20OwnerAuthorized || !window.gym20AdminClient) return;
+    if (!(typeof gym20OwnerAuthorized !== 'undefined' && gym20OwnerAuthorized) || !(typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null)) return;
     try {
-      const { data, error } = await window.gym20AdminClient.schema('gym20')
+      const { data, error } = await (typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null).schema('gym20')
         .from('site_settings').select('value').eq('key', KEY).maybeSingle();
       if (error) throw error;
       const c = data?.value || {};
@@ -35,7 +35,7 @@
   }
   async function saveConfig() {
     const button = $('stPushSave');
-    if (!window.gym20OwnerAuthorized || !window.gym20AdminClient) {
+    if (!(typeof gym20OwnerAuthorized !== 'undefined' && gym20OwnerAuthorized) || !(typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null)) {
       note('برای ذخیره تنظیمات، ابتدا با حساب مدیر وارد شو.', true);
       return;
     }
@@ -50,7 +50,7 @@
     const old = button.textContent;
     button.disabled = true; button.textContent = 'در حال ذخیره…';
     try {
-      const client = window.gym20AdminClient.schema('gym20');
+      const client = (typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null).schema('gym20');
       const { data: current, error: readError } = await client.from('site_settings')
         .select('value').eq('key', KEY).maybeSingle();
       if (readError) throw readError;
@@ -60,7 +60,7 @@
       if (!config.vapid_public_key || !config.vapid_private_key) {
         Object.assign(config, await createVapidPair());
       }
-      const { data: authData, error: authError } = await window.gym20AdminClient.auth.getUser();
+      const { data: authData, error: authError } = await (typeof gym20AdminClient !== 'undefined' ? gym20AdminClient : null).auth.getUser();
       if (authError) throw authError;
       const { error } = await client.from('site_settings').upsert({
         key: KEY, value: config, updated_at: new Date().toISOString(), updated_by: authData.user?.id || null
@@ -91,10 +91,10 @@
     if (anchor) tab.insertBefore(card, anchor); else tab.appendChild(card);
     $('stPushSave').addEventListener('click', saveConfig);
     const watch = new MutationObserver(() => {
-      if (tab.classList.contains('active') && window.gym20OwnerAuthorized) loadConfig();
+      if (tab.classList.contains('active') && (typeof gym20OwnerAuthorized !== 'undefined' && gym20OwnerAuthorized)) loadConfig();
     });
     watch.observe(tab, { attributes: true, attributeFilter: ['class'] });
-    if (tab.classList.contains('active') && window.gym20OwnerAuthorized) loadConfig();
+    if (tab.classList.contains('active') && (typeof gym20OwnerAuthorized !== 'undefined' && gym20OwnerAuthorized)) loadConfig();
   }
   const observer = new MutationObserver(() => { if (!mounted) mount(); });
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => { mount(); observer.observe(document.body, { childList: true, subtree: true }); });
