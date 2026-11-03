@@ -154,7 +154,12 @@ document.head.appendChild(css);
         #studentTermsTab .st-session-head{gap:5px!important}
         #studentTermsTab .st-session-head strong{font-size:10px!important}
         #studentTermsTab .st-session-fields{gap:5px!important}
-      }`;
+      }
+      /* Subtle live indicator: animate only the status dot, never the full row/card */
+      #studentTermsTab .st-session-state.live{display:inline-flex!important;align-items:center!important;gap:6px!important}
+      #studentTermsTab .st-session-state.live::before{content:"";display:inline-block;width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#fde047;box-shadow:0 0 0 0 rgba(253,224,71,.65);animation:gym20LivePulse 1.25s ease-in-out infinite}
+      @keyframes gym20LivePulse{0%,100%{opacity:1;transform:scale(1);box-shadow:0 0 0 0 rgba(253,224,71,.55)}50%{opacity:.42;transform:scale(.78);box-shadow:0 0 0 4px rgba(253,224,71,0)}}
+      @media(prefers-reduced-motion:reduce){#studentTermsTab .st-session-state.live::before{animation:none;opacity:1;box-shadow:none}}`;
     document.head.appendChild(adminSessionPolish);
 
 
