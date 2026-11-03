@@ -1616,25 +1616,38 @@ document.addEventListener('click',e=>{if(e.target&&e.target.closest&&e.target.cl
 function loadGym20SupabaseSdk(){
   if(window.supabase&&typeof window.supabase.createClient==='function')return Promise.resolve();
   if(gym20SupabaseSdkPromise)return gym20SupabaseSdkPromise;
-  gym20SupabaseSdkPromise=new Promise((resolve,reject)=>{
-    const script=document.createElement('script');
-    script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0';
-    script.async=true;
-    const timer=setTimeout(()=>{
-      script.remove();gym20SupabaseSdkPromise=null;
-      reject(new Error('بارگذاری سرویس ورود مدیر زمان‌بر شد. اتصال اینترنت را بررسی و دوباره تلاش کنید.'));
-    },9000);
-    script.onload=()=>{
-      clearTimeout(timer);
-      if(window.supabase&&typeof window.supabase.createClient==='function')resolve();
-      else{gym20SupabaseSdkPromise=null;reject(new Error('کتابخانه Supabase به‌درستی بارگذاری نشد.'));}
-    };
-    script.onerror=()=>{
-      clearTimeout(timer);script.remove();gym20SupabaseSdkPromise=null;
-      reject(new Error('دسترسی به کتابخانه ورود مدیر برقرار نشد. دوباره تلاش کنید.'));
-    };
-    document.head.appendChild(script);
-  });
+  gym20SupabaseSdkPromise=(async()=>{
+    const sources=[
+      'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0',
+      'https://unpkg.com/@supabase/supabase-js@2.118.0/dist/umd/supabase.js'
+    ];
+    let lastError=null;
+    for(const src of sources){
+      try{
+        await new Promise((resolve,reject)=>{
+          const script=document.createElement('script');
+          script.src=src;script.async=true;
+          const timer=setTimeout(()=>{
+            script.onload=script.onerror=null;script.remove();
+            reject(new Error('مهلت بارگذاری پایان یافت: '+src));
+          },6500);
+          script.onload=()=>{
+            clearTimeout(timer);
+            if(window.supabase&&typeof window.supabase.createClient==='function')resolve();
+            else{script.remove();reject(new Error('فایل دریافتی کتابخانه معتبر نیست: '+src));}
+          };
+          script.onerror=()=>{
+            clearTimeout(timer);script.remove();
+            reject(new Error('این منبع در دسترس نیست: '+src));
+          };
+          document.head.appendChild(script);
+        });
+        return;
+      }catch(err){lastError=err;console.warn('GYM20 SDK source failed:',src,err);}
+    }
+    gym20SupabaseSdkPromise=null;
+    throw new Error('کتابخانه ورود مدیر از هیچ‌یک از دو منبع بارگذاری نشد. احتمالاً دسترسی اینترنت به CDNها محدود است. صفحه را دوباره بارگذاری کنید یا اتصال را تغییر دهید.');
+  })().catch(err=>{gym20SupabaseSdkPromise=null;throw err;});
   return gym20SupabaseSdkPromise;
 }
 function loadGym20Module(src){
@@ -2015,10 +2028,9 @@ function triggerPromoPopupIfEnabled(){
 
 const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
 function resumeGym20AdminSession(){
-  let hasSavedAdminSession=false;
-  try{hasSavedAdminSession=localStorage.getItem('sb-iqjujumhoawlugrmjvyj-auth-token')!==null;}
-  catch(e){}
-  if(!hasSavedAdminSession)return;
+  // هنگام بازدید عادی هیچ CDN خارجی برای بررسی نشست مدیر بارگذاری نمی‌کنیم.
+  // نشست ذخیره‌شده با کلیک مدیر و در همان لحظهٔ نیاز بررسی می‌شود.
+  if(!window.supabase||typeof window.supabase.createClient!=='function')return;
   setTimeout(async()=>{
     try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner();}
     catch(err){console.warn('Admin session check failed:',err);}
