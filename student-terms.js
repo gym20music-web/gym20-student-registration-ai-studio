@@ -269,15 +269,30 @@ document.head.appendChild(css);
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');
       S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term?.published_version_id||null;
+      if(!S.draftId&&S.publishedId){
+        say('در حال آماده‌سازی نسخه قابل ویرایش…');
+        const {data:source,error:sourceError}=await db().from('class_sessions').select('id,course_id,enrollment_id,session_number,starts_at,ends_at,coach_name,venue,notes').eq('schedule_version_id',S.publishedId).order('session_number');
+        if(sourceError)throw sourceError;
+        if(!source?.length)throw Error('جلسه‌ای برای ساخت نسخه ویرایشی پیدا نشد.');
+        const nextVersion=Math.max(0,...vs.map(v=>Number(v.version_number)||0))+1;
+        const {data:newVersion,error:versionError}=await db().from('term_schedule_versions').insert({term_id:id,version_number:nextVersion,status:'draft',notes:'پیش‌نویس ویرایش برنامه منتشرشده'}).select('id').single();
+        if(versionError)throw versionError;
+        S.draftId=newVersion.id;
+        const copied=await db().from('class_sessions').insert(source.map(x=>({course_id:x.course_id,enrollment_id:x.enrollment_id,term_id:id,schedule_version_id:S.draftId,session_number:x.session_number,starts_at:x.starts_at,ends_at:x.ends_at,coach_name:x.coach_name,venue:x.venue,notes:x.notes,status:'scheduled'}))).select('id,session_number');
+        if(copied.error)throw copied.error;
+        const {data:styleRows,error:styleError}=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',source.map(x=>x.id));
+        if(styleError)throw styleError;
+        const copiedStyles=(styleRows||[]).map(x=>{const oldSession=source.find(z=>z.id===x.session_id);const target=copied.data.find(y=>Number(y.session_number)===Number(oldSession?.session_number));return target?{session_id:target.id,enrollment_id:x.enrollment_id}:null;}).filter(Boolean);
+        if(copiedStyles.length){const {error}=await db().from('class_session_styles').insert(copiedStyles);if(error)throw error;}
+      }
       if(S.draftId){
-        $('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';
+        S.publishedReadOnly=false;
+        $('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی و انتشار تغییرات';
         $('stManualCalendar').hidden=false;
         await loadDraftRows();await renderBuilder();
+        say(S.publishedId?'نسخه ویرایشی آماده است؛ تغییرات را انجام بده و «ثبت نهایی و انتشار تغییرات» را بزن.':'پیش‌نویس ترم آماده و قابل ویرایش است.');
       }else if(S.publishedId){
         S.publishedReadOnly=true;$('stPublish').hidden=true;$('stManualCalendar').hidden=true;
-        const {data:sessions,error:se}=await db().from('class_sessions').select('id,session_number,starts_at,ends_at,coach_name,venue,notes,enrollment_id').eq('schedule_version_id',S.publishedId).order('session_number');
-        if(se)throw se;S.rows=(sessions||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));
-        if(S.rows.length){const styles=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(styles.error)throw styles.error;styles.data.forEach(x=>{const row=S.rows.find(r=>r.id===x.session_id);if(row&&!row.enrollment_ids.includes(x.enrollment_id))row.enrollment_ids.push(x.enrollment_id);});}
         $('stDraftTable').innerHTML='<div class="st-muted" style="margin-bottom:8px">برنامه منتشرشده این ترم</div>';
         drawPublishedSessions();
         $('stSchedule').classList.remove('st-hide');
@@ -299,7 +314,7 @@ document.head.appendChild(css);
   }
 
   async function loadDraftRows(){
-    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,ends_at,venue,coach_name,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}
+    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,course_id,enrollment_id,session_number,starts_at,ends_at,venue,coach_name,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
