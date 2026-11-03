@@ -278,7 +278,6 @@ document.head.appendChild(css);
         const {data:sessions,error:se}=await db().from('class_sessions').select('id,session_number,starts_at,ends_at,coach_name,venue,notes,enrollment_id').eq('schedule_version_id',S.publishedId).order('session_number');
         if(se)throw se;S.rows=(sessions||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));
         if(S.rows.length){const styles=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(styles.error)throw styles.error;styles.data.forEach(x=>{const row=S.rows.find(r=>r.id===x.session_id);if(row&&!row.enrollment_ids.includes(x.enrollment_id))row.enrollment_ids.push(x.enrollment_id);});}
-        await loadReminderSettings();
         $('stDraftTable').innerHTML='<div class="st-muted" style="margin-bottom:8px">برنامه منتشرشده این ترم</div>';
         drawPublishedSessions();
         $('stSchedule').classList.remove('st-hide');
@@ -295,14 +294,12 @@ document.head.appendChild(css);
     if(!sorted.length){box.innerHTML='<p class="st-muted">برای این ترم جلسه منتشرشده‌ای پیدا نشد.</p>';return;}
     box.innerHTML='<div class="st-sessions-grid">'+sorted.map(r=>{
       const iso=localDate(r.starts_at),state=sessionState(r);
-      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span></div><div class="st-session-fields"><label>تاریخ · '+weekdayFa(iso)+'<span class="st-table-input">'+esc(jalaliInput(iso))+'</span></label><label>ساعت کلاس<span class="st-table-input">'+esc(localTime(r.starts_at))+'</span></label><label>نام مربی<span class="st-table-input">'+esc(r.coach_name||'—')+'</span></label></div>'+reminderMarkup(r)+'</article>';
+      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span></div><div class="st-session-fields"><label>تاریخ · '+weekdayFa(iso)+'<span class="st-table-input">'+esc(jalaliInput(iso))+'</span></label><label>ساعت کلاس<span class="st-table-input">'+esc(localTime(r.starts_at))+'</span></label><label>نام مربی<span class="st-table-input">'+esc(r.coach_name||'—')+'</span></label></div>'+'</article>';
     }).join('')+'</div>';
-    bindReminderControls(box);
   }
 
   async function loadDraftRows(){
     if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,enrollment_id,session_number,starts_at,ends_at,venue,coach_name,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}
-    await loadReminderSettings();
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
@@ -324,11 +321,10 @@ document.head.appendChild(css);
     if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای برای این ترم ثبت نشده است؛ از دکمه «انتخاب جلسات از تقویم» بالای صفحه استفاده کن.</p>';return;}
     $('stDraftTable').innerHTML='<div class="st-sessions-grid">'+sorted.map((r,i)=>{
       const state=sessionState(r),isoDate=localDate(r.starts_at),weekday=weekdayFa(isoDate);
-      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields"><label>تاریخ · '+weekday+'<input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label>ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label>نام مربی<select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div>'+reminderMarkup(r)+'</article>';
+      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields"><label>تاریخ · '+weekday+'<input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label>ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label>نام مربی<select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div>'+'</article>';
     }).join('')+'</div>';
     bindJalaliDates($('stDraftTable'));
     enhanceAllSelects($('stDraftTable'));
-    bindReminderControls($('stDraftTable'));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
     $('stDraftTable').querySelectorAll('[data-date],[data-time]').forEach(input=>input.addEventListener('change',()=>{try{const n=Number(input.dataset.date||input.dataset.time),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;const dateInput=$('stDraftTable').querySelector('[data-date="'+n+'"]'),timeInput=$('stDraftTable').querySelector('[data-time="'+n+'"]'),date=gregorianInput(dateInput.value),time=timeInput.value;if(date&&time){const start=localISO(date,time),mins=rowMinutes(row);row.starts_at=start;row.ends_at=new Date(new Date(start).getTime()+mins*60000).toISOString();drawDraft();}}catch(e){}}));
   }
