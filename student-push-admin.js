@@ -29,7 +29,7 @@
       $('stPushEnabled').checked = c.enabled !== false;
       $('stPushReminder1').value = String(c.reminder_1_hours ?? 6);
       $('stPushReminder2').value = String(c.reminder_2_hours ?? 2);
-      $('stPushKeyStatus').textContent = c.vapid_public_key ? 'کلید امن اعلان آماده است.' : 'کلید امن هنگام اولین ذخیره ساخته می‌شود.';
+      $('stPushKeyStatus').textContent = (c.vapid_public_key && c.vapid_private_key) ? 'کلید امن اعلان آماده است.' : 'کلید امن هنگام اولین ذخیره ساخته یا تکمیل می‌شود.';
       note('تنظیمات اعلان دریافت شد.');
     } catch (e) { note(e.message || 'دریافت تنظیمات اعلان ناموفق بود.', true); }
   }
