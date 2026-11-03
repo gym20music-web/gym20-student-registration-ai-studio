@@ -81,12 +81,42 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 @media(max-width:520px){.session-list{grid-template-columns:minmax(0,1fr)!important;gap:6px!important}.session-card{padding:8px 9px!important}.session-card .session-top{margin-bottom:6px!important}.session-card .session-facts-clear span{grid-template-columns:70px minmax(0,1fr)!important}.session-card .session-facts-clear i{font-size:8px!important}.session-card .session-facts-clear b{font-size:9px!important}}
 @media(prefers-reduced-motion:reduce){.session-card .status.time-live:before,.session-card .status.time-next:before{animation:none;opacity:1;box-shadow:none}}
 
+
+/* Clean compact schedule rows: session number right, status left, details on one line */
+#termMeta{display:none!important}
+.session-list.view-list{display:flex!important;flex-direction:column!important;gap:7px!important}
+.session-list.view-list .session-card{display:flex!important;flex-direction:column!important;gap:7px!important;padding:10px 12px!important;border-radius:10px!important}
+.session-list.view-list .session-top{direction:rtl;display:flex!important;justify-content:space-between!important;align-items:center!important;margin:0!important;padding-bottom:6px;border-bottom:1px solid #ffffff12}
+.session-list.view-list .session-number{font-size:12px!important;font-weight:800!important;color:#f3d58b!important}
+.session-list.view-list .status{font-size:9px!important;padding:3px 8px!important}
+.session-list.view-list .session-facts-clear.session-detail-row{display:grid!important;grid-template-columns:minmax(0,1.65fr) minmax(0,.7fr) minmax(0,.75fr)!important;gap:8px!important;align-items:center!important}
+.session-list.view-list .session-detail-row span{display:flex!important;flex-direction:row!important;align-items:center!important;gap:5px!important;min-width:0!important;white-space:nowrap!important}
+.session-list.view-list .session-detail-row i{font-size:8px!important;color:#8492a5!important;white-space:nowrap!important}
+.session-list.view-list .session-detail-row b{font-size:10px!important;font-weight:700!important;color:#e9edf4!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.push-status{display:inline-flex;align-items:center;color:#8fe0b5!important;font-size:9px!important}
+.push-status:empty{display:none}
+@media(max-width:520px){
+ .session-list.view-list{gap:6px!important}
+ .session-list.view-list .session-card{padding:8px 9px!important;gap:6px!important}
+ .session-list.view-list .session-top{padding-bottom:5px}
+ .session-list.view-list .session-number{font-size:11px!important}
+ .session-list.view-list .session-facts-clear.session-detail-row{grid-template-columns:minmax(0,1.55fr) minmax(0,.65fr) minmax(0,.75fr)!important;gap:5px!important}
+ .session-list.view-list .session-detail-row span{gap:3px!important}
+ .session-list.view-list .session-detail-row i{font-size:7px!important}
+ .session-list.view-list .session-detail-row b{font-size:9px!important}
+}
+@media(max-width:360px){
+ .session-list.view-list .session-facts-clear.session-detail-row{grid-template-columns:1fr!important;gap:4px!important}
+ .session-list.view-list .session-detail-row span{justify-content:flex-start}
+ .session-list.view-list .session-detail-row i{min-width:54px}
+}
+
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><button type="button" id="pushTest" class="push-test">ارسال اعلان آزمایشی</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="/student-view.js?v=20261104-mobile-push-init-v2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script src="/student-view.js?v=20261104-student-compact-rows-v1"></script>
 
 </body></html>
