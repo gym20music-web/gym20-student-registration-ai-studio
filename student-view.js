@@ -38,6 +38,7 @@
       if(!config?.enabled||!config?.public_key){box.classList.add("hide");return;}
       publicKey=config.public_key;
       registration=await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+      registration=await navigator.serviceWorker.ready;
       const existing=await registration.pushManager.getSubscription();
       if(Notification.permission==="granted"&&existing){await saveSubscription(existing);paint(true);}
       else paint(false);
@@ -47,6 +48,7 @@
       button.disabled=true;
       try{
         registration=registration||await navigator.serviceWorker.register("/sw.js",{scope:"/"});
+        registration=await navigator.serviceWorker.ready;
         let subscription=await registration.pushManager.getSubscription();
         if(button.dataset.active==="1"&&subscription){
           const {error}=await api.rpc("unsubscribe_student_push",{p_code:shortCode,p_endpoint:subscription.endpoint});
