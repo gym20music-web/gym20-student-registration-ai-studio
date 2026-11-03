@@ -154,7 +154,7 @@ document.head.appendChild(css);
     bindJalaliDates(p);
       const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stPublish').textContent='ثبت نهایی';
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
-    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
+    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').dataset.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
