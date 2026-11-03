@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://iqjujumhoawlugrmjvyj.supabase.co" crossorigin>
+<link rel="dns-prefetch" href="//iqjujumhoawlugrmjvyj.supabase.co">
 <title>آکادمی تخصصی ورزش GYM20🤸</title>
 <style>
 :root,[data-color-theme="cyber"]{--bg:#0b0f19;--surface:#111827;--surface-card:#1f2937;--text-primary:#f9fafb;--text-secondary:#9ca3af;--border:rgba(255,255,255,0.08);--neon-blue:#00f3ff;--neon-purple:#bd00ff;--neon-shadow:0 0 10px rgba(0,243,255,0.22);--neon-purple-shadow:0 0 12px rgba(189,0,255,0.22);--btn-active:linear-gradient(135deg,#00f3ff,#bd00ff);--radius-md:10px;--radius-sm:6px;}
@@ -1183,7 +1184,6 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script src="./supabase-auth.js"></script>
 <script>
 let appData = {}, selectedThemeKey = "stealth", currentRegionId = "", currentAge = "adult", currentClassType = "normal", currentSessions = "8", selectedStyles = [], currentEditingRuleKey = "online", adminActiveEditingClassType = "normal", adminActiveRegionId = "", adminTgRecipients = [];
@@ -1609,37 +1609,96 @@ const adminLoginEmail=document.getElementById('adminLoginEmail');
 const adminLoginPassword=document.getElementById('adminLoginPassword');
 const adminLoginError=document.getElementById('adminLoginError');
 let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false,gym20AppDataLoaded=false;
+let gym20SupabaseSdkPromise=null,gym20AdminModulesPromise=null,gym20UserInteracted=false;
+document.addEventListener('input',e=>{if(e.target&&e.target.closest&&e.target.closest('#publicRegistrationForm,#adminModal'))gym20UserInteracted=true;},true);
+document.addEventListener('change',e=>{if(e.target&&e.target.closest&&e.target.closest('#publicRegistrationForm,#adminModal'))gym20UserInteracted=true;},true);
+document.addEventListener('click',e=>{if(e.target&&e.target.closest&&e.target.closest('#publicRegistrationForm,#adminModal'))gym20UserInteracted=true;},true);
+function loadGym20SupabaseSdk(){
+  if(window.supabase&&typeof window.supabase.createClient==='function')return Promise.resolve();
+  if(gym20SupabaseSdkPromise)return gym20SupabaseSdkPromise;
+  gym20SupabaseSdkPromise=new Promise((resolve,reject)=>{
+    const script=document.createElement('script');
+    script.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0';
+    script.async=true;
+    const timer=setTimeout(()=>{
+      script.remove();gym20SupabaseSdkPromise=null;
+      reject(new Error('بارگذاری سرویس ورود مدیر زمان‌بر شد. اتصال اینترنت را بررسی و دوباره تلاش کنید.'));
+    },9000);
+    script.onload=()=>{
+      clearTimeout(timer);
+      if(window.supabase&&typeof window.supabase.createClient==='function')resolve();
+      else{gym20SupabaseSdkPromise=null;reject(new Error('کتابخانه Supabase به‌درستی بارگذاری نشد.'));}
+    };
+    script.onerror=()=>{
+      clearTimeout(timer);script.remove();gym20SupabaseSdkPromise=null;
+      reject(new Error('دسترسی به کتابخانه ورود مدیر برقرار نشد. دوباره تلاش کنید.'));
+    };
+    document.head.appendChild(script);
+  });
+  return gym20SupabaseSdkPromise;
+}
+function loadGym20Module(src){
+  return new Promise((resolve,reject)=>{
+    const existing=document.querySelector('script[data-gym20-lazy-src="'+src+'"]');
+    if(existing){
+      if(existing.dataset.loaded==='1'){resolve();return;}
+      existing.addEventListener('load',resolve,{once:true});
+      existing.addEventListener('error',()=>reject(new Error('بارگذاری بخش مدیریتی ناموفق بود: '+src)),{once:true});
+      return;
+    }
+    const script=document.createElement('script');
+    script.src=src;script.dataset.gym20LazySrc=src;
+    script.onload=()=>{script.dataset.loaded='1';resolve();};
+    script.onerror=()=>{script.remove();reject(new Error('بارگذاری بخش مدیریتی ناموفق بود: '+src));};
+    document.body.appendChild(script);
+  });
+}
+function loadGym20AdminModules(){
+  if(!gym20AdminModulesPromise){
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261104-admin-live-yellow-layout-v1')
+      .then(()=>loadGym20Module('./student-push-admin.js?v=20261103-push-admin-v4'))
+      .catch(err=>{gym20AdminModulesPromise=null;throw err;});
+  }
+  return gym20AdminModulesPromise;
+}
+function openAuthorizedAdminPanel(){
+  if(!gym20OwnerAuthorized)return;
+  loadGym20AdminModules().then(()=>{
+    if(!gym20OwnerAuthorized)return;
+    loadAdminForm();
+    document.getElementById('adminModal').style.display='flex';
+  }).catch(err=>{console.error('GYM20 admin modules failed:',err);setAdminLoginStatus(err.message||'بارگذاری پنل مدیریت ناموفق بود.',true);});
+}
 function setAdminLoginStatus(message,isError=false){
   adminLoginError.textContent=message||'';
   adminLoginError.style.color=isError?'#fb7185':'#34d399';
 }
-function ensureGym20AdminAuth(){
+async function ensureGym20AdminAuth(){
+  await loadGym20SupabaseSdk();
   if(!gym20AdminAuth){
     if(!window.GYM20AdminAuth)throw new Error('ماژول ورود مدیر بارگذاری نشده است.');
     gym20AdminAuth=window.GYM20AdminAuth.init({
       url:GYM20_SUPABASE_URL,
       publishableKey:GYM20_SUPABASE_ANON_KEY,
       onStatus:setAdminLoginStatus,
-      onAuthorized:({user})=>{
+      onAuthorized:()=>{
         gym20OwnerAuthorized=true;
         closeAdminLogin();
-        if(gym20AppDataLoaded){
-          loadAdminForm();
-          document.getElementById('adminModal').style.display='flex';
-        }
+        if(gym20AppDataLoaded)openAuthorizedAdminPanel();
       }
     });
     gym20AdminClient=gym20AdminAuth.getClient();
   }
   return gym20AdminAuth;
 }
-function openAdminLogin(){
+async function openAdminLogin(){
   setAdminLoginStatus('');
   adminLoginEmail.value='';
   adminLoginModal.classList.add('open');
   adminLoginModal.setAttribute('aria-hidden','false');
   setTimeout(()=>adminLoginEmail.focus(),80);
-  try{ensureGym20AdminAuth().verifyOwner().catch(()=>{});}catch(e){setAdminLoginStatus(e.message,true);}
+  try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner().catch(()=>{});}
+  catch(e){setAdminLoginStatus(e.message,true);}
 }
 function closeAdminLogin(){adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');}
 adminBtn.onclick=openAdminLogin;
@@ -1650,7 +1709,7 @@ adminLoginForm.addEventListener('submit',async e=>{
   const old=submit.textContent;
   submit.disabled=true;submit.textContent='در حال بررسی…';
   try{
-    const auth=ensureGym20AdminAuth();
+    const auth=await ensureGym20AdminAuth();
     await auth.signInWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
     adminLoginPassword.value='';
     await auth.verifyOwner();
@@ -1956,8 +2015,10 @@ function triggerPromoPopupIfEnabled(){
 
 const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
 function resumeGym20AdminSession(){
-  try{ensureGym20AdminAuth().verifyOwner().catch(err=>console.warn('Admin session check failed:',err));}
-  catch(err){console.warn('Admin auth initialization failed:',err);}
+  setTimeout(async()=>{
+    try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner();}
+    catch(err){console.warn('Admin session check failed:',err);}
+  },1800);
 }
 const registrationForm = document.getElementById('publicRegistrationForm'), registrationStatus = document.getElementById('regStatus'), registrationSubmit = document.getElementById('regSubmitBtn'), paymentConfirmedEl = document.getElementById('regPaymentConfirmed');
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
@@ -2020,90 +2081,112 @@ registrationForm.addEventListener('submit',async e=>{
     }catch(err){setRegistrationStatus(err.message||'خطا در ارسال.','error');}finally{registrationSubmit.textContent=(appData.buttons&&appData.buttons.submitReg)||'ارسال درخواست ثبت‌نام';updateRegistrationSubmitState();}
 });
 
-async function loadDataAndInit(){
-    let loadedSource = '';
-
-    // منبع ۱: خواندن آنی و بدون کش از دیتابیس آنلاین Supabase (اولین اولویت)
-    try {
-        const dbRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/get_site_config', {
-            method: 'POST',
-            headers: {
-                'apikey': GYM20_SUPABASE_ANON_KEY,
-                'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                'Content-Type': 'application/json',
-                'Content-Profile': 'gym20',
-                'Accept-Profile': 'gym20'
-            },
-            body: '{}'
-        });
-        if (dbRes.ok) {
-            const dbData = await dbRes.json();
-            if (dbData && typeof dbData === 'object' && Array.isArray(dbData.regions) && dbData.regions.length > 0) {
-                appData = dbData;
-                loadedSource = 'supabase_rpc';
-                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-            }
-        }
-    } catch(e) {}
-
-    // منبع ۲ (پشتیبان دیتابیس): کوئری مستقیم جدول site_settings در Supabase
-    if (!loadedSource) {
-        try {
-            const tableRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/site_settings?key=eq.public_site_config&select=value', {
-                headers: {
-                    'apikey': GYM20_SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                    'Accept-Profile': 'gym20'
-                }
-            });
-            if (tableRes.ok) {
-                const rows = await tableRes.json();
-                if (rows && rows.length > 0 && rows[0].value && Array.isArray(rows[0].value.regions)) {
-                    appData = rows[0].value;
-                    loadedSource = 'supabase_table';
-                    localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-                }
-            }
-        } catch(e) {}
-    }
-
-    // منبع ۴: دریافت فایل استاتیک data.json هاست
-    if (!loadedSource) {
-        try {
-            const r = await fetch('data.json?v=' + Date.now());
-            if (r.ok) {
-                appData = await r.json();
-                loadedSource = 'static_file';
-                localStorage.setItem('sports_reg_data', JSON.stringify(appData));
-            }
-        } catch(_) {}
-    }
-
-    // منبع ۵: حافظه محلی مرورگر (در صورت آفلاین بودن)
-    if (!loadedSource) {
-        const s = localStorage.getItem('sports_reg_data');
-        if (s) {
-            try { appData = JSON.parse(s); loadedSource = 'local_storage'; } catch(e) {}
-        }
-    }
-
-    if(!appData.rules)appData.rules={};
-    if(!appData.rules.online)appData.rules.online="• برگزاری کلاس‌ها به‌صورت زنده (Live) با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها.";
-    if(!appData.classTypesConfig)appData.classTypesConfig={normal:{enabled:true,statusText:"",allowedStyles:[]},semi:{enabled:true,statusText:"",allowedStyles:[]},private:{enabled:true,statusText:"",allowedStyles:[]},vip:{enabled:true,statusText:"",allowedStyles:[]},online:{enabled:true,statusText:"",allowedStyles:[]}};
-    if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
-    renderCustomRegionDropdown();applyDataToUI();updateClassStatusAndStylesFlow();triggerPromoPopupIfEnabled();
+function isValidGym20SiteConfig(data){
+  return !!data&&typeof data==='object'&&Array.isArray(data.regions)&&data.regions.length>0;
 }
-loadDataAndInit().then(()=>{
-  gym20AppDataLoaded=true;
-  if(gym20OwnerAuthorized){
-    loadAdminForm();
-    document.getElementById('adminModal').style.display='flex';
+function normalizeGym20SiteConfig(data){
+  appData=data&&typeof data==='object'?data:{};
+  if(!Array.isArray(appData.regions))appData.regions=[];
+  if(!Array.isArray(appData.styles))appData.styles=[];
+  if(!appData.rules)appData.rules={};
+  if(!appData.rules.online)appData.rules.online="• برگزاری کلاس‌ها به‌صورت زنده (Live) با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها.";
+  if(!appData.classTypesConfig)appData.classTypesConfig={normal:{enabled:true,statusText:"",allowedStyles:[]},semi:{enabled:true,statusText:"",allowedStyles:[]},private:{enabled:true,statusText:"",allowedStyles:[]},vip:{enabled:true,statusText:"",allowedStyles:[]},online:{enabled:true,statusText:"",allowedStyles:[]}};
+  if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
+}
+function renderGym20SiteConfig(showPromo){
+  renderCustomRegionDropdown();
+  applyDataToUI();
+  updateClassStatusAndStylesFlow();
+  if(showPromo)triggerPromoPopupIfEnabled();
+}
+async function gym20FetchWithTimeout(url,options,timeoutMs){
+  const controller=typeof AbortController!=='undefined'?new AbortController():null;
+  const timer=controller?setTimeout(()=>controller.abort(),timeoutMs):null;
+  const requestOptions=Object.assign({},options||{});
+  if(controller)requestOptions.signal=controller.signal;
+  try{return await fetch(url,requestOptions);}
+  finally{if(timer)clearTimeout(timer);}
+}
+async function fetchLiveGym20SiteConfig(){
+  const headers={
+    'apikey':GYM20_SUPABASE_ANON_KEY,
+    'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,
+    'Content-Type':'application/json',
+    'Content-Profile':'gym20',
+    'Accept-Profile':'gym20'
+  };
+  try{
+    const response=await gym20FetchWithTimeout(GYM20_SUPABASE_URL+'/rest/v1/rpc/get_site_config',{
+      method:'POST',headers,body:'{}',cache:'no-store'
+    },4000);
+    if(response.ok){
+      const data=await response.json();
+      if(isValidGym20SiteConfig(data))return data;
+    }
+  }catch(e){}
+  try{
+    const response=await gym20FetchWithTimeout(GYM20_SUPABASE_URL+'/rest/v1/site_settings?key=eq.public_site_config&select=value',{
+      headers:{
+        'apikey':GYM20_SUPABASE_ANON_KEY,
+        'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,
+        'Accept-Profile':'gym20'
+      },
+      cache:'no-store'
+    },3000);
+    if(response.ok){
+      const rows=await response.json();
+      const data=rows&&rows[0]&&rows[0].value;
+      if(isValidGym20SiteConfig(data))return data;
+    }
+  }catch(e){}
+  return null;
+}
+async function loadDataAndInit(){
+  let initialRendered=false,promoTriggered=false,resolveInitial;
+  const initialReady=new Promise(resolve=>{resolveInitial=resolve;});
+  function acceptConfig(data){
+    if(!isValidGym20SiteConfig(data))return false;
+    try{localStorage.setItem('sports_reg_data',JSON.stringify(data));}catch(e){}
+    if(initialRendered&&gym20UserInteracted)return true;
+    normalizeGym20SiteConfig(data);
+    renderGym20SiteConfig(!promoTriggered);
+    if(!promoTriggered)promoTriggered=true;
+    if(!initialRendered){
+      initialRendered=true;
+      resolveInitial();
+    }else if(gym20OwnerAuthorized&&document.getElementById('adminModal').style.display==='flex'){
+      loadAdminForm();
+    }
+    return true;
   }
-});
-resumeGym20AdminSession();
+
+  // نمایش فوری نسخه ذخیره‌شده؛ منتظر پاسخ شبکه نمی‌مانیم.
+  try{
+    const cached=JSON.parse(localStorage.getItem('sports_reg_data')||'null');
+    if(isValidGym20SiteConfig(cached))acceptConfig(cached);
+  }catch(e){}
+
+  // تازه‌سازی زنده از Supabase در پس‌زمینه؛ برای هر درخواست محدودیت زمانی داریم.
+  fetchLiveGym20SiteConfig().then(data=>{if(data)acceptConfig(data);}).catch(()=>{});
+
+  // بازدید اول: فایل کوچک هم‌مبدأ و Supabase هم‌زمان بررسی می‌شوند.
+  if(!initialRendered){
+    gym20FetchWithTimeout('data.json',{},2200).then(async response=>{
+      if(response.ok){
+        const data=await response.json();
+        acceptConfig(data);
+      }
+    }).catch(()=>{});
+    await Promise.race([initialReady,new Promise(resolve=>setTimeout(resolve,1600))]);
+    if(!initialRendered){
+      normalizeGym20SiteConfig({});
+      renderGym20SiteConfig(false);
+      initialRendered=true;
+      resolveInitial();
+    }
+  }
+}
 </script>
-<script src="student-terms.js?v=20261104-admin-live-yellow-layout-v1"></script>
-<script src="./student-push-admin.js?v=20261103-push-admin-v4"></script>
 
 <script>
 /* Accessible custom admin dropdowns: every menu is anchored below its field. */
