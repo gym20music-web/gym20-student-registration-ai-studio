@@ -266,7 +266,7 @@ document.head.appendChild(css);
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);
     if(!id){$('stPublish').hidden=false;$('stManualCalendar').hidden=false;return;}
     try{
-      const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
+      const {data,error}=await db().from('term_schedule_versions').select('id,status,version_number').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
       const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');
       S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term?.published_version_id||null;
       if(!S.draftId&&S.publishedId){
@@ -278,12 +278,24 @@ document.head.appendChild(css);
         const {data:newVersion,error:versionError}=await db().from('term_schedule_versions').insert({term_id:id,version_number:nextVersion,status:'draft',notes:'پیش‌نویس ویرایش برنامه منتشرشده'}).select('id').single();
         if(versionError)throw versionError;
         S.draftId=newVersion.id;
-        const copied=await db().from('class_sessions').insert(source.map(x=>({course_id:x.course_id,enrollment_id:x.enrollment_id,term_id:id,schedule_version_id:S.draftId,session_number:x.session_number,starts_at:x.starts_at,ends_at:x.ends_at,coach_name:x.coach_name,venue:x.venue,notes:x.notes,status:'scheduled'}))).select('id,session_number');
-        if(copied.error)throw copied.error;
-        const {data:styleRows,error:styleError}=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',source.map(x=>x.id));
-        if(styleError)throw styleError;
-        const copiedStyles=(styleRows||[]).map(x=>{const oldSession=source.find(z=>z.id===x.session_id);const target=copied.data.find(y=>Number(y.session_number)===Number(oldSession?.session_number));return target?{session_id:target.id,enrollment_id:x.enrollment_id}:null;}).filter(Boolean);
-        if(copiedStyles.length){const {error}=await db().from('class_session_styles').insert(copiedStyles);if(error)throw error;}
+        try{
+          const copied=await db().from('class_sessions').insert(source.map(x=>({course_id:x.course_id,enrollment_id:x.enrollment_id,term_id:id,schedule_version_id:S.draftId,session_number:x.session_number,starts_at:x.starts_at,ends_at:x.ends_at,coach_name:x.coach_name,venue:x.venue,notes:x.notes,status:'scheduled'}))).select('id,session_number,enrollment_id');
+          if(copied.error)throw copied.error;
+          const {data:styleRows,error:styleError}=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',source.map(x=>x.id));
+          if(styleError)throw styleError;
+          const copiedStyles=(styleRows||[]).map(x=>{
+            const oldSession=source.find(z=>z.id===x.session_id);
+            const target=copied.data.find(y=>Number(y.session_number)===Number(oldSession?.session_number)&&y.enrollment_id===x.enrollment_id);
+            return target?{session_id:target.id,enrollment_id:x.enrollment_id}:null;
+          }).filter(Boolean);
+          if(copiedStyles.length){const {error}=await db().from('class_session_styles').insert(copiedStyles);if(error)throw error;}
+        }catch(copyError){
+          await db().from('class_session_styles').delete().in('session_id',source.map(x=>x.id));
+          await db().from('class_sessions').delete().eq('schedule_version_id',S.draftId);
+          await db().from('term_schedule_versions').delete().eq('id',S.draftId);
+          S.draftId='';
+          throw copyError;
+        }
       }
       if(S.draftId){
         S.publishedReadOnly=false;
