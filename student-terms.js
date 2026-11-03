@@ -1,5 +1,5 @@
 (() => {
-  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,sessions:[],termEnrollmentIds:[]};
+  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,publishedReadOnly:false,sessions:[],termEnrollmentIds:[]};
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fa=v=>Number(v||0).toLocaleString('fa-IR');
@@ -152,7 +152,7 @@ document.head.appendChild(css);
     selectObserver.observe(p,{childList:true,subtree:true});
     initTermCalendars(p);
     bindJalaliDates(p);
-      const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();
+      const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stPublish').textContent='ثبت نهایی';
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
     $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
@@ -217,36 +217,22 @@ document.head.appendChild(css);
     }catch(e){if(status)status.textContent=e.message||'ساخت لینک ناموفق بود.';btn.disabled=false;}
   }
 
-  async function createTerm(selectedDates){
+  function stageNewTerm(selectedDates){
     try{
-      const activeEnrollments=S.enrollments.filter(e=>e.status==='active'),ids=activeEnrollments.map(x=>x.id);
+      const activeEnrollments=S.enrollments.filter(e=>e.status==='active'||e.status==='paused'),ids=activeEnrollments.map(x=>x.id);
       if(!ids.length)throw Error('برای این هنرجو سبک فعالی در ثبت‌نام اولیه پیدا نشد.');
-      const duration=60,startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+      const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
       if(!Array.isArray(selectedDates)||!selectedDates.length)throw Error('حداقل یک تاریخ جلسه انتخاب کن.');
       if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
       if(new Set(selectedDates).size!==selectedDates.length)throw Error('تاریخ تکراری انتخاب شده است.');
       if(selectedDates.some(d=>d<startDate||d>endDate))throw Error('همه تاریخ‌ها باید داخل بازه شروع و پایان ترم باشند.');
-      const p=enDigits($('stStart').value).split('/').map(Number),termName='ترم '+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][p[1]-1]+' '+p[0];
-      const exists=await db().from('student_terms').select('id,term_name').eq('student_id',S.studentId).eq('term_name',termName);
-      if(exists.error)throw exists.error;
-      const duplicate=(exists.data||[]).find(t=>String(t.term_name||'').trim()===termName);
-      if(duplicate){
-        await loadStudent(S.studentId);
-        $('stTerm').value=duplicate.id;
-        await loadTerm(duplicate.id);
-        say('ترم «'+termName+'» از قبل ثبت شده بود؛ فهرست به‌روز شد و همان ترم انتخاب شد.');
-        return;
-      }
-      say('در حال ساخت ترم و جدول جلسات…');
-      const {data,error}=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:selectedDates.length,p_duration_minutes:duration,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
-      if(error)throw error;const x=Array.isArray(data)?data[0]:data;if(!x?.term_id)throw Error('ترم ساخته شد اما شناسه دریافت نشد.');
-      await loadStudent(S.studentId);$('stTerm').value=x.term_id;await loadTerm(x.term_id);
-      S.manualDates=selectedDates.slice().sort();$('stCount').value=String(S.manualDates.length);const mins=Number(S.term?.duration_minutes)||60;
-      S.rows=S.manualDates.map((d,i)=>{const startAt=localISO(d,'18:00');return {enrollment_ids:ids,session_number:i+1,starts_at:startAt,ends_at:new Date(new Date(startAt).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null};});
-      $('stManualCount').textContent=fa(S.rows.length)+' جلسه برای ترم انتخاب شد';
-      drawDraft();$('stSchedule').classList.remove('st-hide');
-      say('جدول '+fa(S.rows.length)+' جلسه ساخته شد؛ ساعت و نام مربی هر جلسه را در جدول تنظیم کن، سپس ثبت نهایی را بزن.');
-    }catch(e){say(e.message||'ساخت ترم و جلسات ناموفق بود.',true);}
+      S.termId='';S.term=null;S.draftId='';S.publishedId=null;S.publishedReadOnly=false;S.manualDates=selectedDates.slice().sort();
+      const mins=60;
+      S.rows=S.manualDates.map((d,i)=>{const startAt=localISO(d,'18:00');return {enrollment_ids:ids,session_number:i+1,starts_at:startAt,ends_at:new Date(new Date(startAt).getTime()+mins*60000).toISOString(),venue:null,coach_name:'هانیه',notes:null};});
+      $('stCount').value=String(S.rows.length);$('stManualCount').textContent=fa(S.rows.length)+' جلسه انتخاب شده';
+      $('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stSchedule').classList.remove('st-hide');
+      drawDraft();say('جلسات آماده‌اند؛ ساعت و مربی را بررسی کن و فقط «ثبت نهایی» را بزن.');
+    }catch(e){say(e.message||'آماده‌سازی ترم ناموفق بود.',true);}
   }
 
     async function deleteSelectedTerm(){
@@ -273,13 +259,42 @@ document.head.appendChild(css);
 
   async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;
+    S.draftId='';S.rows=[];S.publishedId=null;S.publishedReadOnly=false;
+    $('stSchedule').classList.toggle('st-hide',!id);
     $('stManualCalendar').textContent=id?'▦ افزودن جلسات به ترم انتخاب‌شده':'▦ انتخاب جلسات از تقویم';
-    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);S.draftId='';S.rows=[];S.publishedId=null;$('stSchedule').classList.toggle('st-hide',!id);if(!id)return;
+    setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);
+    if(!id){$('stPublish').hidden=false;$('stManualCalendar').hidden=false;return;}
     try{
       const {data,error}=await db().from('term_schedule_versions').select('id,status').eq('term_id',id).order('created_at',{ascending:false});if(error)throw error;
-      const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term.published_version_id||null;
-      if(S.draftId){await loadDraftRows();await renderBuilder();}else if(S.publishedId){$('stDraftTable').innerHTML='<button class="st-btn" id="stNewDraft">ساخت پیش‌نویس از نسخه منتشرشده</button>';$('stNewDraft').onclick=createDraft;$('stManual')?.classList.add('st-hide');}else{say('پیش‌نویس این ترم موجود نیست.',true);}
+      const vs=data||[],draft=vs.find(v=>v.status==='draft'),pub=vs.find(v=>v.status==='published');
+      S.draftId=draft?.id||'';S.publishedId=pub?.id||S.term?.published_version_id||null;
+      if(S.draftId){
+        $('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';
+        $('stManualCalendar').hidden=false;
+        await loadDraftRows();await renderBuilder();
+      }else if(S.publishedId){
+        S.publishedReadOnly=true;$('stPublish').hidden=true;$('stManualCalendar').hidden=true;
+        const {data:sessions,error:se}=await db().from('class_sessions').select('id,session_number,starts_at,ends_at,coach_name,venue,notes,enrollment_id').eq('schedule_version_id',S.publishedId).order('session_number');
+        if(se)throw se;S.rows=(sessions||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));
+        if(S.rows.length){const styles=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(styles.error)throw styles.error;styles.data.forEach(x=>{const row=S.rows.find(r=>r.id===x.session_id);if(row&&!row.enrollment_ids.includes(x.enrollment_id))row.enrollment_ids.push(x.enrollment_id);});}
+        $('stDraftTable').innerHTML='<div class="st-muted" style="margin-bottom:8px">برنامه منتشرشده این ترم</div>';
+        drawPublishedSessions();
+        $('stSchedule').classList.remove('st-hide');
+      }else{
+        $('stPublish').hidden=true;$('stManualCalendar').hidden=false;
+        $('stDraftTable').innerHTML='<p class="st-muted">برای این ترم هنوز برنامه‌ای ثبت نشده است.</p>';
+        $('stSchedule').classList.remove('st-hide');
+      }
     }catch(e){say(e.message||'دریافت ترم ناموفق بود.',true);}
+  }
+  function drawPublishedSessions(){
+    const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
+    const box=$('stDraftTable');
+    if(!sorted.length){box.innerHTML='<p class="st-muted">برای این ترم جلسه منتشرشده‌ای پیدا نشد.</p>';return;}
+    box.innerHTML='<div class="st-sessions-grid">'+sorted.map(r=>{
+      const iso=localDate(r.starts_at),state=sessionState(r);
+      return '<article class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span></div><div class="st-session-fields"><label>تاریخ · '+weekdayFa(iso)+'<span class="st-table-input">'+esc(jalaliInput(iso))+'</span></label><label>ساعت کلاس<span class="st-table-input">'+esc(localTime(r.starts_at))+'</span></label><label>نام مربی<span class="st-table-input">'+esc(r.coach_name||'—')+'</span></label></div></article>';
+    }).join('')+'</div>';
   }
 
   async function loadDraftRows(){
@@ -353,7 +368,7 @@ document.head.appendChild(css);
           pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
           pop.querySelector('[data-confirm]').onclick=async()=>{
             if(!chosen.size)return;const dates=Array.from(chosen).sort();pop.remove();
-            if(!addingToExisting){await createTerm(dates);return;}
+            if(!addingToExisting){stageNewTerm(dates);return;}
             const ids=S.termEnrollmentIds.length?S.termEnrollmentIds:S.enrollments.filter(e=>e.status==='active').map(e=>e.id),mins=Number(S.term?.duration_minutes)||60;
             let n=S.rows.reduce((m,r)=>Math.max(m,Number(r.session_number)||0),0);
             dates.forEach(d=>{const starts=localISO(d,'18:00');S.rows.push({enrollment_ids:ids,session_number:++n,starts_at:starts,ends_at:new Date(new Date(starts).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null});});
@@ -378,11 +393,37 @@ document.head.appendChild(css);
     catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
   async function publish(){
-    try{if(!S.draftId)throw Error('پیش‌نویسی برای انتشار وجود ندارد.');if(!confirm('این برنامه با تعداد و مدت دلخواه شما برای هنرجو منتشر می‌شود. ادامه می‌دهید؟'))return;say('در حال ذخیره و انتشار…');await persistDraft();const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;await loadStudent(S.studentId);$('stTerm').value=S.termId;await loadTerm(S.termId);say('برنامه با موفقیت منتشر شد.');
-    }catch(e){say(e.message||'انتشار ناموفق بود.',true);}
-  }
-  async function createDraft(){
-    try{say('در حال ساخت پیش‌نویس جدید…');const {error}=await db().rpc('create_term_draft_from_published',{p_term_id:S.termId});if(error)throw error;await loadTerm(S.termId);say('پیش‌نویس جدید ساخته شد؛ نسخه منتشرشده قبلی دست‌نخورده باقی ماند.');}catch(e){say(e.message||'ساخت پیش‌نویس ناموفق بود.',true);}
+    try{
+      if(S.publishedReadOnly)throw Error('این ترم قبلاً منتشر شده و فقط برای مشاهده است.');
+      if(!S.termId){
+        if(!S.manualDates.length||!S.rows.length)throw Error('ابتدا تاریخ‌های جلسات را از تقویم انتخاب کن.');
+        const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+        if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
+        const p=enDigits($('stStart').value).split('/').map(Number),months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
+        const termName='ترم '+months[p[1]-1]+' '+p[0];
+        const exists=await db().from('student_terms').select('id,term_name').eq('student_id',S.studentId).eq('term_name',termName);if(exists.error)throw exists.error;
+        const duplicate=(exists.data||[]).find(t=>String(t.term_name||'').trim()===termName);
+        if(duplicate){await loadStudent(S.studentId);$('stTerm').value=duplicate.id;await loadTerm(duplicate.id);throw Error('این ترم از قبل وجود دارد؛ از فهرست ترم‌ها انتخابش کن.');}
+        const ids=S.enrollments.filter(e=>e.status==='active'||e.status==='paused').map(e=>e.id);
+        if(!ids.length)throw Error('برای این هنرجو سبک فعالی پیدا نشد.');
+        say('در حال ثبت ترم و برنامه جلسات…');
+        const created=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:S.rows.length,p_duration_minutes:60,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
+        if(created.error)throw created.error;const x=Array.isArray(created.data)?created.data[0]:created.data;
+        if(!x?.term_id||!x?.draft_version_id)throw Error('ترم یا پیش‌نویس برنامه ساخته نشد.');
+        S.termId=x.term_id;S.draftId=x.draft_version_id;
+        const payload=collectDraftPayload();
+        const saved=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(saved.error)throw saved.error;
+        const pub=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(pub.error)throw pub.error;
+        const newTermId=S.termId;
+        await loadStudent(S.studentId);$('stTerm').value=newTermId;await loadTerm(newTermId);
+        say('ترم جدید و '+fa(payload.length)+' جلسه با موفقیت ثبت و منتشر شد.');
+        return;
+      }
+      if(!S.draftId)throw Error('برای این ترم پیش‌نویس قابل ثبت وجود ندارد.');
+      say('در حال ذخیره و انتشار برنامه…');await persistDraft();
+      const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;
+      const termId=S.termId;await loadStudent(S.studentId);$('stTerm').value=termId;await loadTerm(termId);say('برنامه با موفقیت منتشر شد.');
+    }catch(e){say(e.message||'ثبت نهایی ناموفق بود.',true);}
   }
   async function loadAttendance(){
     const box=$('stAttendance');if(!S.publishedId){box.textContent='برای این ترم هنوز برنامه‌ای منتشر نشده است.';return;}
