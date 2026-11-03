@@ -1533,7 +1533,7 @@ function deleteTgRecipient(idx){
 
 async function dispatchTelegramNotification(info, isTest = false) {
     const tg = appData.telegramConfig || {};
-    if (!isTest && tg.enabled === false) return [];
+    if (!isTest && tg.enabled === false) throw new Error('ارسال تلگرام در تنظیمات پنل غیرفعال است.');
     const endpoint = GYM20_SUPABASE_URL + '/functions/v1/telegram-notify';
     const payload = isTest ? { isTest: true } : info;
 
@@ -1852,7 +1852,7 @@ registrationForm.addEventListener('submit',async e=>{
             price: priceText,
             notes: notes
         };
-        dispatchTelegramNotification(regInfo).catch(err => console.warn('Telegram notification error:', err));
+        dispatchTelegramNotification(regInfo).catch(err => { console.warn('Telegram notification error:', err); setRegistrationStatus('ثبت‌نام انجام شد؛ اما پیام تلگرام ارسال نشد: ' + (err.message || 'خطای نامشخص'), 'error'); });
     }catch(err){setRegistrationStatus(err.message||'خطا در ارسال.','error');}finally{registrationSubmit.textContent=(appData.buttons&&appData.buttons.submitReg)||'ارسال درخواست ثبت‌نام';updateRegistrationSubmitState();}
 });
 
