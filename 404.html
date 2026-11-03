@@ -21,8 +21,8 @@ b{display:block;color:#e8c46b;margin-bottom:10px}p{font-size:13px;line-height:2;
 <script>
 (function(){
   var params=new URLSearchParams(location.search);
-  var match=location.pathname.match(/^\\/s\\/([0-9a-f]{12})\\/?$/i);
-  if(match)params.set("c",match[1]);
+  var parts=location.pathname.split("/");
+  if(parts.length===3&&parts[1]==="s"&&/^[0-9a-f]{12}$/i.test(parts[2]))params.set("c",parts[2]);
   var query=params.toString();
   location.replace("/student.html"+(query?"?"+query:""));
 })();
