@@ -707,7 +707,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
     </div>
     <div class="section-card" id="regionSelectionCard" style="padding:6px 8px;margin-bottom:8px;">
         <div class="custom-dropdown-container" id="customRegionDropdown">
-            <div class="custom-dropdown-trigger" id="customRegionTrigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" onclick="window.gym20ToggleRegionDropdown(event)" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();window.gym20ToggleRegionDropdown(event)}">
+            <div class="custom-dropdown-trigger" id="customRegionTrigger" role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" onclick="window.gym20ToggleRegionDropdown(event)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.gym20ToggleRegionDropdown(event)}">
                 <div class="selected-title" id="customRegionSelectedText"><span>📍</span><span>انتخاب منطقه در تهران...</span></div>
                 <span class="arrow-icon">▾</span>
             </div>
@@ -1258,13 +1258,14 @@ function renderCustomRegionDropdown(){
         const isSel=reg.id===currentRegionId;const p=formatRegionDisplayName(reg.name);const item=document.createElement('div');
         item.className=`custom-dropdown-item ${isSel?'selected':''}`;
         item.innerHTML=`<div class="region-item-text"><div class="region-item-title">${p.title}</div>${p.desc?`<div class="region-item-sub">${p.desc}</div>`:''}</div><span class="region-item-check">✓</span>`;
-        item.onclick=(e)=>{e.stopPropagation();selectRegion(reg.id);};customRegionMenuEl.appendChild(item);
+        customRegionMenuEl.appendChild(item);
     });
     updateRegionDependentVisibility();
 }
 
 function selectRegion(id){currentRegionId=id;customRegionMenuEl.classList.remove('open');customRegionMenuEl.style.display='none';customRegionMenuEl.style.visibility='hidden';customRegionMenuEl.style.pointerEvents='none';customRegionTriggerEl.classList.remove('open');customRegionTriggerEl.setAttribute('aria-expanded','false');renderCustomRegionDropdown();updateRegionDependentVisibility();if(currentRegionId){updateClassStatusAndStylesFlow();calculatePrice();regionDependentContentEl.scrollIntoView({behavior:'smooth'});}}
 function toggleCustomRegionMenu(e){if(e){e.preventDefault();e.stopPropagation();}if(!customRegionMenuEl||!customRegionTriggerEl)return;const o=!customRegionMenuEl.classList.contains('open');customRegionMenuEl.classList.toggle('open',o);customRegionTriggerEl.classList.toggle('open',o);}
+window.gym20SelectRegion=selectRegion;
 // Region dropdown interaction is handled by the independent fallback script below.
 document.addEventListener('click',e=>{if(customRegionDropdownEl&&!customRegionDropdownEl.contains(e.target)){customRegionMenuEl.classList.remove('open');customRegionTriggerEl.classList.remove('open');}});
 function updateRegionDependentVisibility(){regionDependentContentEl.style.display=currentRegionId?'block':'none';}
@@ -2329,6 +2330,16 @@ resumeGym20AdminSession();
 <script>
 (function(){
   function getRegionEls(){return {trigger:document.getElementById('customRegionTrigger'),menu:document.getElementById('customRegionMenu'),wrap:document.getElementById('customRegionDropdown')};}
+  document.addEventListener('click',function(e){
+    const x=getRegionEls();if(!x.menu||!x.wrap)return;
+    const item=e.target&&e.target.closest?e.target.closest('.custom-dropdown-item'):null;
+    if(!item||!x.menu.contains(item))return;
+    e.preventDefault();e.stopPropagation();
+    const index=Array.prototype.indexOf.call(x.menu.children,item);
+    const regions=Array.isArray(window.appData?.regions)?window.appData.regions:[];
+    const region=regions[index];
+    if(region&&typeof window.gym20SelectRegion==='function')window.gym20SelectRegion(region.id);
+  },true);
   window.gym20ToggleRegionDropdown=function(e){
     if(e){e.preventDefault();e.stopPropagation();}
     const x=getRegionEls();if(!x.trigger||!x.menu)return;
