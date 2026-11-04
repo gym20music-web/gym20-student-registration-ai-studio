@@ -165,27 +165,62 @@
 
   }
   async function init(){
-    const token=new URLSearchParams(location.search).get('t');
-    const shortCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||new URLSearchParams(location.search).get('c');
+    const params=new URLSearchParams(location.search);
+    const token=params.get('t');
+    const shortCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||params.get('c');
     viewStorageKey='gym20-session-view-'+(shortCode||'token');
     try{const saved=localStorage.getItem(viewStorageKey);if(['grid','list'].includes(saved))activeView=saved;}catch(_){}
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
     try{
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
-      const {data,error}=shortCode
-        ?await client.schema('gym20').rpc('get_student_public_schedule_by_code',{p_code:shortCode})
-        :await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
-      if(error)throw error;if(!data||!data.student){$('studentName').textContent='این لینک معتبر نیست یا غیرفعال شده است.';$('schedule').textContent='برای دریافت لینک جدید با مربی تماس بگیرید.';return;}
+      const getSchedule=async()=>{
+        const result=shortCode
+          ?await client.schema('gym20').rpc('get_student_public_schedule_by_code',{p_code:shortCode})
+          :await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
+        if(result.error)throw result.error;
+        if(!result.data||!result.data.student)throw Error('لینک برنامه معتبر نیست یا غیرفعال شده است.');
+        return result.data;
+      };
+      const data=await getSchedule();
       $('studentName').textContent='هنرجو: '+data.student.full_name;
       if(shortCode)setupPush(shortCode,client);
-      terms=data.terms||[];
+      terms=Array.isArray(data.terms)?data.terms:[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
-      $('termSelect').innerHTML=terms.map((t,i)=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
+      const updateTermOptions=(selectedId)=>{
+        $('termSelect').innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
+        $('termSelect').value=terms.some(t=>String(t.id)===String(selectedId))?selectedId:terms[0].id;
+      };
+      updateTermOptions(terms[0].id);
       enhanceTermPicker($('termSelect'));
       $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
       showTerm(terms[0].id);
-      window.setInterval(()=>{const selected=$('termSelect')?.value||terms[0]?.id;if(selected)showTerm(selected);},15000);
+
+      // IMPORTANT: fetch the latest published schedule, not just repaint stale data.
+      // Previously this timer only called showTerm() on the old in-memory terms array.
+      let refreshInFlight=false;
+      const refreshPublishedSchedule=async()=>{
+        if(refreshInFlight||document.visibilityState==='hidden')return;
+        refreshInFlight=true;
+        try{
+          const fresh=await getSchedule();
+          const selectedId=$('termSelect')?.value||terms[0]?.id;
+          terms=Array.isArray(fresh.terms)?fresh.terms:[];
+          $('studentName').textContent='هنرجو: '+(fresh.student?.full_name||'');
+          if(!terms.length){
+            $('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';
+            return;
+          }
+          updateTermOptions(selectedId);
+          const currentId=$('termSelect')?.value||terms[0].id;
+          showTerm(currentId);
+        }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
+        finally{refreshInFlight=false;}
+      };
+      window.setInterval(refreshPublishedSchedule,5000);
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState==='visible')refreshPublishedSchedule();
+      });
     }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.';}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
