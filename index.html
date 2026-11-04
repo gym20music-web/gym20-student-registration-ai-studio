@@ -2045,25 +2045,37 @@ const registrationForm = document.getElementById('publicRegistrationForm'), regi
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
 function updateRegistrationSubmitState(){registrationSubmit.disabled=!(acceptRulesEl.checked&&paymentConfirmedEl.checked&&currentRegionId);}
 paymentConfirmedEl.addEventListener('change',updateRegistrationSubmitState);
+let gym20StudentScheduleRealtimeClient=null;
+let gym20StudentScheduleRealtimeChannel=null;
+let gym20StudentScheduleRefreshTimer=null;
+let gym20StudentScheduleStateTimer=null;
 document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>{
     const entered=prompt('شماره موبایلی را که هنگام ثبت‌نام وارد کرده‌اید بنویسید:');
     if(!entered)return;
     const phone=toEnglishDigits(entered).replace(/[^0-9]/g,'');
     if(phone.length<10||phone.length>15){setRegistrationStatus('شماره موبایل معتبر نیست.','error');return;}
     setRegistrationStatus('در حال دریافت برنامه کلاس‌ها…');
-    try{
+    const requestSchedule=async()=>{
         const response=await fetch(GYM20_SUPABASE_URL+'/rest/v1/rpc/get_student_public_schedule_by_phone',{
             method:'POST',
             headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json','Content-Profile':'gym20','Accept-Profile':'gym20'},
             body:JSON.stringify({p_phone:phone})
         });
         if(!response.ok)throw new Error('خطا در دریافت اطلاعات');
-        const data=await response.json();
-        if(!data){setRegistrationStatus('هنرجویی با این شماره پیدا نشد یا هنوز برنامه‌ای برای نمایش منتشر نشده است.','error');return;}
-        const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
-        const faDate=v=>v?new Date(v).toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
-        const faTime=v=>v?new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';
-        const statusText={scheduled:'برنامه‌ریزی‌شده',completed:'برگزارشده',cancelled:'لغوشده',in_progress:'در حال برگزاری',pending:'در انتظار'};
+        return await response.json();
+    };
+    const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+    const faDate=v=>v?new Date(v).toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
+    const faTime=v=>v?new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';
+    const sessionState=s=>{
+        if(s.status==='cancelled')return {label:'لغوشده',cls:'cancelled'};
+        if(s.status==='completed')return {label:'برگزارشده',cls:'completed'};
+        const start=Date.parse(s.starts_at),end=Date.parse(s.ends_at),now=Date.now();
+        if(Number.isFinite(start)&&Number.isFinite(end)&&start<=now&&now<end)return {label:'در حال برگزاری',cls:'live'};
+        if(Number.isFinite(end)&&end<=now)return {label:'جلسه گذشته',cls:'past'};
+        return {label:'برنامه‌ریزی‌شده',cls:'scheduled'};
+    };
+    const renderTerms=data=>{
         const terms=Array.isArray(data.terms)?data.terms:[];
         const termHtml=terms.length?terms.map(term=>{
             const sessions=Array.isArray(term.sessions)?term.sessions:[];
@@ -2073,30 +2085,74 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
                 '<div style="font-size:11px;color:#aab2c1;margin:5px 0 10px">شروع: '+faDate(term.start_date)+'　 پایان: '+faDate(term.end_date)+'　 جلسات: '+esc(term.total_sessions||sessions.length)+'</div>'+
                 (styles?'<div style="font-size:11px;margin-bottom:9px;color:#cbd5e1">سبک‌ها: '+esc(styles)+'</div>':'')+
                 (sessions.length?'<div style="display:grid;gap:7px">'+sessions.map((s,i)=>{
-                    const start=s.starts_at?new Date(s.starts_at):null, end=s.ends_at?new Date(s.ends_at):null;
+                    const start=s.starts_at?new Date(s.starts_at):null;
                     const day=start?start.toLocaleDateString('fa-IR',{weekday:'long'}):'—';
-                    const date=start?start.toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
-                    const time=start?faTime(s.starts_at)+(end?' تا '+faTime(s.ends_at):''):'—';
-                    const st=statusText[s.status]||s.status||'—';
-                    return '<div style="display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:8px;border-radius:9px;background:rgba(255,255,255,.035)">'+
+                    const date=start?faDate(s.starts_at):'—';
+                    const time=start?faTime(s.starts_at)+(s.ends_at?' تا '+faTime(s.ends_at):''):'—';
+                    const state=sessionState(s);
+                    return '<div class="gym20-student-session '+state.cls+'" style="display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.035)">'+
                         '<div style="text-align:center;color:#f0cf7a;font-weight:800">جلسه '+esc(s.session_number||i+1)+'</div>'+
                         '<div style="min-width:0;font-size:11px;line-height:1.9;color:#e5e7eb">'+
                         '<div>'+esc(day)+' · '+esc(date)+' · '+esc(time)+'</div>'+
-                        '<div style="color:#aab2c1">مربی: '+esc(s.coach_name||'—')+'　 وضعیت: '+esc(st)+(s.attendance?'　 حضور: '+esc(s.attendance):'')+'</div>'+
+                        '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:#aab2c1"><span>مربی: '+esc(s.coach_name||'—')+'</span><span class="gym20-student-session-status '+state.cls+'">'+state.label+'</span>'+(s.attendance?'<span>حضور: '+esc(s.attendance)+'</span>':'')+'</div>'+
                         '</div></div>';
                 }).join('')+'</div>':'<div style="font-size:12px;color:#aab2c1">جلسه‌ای برای این ترم ثبت نشده است.</div>')+
                 '</section>';
         }).join(''):'<div style="padding:20px;text-align:center;color:#aab2c1">هنوز برنامه منتشرشده‌ای برای شما وجود ندارد.</div>';
+        const target=document.getElementById('gym20StudentScheduleTerms');
+        if(target)target.innerHTML=termHtml;
+    };
+    const stopLiveUpdates=()=>{
+        if(gym20StudentScheduleRefreshTimer)clearInterval(gym20StudentScheduleRefreshTimer);
+        if(gym20StudentScheduleStateTimer)clearInterval(gym20StudentScheduleStateTimer);
+        gym20StudentScheduleRefreshTimer=null;gym20StudentScheduleStateTimer=null;
+        if(gym20StudentScheduleRealtimeClient&&gym20StudentScheduleRealtimeChannel){
+            gym20StudentScheduleRealtimeClient.removeChannel(gym20StudentScheduleRealtimeChannel).catch(()=>{});
+        }
+        gym20StudentScheduleRealtimeChannel=null;
+    };
+    try{
+        let data=await requestSchedule();
+        if(!data){setRegistrationStatus('هنرجویی با این شماره پیدا نشد یا هنوز برنامه‌ای برای نمایش منتشر نشده است.','error');return;}
         document.getElementById('gym20StudentScheduleModal')?.remove();
+        stopLiveUpdates();
         const modal=document.createElement('div');
         modal.id='gym20StudentScheduleModal';
         modal.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl';
-        modal.innerHTML='<div style="width:min(620px,100%);max-height:88vh;overflow:auto;background:#101722;color:#f8fafc;border:1px solid rgba(232,196,107,.35);border-radius:16px;padding:15px;box-shadow:0 18px 60px #0009">'+
+        modal.innerHTML='<style>'+
+            '.gym20-student-session.live{background:rgba(250,204,21,.15)!important;border:1px solid rgba(250,204,21,.8)!important;box-shadow:inset 3px 0 0 #facc15,0 0 14px rgba(250,204,21,.12)}'+
+            '.gym20-student-session-status{display:inline-flex;align-items:center;padding:1px 8px;border-radius:20px;font-size:10px;font-weight:900;background:rgba(255,255,255,.08);color:#cbd5e1}'+
+            '.gym20-student-session-status.live{background:#facc15;color:#17130a;box-shadow:0 0 10px rgba(250,204,21,.3)}'+
+            '.gym20-student-session.past{opacity:.78}.gym20-student-session-status.cancelled{color:#fda4af;background:rgba(244,63,94,.13)}'+
+            '.gym20-student-session-status.completed{color:#86efac;background:rgba(34,197,94,.13)}'+
+            '</style><div style="width:min(620px,100%);max-height:88vh;overflow:auto;background:#101722;color:#f8fafc;border:1px solid rgba(232,196,107,.35);border-radius:16px;padding:15px;box-shadow:0 18px 60px #0009">'+
             '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff18;padding-bottom:10px"><div><div style="font-weight:900;color:#f0cf7a;font-size:16px">📅 برنامه کلاس‌های من</div><div style="font-size:12px;color:#aab2c1;margin-top:4px">'+esc(data.student?.full_name||'هنرجو')+'</div></div><button type="button" id="closeGym20StudentSchedule" style="border:0;border-radius:8px;padding:7px 11px;background:#263244;color:white">بستن ✕</button></div>'+
-            termHtml+'</div>';
+            '<div id="gym20StudentScheduleTerms"></div></div>';
         document.body.appendChild(modal);
-        document.getElementById('closeGym20StudentSchedule')?.addEventListener('click',()=>modal.remove());
-        modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+        renderTerms(data);
+        const closeModal=()=>{stopLiveUpdates();modal.remove();};
+        document.getElementById('closeGym20StudentSchedule')?.addEventListener('click',closeModal);
+        modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+        const refreshSchedule=async()=>{
+            try{const fresh=await requestSchedule();if(fresh){data=fresh;renderTerms(data);}}
+            catch(err){console.warn('GYM20 live schedule refresh failed:',err);}
+        };
+        gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),5000);
+        gym20StudentScheduleRefreshTimer=setInterval(refreshSchedule,30000);
+        if(data.realtime_topic){
+            try{
+                await loadGym20SupabaseSdk();
+                if(!gym20StudentScheduleRealtimeClient){
+                    gym20StudentScheduleRealtimeClient=window.supabase.createClient(GYM20_SUPABASE_URL,GYM20_SUPABASE_ANON_KEY,{
+                        auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}
+                    });
+                }
+                gym20StudentScheduleRealtimeChannel=gym20StudentScheduleRealtimeClient
+                    .channel('student-schedule:'+data.realtime_topic)
+                    .on('broadcast',{event:'schedule_updated'},()=>{refreshSchedule();})
+                    .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('GYM20 schedule realtime status:',status);});
+            }catch(realtimeError){console.warn('GYM20 realtime unavailable; polling fallback is active.',realtimeError);}
+        }
         setRegistrationStatus('');
     }catch(err){console.error('Student schedule lookup failed:',err);setRegistrationStatus('دریافت برنامه با خطا مواجه شد. لطفاً دوباره تلاش کنید.','error');}
 });
