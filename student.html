@@ -233,6 +233,24 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   text-align:center!important;
 }
 
+
+/* GYM20 final alignment fix: center box content both vertically and horizontally */
+#schedule .session-list.view-list .session-compact-row .session-inline{align-items:stretch!important}
+#schedule .session-list.view-list .session-compact-row .session-fact{
+  box-sizing:border-box!important;min-height:42px!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  text-align:center!important;direction:rtl!important;
+}
+#schedule .session-list.view-list .session-compact-row .session-fact i,
+#schedule .session-list.view-list .session-compact-row .session-fact b{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  text-align:center!important;margin:0 auto!important;
+}
+#schedule .session-list.view-list .session-compact-row .session-fact i{line-height:1.25!important}
+#schedule .session-list.view-list .session-compact-row .session-fact b{line-height:1.5!important;overflow-wrap:anywhere!important;white-space:normal!important}
+#schedule .session-list.view-list .session-compact-row .session-time{direction:ltr!important;unicode-bidi:plaintext!important}
+#schedule .session-list.view-list .session-compact-row .session-status-fact .status{display:inline-flex!important;align-self:center!important;align-items:center!important;justify-content:center!important;text-align:center!important}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
