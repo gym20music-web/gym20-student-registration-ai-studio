@@ -112,12 +112,45 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
  .session-list.view-list .session-detail-row i{min-width:54px}
 }
 
+
+/* GYM20 public student cards — match the admin session row layout */
+.session-list{display:grid!important;grid-template-columns:1fr!important;gap:7px!important}
+.session-card{padding:9px 10px!important;border-radius:10px!important}
+.session-card .session-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin:0 0 7px!important;padding:0 0 6px!important;border-bottom:1px solid #ffffff12!important}
+.session-title{display:flex;align-items:center;gap:6px;min-width:0}
+.session-calendar{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;flex:0 0 22px;border:1px solid #9b793e;border-radius:6px;background:#292315;color:#f0d48a;font-size:14px;line-height:1}
+.session-card .session-number{font-size:11px!important;color:#f3d58b!important}
+.session-card .status{font-size:8px!important;padding:3px 7px!important}
+.session-card .session-facts-clear.session-detail-row{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;padding:0!important;border:0!important}
+.session-card .session-detail-row .session-fact{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:flex-start!important;gap:3px!important;min-width:0!important;padding:6px 7px!important;border:1px solid #ffffff12!important;border-radius:7px!important;background:#ffffff06!important;white-space:normal!important}
+.session-card .session-detail-row .session-fact i{font-size:8px!important;color:#8998aa!important;white-space:nowrap!important}
+.session-card .session-detail-row .session-fact b{display:block!important;width:100%!important;font-size:10px!important;font-weight:750!important;color:#edf1f7!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.session-card .session-detail-row .session-time{direction:ltr!important;text-align:right!important;font-family:Montserrat,Arial,sans-serif!important;font-variant-numeric:lining-nums!important;font-feature-settings:"lnum" 1!important;letter-spacing:.25px}
+.session-card.time-past .session-detail-row .session-fact{border-color:#ef44442b!important}
+.session-card.time-next .session-detail-row .session-fact{border-color:#22c55e30!important}
+.session-card.time-live .session-detail-row .session-fact{border-color:#facc1538!important}
+.session-card.time-future .session-detail-row .session-fact{border-color:#3b82f630!important}
+@media(max-width:520px){
+ .session-card{padding:8px!important}
+ .session-card .session-top{margin-bottom:6px!important;padding-bottom:5px!important}
+ .session-card .session-facts-clear.session-detail-row{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}
+ .session-card .session-detail-row .session-fact{padding:5px 4px!important;gap:2px!important;border-radius:6px!important}
+ .session-card .session-detail-row .session-fact i{font-size:7px!important}
+ .session-card .session-detail-row .session-fact b{font-size:8px!important}
+ .session-calendar{width:20px;height:20px;flex-basis:20px;font-size:13px}
+}
+@media(max-width:360px){
+ .session-card .session-facts-clear.session-detail-row{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ .session-card .session-detail-row .session-fact{min-height:42px;padding:5px 7px!important}
+ .session-card .session-detail-row .session-fact i{font-size:8px!important}
+ .session-card .session-detail-row .session-fact b{font-size:9px!important}
+}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><button type="button" id="pushTest" class="push-test">ارسال اعلان آزمایشی</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261104-session-next-after-live-v3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261104-student-session-row-v4"></script>
 
 </body></html>
