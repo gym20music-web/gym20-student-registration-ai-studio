@@ -1668,7 +1668,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261104-session-polish-v16')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261104-session-calendar-first-v17')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261104-student-layout-v12'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
