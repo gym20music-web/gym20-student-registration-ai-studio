@@ -25,7 +25,7 @@
       const {data,error}=await db.from('site_settings').select('value').eq('key',KEY).maybeSingle();if(error)throw error;
       config={...config,...(data?.value||{})};
       paintButton();await refreshStudentStatus();
-      note('تنظیمات اعلان دریافت شد.');
+      note('');
     }catch(e){note(e.message||'دریافت تنظیمات اعلان ناموفق بود.',true);}
   }
   async function toggleConfig(){
@@ -49,12 +49,17 @@
       '<span id="stPushStudentDot" class="st-push-dot unknown"></span><span id="stPushStudentStatus">ابتدا هنرجو را انتخاب کنید</span>'+
       '<span id="stPushAdminStatus" class="st-muted" role="status" aria-live="polite"></span>';
     const style=document.createElement('style');style.id='stPushCompactCss';style.textContent=
-      '#stPushCard .st-push-toggle{height:32px;min-height:32px;padding:0 10px!important;white-space:nowrap;font-size:10px!important;margin:0!important}'+
+      '#stPushCard .st-push-toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:4px 0 10px;padding:8px 9px;border:1px solid rgba(214,179,90,.2);border-radius:10px;background:rgba(214,179,90,.035)}'+
+      '#stPushCard #stPushStatusControls{display:flex;align-items:center;gap:7px;flex:1 1 230px;min-width:0;flex-wrap:wrap}'+
+      '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{height:30px;min-height:30px;padding:0 9px!important;white-space:nowrap;font-size:9px!important;margin:0!important;border-radius:7px!important}'+
       '#stPushCard .st-push-toggle.is-on{border-color:#16a34a!important;color:#4ade80!important}'+
-      '#stPushCard .st-push-dot{width:9px;height:9px;flex:0 0 9px;border-radius:50%;display:inline-block;background:#777}'+
+      '#stPushCard .st-push-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;display:inline-block;background:#777}'+
       '#stPushCard .st-push-dot.active{background:#22c55e;box-shadow:0 0 7px #22c55e99}'+
       '#stPushCard .st-push-dot.inactive{background:#ef4444;box-shadow:0 0 7px #ef444499}'+
-      '#stPushCard #stPushAdminStatus{font-size:10px;margin-top:0}';
+      '#stPushCard #stPushStudentStatus{font-size:9px;line-height:1.6;color:var(--text-secondary);flex:1 1 120px}'+
+      '#stPushCard #stPushAdminStatus{font-size:9px;margin:0;flex:0 1 auto}'+
+      '#stPushCard #stPushTestAdmin{flex:0 0 auto}'+
+      '@media(max-width:420px){#stPushCard .st-push-toolbar{gap:6px;padding:7px}#stPushCard #stPushStatusControls{flex-basis:100%;gap:6px}#stPushCard #stPushTestAdmin{margin-right:auto!important}}'
     document.head.appendChild(style);
     $('stPushSave').addEventListener('click',toggleConfig);
     const selected=$('stStudentSelected');if(selected)new MutationObserver(()=>refreshStudentStatus()).observe(selected,{childList:true,characterData:true,subtree:true,attributes:true});
