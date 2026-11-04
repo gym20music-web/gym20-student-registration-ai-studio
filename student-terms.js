@@ -301,7 +301,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     bindJalaliDates(p);
       const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stPublish').textContent='ثبت نهایی';
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
-    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').dataset.studentId=id;$('stStudentSelected').textContent='هنرجوی انتخاب‌شده';$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
+    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').dataset.studentId=id;$('stStudentSelected').textContent=S.students.find(x=>x.id===id)?.full_name||item.querySelector('span')?.textContent||'انتخاب هنرجو…';$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
@@ -395,7 +395,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   async function loadStudents(){
     try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
-      const selected=S.students.find(x=>x.id===S.studentId);$('stStudentSelected').textContent=selected?'هنرجوی انتخاب‌شده':'انتخاب هنرجو…';
+      const selected=S.students.find(x=>x.id===S.studentId);$('stStudentSelected').textContent=selected?(selected.full_name||'انتخاب هنرجو…'):'انتخاب هنرجو…';
       if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else say(fa(S.students.length)+' هنرجوی فعال دریافت شد.');
     }catch(e){say(e.message||'دریافت هنرجویان ناموفق بود.',true);}
   }
