@@ -5,7 +5,7 @@ self.addEventListener("push",event=>{
   let data={};
   try{data=event.data?event.data.json():{};}catch(_){data={body:event.data?event.data.text():"یادآوری کلاس GYM20"};}
   const title=data.title||"یادآوری کلاس GYM20";
-  const options={body:data.body||"زمان کلاس شما نزدیک است.",icon:"/favicon.ico",badge:"/favicon.ico",dir:"rtl",lang:"fa",tag:"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/"}};
+  const options={body:data.body||"زمان کلاس شما نزدیک است.",icon:"/favicon.ico",badge:"/favicon.ico",dir:"rtl",lang:"fa",tag:data.tag||"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/"}};
   event.waitUntil(self.registration.showNotification(title,options));
 });
 self.addEventListener("notificationclick",event=>{
