@@ -45,7 +45,7 @@
   }
   function mount(){
     const tab=$('studentTermsTab'),card=$('stPushCard'),controls=$('stPushStatusControls');if(!tab||!card||!controls||mounted)return;mounted=true;
-    controls.innerHTML='<button type="button" class="st-btn primary st-push-toggle" id="stPushSave">فعال کردن اعلان</button>'+
+    controls.innerHTML='<button type="button" class="st-btn primary st-push-toggle" id="stPushSave">اعلان روشن</button>'+
       '<span id="stPushStudentDot" class="st-push-dot unknown"></span><span id="stPushStudentStatus">ابتدا هنرجو را انتخاب کنید</span>'+
       '<span id="stPushAdminStatus" class="st-muted" role="status" aria-live="polite"></span>';
     const style=document.createElement('style');style.id='stPushCompactCss';style.textContent=
