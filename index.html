@@ -2047,6 +2047,7 @@ function updateRegistrationSubmitState(){registrationSubmit.disabled=!(acceptRul
 paymentConfirmedEl.addEventListener('change',updateRegistrationSubmitState);
 let gym20StudentScheduleRealtimeClient=null;
 let gym20StudentScheduleRealtimeChannel=null;
+let gym20StudentScheduleRealtimeConnected=false;
 let gym20StudentScheduleRefreshTimer=null;
 let gym20StudentScheduleStateTimer=null;
 document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>{
@@ -2106,6 +2107,7 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
         if(gym20StudentScheduleRefreshTimer)clearInterval(gym20StudentScheduleRefreshTimer);
         if(gym20StudentScheduleStateTimer)clearInterval(gym20StudentScheduleStateTimer);
         gym20StudentScheduleRefreshTimer=null;gym20StudentScheduleStateTimer=null;
+        gym20StudentScheduleRealtimeConnected=false;
         if(gym20StudentScheduleRealtimeClient&&gym20StudentScheduleRealtimeChannel){
             gym20StudentScheduleRealtimeClient.removeChannel(gym20StudentScheduleRealtimeChannel).catch(()=>{});
         }
@@ -2135,13 +2137,18 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
         const closeModal=()=>{stopLiveUpdates();modal.remove();};
         document.getElementById('closeGym20StudentSchedule')?.addEventListener('click',closeModal);
         modal.addEventListener('click',e=>{if(e.target===modal)closeModal();});
+        let scheduleRefreshInFlight=false;
         const refreshSchedule=async()=>{
+            if(scheduleRefreshInFlight)return;
+            scheduleRefreshInFlight=true;
             try{const fresh=await requestSchedule();if(fresh){data=fresh;renderTerms(data);}}
             catch(err){console.warn('GYM20 live schedule refresh failed:',err);}
+            finally{scheduleRefreshInFlight=false;}
         };
-        // Repaint time-based status frequently; use short polling only as a fallback to Broadcast.
+        // Repaint time-based status; poll only if the Realtime socket is disconnected.
         gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),3000);
-        gym20StudentScheduleRefreshTimer=setInterval(refreshSchedule,4000);
+        gym20StudentScheduleRefreshTimer=setInterval(()=>{if(!gym20StudentScheduleRealtimeConnected)refreshSchedule();},5000);
+        document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshSchedule();},{once:true});
         if(data.realtime_topic){
             try{
                 await loadGym20SupabaseSdk();
@@ -2153,7 +2160,10 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
                 gym20StudentScheduleRealtimeChannel=gym20StudentScheduleRealtimeClient
                     .channel('student-schedule:'+data.realtime_topic)
                     .on('broadcast',{event:'schedule_updated'},()=>{refreshSchedule();})
-                    .subscribe(status=>{if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')console.warn('GYM20 schedule realtime status:',status);});
+                    .subscribe(status=>{
+                        gym20StudentScheduleRealtimeConnected=status==='SUBSCRIBED';
+                        if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED')console.warn('GYM20 schedule realtime status:',status);
+                    });
             }catch(realtimeError){console.warn('GYM20 realtime unavailable; polling fallback is active.',realtimeError);}
         }
         setRegistrationStatus('');
