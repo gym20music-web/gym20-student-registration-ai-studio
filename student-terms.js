@@ -283,6 +283,8 @@ document.head.appendChild(css);
     $('stReminder2').value=S.reminderDraft.reminder_2_template;
     $('stReminder1Hours').value=String(S.reminderDraft.reminder_1_hours);
     $('stReminder2Hours').value=String(S.reminderDraft.reminder_2_hours);
+    refreshCustomSelect($('stReminder1Hours'));
+    refreshCustomSelect($('stReminder2Hours'));
     S.pushTemplatesLoaded=true;
   }
   async function savePushTemplates(){
