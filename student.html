@@ -348,6 +348,36 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     justify-content:center!important;
   }
 }
+
+/* Restore original one-row session layout on mobile; remove prior mobile grid overrides */
+@media(max-width:600px){
+ #schedule .session-list.view-list .session-card.session-compact-row{padding:7px 5px!important}
+ #schedule .session-list.view-list .session-compact-row .session-inline{
+   display:grid!important;
+   grid-template-columns:minmax(0,.55fr) minmax(0,.82fr) minmax(0,.9fr) minmax(0,.76fr) minmax(0,.78fr) minmax(0,1.2fr)!important;
+   gap:3px!important;align-items:stretch!important;
+ }
+ #schedule .session-list.view-list .session-compact-row .session-fact{
+   min-height:42px!important;padding:3px 2px!important;gap:2px!important;
+   display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;
+ }
+ #schedule .session-list.view-list .session-compact-row .session-fact i{font-size:6.5px!important;width:100%!important;text-align:center!important}
+ #schedule .session-list.view-list .session-compact-row .session-fact b{
+   font-size:7.5px!important;line-height:1.45!important;width:100%!important;
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   text-align:center!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;
+ }
+ #schedule .session-list.view-list .session-compact-row .session-number{font-size:8.5px!important}
+ #schedule .session-list.view-list .session-compact-row .session-status-fact .status{
+   font-size:6.5px!important;padding:2px 3px!important;align-self:center!important;margin-inline:auto!important;
+   display:inline-flex!important;justify-content:center!important;text-align:center!important;white-space:normal!important;
+ }
+}
+@media(max-width:360px){
+ #schedule .session-list.view-list .session-compact-row .session-inline{gap:2px!important}
+ #schedule .session-list.view-list .session-compact-row .session-fact i{font-size:6px!important}
+ #schedule .session-list.view-list .session-compact-row .session-fact b{font-size:7px!important}
+}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
