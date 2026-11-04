@@ -2120,9 +2120,11 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
         modal.id='gym20StudentScheduleModal';
         modal.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl';
         modal.innerHTML='<style>'+
-            '.gym20-student-session.live{background:rgba(250,204,21,.15)!important;border:1px solid rgba(250,204,21,.8)!important;box-shadow:inset 3px 0 0 #facc15,0 0 14px rgba(250,204,21,.12)}'+
-            '.gym20-student-session-status{display:inline-flex;align-items:center;padding:1px 8px;border-radius:20px;font-size:10px;font-weight:900;background:rgba(255,255,255,.08);color:#cbd5e1}'+
-            '.gym20-student-session-status.live{background:#facc15;color:#17130a;box-shadow:0 0 10px rgba(250,204,21,.3)}'+
+            '#gym20StudentScheduleModal .gym20-student-session.live{background:linear-gradient(110deg,rgba(133,77,14,.32),rgba(250,204,21,.10))!important;border:1px solid #eab308!important;box-shadow:inset 4px 0 0 #facc15,0 0 14px rgba(250,204,21,.16)!important}'+
+            '#gym20StudentScheduleModal .gym20-student-session-status{display:inline-flex;align-items:center;padding:1px 8px;border-radius:20px;font-size:10px;font-weight:900;background:rgba(255,255,255,.08);color:#cbd5e1}'+
+            '#gym20StudentScheduleModal .gym20-student-session-status.live{background:#facc15!important;color:#17130a!important;border:1px solid #fde047!important;box-shadow:0 0 12px rgba(250,204,21,.4)!important}'+
+            '#gym20StudentScheduleModal .gym20-student-session.live .gym20-student-session-status.live:before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#17130a;margin-left:5px;animation:gym20StudentLivePulse 1.2s ease-in-out infinite}'+
+            '@keyframes gym20StudentLivePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}'+
             '.gym20-student-session.past{opacity:.78}.gym20-student-session-status.cancelled{color:#fda4af;background:rgba(244,63,94,.13)}'+
             '.gym20-student-session-status.completed{color:#86efac;background:rgba(34,197,94,.13)}'+
             '</style><div style="width:min(620px,100%);max-height:88vh;overflow:auto;background:#101722;color:#f8fafc;border:1px solid rgba(232,196,107,.35);border-radius:16px;padding:15px;box-shadow:0 18px 60px #0009">'+
@@ -2137,8 +2139,9 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
             try{const fresh=await requestSchedule();if(fresh){data=fresh;renderTerms(data);}}
             catch(err){console.warn('GYM20 live schedule refresh failed:',err);}
         };
-        gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),5000);
-        gym20StudentScheduleRefreshTimer=setInterval(refreshSchedule,30000);
+        // Repaint time-based status frequently; use short polling only as a fallback to Broadcast.
+        gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),3000);
+        gym20StudentScheduleRefreshTimer=setInterval(refreshSchedule,4000);
         if(data.realtime_topic){
             try{
                 await loadGym20SupabaseSdk();
