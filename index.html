@@ -2179,7 +2179,7 @@ async function loadDataAndInit(){
   function acceptConfig(data){
     if(!isValidGym20SiteConfig(data))return false;
     try{localStorage.setItem('sports_reg_data',JSON.stringify(data));}catch(e){}
-    if(initialRendered&&gym20UserInteracted)return true;
+    if(initialRendered&&gym20UserInteracted&&Array.isArray(appData.regions)&&appData.regions.length>0)return true;
     normalizeGym20SiteConfig(data);
     renderGym20SiteConfig(!promoTriggered);
     if(!promoTriggered)promoTriggered=true;
