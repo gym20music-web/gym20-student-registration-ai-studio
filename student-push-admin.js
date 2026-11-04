@@ -4,7 +4,7 @@
   const $=id=>document.getElementById(id);
   const client=()=>typeof gym20AdminClient!=='undefined'&&gym20AdminClient?gym20AdminClient.schema('gym20'):null;
   const note=(message,error=false)=>{const el=$('stPushAdminStatus');if(el){el.textContent=message||'';el.style.color=error?'#fb7185':'#34d399';}};
-  function paintButton(){const b=$('stPushSave');if(!b)return;b.textContent=config.enabled?'غیرفعال کردن اعلان':'فعال کردن اعلان';b.classList.toggle('is-on',!!config.enabled);b.setAttribute('aria-pressed',String(!!config.enabled));}
+  function paintButton(){const b=$('stPushSave');if(!b)return;b.textContent=config.enabled?'اعلان خاموش':'اعلان روشن';b.classList.toggle('is-on',!!config.enabled);b.setAttribute('aria-pressed',String(!!config.enabled));}
   async function refreshStudentStatus(){
     if(statusBusy)return;statusBusy=true;
     const dot=$('stPushStudentDot'),label=$('stPushStudentStatus');
@@ -15,7 +15,7 @@
       if(error)throw error;
       const active=data===true;
       if(dot)dot.className='st-push-dot '+(active?'active':'inactive');
-      if(label)label.textContent=active?'اعلان روی گوشی این هنرجو فعال است':'اعلان روی گوشی این هنرجو تأیید نشده است';
+      if(label)label.textContent=active?'اعلان گوشی فعال':'اعلان گوشی غیرفعال';
     }catch(e){if(dot)dot.className='st-push-dot unknown';if(label)label.textContent='وضعیت اعلان قابل دریافت نیست';}
     finally{statusBusy=false;}
   }
