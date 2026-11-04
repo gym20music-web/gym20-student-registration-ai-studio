@@ -49,17 +49,18 @@
       '<span id="stPushStudentDot" class="st-push-dot unknown"></span><span id="stPushStudentStatus">ابتدا هنرجو را انتخاب کنید</span>'+
       '<span id="stPushAdminStatus" class="st-muted" role="status" aria-live="polite"></span>';
     const style=document.createElement('style');style.id='stPushCompactCss';style.textContent=
-      '#stPushCard .st-push-toolbar{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:4px 0 10px;padding:8px 9px;border:1px solid rgba(214,179,90,.2);border-radius:10px;background:rgba(214,179,90,.035)}'+
-      '#stPushCard #stPushStatusControls{display:flex;align-items:center;gap:7px;flex:1 1 230px;min-width:0;flex-wrap:wrap}'+
-      '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{height:30px;min-height:30px;padding:0 9px!important;white-space:nowrap;font-size:9px!important;margin:0!important;border-radius:7px!important}'+
+      '#stPushCard .st-push-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;margin:2px 0 8px;padding:6px 7px;border:1px solid rgba(214,179,90,.18);border-radius:9px;background:rgba(214,179,90,.025)}'+
+      '#stPushCard #stPushStatusControls{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex:1 1 auto;min-width:0;flex-wrap:wrap;margin:0;padding:0;border:0}'+
+      '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{height:27px;min-height:27px;padding:0 7px!important;white-space:nowrap;font-size:9px!important;margin:0!important;border-radius:7px!important;flex:0 0 auto}'+
       '#stPushCard .st-push-toggle.is-on{border-color:#16a34a!important;color:#4ade80!important}'+
-      '#stPushCard .st-push-dot{width:8px;height:8px;flex:0 0 8px;border-radius:50%;display:inline-block;background:#777}'+
-      '#stPushCard .st-push-dot.active{background:#22c55e;box-shadow:0 0 7px #22c55e99}'+
-      '#stPushCard .st-push-dot.inactive{background:#ef4444;box-shadow:0 0 7px #ef444499}'+
-      '#stPushCard #stPushStudentStatus{font-size:9px;line-height:1.6;color:var(--text-secondary);flex:1 1 120px}'+
-      '#stPushCard #stPushAdminStatus{font-size:9px;margin:0;flex:0 1 auto}'+
+      '#stPushCard .st-push-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;display:inline-block;background:#777}'+
+      '#stPushCard .st-push-dot.active{background:#22c55e;box-shadow:0 0 6px #22c55e99}'+
+      '#stPushCard .st-push-dot.inactive{background:#ef4444;box-shadow:0 0 6px #ef444499}'+
+      '#stPushCard #stPushStudentStatus{font-size:9px;line-height:1.45;color:var(--text-secondary);flex:0 1 auto;white-space:normal}'+
+      '#stPushCard #stPushAdminStatus{font-size:9px;line-height:1.4;margin:0;flex:0 1 auto}'+
       '#stPushCard #stPushTestAdmin{flex:0 0 auto}'+
-      '@media(max-width:420px){#stPushCard .st-push-toolbar{gap:6px;padding:7px}#stPushCard #stPushStatusControls{flex-basis:100%;gap:6px}#stPushCard #stPushTestAdmin{margin-right:auto!important}}'
+      '#stPushCard .st-push-heading{margin:5px 0 10px;font-size:12px}'+
+      '@media(max-width:420px){#stPushCard .st-push-toolbar{gap:5px;padding:5px 6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}#stPushCard .st-push-toolbar::-webkit-scrollbar{display:none}#stPushCard #stPushStatusControls{flex:1 0 auto;flex-wrap:nowrap;gap:5px}#stPushCard #stPushStudentStatus{max-width:125px}#stPushCard #stPushAdminStatus{max-width:105px}#stPushCard #stPushTestAdmin{font-size:8px!important;padding:0 6px!important}}'
     document.head.appendChild(style);
     $('stPushSave').addEventListener('click',toggleConfig);
     const selected=$('stStudentSelected');if(selected)new MutationObserver(()=>refreshStudentStatus()).observe(selected,{childList:true,characterData:true,subtree:true,attributes:true});
