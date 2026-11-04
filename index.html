@@ -1256,7 +1256,7 @@ function renderCustomRegionDropdown(){
     else customRegionSelectedTextEl.innerHTML=`<span>📍</span><span>${(appData.titles&&appData.titles.regionSection)||'انتخاب منطقه در تهران...'}</span>`;
     regions.forEach(reg=>{
         const isSel=reg.id===currentRegionId;const p=formatRegionDisplayName(reg.name);const item=document.createElement('div');
-        item.className=`custom-dropdown-item ${isSel?'selected':''}`;
+        item.className=`custom-dropdown-item ${isSel?'selected':''}`;item.dataset.regionId=reg.id;
         item.innerHTML=`<div class="region-item-text"><div class="region-item-title">${p.title}</div>${p.desc?`<div class="region-item-sub">${p.desc}</div>`:''}</div><span class="region-item-check">✓</span>`;
         customRegionMenuEl.appendChild(item);
     });
@@ -2335,10 +2335,8 @@ resumeGym20AdminSession();
     const item=e.target&&e.target.closest?e.target.closest('.custom-dropdown-item'):null;
     if(!item||!x.menu.contains(item))return;
     e.preventDefault();e.stopPropagation();
-    const index=Array.prototype.indexOf.call(x.menu.children,item);
-    const regions=Array.isArray(window.appData?.regions)?window.appData.regions:[];
-    const region=regions[index];
-    if(region&&typeof window.gym20SelectRegion==='function')window.gym20SelectRegion(region.id);
+    const regionId=item.dataset.regionId;
+    if(regionId&&typeof window.gym20SelectRegion==='function')window.gym20SelectRegion(regionId);
   },true);
   window.gym20ToggleRegionDropdown=function(e){
     if(e){e.preventDefault();e.stopPropagation();}
