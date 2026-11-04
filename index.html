@@ -2069,10 +2069,10 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
     const faTime=v=>v?new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';
     const sessionState=s=>{
         if(s.status==='cancelled')return {label:'لغوشده',cls:'cancelled'};
-        if(s.status==='completed')return {label:'برگزارشده',cls:'completed'};
         const start=Date.parse(s.starts_at),end=Date.parse(s.ends_at),now=Date.now();
         if(Number.isFinite(start)&&Number.isFinite(end)&&start<=now&&now<end)return {label:'در حال برگزاری',cls:'live'};
-        if(Number.isFinite(end)&&end<=now)return {label:'جلسه گذشته',cls:'past'};
+        if(Number.isFinite(end)&&end<=now)return {label:s.status==='completed'?'برگزارشده':'جلسه گذشته',cls:s.status==='completed'?'completed':'past'};
+        if(s.status==='completed')return {label:'برگزارشده',cls:'completed'};
         return {label:'برنامه‌ریزی‌شده',cls:'scheduled'};
     };
     const renderTerms=data=>{
