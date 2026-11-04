@@ -1,5 +1,5 @@
 (() => {
-  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,publishedReadOnly:false,sessions:[],termEnrollmentIds:[],reminderDraft:{}};
+  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,publishedReadOnly:false,sessions:[],termEnrollmentIds:[],reminderDraft:{},pushTemplatesLoaded:false};
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fa=v=>Number(v||0).toLocaleString('fa-IR');
@@ -220,7 +220,7 @@ document.head.appendChild(css);
     const p=document.createElement('div');p.className='admin-panel-tab';p.id=TAB;
     p.innerHTML=
       '<div class="admin-section-subhead">👥 مدیریت هنرجویان، ترم‌ها و برنامه جلسات</div>'+
-      '<div class="st-card st-student-card"><div class="st-title">۱. انتخاب هنرجو</div><div class="st-field st-student-select-wrap"><label>هنرجو</label><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">در حال دریافت هنرجویان…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
+      '<div class="st-card st-student-card"><div class="st-field st-student-select-wrap"><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">در حال دریافت هنرجویان…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
       '<div class="st-card"><div class="st-title">۳. ترم‌های هنرجو</div><div class="st-field"><label>انتخاب ترم</label><div class="st-actions"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger" id="stDeleteTerm" disabled>حذف کل ترم</button></div></div></div>'+'<div class="st-card st-create-compact"><div class="st-title">۲. ساخت ترم</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
@@ -237,6 +237,20 @@ document.head.appendChild(css);
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
+    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';
+    pushCard.innerHTML='<div class="st-title">🔔 یادآوری کلاس روی گوشی هنرجو</div>'+
+      '<p class="st-muted" style="margin:0 0 7px;line-height:1.8">زمان ارسال یادآوری اول و دوم طبق تنظیمات فعلی سرور است؛ روز و ساعت کلاس به‌صورت خودکار از برنامه منتشرشده خوانده می‌شود.</p>'+
+      '<div class="st-field"><label for="stReminder1">یادآوری اول</label><textarea id="stReminder1" rows="3" maxlength="1000" style="width:100%;min-height:72px;resize:vertical" placeholder="متن یادآوری اول"></textarea></div>'+
+      '<div class="st-field"><label for="stReminder2">یادآوری دوم</label><textarea id="stReminder2" rows="3" maxlength="1000" style="width:100%;min-height:72px;resize:vertical" placeholder="متن یادآوری دوم"></textarea></div>'+
+      '<div class="st-muted" style="line-height:1.8;margin:4px 0 7px">متغیرهای خودکار: {student} نام هنرجو · {relative} امروز/فردا · {day} روز هفته · {date} تاریخ · {time} ساعت شروع · {session} شماره جلسه</div>'+
+      '<div class="st-actions"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره متن یادآوری‌ها</button></div>'+
+      '<div style="border-top:1px solid var(--border);margin:10px 0 8px"></div>'+
+      '<div class="st-title">✉️ اعلان جدید</div>'+
+      '<p class="st-muted" style="margin:0 0 6px;line-height:1.8">پیام دلخواهت را بنویس تا همین حالا به گوشی‌های فعال این هنرجو ارسال شود.</p>'+
+      '<div class="st-field"><label for="stCustomPushText">متن اعلان</label><textarea id="stCustomPushText" rows="3" maxlength="1200" style="width:100%;min-height:76px;resize:vertical" placeholder="مثلاً: آفرین قهرمان! استمرار تو نتیجه می‌سازد 💪"></textarea></div>'+
+      '<div class="st-actions"><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان جدید</button><span id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></span></div>';
+    $('stMain').appendChild(pushCard);
+
     bindJalaliDates(p);
     enhanceAllSelects(p);
     const selectObserver=new MutationObserver(records=>records.forEach(rec=>{if(rec.type!=='childList')return;if(rec.target.tagName==='SELECT')refreshCustomSelect(rec.target);rec.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.('#studentTermsTab select'))enhanceSelect(n);n.querySelectorAll?.('#studentTermsTab select,select').forEach(enhanceSelect);}});}));
@@ -253,11 +267,57 @@ document.head.appendChild(css);
     $('stDeleteTerm').addEventListener('click',deleteSelectedTerm);
     initManualMultiCalendar(p);
     $('stPublish').addEventListener('click',publish);
+    $('stSavePushTemplates').addEventListener('click',savePushTemplates);
+    $('stSendCustomPush').addEventListener('click',sendCustomPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
   }
 
+
+  const DEFAULT_PUSH_TEMPLATES={
+    reminder_1_template:'{student} عزیز 🌟 یادآوری دوستانه؛ کلاس شما {relative}، {day} ساعت {time} برگزار می‌شود. برای یک تمرین پرقدرت آماده باشید!',
+    reminder_2_template:'وقت تمرینه! 💪 {student} عزیز، کلاس شما {relative}، {day} ساعت {time} شروع می‌شود. منتظرتون هستیم!'
+  };
+  async function loadPushSettings(){
+    const {data,error}=await db().from('site_settings').select('value').eq('key','student_push_config').maybeSingle();
+    if(error)throw error;
+    S.reminderDraft={...DEFAULT_PUSH_TEMPLATES,...(data?.value||{})};
+    $('stReminder1').value=S.reminderDraft.reminder_1_template;
+    $('stReminder2').value=S.reminderDraft.reminder_2_template;
+    S.pushTemplatesLoaded=true;
+  }
+  async function savePushTemplates(){
+    const feedback=$('stPushFeedback'),first=$('stReminder1').value.trim(),second=$('stReminder2').value.trim();
+    try{
+      if(!first||!second)throw Error('متن هر دو یادآوری را وارد کن.');
+      if(first.length>1000||second.length>1000)throw Error('حداکثر طول هر متن ۱۰۰۰ کاراکتر است.');
+      const {data:{user},error:userError}=await gym20AdminClient.auth.getUser();if(userError)throw userError;
+      const value={...S.reminderDraft,...DEFAULT_PUSH_TEMPLATES,reminder_1_template:first,reminder_2_template:second};
+      const {error}=await db().from('site_settings').upsert({key:'student_push_config',value,updated_at:new Date().toISOString(),updated_by:user?.id||null},{onConflict:'key'});
+      if(error)throw error;
+      S.reminderDraft=value;if(feedback)feedback.textContent='متن یادآوری‌ها ذخیره شد ✓';
+      say('متن یادآوری کلاس‌ها ذخیره شد.');
+    }catch(e){if(feedback)feedback.textContent=e.message||'ذخیره متن‌ها ناموفق بود.';say(e.message||'ذخیره متن‌ها ناموفق بود.',true);}
+  }
+  async function sendCustomPush(){
+    const button=$('stSendCustomPush'),feedback=$('stPushFeedback'),message=$('stCustomPushText').value.trim();
+    if(!S.studentId){say('ابتدا یک هنرجو انتخاب کن.',true);return;}
+    if(!message){say('متن اعلان را بنویس.',true);return;}
+    if(message.length>1200){say('حداکثر طول اعلان ۱۲۰۰ کاراکتر است.',true);return;}
+    const original=button.textContent;button.disabled=true;button.textContent='در حال ارسال…';
+    try{
+      const {data,error}=await gym20AdminClient.functions.invoke('student-push-admin',{body:{student_id:S.studentId,message}});
+      if(error)throw error;
+      if(!data?.ok)throw Error(data?.error||'ارسال اعلان انجام نشد.');
+      const result='اعلان با موفقیت به '+fa(data.sent)+' گوشی ارسال شد.';
+      if(feedback)feedback.textContent=result;
+      $('stCustomPushText').value='';
+      say(result);
+    }catch(e){const msg=e.message||'ارسال اعلان ناموفق بود.';if(feedback)feedback.textContent=msg;say(msg,true);}
+    finally{button.disabled=false;button.textContent=original;}
+  }
+
   async function loadStudents(){
-    try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];
+    try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
       const selected=S.students.find(x=>x.id===S.studentId);$('stStudentSelected').textContent=selected?(selected.full_name+' — '+(selected.phone||'بدون شماره')):'انتخاب هنرجو…';
       if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else say(fa(S.students.length)+' هنرجوی فعال دریافت شد.');
