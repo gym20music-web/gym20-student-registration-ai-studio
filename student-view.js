@@ -75,7 +75,17 @@
         if(permission!=="granted")throw new Error("اجازه اعلان داده نشد. مجوز Notifications برای gym20.ir را در تنظیمات Chrome فعال کن.");
         await ensureReady();
         if(!publicKey)throw new Error("کلید اعلان از سرور دریافت نشد؛ صفحه را تازه‌سازی کن و دوباره تلاش کن.");
-        let subscription=await registration.pushManager.getSubscription();
+        let subscription=null;
+        try{
+          subscription=await registration.pushManager.getSubscription();
+        }catch(subscriptionError){
+          const message=String(subscriptionError?.message||subscriptionError||"");
+          if(!/retriev|subscription|push/i.test(message))throw subscriptionError;
+          // Recover a corrupted/stale browser-side push registration on this device.
+          try{await registration.unregister();}catch(_){}
+          registration=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
+          registration=await navigator.serviceWorker.ready;
+        }
         if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         await saveSubscription(subscription);
         paint(true);
@@ -91,7 +101,19 @@
       if(!config?.enabled||!config?.public_key){box.classList.add("hide");return;}
       publicKey=config.public_key;
       await ensureReady();
-      const existing=await registration.pushManager.getSubscription();
+      let existing=null;
+      try{existing=await registration.pushManager.getSubscription();}
+      catch(subscriptionError){
+        const message=String(subscriptionError?.message||subscriptionError||"");
+        if(!/retriev|subscription|push/i.test(message))throw subscriptionError;
+        // Keep the schedule page usable and let the student re-enable notifications.
+        status.textContent="اشتراک اعلان این مرورگر مشکل دارد؛ دکمه فعال‌سازی را بزن تا دوباره تنظیم شود.";
+        paint(false);
+        configReady=true;
+        button.disabled=false;
+        button.textContent="فعال‌سازی اعلان کلاس‌ها";
+        return;
+      }
       if(Notification.permission==="granted"&&existing){
         await saveSubscription(existing);
         paint(true);
