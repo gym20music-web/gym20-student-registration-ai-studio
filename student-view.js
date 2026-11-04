@@ -188,8 +188,12 @@
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
       const updateTermOptions=(selectedId)=>{
-        $('termSelect').innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
-        $('termSelect').value=terms.some(t=>String(t.id)===String(selectedId))?selectedId:terms[0].id;
+        const select=$('termSelect');
+        select.innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
+        select.value=terms.some(t=>String(t.id)===String(selectedId))?selectedId:terms[0].id;
+        const menu=select.closest('.term-select-wrap')?.querySelector('.term-select-menu');
+        if(menu)menu.innerHTML=Array.from(select.options,o=>'<button type="button" class="term-option" role="option" data-value="'+esc(o.value)+'">'+esc(o.textContent)+'</button>').join('');
+        select.dispatchEvent(new Event('change',{bubbles:true}));
       };
       updateTermOptions(terms[0].id);
       enhanceTermPicker($('termSelect'));
