@@ -240,8 +240,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
     const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';pushCard.hidden=true;
-    pushCard.innerHTML='<div class="st-title">🔔 یادآوری کلاس روی گوشی هنرجو</div>'+
-      '<div class="st-push-toolbar"><div class="st-push-status" id="stPushStatusControls"></div><button type="button" class="st-btn" id="stPushTestAdmin">ارسال اعلان آزمایشی</button></div>'+
+    pushCard.innerHTML='<div class="st-push-toolbar"><div class="st-push-status" id="stPushStatusControls"></div><button type="button" class="st-btn" id="stPushTestAdmin">ارسال اعلان آزمایشی</button></div>'+
+      '<div class="st-title st-push-heading">🔔 یادآوری کلاس روی گوشی هنرجو</div>' +
 
       '<div class="st-reminder-row"><div class="st-field st-hour-field"><label for="stReminder1Hours">ساعت یادآوری اول</label><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶"></div><div class="st-template-box"><div class="st-template-top"><b>یادآوری اول</b><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button></div><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
       '<div class="st-reminder-row"><div class="st-field st-hour-field"><label for="stReminder2Hours">ساعت یادآوری دوم</label><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲"></div><div class="st-template-box"><div class="st-template-top"><b>یادآوری دوم</b><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
