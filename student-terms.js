@@ -261,6 +261,47 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       @media(prefers-reduced-motion:reduce){#studentTermsTab .st-session-state.live:before,#studentTermsTab .st-session-state.next:before{animation:none;opacity:1;box-shadow:none}}
     `;
     document.head.appendChild(statusPaletteCss);
+    const polishedScheduleReminderCss=document.createElement('style');
+    polishedScheduleReminderCss.id='stPolishedScheduleReminderCss';
+    polishedScheduleReminderCss.textContent=`
+      #studentTermsTab .st-session-fields-modern{display:grid!important;grid-template-columns:34px minmax(66px,.75fr) minmax(100px,1.15fr) minmax(82px,.9fr) minmax(90px,1fr)!important;gap:7px!important;align-items:end!important}
+      #studentTermsTab .st-session-calendar{align-self:end!important;width:34px!important;height:32px!important;min-height:32px!important;padding:0!important;border:1px solid rgba(214,179,90,.62)!important;border-radius:8px!important;background:linear-gradient(145deg,#283447,#121b28)!important;color:#f0cf7c!important;font-size:17px!important;cursor:pointer!important;box-shadow:inset 0 1px 0 #ffffff12,0 2px 7px #0004!important}
+      #studentTermsTab .st-session-weekday{display:flex!important;align-items:center!important;justify-content:center!important;align-self:end!important;box-sizing:border-box!important;min-width:0!important;height:32px!important;padding:3px 6px!important;border:1px solid rgba(214,179,90,.3)!important;border-radius:7px!important;background:rgba(214,179,90,.09)!important;color:#e8d39b!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important}
+      #studentTermsTab .st-session-fields-modern .st-session-field{display:flex!important;flex-direction:column!important;gap:3px!important;min-width:0!important;color:#aeb9c8!important;font-size:9px!important;line-height:1.4!important}
+      #studentTermsTab .st-session-fields-modern input,#studentTermsTab .st-session-fields-modern select,#studentTermsTab .st-session-fields-modern .st-custom-select-trigger{box-sizing:border-box!important;width:100%!important;min-width:0!important;height:32px!important;min-height:32px!important;padding:4px 6px!important;border:1px solid #39475b!important;border-radius:7px!important;background:linear-gradient(145deg,#202b3a,#111a27)!important;color:#f4e9ce!important;font:600 10px Vazirmatn,sans-serif!important}
+      #studentTermsTab .st-session-fields-modern .st-time-input{direction:ltr!important;text-align:center!important;font:700 12px Montserrat,Vazirmatn,sans-serif!important}
+      #studentTermsTab .st-session-head{grid-template-columns:minmax(0,1fr) auto!important;margin-bottom:7px!important}
+      #studentTermsTab .st-session-head strong{font-size:11px!important;color:#f0d48a!important}
+      #studentTermsTab .st-session-head .st-row-delete{justify-self:end!important}
+      @media(max-width:720px){
+        #studentTermsTab .st-session-fields-modern{grid-template-columns:29px minmax(52px,.68fr) minmax(78px,1fr) minmax(70px,.9fr) minmax(76px,1fr)!important;gap:4px!important}
+        #studentTermsTab .st-session-calendar{width:29px!important;height:30px!important;min-height:30px!important;font-size:15px!important}
+        #studentTermsTab .st-session-weekday{height:30px!important;padding:2px 3px!important;font-size:8px!important}
+        #studentTermsTab .st-session-fields-modern .st-session-field{font-size:8px!important}
+        #studentTermsTab .st-session-fields-modern input,#studentTermsTab .st-session-fields-modern select,#studentTermsTab .st-session-fields-modern .st-custom-select-trigger{height:30px!important;min-height:30px!important;padding:3px!important;font-size:8px!important}
+        #studentTermsTab .st-session-fields-modern .st-time-input{font-size:10px!important}
+      }
+      @media(max-width:390px){
+        #studentTermsTab .st-session-fields-modern{grid-template-columns:25px minmax(46px,.62fr) minmax(70px,1fr) minmax(62px,.85fr) minmax(68px,1fr)!important;gap:3px!important}
+        #studentTermsTab .st-session-calendar{width:25px!important;height:29px!important;min-height:29px!important;font-size:14px!important}
+        #studentTermsTab .st-session-weekday{height:29px!important;font-size:7px!important;padding:2px!important}
+        #studentTermsTab .st-session-fields-modern .st-session-field{font-size:7px!important}
+        #studentTermsTab .st-session-fields-modern input,#studentTermsTab .st-session-fields-modern select,#studentTermsTab .st-session-fields-modern .st-custom-select-trigger{height:29px!important;min-height:29px!important;font-size:7.5px!important;padding:2px!important}
+      }
+      #stPushCard .st-push-heading{font-size:9px!important;line-height:1.5!important;margin-bottom:7px!important}
+      #stPushCard .st-reminder-layout{gap:5px!important}
+      #stPushCard .st-reminder-label-row{gap:6px!important}
+      #stPushCard .st-reminder-label-row label{font-size:9px!important;line-height:1.4!important}
+      #stPushCard .st-reminder-input-row{gap:6px!important}
+      #stPushCard .st-reminder-input-row input{height:28px!important;min-height:28px!important;padding:3px 6px!important;font-size:9px!important;border-radius:6px!important}
+      #stPushCard .st-reminder-action-row{gap:6px!important;margin-top:2px!important}
+      #stPushCard .st-reminder-action-row .st-btn{height:25px!important;min-height:25px!important;padding:3px 6px!important;font-size:9px!important;border-radius:6px!important}
+      #stPushCard .st-reminder-save-row{margin-top:3px!important}
+      #stPushCard #stSavePushTemplates{height:27px!important;min-height:27px!important;padding:4px 10px!important;font-size:9px!important;border-radius:7px!important}
+      #stPushCard .st-push-status,#stPushCard .st-push-toolbar button,#stPushCard .st-reminder-row label,#stPushCard .st-reminder-row textarea,#stPushCard #stPushFeedback{font-size:9px!important}
+      @media(max-width:420px){#stPushCard{padding:8px!important}#stPushCard .st-reminder-label-row label{font-size:9px!important}#stPushCard #stSavePushTemplates{font-size:9px!important}}
+    `;
+    document.head.appendChild(polishedScheduleReminderCss);
 
 
     const b=document.createElement('button');b.className='admin-tab-btn';b.type='button';b.textContent='👥 هنرجویان و ترم‌ها';b.setAttribute('onclick',"switchAdminTab('"+TAB+"')");
@@ -272,11 +313,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div id="stMain" class="st-hide">'+
       '<div class="st-card st-create-compact"><div class="st-title">ساخت ترم و مدیریت ترم‌های قبلی</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
-      '<div class="st-field"><label>شروع ترم شمسی</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
-      '<div class="st-field"><label>پایان ترم شمسی</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
+      '<div class="st-field"><label>شروع ترم</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
+      '<div class="st-field"><label>پایان ترم</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
       '<div class="st-field st-term-picker-field"><label>ترم‌های هنرجو</label><div class="st-term-picker-row"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger" id="stDeleteTerm" disabled>حذف</button></div></div>'+
       '</div>'+
-      '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted">ابتدا تاریخ شروع و پایان ترم را مشخص کن</span></div></form></div>'+
+      '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted"></span></div></form></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی</button></div></div>'+
@@ -568,10 +609,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const sorted=S.rows.slice().sort((a,b)=>Number(a.session_number)-Number(b.session_number));
     if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای برای این ترم ثبت نشده است؛ از دکمه «انتخاب جلسات از تقویم» بالای صفحه استفاده کن.</p>';return;}
     $('stDraftTable').innerHTML='<div class="st-sessions-grid">'+sorted.map((r,i)=>{
-      const state=sessionState(r),isoDate=localDate(r.starts_at),weekday=weekdayFa(isoDate);
-      return '<article data-session-number="'+r.session_number+'" class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(r.session_number)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields"><label>تاریخ · '+weekday+'<input class="st-table-input st-date-input" data-date="'+r.session_number+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label>ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+r.session_number+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label>نام مربی<select class="st-table-input st-coach-input" data-coach="'+r.session_number+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div>'+'</article>';
+      const state=sessionState(r),isoDate=localDate(r.starts_at),weekday=weekdayFa(isoDate),n=r.session_number;
+      return '<article data-session-number="'+n+'" class="st-session-card '+state.cls+'"><div class="st-session-head"><strong>جلسه '+fa(n)+'</strong><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'">حذف</button></div><div class="st-session-fields st-session-fields-modern"><button type="button" class="st-session-calendar" data-calendar="stSessionDate'+n+'" aria-label="ویرایش تاریخ جلسه '+fa(n)+'" title="ویرایش تاریخ">▦</button><div class="st-session-weekday">'+esc(weekday)+'</div><label class="st-session-field">تاریخ<input id="stSessionDate'+n+'" class="st-table-input st-date-input" data-date="'+n+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label class="st-session-field">ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+n+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label class="st-session-field">مربی<select class="st-table-input st-coach-input" data-coach="'+n+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div></article>';
     }).join('')+'</div>';
     bindJalaliDates($('stDraftTable'));
+    initTermCalendars($('stDraftTable'));
     enhanceAllSelects($('stDraftTable'));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
     $('stDraftTable').querySelectorAll('[data-date],[data-time]').forEach(input=>input.addEventListener('change',()=>{try{const n=Number(input.dataset.date||input.dataset.time),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;const dateInput=$('stDraftTable').querySelector('[data-date="'+n+'"]'),timeInput=$('stDraftTable').querySelector('[data-time="'+n+'"]'),date=gregorianInput(dateInput.value),time=timeInput.value;if(date&&time){const start=localISO(date,time),mins=rowMinutes(row);row.starts_at=start;row.ends_at=new Date(new Date(start).getTime()+mins*60000).toISOString();drawDraft();}}catch(e){}}));
