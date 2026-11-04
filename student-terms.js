@@ -360,6 +360,22 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(sessionRowsFinalCss);
 
+    const sessionFieldsSizingCss=document.createElement('style');
+    sessionFieldsSizingCss.id='stSessionFieldsSizingCss';
+    sessionFieldsSizingCss.textContent=`
+      #studentTermsTab .st-session-fields-modern{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,.82fr)!important}
+      #studentTermsTab .st-session-fields-modern .st-session-field:last-child select,
+      #studentTermsTab .st-session-fields-modern .st-session-field select.st-coach-input{font-size:8px!important;padding-left:3px!important;padding-right:3px!important}
+      #studentTermsTab .st-session-fields-modern .st-time-input{direction:ltr!important;text-align:center!important;font-family:Montserrat,Arial,sans-serif!important;font-variant-numeric:lining-nums!important;font-feature-settings:"lnum" 1!important;letter-spacing:.2px!important}
+      @media(max-width:600px){
+        #studentTermsTab .st-session-fields-modern{grid-template-columns:repeat(3,minmax(0,1fr)) minmax(0,.82fr)!important}
+        #studentTermsTab .st-session-fields-modern .st-session-field:last-child select,
+        #studentTermsTab .st-session-fields-modern .st-session-field select.st-coach-input{font-size:7px!important}
+      }
+    `;
+    document.head.appendChild(sessionFieldsSizingCss);
+
+
 
 
     const b=document.createElement('button');b.className='admin-tab-btn';b.type='button';b.textContent='👥 هنرجویان و ترم‌ها';b.setAttribute('onclick',"switchAdminTab('"+TAB+"')");
@@ -668,7 +684,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     if(!sorted.length){$('stDraftTable').innerHTML='<p class="st-muted">هنوز جلسه‌ای برای این ترم ثبت نشده است؛ از دکمه «انتخاب جلسات از تقویم» بالای صفحه استفاده کن.</p>';return;}
     $('stDraftTable').innerHTML='<div class="st-sessions-grid">'+sorted.map((r,i)=>{
       const state=sessionState(r),isoDate=localDate(r.starts_at),weekday=weekdayFa(isoDate),n=r.session_number;
-      return '<article data-session-number="'+n+'" class="st-session-card '+state.cls+'"><div class="st-session-head"><button type="button" class="st-session-calendar" data-calendar="stSessionDate'+n+'" aria-label="ویرایش تاریخ جلسه '+fa(n)+'" title="ویرایش تاریخ">▦</button><strong>جلسه '+fa(n)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'" aria-label="حذف جلسه '+fa(n)+'" title="حذف جلسه"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 13h11l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="st-session-fields st-session-fields-modern"><div class="st-session-weekday" aria-label="روز">'+esc(weekday)+'</div><label class="st-session-field">تاریخ<input id="stSessionDate'+n+'" class="st-table-input st-date-input" data-date="'+n+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label class="st-session-field">ساعت کلاس<input class="st-table-input st-time-input" type="time" data-time="'+n+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label class="st-session-field">مربی<select class="st-table-input st-coach-input" data-coach="'+n+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div></article>';
+      return '<article data-session-number="'+n+'" class="st-session-card '+state.cls+'"><div class="st-session-head"><button type="button" class="st-session-calendar" data-calendar="stSessionDate'+n+'" aria-label="ویرایش تاریخ جلسه '+fa(n)+'" title="ویرایش تاریخ">▦</button><strong>جلسه '+fa(n)+'</strong><span class="st-session-state '+state.cls+'">'+state.label+'</span><button class="st-btn danger st-row-delete" type="button" data-del="'+i+'" aria-label="حذف جلسه '+fa(n)+'" title="حذف جلسه"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 13h11l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div><div class="st-session-fields st-session-fields-modern"><div class="st-session-weekday" aria-label="روز">'+esc(weekday)+'</div><label class="st-session-field">تاریخ<input id="stSessionDate'+n+'" class="st-table-input st-date-input" data-date="'+n+'" value="'+jalaliInput(isoDate)+'" data-jalali-date aria-label="تاریخ جلسه"></label><label class="st-session-field">ساعت کلاس<input class="st-table-input st-time-input" type="time" lang="en" dir="ltr" inputmode="numeric" data-time="'+n+'" value="'+localTime(r.starts_at)+'" aria-label="ساعت کلاس"></label><label class="st-session-field">مربی<select class="st-table-input st-coach-input" data-coach="'+n+'" aria-label="نام مربی"><option value="هانیه" '+(r.coach_name==='هانیه'?'selected':'')+'>هانیه</option><option value="بهروز" '+(r.coach_name==='بهروز'?'selected':'')+'>بهروز</option></select></label></div></article>';
     }).join('')+'</div>';
     bindJalaliDates($('stDraftTable'));
     initTermCalendars($('stDraftTable'));
