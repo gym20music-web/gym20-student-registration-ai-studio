@@ -111,6 +111,42 @@
         #studentTermsTab .st-term-grid input{font-size:11px!important;padding:5px!important}
         #studentTermsTab .st-calendar-btn{flex-basis:31px;width:31px}
       }`;
+    termCss.textContent += `
+      #studentTermsTab .st-student-card{padding:6px 8px!important;margin:5px 0!important}
+      #studentTermsTab .st-student-card #stSummary{margin:0!important;padding:0!important}
+      #studentTermsTab .st-student-trigger{min-height:30px!important;padding:4px 7px!important;font-size:9px!important}
+      #studentTermsTab .st-public-link{margin:0!important;padding:0!important}
+      #studentTermsTab .st-short-url{font-size:8px!important;line-height:1.35!important;padding:4px 6px!important;margin:3px 0!important;border-radius:6px!important}
+      #studentTermsTab .st-public-link .st-actions{gap:4px!important;margin-top:3px!important}
+      #studentTermsTab .st-public-link .st-btn{min-height:24px!important;padding:3px 6px!important;font-size:8px!important;border-radius:6px!important}
+      #studentTermsTab #stPublicLinkStatus{font-size:8px!important;line-height:1.35!important}
+      #studentTermsTab .st-term-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;align-items:end!important}
+      #studentTermsTab .st-term-grid>.st-field{min-width:0!important;margin:0!important}
+      #studentTermsTab .st-term-grid .st-field label{font-size:10px!important;white-space:nowrap!important;margin-bottom:3px!important}
+      #studentTermsTab .st-term-grid input{height:35px!important;min-height:35px!important;padding:4px 5px!important;font-size:10px!important}
+      #studentTermsTab .st-term-picker-row{gap:4px!important}
+      #studentTermsTab .st-term-picker-row .st-custom-select{min-width:0!important;flex:1 1 auto!important}
+      #studentTermsTab .st-term-picker-row .st-custom-select-trigger{height:35px!important;min-height:35px!important;padding:3px 5px!important;font-size:9px!important}
+      #studentTermsTab .st-term-picker-row .st-btn{height:35px!important;min-height:35px!important;padding:3px 5px!important;font-size:8px!important}
+      #studentTermsTab .st-date-wrap{gap:3px!important}
+      #studentTermsTab .st-calendar-btn{flex:0 0 25px!important;width:25px!important;height:35px!important;font-size:13px!important}
+      @media(max-width:720px){
+        #studentTermsTab .st-term-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+        #studentTermsTab .st-term-grid>.st-field:nth-child(1),
+        #studentTermsTab .st-term-grid>.st-field:nth-child(2),
+        #studentTermsTab .st-term-grid>.st-field:nth-child(3){grid-column:auto!important;grid-row:auto!important}
+        #studentTermsTab .st-term-grid .st-field label{font-size:9px!important;letter-spacing:-.25px}
+        #studentTermsTab .st-term-grid input{height:32px!important;min-height:32px!important;font-size:9px!important;padding:3px!important}
+        #studentTermsTab .st-calendar-btn{flex-basis:21px!important;width:21px!important;height:32px!important;padding:0!important;font-size:11px!important}
+        #studentTermsTab .st-term-picker-row .st-custom-select-trigger{height:32px!important;min-height:32px!important;font-size:8px!important}
+        #studentTermsTab .st-term-picker-row .st-btn{height:32px!important;min-height:32px!important;font-size:7px!important;padding:2px 3px!important}
+        #studentTermsTab .st-create-compact{padding:8px!important}
+      }
+      @media(max-width:390px){
+        #studentTermsTab .st-term-grid{gap:4px!important}
+        #studentTermsTab .st-term-grid .st-field label{font-size:8px!important}
+        #studentTermsTab .st-calendar-btn{flex-basis:18px!important;width:18px!important}
+      }`;
     document.head.appendChild(termCss);
 
     const css=document.createElement('style');css.id='studentTermsCss';
@@ -265,7 +301,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     bindJalaliDates(p);
       const todayFa=jalaliInput(localDate(new Date()));$('stStart').value=todayFa;$('stEnd').value=todayFa;syncTermName();$('stPublish').textContent='ثبت نهایی';
     $('stStudentTrigger').addEventListener('click',e=>{e.preventDefault();e.stopPropagation();const menu=$('stStudentMenu');const open=menu.hidden;menu.hidden=!open;$('stStudentTrigger').setAttribute('aria-expanded',String(open));});
-    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').dataset.studentId=id;$('stStudentSelected').textContent=item.textContent;$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
+    $('stStudentMenu').addEventListener('click',e=>{const item=e.target.closest('[data-student-id]');if(!item)return;const id=item.dataset.studentId;S.studentId=id;$('stStudentSelected').dataset.studentId=id;$('stStudentSelected').textContent='هنرجوی انتخاب‌شده';$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');$('stStudentMenu').querySelectorAll('[data-student-id]').forEach(x=>x.classList.toggle('selected',x===item));loadStudent(id);});
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
@@ -359,7 +395,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   async function loadStudents(){
     try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
-      const selected=S.students.find(x=>x.id===S.studentId);$('stStudentSelected').textContent=selected?(selected.full_name+' — '+(selected.phone||'بدون شماره')):'انتخاب هنرجو…';
+      const selected=S.students.find(x=>x.id===S.studentId);$('stStudentSelected').textContent=selected?'هنرجوی انتخاب‌شده':'انتخاب هنرجو…';
       if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else say(fa(S.students.length)+' هنرجوی فعال دریافت شد.');
     }catch(e){say(e.message||'دریافت هنرجویان ناموفق بود.',true);}
   }
