@@ -288,6 +288,7 @@ document.head.appendChild(css);
   async function savePushTemplates(){
     const feedback=$('stPushFeedback'),first=$('stReminder1').value.trim(),second=$('stReminder2').value.trim();
     try{
+      if(!S.pushTemplatesLoaded)throw Error('تنظیمات اعلان هنوز بارگذاری نشده است؛ صفحه را تازه‌سازی کن و دوباره تلاش کن.');
       if(!first||!second)throw Error('متن هر دو یادآوری را وارد کن.');
       if(first.length>1000||second.length>1000)throw Error('حداکثر طول هر متن ۱۰۰۰ کاراکتر است.');
       const {data:{user},error:userError}=await gym20AdminClient.auth.getUser();if(userError)throw userError;
