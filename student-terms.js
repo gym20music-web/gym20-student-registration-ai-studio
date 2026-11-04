@@ -237,14 +237,14 @@ document.head.appendChild(css);
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
-    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';
+    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';pushCard.hidden=true;
     pushCard.innerHTML='<div class="st-title">🔔 یادآوری کلاس روی گوشی هنرجو</div>'+
 
       '<div class="st-reminder-row"><div class="st-field st-hour-field"><label for="stReminder1Hours">ساعت یادآوری اول</label><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶"></div><div class="st-template-box"><div class="st-template-top"><b>یادآوری اول</b><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button></div><div id="stReminder1Preview" class="st-template-preview"></div><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
       '<div class="st-reminder-row"><div class="st-field st-hour-field"><label for="stReminder2Hours">ساعت یادآوری دوم</label><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲"></div><div class="st-template-box"><div class="st-template-top"><b>یادآوری دوم</b><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div><div id="stReminder2Preview" class="st-template-preview"></div><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
 
       '<div class="st-actions"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره متن و ساعت یادآوری</button></div>'+
-      '<div class="st-push-status" id="stPushStatusControls"></div>'+
+      '<div class="st-push-status" id="stPushStatusControls"></div>'+'<div class="st-actions"><button type="button" class="st-btn" id="stPushTestAdmin">ارسال اعلان آزمایشی</button></div>'+
       '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><textarea id="stCustomPushText" rows="1" maxlength="1200" placeholder="متن اعلان فوری…"></textarea></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
@@ -269,7 +269,7 @@ document.head.appendChild(css);
     p.querySelectorAll('[data-edit-template]').forEach(btn=>btn.addEventListener('click',()=>{const editor=$(btn.dataset.editTemplate),opening=editor.hidden;editor.hidden=!opening;btn.textContent=opening?'بستن ویرایش':'ویرایش متن';if(opening)editor.focus();}));
     ['stReminder1','stReminder2'].forEach(id=>$(id).addEventListener('input',()=>updateTemplatePreview(id)));
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>$(id).addEventListener('input',()=>{const el=$(id);el.value=enDigits(el.value).replace(/[^0-9]/g,'').slice(0,3);}));
-    $('stSendCustomPush').addEventListener('click',sendCustomPush);
+    $('stSendCustomPush').addEventListener('click',sendCustomPush);$('stPushTestAdmin').addEventListener('click',sendTestPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
   }
 
@@ -282,7 +282,7 @@ document.head.appendChild(css);
   async function loadPushSettings(){
     const {data,error}=await db().from('site_settings').select('value').eq('key','student_push_config').maybeSingle();
     if(error)throw error;
-    S.reminderDraft={reminder_1_hours:6,reminder_2_hours:2,...DEFAULT_PUSH_TEMPLATES,...(data?.value||{})};
+    S.reminderDraft={enabled:true,reminder_1_hours:6,reminder_2_hours:2,...DEFAULT_PUSH_TEMPLATES,...(data?.value||{})};
     const legacy1='{student} عزیز 🌟 یادآوری دوستانه؛ کلاس شما {relative}، {day} ساعت {time} برگزار می‌شود. برای یک تمرین پرقدرت آماده باشید!';
     const legacy2='وقت تمرینه! 💪 {student} عزیز، کلاس شما {relative}، {day} ساعت {time} شروع می‌شود. منتظرتون هستیم!';
     if(S.reminderDraft.reminder_1_template===legacy1)S.reminderDraft.reminder_1_template=DEFAULT_PUSH_TEMPLATES.reminder_1_template;
@@ -304,7 +304,7 @@ document.head.appendChild(css);
       if(firstHours>0&&secondHours>0&&firstHours===secondHours)throw Error('ساعت یادآوری اول و دوم باید متفاوت باشد.');
       if(firstHours>0&&secondHours>0&&firstHours<secondHours)throw Error('یادآوری اول باید زودتر از یادآوری دوم باشد؛ مثلاً ۶ و سپس ۲ ساعت.');
       const {data:{user},error:userError}=await gym20AdminClient.auth.getUser();if(userError)throw userError;
-      const value={...S.reminderDraft,...DEFAULT_PUSH_TEMPLATES,reminder_1_template:first,reminder_2_template:second,reminder_1_hours:firstHours,reminder_2_hours:secondHours};
+      const value={...S.reminderDraft,...DEFAULT_PUSH_TEMPLATES,enabled:S.reminderDraft.enabled!==false,reminder_1_template:first,reminder_2_template:second,reminder_1_hours:firstHours,reminder_2_hours:secondHours};
       const {error}=await db().from('site_settings').upsert({key:'student_push_config',value,updated_at:new Date().toISOString(),updated_by:user?.id||null},{onConflict:'key'});
       if(error)throw error;
       S.reminderDraft=value;if(feedback)feedback.textContent='متن یادآوری‌ها ذخیره شد ✓';
@@ -329,6 +329,19 @@ document.head.appendChild(css);
     finally{button.disabled=false;button.textContent=original;}
   }
 
+  async function sendTestPush(){
+    const button=$('stPushTestAdmin'),feedback=$('stPushFeedback');
+    if(!S.studentId){say('ابتدا یک هنرجو انتخاب کن.',true);return;}
+    const original=button.textContent;button.disabled=true;button.textContent='در حال ارسال آزمایش…';
+    try{
+      const {data,error}=await gym20AdminClient.functions.invoke('student-push-admin',{body:{student_id:S.studentId,message:'آزمایش اعلان GYM20 🌱 اگر این پیام را روی گوشی می‌بینی، دریافت اعلان فعال است.'}});
+      if(error)throw error;if(!data?.ok)throw Error(data?.error||'ارسال اعلان آزمایشی انجام نشد.');
+      const result='درخواست ارسال آزمایش به '+fa(data.sent)+' دستگاه پذیرفته شد؛ نمایش روی گوشی را بررسی کن.';
+      if(feedback)feedback.textContent=result;say(result);
+    }catch(e){const msg=e.message||'ارسال اعلان آزمایشی ناموفق بود.';if(feedback)feedback.textContent=msg;say(msg,true);}
+    finally{button.disabled=false;button.textContent=original;}
+  }
+
   async function loadStudents(){
     try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
@@ -338,7 +351,7 @@ document.head.appendChild(css);
   }
 
   async function loadStudent(id){
-    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');if(!id)return;
+    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard)reminderCard.hidden=!id;if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
