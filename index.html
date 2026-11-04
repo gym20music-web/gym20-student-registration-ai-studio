@@ -2050,7 +2050,7 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',()=>{
     if(!entry)return;
     const value=entry.trim();
     let url='';
-    if(/^https?:\\/\\//i.test(value)){
+    if(/^https?:\/\//i.test(value)){
         try{const parsed=new URL(value);if(parsed.hostname!=='gym20.ir'&&!parsed.hostname.endsWith('.gym20.ir'))throw new Error();url=parsed.href;}catch(_){setRegistrationStatus('لینک واردشده معتبر نیست.','error');return;}
     }else if(/^[a-zA-Z0-9_-]{5,120}$/.test(value)){
         url='https://gym20.ir/s/'+encodeURIComponent(value);
