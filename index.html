@@ -2060,11 +2060,14 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
     const requestSchedule=async()=>{
         const response=await fetch(GYM20_SUPABASE_URL+'/rest/v1/rpc/get_student_public_schedule_by_phone',{
             method:'POST',
-            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json','Content-Profile':'gym20','Accept-Profile':'gym20'},
+            cache:'no-store',
+            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json','Content-Profile':'gym20','Accept-Profile':'gym20','Cache-Control':'no-cache, no-store, max-age=0','Pragma':'no-cache'},
             body:JSON.stringify({p_phone:phone})
         });
-        if(!response.ok)throw new Error('خطا در دریافت اطلاعات');
-        return await response.json();
+        if(!response.ok){const detail=await response.text().catch(()=> '');throw new Error('خطا در دریافت اطلاعات ('+response.status+') '+detail.slice(0,180));}
+        const freshData=await response.json();
+        if(!freshData||!Array.isArray(freshData.terms))throw new Error('پاسخ برنامه کلاس‌ها معتبر نیست');
+        return freshData;
     };
     const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
     const faDate=v=>v?new Date(v).toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
