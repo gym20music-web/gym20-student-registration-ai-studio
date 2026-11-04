@@ -2048,6 +2048,7 @@ paymentConfirmedEl.addEventListener('change',updateRegistrationSubmitState);
 let gym20StudentScheduleRealtimeClient=null;
 let gym20StudentScheduleRealtimeChannel=null;
 let gym20StudentScheduleRealtimeConnected=false;
+let gym20StudentScheduleLastHiddenRefresh=0;
 let gym20StudentScheduleRefreshTimer=null;
 let gym20StudentScheduleStateTimer=null;
 document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>{
@@ -2145,9 +2146,22 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
             catch(err){console.warn('GYM20 live schedule refresh failed:',err);}
             finally{scheduleRefreshInFlight=false;}
         };
-        // Repaint time-based status; poll only if the Realtime socket is disconnected.
+        // Keep schedule data fresh even if Broadcast is connected but a device misses an event.
+        // Foreground: every 2 seconds; background: every 15 seconds.
         gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),3000);
-        gym20StudentScheduleRefreshTimer=setInterval(()=>{if(!gym20StudentScheduleRealtimeConnected)refreshSchedule();},5000);
+        gym20StudentScheduleRefreshTimer=setInterval(()=>{
+            if(document.hidden){
+                if(!gym20StudentScheduleLastHiddenRefresh || Date.now()-gym20StudentScheduleLastHiddenRefresh>=15000){
+                    gym20StudentScheduleLastHiddenRefresh=Date.now();
+                    refreshSchedule();
+                }
+            }else{
+                refreshSchedule();
+            }
+        },2000);
+        document.addEventListener('visibilitychange',()=>{
+            if(!document.hidden)refreshSchedule();
+        });
         if(data.realtime_topic){
             try{
                 await loadGym20SupabaseSdk();
