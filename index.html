@@ -2148,7 +2148,6 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
         // Repaint time-based status; poll only if the Realtime socket is disconnected.
         gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),3000);
         gym20StudentScheduleRefreshTimer=setInterval(()=>{if(!gym20StudentScheduleRealtimeConnected)refreshSchedule();},5000);
-        document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshSchedule();},{once:true});
         if(data.realtime_topic){
             try{
                 await loadGym20SupabaseSdk();
