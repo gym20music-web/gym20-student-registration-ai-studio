@@ -2,6 +2,23 @@
   const SUPABASE_URL='https://iqjujumhoawlugrmjvyj.supabase.co';
   const SUPABASE_KEY='sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ';
   const $=id=>document.getElementById(id);
+  // Center each field's label and value inside its own box on mobile and desktop.
+  const studentFieldCenterStyle=document.createElement('style');
+  studentFieldCenterStyle.textContent=`
+    #schedule .session-compact-row .session-inline .session-fact{
+      display:flex!important;flex-direction:column!important;
+      align-items:center!important;justify-content:center!important;
+      text-align:center!important;
+    }
+    #schedule .session-compact-row .session-inline .session-fact>i,
+    #schedule .session-compact-row .session-inline .session-fact>b{
+      display:block!important;width:100%!important;text-align:center!important;
+    }
+    #schedule .session-compact-row .session-inline .session-status-fact .status{
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      margin-inline:auto!important;
+    }`;
+  document.head.appendChild(studentFieldCenterStyle);
   const faDate=v=>{if(!v)return '—';const p=String(v).slice(0,10).split('-').map(Number);if(p.length!==3||!p.every(Number.isFinite))return '—';if(p[0]<1700)return p.map((x,i)=>String(x).padStart(i===0?4:2,'0')).join('/').replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);return new Intl.DateTimeFormat('fa-IR',{year:'numeric',month:'numeric',day:'numeric'}).format(new Date(p[0],p[1]-1,p[2],12));};
   const faDateTime=v=>{if(!v)return '—';const d=new Date(v),fmt=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}),p=Object.fromEntries(fmt.formatToParts(d).filter(x=>x.type!=='literal').map(x=>[x.type,x.value])),weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(d);return weekday+' · '+p.year+'/'+p.month+'/'+p.day;};
   const faTime=v=>v?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(v)):'—';
