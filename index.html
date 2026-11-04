@@ -1668,8 +1668,8 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261104-push-layout-v11')
-      .then(()=>loadGym20Module('./student-push-admin.js?v=20261104-reminder-card-v7'))
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261104-student-layout-v12')
+      .then(()=>loadGym20Module('./student-push-admin.js?v=20261104-student-layout-v12'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
   return gym20AdminModulesPromise;
