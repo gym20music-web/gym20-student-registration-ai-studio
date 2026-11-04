@@ -803,6 +803,9 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                             <span id="txt_paymentConfirmed">پرداخت شهریه را انجام داده‌ام و تأیید می‌کنم.</span>
                         </label>
                         <button class="registration-submit" id="regSubmitBtn" type="submit" form="publicRegistrationForm" disabled><span id="btn_submitReg">ارسال درخواست ثبت‌نام</span></button>
+                        <button class="registration-submit" id="viewMySessionsBtn" type="button" style="margin-top:9px;background:linear-gradient(135deg,#e8c46b,#b88932);color:#17130b;border:1px solid #f0d58a;">
+                            <span>📅 مشاهده کارت جلسات من</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -2040,6 +2043,18 @@ const registrationForm = document.getElementById('publicRegistrationForm'), regi
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
 function updateRegistrationSubmitState(){registrationSubmit.disabled=!(acceptRulesEl.checked&&paymentConfirmedEl.checked&&currentRegionId);}
 paymentConfirmedEl.addEventListener('change',updateRegistrationSubmitState);
+document.getElementById('viewMySessionsBtn')?.addEventListener('click',()=>{
+    const entry=prompt('برای تست، لینک اختصاصی کارت جلسات یا کد کارت را وارد کنید:');
+    if(!entry)return;
+    const value=entry.trim();
+    let url='';
+    if(/^https?:\\/\\//i.test(value)){
+        try{const parsed=new URL(value);if(parsed.hostname!=='gym20.ir'&&!parsed.hostname.endsWith('.gym20.ir'))throw new Error();url=parsed.href;}catch(_){setRegistrationStatus('لینک واردشده معتبر نیست.','error');return;}
+    }else if(/^[a-zA-Z0-9_-]{5,120}$/.test(value)){
+        url='https://gym20.ir/s/'+encodeURIComponent(value);
+    }else{setRegistrationStatus('لینک یا کد کارت معتبر نیست.','error');return;}
+    window.open(url,'_blank','noopener');
+});
 
 registrationForm.addEventListener('submit',async e=>{
     e.preventDefault();
