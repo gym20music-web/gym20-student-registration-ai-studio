@@ -2045,17 +2045,60 @@ const registrationForm = document.getElementById('publicRegistrationForm'), regi
 function setRegistrationStatus(m,t=''){registrationStatus.textContent=m;registrationStatus.className='registration-status'+(t?' '+t:'');}
 function updateRegistrationSubmitState(){registrationSubmit.disabled=!(acceptRulesEl.checked&&paymentConfirmedEl.checked&&currentRegionId);}
 paymentConfirmedEl.addEventListener('change',updateRegistrationSubmitState);
-document.getElementById('viewMySessionsBtn')?.addEventListener('click',()=>{
-    const entry=prompt('برای تست، لینک اختصاصی کارت جلسات یا کد کارت را وارد کنید:');
-    if(!entry)return;
-    const value=entry.trim();
-    let url='';
-    if(/^https?:\/\//i.test(value)){
-        try{const parsed=new URL(value);if(parsed.hostname!=='gym20.ir'&&!parsed.hostname.endsWith('.gym20.ir'))throw new Error();url=parsed.href;}catch(_){setRegistrationStatus('لینک واردشده معتبر نیست.','error');return;}
-    }else if(/^[a-zA-Z0-9_-]{5,120}$/.test(value)){
-        url='https://gym20.ir/s/'+encodeURIComponent(value);
-    }else{setRegistrationStatus('لینک یا کد کارت معتبر نیست.','error');return;}
-    window.open(url,'_blank','noopener');
+document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>{
+    const entered=prompt('شماره موبایلی را که هنگام ثبت‌نام وارد کرده‌اید بنویسید:');
+    if(!entered)return;
+    const phone=toEnglishDigits(entered).replace(/[^0-9]/g,'');
+    if(phone.length<10||phone.length>15){setRegistrationStatus('شماره موبایل معتبر نیست.','error');return;}
+    setRegistrationStatus('در حال دریافت برنامه کلاس‌ها…');
+    try{
+        const response=await fetch(GYM20_SUPABASE_URL+'/rest/v1/rpc/get_student_public_schedule_by_phone',{
+            method:'POST',
+            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json','Content-Profile':'gym20','Accept-Profile':'gym20'},
+            body:JSON.stringify({p_phone:phone})
+        });
+        if(!response.ok)throw new Error('خطا در دریافت اطلاعات');
+        const data=await response.json();
+        if(!data){setRegistrationStatus('هنرجویی با این شماره پیدا نشد یا هنوز برنامه‌ای برای نمایش منتشر نشده است.','error');return;}
+        const esc=v=>String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+        const faDate=v=>v?new Date(v).toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
+        const faTime=v=>v?new Date(v).toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';
+        const statusText={scheduled:'برنامه‌ریزی‌شده',completed:'برگزارشده',cancelled:'لغوشده',in_progress:'در حال برگزاری',pending:'در انتظار'};
+        const terms=Array.isArray(data.terms)?data.terms:[];
+        const termHtml=terms.length?terms.map(term=>{
+            const sessions=Array.isArray(term.sessions)?term.sessions:[];
+            const styles=Array.isArray(term.styles)?term.styles.join('، '):'';
+            return '<section style="margin:12px 0;padding:12px;border:1px solid rgba(232,196,107,.28);border-radius:12px;background:rgba(255,255,255,.025)">'+
+                '<div style="font-weight:800;color:#f0cf7a;font-size:15px">'+esc(term.term_name||'برنامه کلاس‌ها')+'</div>'+
+                '<div style="font-size:11px;color:#aab2c1;margin:5px 0 10px">شروع: '+faDate(term.start_date)+'　 پایان: '+faDate(term.end_date)+'　 جلسات: '+esc(term.total_sessions||sessions.length)+'</div>'+
+                (styles?'<div style="font-size:11px;margin-bottom:9px;color:#cbd5e1">سبک‌ها: '+esc(styles)+'</div>':'')+
+                (sessions.length?'<div style="display:grid;gap:7px">'+sessions.map((s,i)=>{
+                    const start=s.starts_at?new Date(s.starts_at):null, end=s.ends_at?new Date(s.ends_at):null;
+                    const day=start?start.toLocaleDateString('fa-IR',{weekday:'long'}):'—';
+                    const date=start?start.toLocaleDateString('fa-IR-u-ca-persian',{year:'numeric',month:'2-digit',day:'2-digit'}):'—';
+                    const time=start?faTime(s.starts_at)+(end?' تا '+faTime(s.ends_at):''):'—';
+                    const st=statusText[s.status]||s.status||'—';
+                    return '<div style="display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:8px;border-radius:9px;background:rgba(255,255,255,.035)">'+
+                        '<div style="text-align:center;color:#f0cf7a;font-weight:800">جلسه '+esc(s.session_number||i+1)+'</div>'+
+                        '<div style="min-width:0;font-size:11px;line-height:1.9;color:#e5e7eb">'+
+                        '<div>'+esc(day)+' · '+esc(date)+' · '+esc(time)+'</div>'+
+                        '<div style="color:#aab2c1">مربی: '+esc(s.coach_name||'—')+'　 وضعیت: '+esc(st)+(s.attendance?'　 حضور: '+esc(s.attendance):'')+'</div>'+
+                        '</div></div>';
+                }).join('')+'</div>':'<div style="font-size:12px;color:#aab2c1">جلسه‌ای برای این ترم ثبت نشده است.</div>')+
+                '</section>';
+        }).join(''):'<div style="padding:20px;text-align:center;color:#aab2c1">هنوز برنامه منتشرشده‌ای برای شما وجود ندارد.</div>';
+        document.getElementById('gym20StudentScheduleModal')?.remove();
+        const modal=document.createElement('div');
+        modal.id='gym20StudentScheduleModal';
+        modal.style.cssText='position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,.78);display:flex;align-items:center;justify-content:center;padding:14px;direction:rtl';
+        modal.innerHTML='<div style="width:min(620px,100%);max-height:88vh;overflow:auto;background:#101722;color:#f8fafc;border:1px solid rgba(232,196,107,.35);border-radius:16px;padding:15px;box-shadow:0 18px 60px #0009">'+
+            '<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #ffffff18;padding-bottom:10px"><div><div style="font-weight:900;color:#f0cf7a;font-size:16px">📅 برنامه کلاس‌های من</div><div style="font-size:12px;color:#aab2c1;margin-top:4px">'+esc(data.student?.full_name||'هنرجو')+'</div></div><button type="button" id="closeGym20StudentSchedule" style="border:0;border-radius:8px;padding:7px 11px;background:#263244;color:white">بستن ✕</button></div>'+
+            termHtml+'</div>';
+        document.body.appendChild(modal);
+        document.getElementById('closeGym20StudentSchedule')?.addEventListener('click',()=>modal.remove());
+        modal.addEventListener('click',e=>{if(e.target===modal)modal.remove();});
+        setRegistrationStatus('');
+    }catch(err){console.error('Student schedule lookup failed:',err);setRegistrationStatus('دریافت برنامه با خطا مواجه شد. لطفاً دوباره تلاش کنید.','error');}
 });
 
 registrationForm.addEventListener('submit',async e=>{
