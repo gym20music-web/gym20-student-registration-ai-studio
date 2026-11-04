@@ -32,7 +32,7 @@
     sync();
   }
   async function setupPush(shortCode,client){
-    const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus"),testButton=$("pushTest");
+    const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus");
     if(!box||!button||!status||!shortCode)return;
     box.classList.remove("hide");
     button.disabled=true;
@@ -47,7 +47,6 @@
     const paint=active=>{
       button.dataset.active=active?"1":"0";
       button.hidden=!!active;
-      if(testButton)testButton.classList.toggle("visible",!!active);
     };
     const saveSubscription=async subscription=>{
       const keys=subscription.toJSON().keys||{};
@@ -79,31 +78,10 @@
         if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         await saveSubscription(subscription);
         paint(true);
-        status.textContent="اشتراک این گوشی ثبت شد. برای اطمینان، «ارسال اعلان آزمایشی» را بزن.";
+        status.textContent="اعلان کلاس‌ها برای این گوشی فعال شد ✓";
       }catch(error){
         status.textContent=error.message||"فعال‌سازی اعلان ناموفق بود.";
       }finally{button.disabled=false;}
-    });
-    if(testButton)testButton.addEventListener("click",async()=>{
-      if(!configReady)return;
-      testButton.disabled=true;
-      const oldLabel=testButton.textContent;
-      testButton.textContent="در حال ارسال…";
-      try{
-        await ensureReady();
-        if(Notification.permission!=="granted")throw new Error("مجوز اعلان گوشی فعال نیست؛ ابتدا اعلان را فعال کن.");
-        const subscription=await registration.pushManager.getSubscription();
-        if(!subscription)throw new Error("اشتراک این گوشی پیدا نشد؛ اعلان را دوباره فعال کن.");
-        const response=await fetch(SUPABASE_URL+"/functions/v1/student-push-test",{
-          method:"POST",
-          headers:{"Content-Type":"application/json","apikey":SUPABASE_KEY,"Authorization":"Bearer "+SUPABASE_KEY},
-          body:JSON.stringify({code:shortCode,endpoint:subscription.endpoint})
-        });
-        const result=await response.json().catch(()=>({}));
-        if(!response.ok||!result.ok)throw new Error(result.error||"سرور نتوانست اعلان را ارسال کند.");
-        status.textContent="سرور اعلان آزمایشی را پذیرفت. اگر روی گوشی نمایش داده نشد، مجوز اعلان Chrome و اعلان‌های خود برنامه Chrome را در تنظیمات Android بررسی کن.";
-      }catch(error){status.textContent=error.message||"ارسال اعلان آزمایشی ناموفق بود.";}
-      finally{testButton.disabled=false;testButton.textContent=oldLabel;}
     });
     try{
       const {data,error}=await api.rpc("get_student_push_public_config");
