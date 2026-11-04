@@ -662,11 +662,12 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     drawDraft();
   }
   function sessionState(r){
-    const now=Date.now(),start=new Date(r.starts_at).getTime(),end=new Date(r.ends_at).getTime();
-    if(end<=now)return {label:'جلسه گذشته',cls:'past'};
+    const now=Date.now(),start=Date.parse(r?.starts_at||''),end=Date.parse(r?.ends_at||'');
+    if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)return {label:'زمان نامشخص',cls:'future'};
     if(start<=now&&now<end)return {label:'در حال برگزاری',cls:'live'};
-    const hasLiveSession=S.rows.some(x=>new Date(x.starts_at).getTime()<=now&&now<new Date(x.ends_at).getTime());
-    const next=hasLiveSession?null:(S.rows.filter(x=>new Date(x.starts_at).getTime()>now&&new Date(x.ends_at).getTime()>now).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0]||null);
+    if(end<=now)return {label:'جلسه گذشته',cls:'past'};
+    const hasLiveSession=S.rows.some(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a<=now&&now<b;});
+    const next=hasLiveSession?null:(S.rows.filter(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a>now&&b>now;}).sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at))[0]||null);
     if(next&&Number(next.session_number)===Number(r.session_number))return {label:'جلسه آینده',cls:'next'};
     return {label:'جلسه برگزار نشده',cls:'future'};
   }
@@ -820,5 +821,15 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
   window.setInterval(refreshDraftSessionStates,1000);
+  // Final high-specificity live-state palette, appended after the panel's legacy styles.
+  const liveStateCss=document.createElement('style');
+  liveStateCss.id='gym20LiveStateFinalCss';
+  liveStateCss.textContent=`
+    #studentTermsTab .st-session-card.live{background:linear-gradient(110deg,rgba(133,77,14,.52),#151e2b 82%)!important;border:1px solid #eab308!important;box-shadow:inset 4px 0 0 #facc15,0 0 14px rgba(250,204,21,.16)!important}
+    #studentTermsTab .st-session-card.live .st-session-state.live{background:#facc15!important;color:#17130a!important;border:1px solid #fde047!important;box-shadow:0 0 12px rgba(250,204,21,.35)!important}
+    #studentTermsTab .st-schedule-row.live td{background:rgba(161,98,7,.34)!important;color:#fff1a6!important}
+    #studentTermsTab .st-schedule-row.live .st-session-state.live{background:#facc15!important;color:#17130a!important;border-color:#fde047!important}
+  `;
+  document.head.appendChild(liveStateCss);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
