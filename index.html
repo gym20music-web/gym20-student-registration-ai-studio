@@ -1673,7 +1673,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261106-audit-fix-v23')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261106-push-ui-fix-v24')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261104-student-layout-v12'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
