@@ -412,7 +412,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
-    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';pushCard.hidden=true;
+    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';pushCard.hidden=false;
     pushCard.innerHTML='<div class="st-push-toolbar"><div class="st-push-status" id="stPushStatusControls"></div><button type="button" class="st-btn" id="stPushTestAdmin">تست اعلان</button></div>'+
       '<div class="st-title st-push-heading">🔔 یادآوری کلاس روی گوشی هنرجو</div>' +
 
