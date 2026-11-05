@@ -2,13 +2,13 @@
   const $=id=>document.getElementById(id);
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const getStudentId=()=>String($('stStudentSelected')?.dataset.studentId||'');
-  const db=()=>{if(!window.gym20OwnerAuthorized||!window.gym20AdminClient)throw Error('ابتدا با حساب مدیر وارد شوید.');return window.gym20AdminClient.schema('gym20');};
+  const db=()=>{if(!gym20OwnerAuthorized||!gym20AdminClient)throw Error('ابتدا با حساب مدیر وارد شوید.');return gym20AdminClient.schema('gym20');};
   let currentStudent='';
   function mount(){
     const nav=document.querySelector('.admin-tabs'),work=document.querySelector('.admin-workspace');
     if(!nav||!work||$('gym20ExercisesTab'))return;
     const btn=document.createElement('button');
-    btn.className='admin-tab-btn';btn.type='button';btn.setAttribute('onclick',"switchAdminTab('exercisesTab');loadStudentExercisesAdmin()");
+    btn.className='admin-tab-btn';btn.type='button';btn.setAttribute('onclick',"switchAdminTab('exercisesTab')");btn.addEventListener('click',()=>window.loadStudentExercisesAdmin?.());
     btn.textContent='🏋️ تمرین هنرجو';nav.appendChild(btn);
     const panel=document.createElement('section');panel.className='admin-panel-tab';panel.id='exercisesTab';panel.innerHTML=`
       <div id="gym20ExercisesTab" class="admin-card-section" style="border:1px solid rgba(214,179,90,.28);border-radius:12px;padding:14px;background:rgba(255,255,255,.025)">
