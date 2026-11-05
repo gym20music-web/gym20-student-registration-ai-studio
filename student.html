@@ -257,13 +257,13 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-row:has(input:disabled){opacity:.75}
 .exercise-feedback{min-height:18px;margin-top:8px;color:#86efac;font-size:10px;line-height:1.7}
 
-.exercise-celebration{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:22px;background:rgba(3,8,14,.72);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);opacity:0;animation:exCelebrationIn .22s ease-out forwards;overflow:hidden}
-.exercise-celebration::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(250,220,120,.34),rgba(34,197,94,.12) 30%,transparent 66%);animation:exGlowPulse .9s ease-out both}
+.exercise-celebration{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:22px;background:rgba(3,8,14,.84);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;animation:exCelebrationIn .22s ease-out forwards;overflow:hidden}
+.exercise-celebration::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(250,220,120,.62),rgba(34,197,94,.24) 34%,rgba(56,189,248,.13) 52%,transparent 76%);animation:exGlowPulse 1.25s ease-out both}
 .exercise-celebration-card{position:relative;z-index:2;width:min(100%,330px);padding:24px 18px;text-align:center;border:1px solid rgba(250,220,120,.75);border-radius:18px;background:linear-gradient(145deg,#1d2b25,#111923 78%);box-shadow:0 0 24px rgba(250,220,120,.35),0 0 70px rgba(34,197,94,.18);animation:exCardPop .48s cubic-bezier(.2,1.4,.4,1) both}
 .exercise-celebration-icon{font-size:42px;line-height:1.3;filter:drop-shadow(0 0 12px rgba(250,220,120,.75))}
 .exercise-celebration-title{margin-top:7px;color:#fde68a;font-size:19px;font-weight:900;text-shadow:0 0 16px rgba(250,220,120,.5)}
 .exercise-celebration-text{margin-top:8px;color:#bbf7d0;font-size:12px;line-height:1.9}
-.exercise-confetti{position:absolute;z-index:1;top:46%;left:50%;width:9px;height:13px;border-radius:2px;background:var(--piece-color);opacity:0;transform:translate(-50%,-50%);animation:exConfettiBurst var(--piece-duration) cubic-bezier(.12,.72,.25,1) var(--piece-delay) forwards}
+.exercise-confetti{position:absolute;z-index:1;top:46%;left:50%;width:10px;height:15px;border-radius:2px;background:var(--piece-color);opacity:0;transform:translate(-50%,-50%);animation:exConfettiBurst var(--piece-duration) cubic-bezier(.12,.72,.25,1) var(--piece-delay) forwards}
 .exercise-celebration-close{position:relative;z-index:3;margin-top:16px;min-height:36px;padding:7px 22px;border:1px solid #c9a955;border-radius:9px;background:#d8b75e;color:#15120a;font:800 11px Vazirmatn,sans-serif}
 @keyframes exCelebrationIn{to{opacity:1}}
 @keyframes exGlowPulse{0%{opacity:0;transform:scale(.55)}35%{opacity:1;transform:scale(1.15)}100%{opacity:.72;transform:scale(1)}}
@@ -277,6 +277,6 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-celebration-mobile-v2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-cheer-burst-v3"></script>
 
 </body></html>
