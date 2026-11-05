@@ -245,12 +245,23 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   direction:ltr!important;
   letter-spacing:.2px;
 }
-</style></head>
+
+.exercise-list{display:grid;gap:7px}
+.exercise-row{display:flex;align-items:center;gap:9px;min-height:42px;padding:8px 10px;border:1px solid #374151;border-radius:9px;background:linear-gradient(135deg,#18212d,#111722);cursor:pointer;transition:background .2s,border-color .2s,color .2s}
+.exercise-row input{width:18px;height:18px;flex:0 0 18px;accent-color:#22c55e;cursor:pointer}
+.exercise-title{flex:1;min-width:0;font-size:11px;color:#e7edf5;line-height:1.6}
+.exercise-checkmark{font:800 14px Montserrat,sans-serif;color:transparent}
+.exercise-row.completed{border-color:#238653;background:linear-gradient(110deg,#103b2a,#11221d);box-shadow:inset 3px 0 0 #22c55e}
+.exercise-row.completed .exercise-title{color:#86efac;font-weight:800}
+.exercise-row.completed .exercise-checkmark{color:#4ade80}
+.exercise-row:has(input:disabled){opacity:.75}
+.exercise-feedback{min-height:18px;margin-top:8px;color:#86efac;font-size:10px;line-height:1.7}
+\n</style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
-<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>
+<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section>\n<section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-cross-browser-push-v13"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-exercises-v1"></script>
 
 </body></html>
