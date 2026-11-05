@@ -211,12 +211,7 @@
   async function init(){
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
-    const routeCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||params.get('c');
-    const standalone=!!(navigator.standalone||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches));
-    let savedStudentCode="";
-    try{savedStudentCode=standalone?localStorage.getItem("gym20-installed-student-code")||"":"";}catch(_){}
-    const shortCode=routeCode||savedStudentCode;
-    if(routeCode){try{localStorage.setItem("gym20-installed-student-code",routeCode);}catch(_){}}
+    const shortCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||params.get('c');
     viewStorageKey='gym20-session-view-'+(shortCode||'token');
     try{const saved=localStorage.getItem(viewStorageKey);if(['grid','list'].includes(saved))activeView=saved;}catch(_){}
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
