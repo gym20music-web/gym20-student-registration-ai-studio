@@ -326,7 +326,7 @@
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible')refreshPublishedSchedule();
       });
-    }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='اتصال اینترنت را بررسی کنید و دوباره تلاش کنید.';}
+    }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='بارگذاری برنامه ناموفق بود. لطفاً صفحه را دوباره باز کنید؛ اگر مشکل ادامه داشت به مربی اطلاع دهید.';}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
