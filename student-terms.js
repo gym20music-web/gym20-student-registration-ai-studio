@@ -545,7 +545,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];const activeCounts=S.enrollments.filter(e=>e.status==='active').map(e=>Number(e.total_sessions)||0).filter(n=>n>0);if(activeCounts.length)
       $('stSummary').innerHTML='<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
       loadStudentPublicLink();
-      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\\s*/,''))+'</option>').join('');
+      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\s*/,''))+'</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
