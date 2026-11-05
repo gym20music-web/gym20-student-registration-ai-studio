@@ -208,6 +208,21 @@
       status.textContent=friendlyError(error);
     }
   }
+  let terms=[];
+  let activeView="grid";
+  let viewStorageKey="gym20-session-view";
+  function showTerm(id){
+    const t=terms.find(x=>x.id===id)||terms[0];if(!t)return;
+    $('termMeta').textContent='';
+    const sessions=t.sessions||[];
+    if(!sessions.length){$('schedule').innerHTML='<div class="empty">برای این ترم هنوز جلسه منتشرشده‌ای ثبت نشده است.</div>';return;}
+    const done=sessions.filter(s=>['present','absent','excused','makeup','cancelled'].includes(s.attendance)).length;
+    const now=new Date();
+    const hasLiveSession=sessions.some(s=>new Date(s.starts_at)<=now&&now<new Date(s.ends_at));const upcoming=hasLiveSession?null:(sessions.filter(s=>new Date(s.starts_at)>now&&new Date(s.ends_at)>now).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0]||null);
+    $('schedule').innerHTML='<div class="session-list view-list">'+sessions.slice().sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)).map(s=>{const start=new Date(s.starts_at),end=new Date(s.ends_at),mins=Math.max(1,Math.round((end-start)/60000));const a=att[s.attendance||'pending']||att.pending;let timeClass='time-future',timeLabel='جلسه برگزار نشده';if(end<=now){timeClass='time-past';timeLabel='جلسه برگزار شده';}else if(start<=now&&now<end){timeClass='time-live';timeLabel='در حال برگزاری';}else if(upcoming&&s===upcoming){timeClass='time-next';timeLabel='جلسه آینده';}const statusText=timeClass==='time-live'?'در حال برگزاری':((s.attendance||'pending')==='pending'?timeLabel:a[0]);const date=new Date(s.starts_at),weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(date),dateText=latinDigits(faDate(s.starts_at));
+      return '<article class="session-card session-compact-row '+timeClass+'"><div class="session-inline"><span class="session-fact session-number-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">جلسه</i><b class="session-number" style="text-align:center!important">'+num(s.session_number)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">روز</i><b style="text-align:center!important">'+weekday+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">تاریخ</i><b class="session-date" style="text-align:center!important">'+dateText+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">ساعت کلاس</i><b class="session-time" style="text-align:center!important">'+faTime(s.starts_at)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">مربی</i><b style="text-align:center!important">'+esc(s.coach_name||'تعیین نشده')+'</b></span><span class="session-fact session-status-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">وضعیت</i><b class="status '+a[1]+' '+timeClass+'" style="text-align:center!important;justify-content:center!important;margin-inline:auto!important">'+statusText+'</b></span></div></article>';}).join('')+'</div>';
+
+  }
   async function init(){
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
