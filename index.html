@@ -690,6 +690,37 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  #adminModal .admin-workspace .requests-table td{padding:4px 3px!important}
 }
 
+
+/* GYM20 schedule controls: consistent Latin digits and reliable native time picker */
+#adminModal #studentTermsTab .st-session-number{
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-variant-numeric:lining-nums tabular-nums!important;
+  font-feature-settings:"lnum" 1!important;
+  letter-spacing:.2px;
+}
+#adminModal #studentTermsTab .st-session-fields .st-date-input,
+#adminModal #studentTermsTab .st-session-fields .st-time-input{
+  font-family:Montserrat,Arial,sans-serif!important;
+  font-variant-numeric:lining-nums tabular-nums!important;
+  font-feature-settings:"lnum" 1!important;
+  direction:ltr!important;
+  text-align:center!important;
+  letter-spacing:.2px;
+}
+#adminModal #studentTermsTab .st-session-fields .st-time-input{
+  appearance:auto!important;
+  -webkit-appearance:auto!important;
+  color-scheme:dark;
+  pointer-events:auto!important;
+  cursor:pointer!important;
+  touch-action:manipulation;
+}
+#adminModal #studentTermsTab .st-session-fields .st-time-input::-webkit-calendar-picker-indicator{
+  display:block!important;
+  opacity:1!important;
+  cursor:pointer!important;
+  filter:invert(.82) sepia(.35) saturate(1.1);
+}
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -1673,7 +1704,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261106-push-ui-fix-v24')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261106-tehran-timepicker-v25')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261104-student-layout-v12'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
