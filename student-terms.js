@@ -445,11 +445,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
-      '#stPushCard.st-needs-student .st-push-toolbar{display:flex!important;min-height:0;margin:0;padding:0;border:0;background:transparent;box-shadow:none}'+
-      '#stPushCard.st-needs-student #stPushStatusControls{display:flex!important;gap:0!important;flex:none!important}'+
-      '#stPushCard.st-needs-student #stPushSave,#stPushCard.st-needs-student #stPushTestAdmin,#stPushCard.st-needs-student .st-push-dot,#stPushCard.st-needs-student .st-push-heading,#stPushCard.st-needs-student .st-reminder-layout,#stPushCard.st-needs-student #stTemplateModal,#stPushCard.st-needs-student .st-custom-push-row,#stPushCard.st-needs-student #stPushFeedback,#stPushCard.st-needs-student #stPushAdminStatus{display:none!important}'+
-      '#stPushCard.st-needs-student #stPushStudentStatus{display:inline!important;max-width:none!important;font-size:10px!important;color:var(--text-secondary)}'+
-      '#stPushCard.st-needs-student{padding:7px 9px!important}';
+      '#stPushCard.st-needs-student{display:block!important;padding:9px 12px!important;min-height:0!important}'+
+      '#stPushCard.st-needs-student::before{content:"ابتدا هنرجو را انتخاب کنید";display:block!important;text-align:center;color:var(--text-secondary);font-size:12px;font-weight:600;padding:7px 4px}'+
+      '#stPushCard.st-needs-student>*{display:none!important}';
     document.head.appendChild(noStudentPushCss);
 
     bindJalaliDates(p);
