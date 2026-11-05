@@ -227,9 +227,9 @@
     const old=document.getElementById('exerciseCelebration');if(old)old.remove();
     const overlay=document.createElement('div');overlay.id='exerciseCelebration';overlay.className='exercise-celebration';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','آفرین! تمرین انجام شد');
     const colors=['#facc15','#4ade80','#60a5fa','#f472b6','#fb923c','#e9d5ff','#ffffff'];
-    for(let n=0;n<46;n++){
+    for(let n=0;n<64;n++){
       const piece=document.createElement('i');piece.className='exercise-confetti';
-      const angle=(Math.PI*2*n/46)+(Math.random()-.5)*.25,distance=90+Math.random()*190;
+      const angle=(Math.PI*2*n/64)+(Math.random()-.5)*.42,distance=140+Math.random()*Math.max(window.innerWidth,window.innerHeight)*.9;
       piece.style.setProperty('--piece-color',colors[n%colors.length]);piece.style.setProperty('--piece-x',(Math.cos(angle)*distance)+'px');piece.style.setProperty('--piece-y',(Math.sin(angle)*distance)+'px');piece.style.setProperty('--piece-rotate',(Math.random()*1000-500)+'deg');piece.style.setProperty('--piece-duration',(850+Math.random()*650)+'ms');piece.style.setProperty('--piece-delay',(Math.random()*100)+'ms');piece.style.width=(5+Math.random()*6)+'px';piece.style.height=(8+Math.random()*9)+'px';overlay.appendChild(piece);
     }
     const card=document.createElement('div');card.className='exercise-celebration-card';
