@@ -429,7 +429,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
-    const pushCard=document.createElement('section');pushCard.className='st-card';pushCard.id='stPushCard';pushCard.hidden=true;
+    const pushCard=document.createElement('section');pushCard.className='st-card st-needs-student';pushCard.id='stPushCard';pushCard.hidden=false;
     pushCard.innerHTML='<div class="st-push-toolbar"><div class="st-push-status" id="stPushStatusControls"></div><button type="button" class="st-btn" id="stPushTestAdmin">تست اعلان</button></div>'+
       '<div class="st-title st-push-heading">🔔 یادآوری کلاس روی گوشی هنرجو</div>' +
 
@@ -444,6 +444,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><textarea id="stCustomPushText" rows="1" maxlength="1200" placeholder="متن اعلان فوری…"></textarea></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
+    const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
+      '#stPushCard.st-needs-student .st-push-toolbar{display:flex!important;min-height:0;margin:0;padding:0;border:0;background:transparent;box-shadow:none}'+
+      '#stPushCard.st-needs-student #stPushStatusControls{display:flex!important;gap:0!important;flex:none!important}'+
+      '#stPushCard.st-needs-student #stPushSave,#stPushCard.st-needs-student #stPushTestAdmin,#stPushCard.st-needs-student .st-push-dot,#stPushCard.st-needs-student .st-push-heading,#stPushCard.st-needs-student .st-reminder-layout,#stPushCard.st-needs-student #stTemplateModal,#stPushCard.st-needs-student .st-custom-push-row,#stPushCard.st-needs-student #stPushFeedback,#stPushCard.st-needs-student #stPushAdminStatus{display:none!important}'+
+      '#stPushCard.st-needs-student #stPushStudentStatus{display:inline!important;max-width:none!important;font-size:10px!important;color:var(--text-secondary)}'+
+      '#stPushCard.st-needs-student{padding:7px 9px!important}';
+    document.head.appendChild(noStudentPushCss);
 
     bindJalaliDates(p);
     enhanceAllSelects(p);
@@ -553,7 +560,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadStudent(id){
-    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard)reminderCard.hidden=!id;if(!id)return;
+    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard){reminderCard.hidden=false;reminderCard.classList.toggle('st-needs-student',!id);}if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
