@@ -55,114 +55,158 @@
     box.classList.remove("hide");
     button.disabled=true;
     button.textContent="در حال آماده‌سازی اعلان…";
-    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
-      button.disabled=true;
-      status.textContent="این مرورگر از اعلان وب پشتیبانی نمی‌کند. در اندروید از Chrome به‌روز استفاده کن.";
+
+    const ua=navigator.userAgent||"";
+    const isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+    const isStandalone=!!(navigator.standalone||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches));
+    if(isIOS&&!isStandalone){
+      button.hidden=true;
+      status.textContent="برای اعلان در آیفون: این صفحه را در Safari باز کن، دکمه Share را بزن و Add to Home Screen را انتخاب کن؛ سپس برنامه GYM20 را از آیکون صفحه اصلی باز کن و اعلان را فعال کن. (نیازمند iOS 16.4 یا جدیدتر)";
       return;
     }
+    if(!window.isSecureContext){
+      button.disabled=true;
+      status.textContent="اعلان فقط روی اتصال امن HTTPS فعال می‌شود. آدرس gym20.ir را باز کن.";
+      return;
+    }
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
+      button.disabled=true;
+      status.textContent=isIOS
+        ?"برای اعلان آیفون، iOS 16.4 یا جدیدتر و اجرای برنامه از آیکون Add to Home Screen لازم است."
+        :"این مرورگر اعلان وب را پشتیبانی نمی‌کند. صفحه را در نسخه به‌روز Chrome، Firefox، Edge، Safari یا Zen باز کن؛ مرورگرهای داخلی بعضی برنامه‌ها پشتیبانی ندارند.";
+      return;
+    }
+
     const api=client.schema("gym20");
     let registration=null,publicKey="",configReady=false;
     const paint=active=>{
       button.dataset.active=active?"1":"0";
       button.hidden=!!active;
     };
+    const friendlyError=error=>{
+      const name=String(error?.name||"");
+      const raw=String(error?.message||error||"");
+      if(name==="NotAllowedError"||Notification.permission==="denied")
+        return "اجازه اعلان برای gym20.ir مسدود است. از تنظیمات اعلان مرورگر یا گوشی، اجازه Notifications را فعال کن.";
+      if(name==="SecurityError")
+        return "مرورگر اجازه اعلان نمی‌دهد. مطمئن شو سایت با HTTPS باز شده و در حالت خصوصی مرورگر نیستی.";
+      if(name==="InvalidStateError")
+        return "اشتراک قبلی اعلان در مرورگر ناسازگار یا ناقص است. مجوز اعلان سایت را از تنظیمات مرورگر بررسی کن و دوباره تلاش کن.";
+      if(/retriev.*push subscription|push subscription/i.test(raw))
+        return "مرورگر Zen نتوانست اشتراک اعلان ذخیره‌شده را بخواند. مرورگر را به‌روز کن، مجوز اعلان gym20.ir را بررسی کن و دوباره فعال‌سازی را بزن.";
+      if(/network|fetch|load failed|failed to fetch/i.test(raw))
+        return "ارتباط با سرور اعلان برقرار نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.";
+      return "فعال‌سازی اعلان انجام نشد. مرورگر را به‌روز کن و مجوز اعلان سایت gym20.ir را بررسی کن.";
+    };
+    const ensureReady=async()=>{
+      let current=await navigator.serviceWorker.getRegistration("/");
+      if(!current)current=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
+      registration=current;
+      try{await registration.update();}catch(_){}
+      const ready=await navigator.serviceWorker.ready;
+      registration=await navigator.serviceWorker.getRegistration("/")||ready;
+      if(!registration||!registration.pushManager)throw new Error("PushManager unavailable");
+      return registration;
+    };
+    const readSubscription=async()=>{
+      try{return await registration.pushManager.getSubscription();}
+      catch(firstError){
+        // Retry once against the current root-scope service worker. Never unregister
+        // here: doing so can disrupt other tabs and valid subscriptions on this device.
+        try{
+          registration=await navigator.serviceWorker.getRegistration("/")||registration;
+          try{await registration.update();}catch(_){}
+          await navigator.serviceWorker.ready;
+          registration=await navigator.serviceWorker.getRegistration("/")||registration;
+          return await registration.pushManager.getSubscription();
+        }catch(_){throw firstError;}
+      }
+    };
     const saveSubscription=async subscription=>{
       const keys=subscription.toJSON().keys||{};
+      if(!keys.p256dh||!keys.auth)throw new Error("Push subscription keys missing");
       const {error}=await api.rpc("subscribe_student_push",{
         p_code:shortCode,p_endpoint:subscription.endpoint,p_p256dh:keys.p256dh,p_auth:keys.auth,p_user_agent:navigator.userAgent
       });
       if(error)throw error;
     };
-    const ensureReady=async()=>{
-      if(!registration){
-        registration=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
-      }
-      registration=await navigator.serviceWorker.ready;
-      return registration;
-    };
+
     button.addEventListener("click",async()=>{
       if(button.disabled||!configReady)return;
       button.disabled=true;
       try{
-        if(Notification.permission==="denied"){
-          throw new Error("اعلان در تنظیمات گوشی مسدود شده است. از تنظیمات Android > Apps > Chrome > Notifications و سپس تنظیمات Site settings در Chrome، اجازه اعلان gym20.ir را روشن کن.");
-        }
+        if(Notification.permission==="denied")throw new Error("Notification permission denied");
         let permission=Notification.permission;
         if(permission!=="granted")permission=await Notification.requestPermission();
-        if(permission!=="granted")throw new Error("اجازه اعلان داده نشد. مجوز Notifications برای gym20.ir را در تنظیمات Chrome فعال کن.");
+        if(permission!=="granted")throw new Error("Notification permission denied");
         await ensureReady();
-        if(!publicKey)throw new Error("کلید اعلان از سرور دریافت نشد؛ صفحه را تازه‌سازی کن و دوباره تلاش کن.");
-        let subscription=null;
-        try{
-          subscription=await registration.pushManager.getSubscription();
-        }catch(subscriptionError){
-          const message=String(subscriptionError?.message||subscriptionError||"");
-          if(!/retriev|subscription|push/i.test(message))throw subscriptionError;
-          // Recover a corrupted/stale browser-side push registration on this device.
-          try{await registration.unregister();}catch(_){}
-          registration=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
-          registration=await navigator.serviceWorker.ready;
+        if(!publicKey)throw new Error("Push public key unavailable");
+        let subscription=await readSubscription();
+        if(!subscription){
+          subscription=await registration.pushManager.subscribe({
+            userVisibleOnly:true,
+            applicationServerKey:decodePushKey(publicKey)
+          });
         }
-        if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         await saveSubscription(subscription);
         paint(true);
-        status.textContent="اعلان کلاس‌ها برای این گوشی فعال شد ✓";
+        status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
       }catch(error){
-        status.textContent=error.message||"فعال‌سازی اعلان ناموفق بود.";
+        status.textContent=friendlyError(error);
+        paint(false);
       }finally{button.disabled=false;}
     });
+
     try{
       const {data,error}=await api.rpc("get_student_push_public_config");
       if(error)throw error;
       const config=Array.isArray(data)?data[0]:data;
-      if(!config?.enabled||!config?.public_key){box.classList.add("hide");return;}
+      if(!config?.enabled||!config?.public_key){
+        box.classList.add("hide");
+        return;
+      }
       publicKey=config.public_key;
       await ensureReady();
       let existing=null;
-      try{existing=await registration.pushManager.getSubscription();}
-      catch(subscriptionError){
-        const message=String(subscriptionError?.message||subscriptionError||"");
-        if(!/retriev|subscription|push/i.test(message))throw subscriptionError;
-        // Keep the schedule page usable and let the student re-enable notifications.
-        status.textContent="اشتراک اعلان این مرورگر مشکل دارد؛ دکمه فعال‌سازی را بزن تا دوباره تنظیم شود.";
-        paint(false);
+      try{
+        existing=await readSubscription();
+      }catch(subscriptionError){
+        // Do not fail the schedule page because one browser cannot read its local
+        // subscription. Leave a retry action available to the student.
         configReady=true;
+        paint(false);
         button.disabled=false;
-        button.textContent="فعال‌سازی اعلان کلاس‌ها";
+        button.textContent="تلاش دوباره برای فعال‌سازی اعلان";
+        status.textContent=friendlyError(subscriptionError);
         return;
       }
       if(Notification.permission==="granted"&&existing){
-        await saveSubscription(existing);
-        paint(true);
-        status.textContent="اعلان فعال است ✓";
+        try{
+          await saveSubscription(existing);
+          paint(true);
+          status.textContent="اعلان برای این دستگاه فعال است ✓";
+        }catch(saveError){
+          paint(false);
+          status.textContent="اشتراک مرورگر پیدا شد، اما ثبت آن در سرور انجام نشد. دکمه فعال‌سازی را بزن و دوباره تلاش کن.";
+        }
       }else{
         paint(false);
         status.textContent=Notification.permission==="denied"
-          ?"اجازه اعلان در گوشی مسدود است؛ از تنظیمات Android و Chrome آن را فعال کن."
+          ?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن."
           :"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";
       }
       configReady=true;
       button.disabled=false;
       button.textContent="فعال‌سازی اعلان کلاس‌ها";
     }catch(error){
-      button.disabled=true;
-      status.textContent=(error.message||"آماده‌سازی اعلان ناموفق بود.")+" صفحه را تازه‌سازی کن؛ اگر ادامه داشت، مرورگر را به‌روز کن.";
+      // Keep the schedule usable and provide a retry instead of exposing browser
+      // implementation-specific English exceptions.
+      configReady=true;
+      button.disabled=false;
+      paint(false);
+      button.textContent="تلاش دوباره برای فعال‌سازی اعلان";
+      status.textContent=friendlyError(error);
     }
-  }
-  let terms=[];
-  let activeView="grid";
-  let viewStorageKey="gym20-session-view";
-  function showTerm(id){
-    const t=terms.find(x=>x.id===id)||terms[0];if(!t)return;
-    $('termMeta').textContent='';
-    const sessions=t.sessions||[];
-    if(!sessions.length){$('schedule').innerHTML='<div class="empty">برای این ترم هنوز جلسه منتشرشده‌ای ثبت نشده است.</div>';return;}
-    const done=sessions.filter(s=>['present','absent','excused','makeup','cancelled'].includes(s.attendance)).length;
-    const now=new Date();
-    const hasLiveSession=sessions.some(s=>new Date(s.starts_at)<=now&&now<new Date(s.ends_at));const upcoming=hasLiveSession?null:(sessions.filter(s=>new Date(s.starts_at)>now&&new Date(s.ends_at)>now).sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at))[0]||null);
-    $('schedule').innerHTML='<div class="session-list view-list">'+sessions.slice().sort((a,b)=>new Date(a.starts_at)-new Date(b.starts_at)).map(s=>{const start=new Date(s.starts_at),end=new Date(s.ends_at),mins=Math.max(1,Math.round((end-start)/60000));const a=att[s.attendance||'pending']||att.pending;let timeClass='time-future',timeLabel='جلسه برگزار نشده';if(end<=now){timeClass='time-past';timeLabel='جلسه برگزار شده';}else if(start<=now&&now<end){timeClass='time-live';timeLabel='در حال برگزاری';}else if(upcoming&&s===upcoming){timeClass='time-next';timeLabel='جلسه آینده';}const statusText=timeClass==='time-live'?'در حال برگزاری':((s.attendance||'pending')==='pending'?timeLabel:a[0]);const date=new Date(s.starts_at),weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(date),dateText=latinDigits(faDate(s.starts_at));
-      return '<article class="session-card session-compact-row '+timeClass+'"><div class="session-inline"><span class="session-fact session-number-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">جلسه</i><b class="session-number" style="text-align:center!important">'+num(s.session_number)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">روز</i><b style="text-align:center!important">'+weekday+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">تاریخ</i><b class="session-date" style="text-align:center!important">'+dateText+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">ساعت کلاس</i><b class="session-time" style="text-align:center!important">'+faTime(s.starts_at)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">مربی</i><b style="text-align:center!important">'+esc(s.coach_name||'تعیین نشده')+'</b></span><span class="session-fact session-status-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">وضعیت</i><b class="status '+a[1]+' '+timeClass+'" style="text-align:center!important;justify-content:center!important;margin-inline:auto!important">'+statusText+'</b></span></div></article>';}).join('')+'</div>';
-
   }
   async function init(){
     const params=new URLSearchParams(location.search);
