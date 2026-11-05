@@ -148,6 +148,18 @@
         #studentTermsTab .st-calendar-btn{flex-basis:18px!important;width:18px!important}
       }`;
     document.head.appendChild(termCss);
+    const termPolishCss=document.createElement('style');
+    termPolishCss.id='studentTermsPolishCss';
+    termPolishCss.textContent=`
+      /* Keep Persian dates compact but readable. */
+      #studentTermsTab .st-term-grid input[data-jalali-date]{font-size:9px!important;letter-spacing:-.15px}
+      /* Show month/year cleanly in the term picker; the stored term name is unchanged. */
+      #studentTermsTab .st-term-picker-field .st-custom-select-trigger{font-weight:700;letter-spacing:0}
+      #studentTermsTab .st-term-picker-field .st-custom-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+      @media(max-width:720px){
+        #studentTermsTab .st-term-grid input[data-jalali-date]{font-size:8px!important;letter-spacing:-.2px}
+      }`;
+    document.head.appendChild(termPolishCss);
 
     const css=document.createElement('style');css.id='studentTermsCss';
     css.textContent='#studentTermsTab{color:var(--text-primary)}.st-card{background:var(--surface-card);border:1px solid var(--border);border-radius:11px;padding:11px;margin:10px 0}.st-title{font-size:.88rem;font-weight:850;color:#d6b35a;margin-bottom:8px}.st-muted{font-size:.7rem;color:var(--text-secondary);line-height:1.8}.st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.st-field{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}.st-field label{font-size:.7rem;color:var(--text-secondary);font-weight:700}.st-field input,.st-field select{width:100%;min-width:0;height:34px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:7px;padding:5px 7px;font-size:.72rem}.st-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}.st-btn{border:1px solid rgba(214,179,90,.35);border-radius:7px;background:rgba(214,179,90,.12);color:var(--text-primary);padding:6px 9px;font-size:.66rem;font-weight:800;cursor:pointer}.st-btn.primary{background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a}.st-btn.danger{border-color:#ef4444;color:#fb7185}.st-checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}.st-check{display:flex;align-items:center;gap:6px;padding:6px 7px;border:1px solid var(--border);border-radius:7px;background:var(--surface);font-size:.66rem;line-height:1.5;min-width:0}.st-check input{accent-color:#d6b35a}.st-table-wrap{overflow:auto}.st-table{width:100%;border-collapse:collapse;font-size:.7rem;min-width:600px}.st-table th,.st-table td{padding:8px;border-bottom:1px solid var(--border);text-align:right}.st-table th{color:#d6b35a;background:rgba(214,179,90,.07)}.st-table select,.st-table input{max-width:150px;background:var(--surface);color:var(--text-primary);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:.68rem}.st-table small{display:block;color:var(--text-secondary);font-size:.6rem}.st-version{padding:7px;border:1px solid var(--border);border-radius:8px;margin:5px 0;font-size:.7rem}.st-hide{display:none!important}.st-short-url{direction:ltr;text-align:left;word-break:break-all;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:4px 6px;margin:3px 0;font-size:8px!important;line-height:1.35;color:#e7c875}.st-public-link{margin-top:2px}.st-public-link .st-actions{gap:4px;margin-top:3px}.st-public-link .st-btn{min-height:25px;padding:3px 6px;font-size:8px!important}.st-public-link .st-muted{font-size:8px!important;line-height:1.35}@media(max-width:650px){.st-grid,.st-checks{grid-template-columns:repeat(2,minmax(0,1fr))}.st-card{padding:8px}}@media(max-width:390px){.st-grid,.st-checks{grid-template-columns:1fr}}';
@@ -533,7 +545,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];const activeCounts=S.enrollments.filter(e=>e.status==='active').map(e=>Number(e.total_sessions)||0).filter(n=>n>0);if(activeCounts.length)
       $('stSummary').innerHTML='<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
       loadStudentPublicLink();
-      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(t.term_name)+'</option>').join('');
+      $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\\s*/,''))+'</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
