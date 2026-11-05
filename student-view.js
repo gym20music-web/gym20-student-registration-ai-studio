@@ -223,6 +223,48 @@
       return '<article class="session-card session-compact-row '+timeClass+'"><div class="session-inline"><span class="session-fact session-number-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">جلسه</i><b class="session-number" style="text-align:center!important">'+num(s.session_number)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">روز</i><b style="text-align:center!important">'+weekday+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">تاریخ</i><b class="session-date" style="text-align:center!important">'+dateText+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">ساعت کلاس</i><b class="session-time" style="text-align:center!important">'+faTime(s.starts_at)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">مربی</i><b style="text-align:center!important">'+esc(s.coach_name||'تعیین نشده')+'</b></span><span class="session-fact session-status-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">وضعیت</i><b class="status '+a[1]+' '+timeClass+'" style="text-align:center!important;justify-content:center!important;margin-inline:auto!important">'+statusText+'</b></span></div></article>';}).join('')+'</div>';
 
   }
+  async function loadStudentExercises(shortCode,client){
+    const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
+    if(!panel||!list)return;
+    panel.classList.remove('hide');
+    try{
+      const {data,error}=await client.schema('gym20').rpc('get_student_exercises_by_code',{p_code:shortCode});
+      if(error)throw error;
+      const items=Array.isArray(data)?data:[];
+      if(!items.length){panel.classList.add('hide');return;}
+      list.innerHTML=items.map(item=>{
+        const done=!!item.is_completed;
+        return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
+      }).join('');
+      panel.classList.remove('hide');
+      if(!list.dataset.bound){
+        list.dataset.bound='1';
+        list.addEventListener('change',async e=>{
+          const input=e.target.closest('input[data-exercise-id]');if(!input)return;
+          const row=input.closest('[data-exercise-row]'),id=input.dataset.exerciseId,completed=input.checked;
+          input.disabled=true;row.classList.toggle('completed',completed);
+          const mark=row.querySelector('.exercise-checkmark');if(mark)mark.textContent=completed?'✓':'';
+          feedback.textContent=completed?'در حال ثبت انجام تمرین…':'در حال به‌روزرسانی…';
+          try{
+            const {data,error}=await client.schema('gym20').rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed});
+            if(error)throw error;
+            if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
+            feedback.textContent=completed?'آفرین! عالی پیش رفتی 💪 همین‌طور ادامه بده!':'وضعیت تمرین به‌روزرسانی شد.';
+          }catch(err){
+            input.checked=!completed;row.classList.toggle('completed',!completed);
+            if(mark)mark.textContent=!completed?'✓':'';
+            feedback.textContent='ثبت تغییر انجام نشد؛ دوباره تلاش کن.';
+            console.warn('GYM20 exercise update failed:',err);
+          }finally{input.disabled=false;}
+        });
+      }
+    }catch(err){
+      panel.classList.remove('hide');
+      list.innerHTML='<div class="empty">بارگذاری تمرین‌ها انجام نشد.</div>';
+      feedback.textContent='اتصال برای دریافت تمرین‌ها برقرار نشد.';
+      console.warn('GYM20 exercise load failed:',err);
+    }
+  }
   async function init(){
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
@@ -242,7 +284,7 @@
       };
       const data=await getSchedule();
       $('studentName').textContent='هنرجو: '+data.student.full_name;
-      if(shortCode)setupPush(shortCode,client);
+      if(shortCode){setupPush(shortCode,client);loadStudentExercises(shortCode,client);}
       terms=Array.isArray(data.terms)?data.terms:[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
