@@ -223,6 +223,22 @@
       return '<article class="session-card session-compact-row '+timeClass+'"><div class="session-inline"><span class="session-fact session-number-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">جلسه</i><b class="session-number" style="text-align:center!important">'+num(s.session_number)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">روز</i><b style="text-align:center!important">'+weekday+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">تاریخ</i><b class="session-date" style="text-align:center!important">'+dateText+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">ساعت کلاس</i><b class="session-time" style="text-align:center!important">'+faTime(s.starts_at)+'</b></span><span class="session-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">مربی</i><b style="text-align:center!important">'+esc(s.coach_name||'تعیین نشده')+'</b></span><span class="session-fact session-status-fact" style="align-items:center!important;text-align:center!important"><i style="text-align:center!important">وضعیت</i><b class="status '+a[1]+' '+timeClass+'" style="text-align:center!important;justify-content:center!important;margin-inline:auto!important">'+statusText+'</b></span></div></article>';}).join('')+'</div>';
 
   }
+  function celebrateExercise(title){
+    const old=document.getElementById('exerciseCelebration');if(old)old.remove();
+    const overlay=document.createElement('div');overlay.id='exerciseCelebration';overlay.className='exercise-celebration';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','آفرین! تمرین انجام شد');
+    const colors=['#facc15','#4ade80','#60a5fa','#f472b6','#fb923c','#e9d5ff','#ffffff'];
+    for(let n=0;n<46;n++){
+      const piece=document.createElement('i');piece.className='exercise-confetti';
+      const angle=(Math.PI*2*n/46)+(Math.random()-.5)*.25,distance=90+Math.random()*190;
+      piece.style.setProperty('--piece-color',colors[n%colors.length]);piece.style.setProperty('--piece-x',(Math.cos(angle)*distance)+'px');piece.style.setProperty('--piece-y',(Math.sin(angle)*distance)+'px');piece.style.setProperty('--piece-rotate',(Math.random()*1000-500)+'deg');piece.style.setProperty('--piece-duration',(850+Math.random()*650)+'ms');piece.style.setProperty('--piece-delay',(Math.random()*100)+'ms');piece.style.width=(5+Math.random()*6)+'px';piece.style.height=(8+Math.random()*9)+'px';overlay.appendChild(piece);
+    }
+    const card=document.createElement('div');card.className='exercise-celebration-card';
+    const icon=document.createElement('div');icon.className='exercise-celebration-icon';icon.textContent='🏆✨';
+    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='آفرین قهرمان!';
+    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='تمرین «'+title+'» با موفقیت انجام شد! همین قدرت و استمرار رو حفظ کن 💪🔥';
+    const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه می‌دم!';close.addEventListener('click',()=>overlay.remove());
+    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},3200);
+  }
   async function loadStudentExercises(shortCode,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
     if(!panel||!list)return;
@@ -249,7 +265,7 @@
             const {data,error}=await client.schema('gym20').rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed});
             if(error)throw error;
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
-            feedback.textContent=completed?'آفرین! عالی پیش رفتی 💪 همین‌طور ادامه بده!':'وضعیت تمرین به‌روزرسانی شد.';
+            feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
             if(mark)mark.textContent=!completed?'✓':'';
