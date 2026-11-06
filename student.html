@@ -257,27 +257,35 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-row:has(input:disabled){opacity:.75}
 .exercise-feedback{min-height:18px;margin-top:8px;color:#86efac;font-size:10px;line-height:1.7}
 
-.exercise-celebration{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:22px;background:rgba(3,8,14,.84);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);opacity:0;animation:exCelebrationIn .22s ease-out forwards;overflow:hidden}
-.exercise-celebration::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 50% 48%,rgba(250,220,120,.62),rgba(34,197,94,.24) 34%,rgba(56,189,248,.13) 52%,transparent 76%);animation:exGlowPulse 1.25s ease-out both}
-.exercise-celebration-card{position:relative;z-index:2;width:min(100%,330px);padding:24px 18px;text-align:center;border:1px solid rgba(250,220,120,.75);border-radius:18px;background:linear-gradient(145deg,#1d2b25,#111923 78%);box-shadow:0 0 24px rgba(250,220,120,.35),0 0 70px rgba(34,197,94,.18);animation:exCardPop .48s cubic-bezier(.2,1.4,.4,1) both}
-.exercise-celebration-icon{font-size:42px;line-height:1.3;filter:drop-shadow(0 0 12px rgba(250,220,120,.75))}
-.exercise-celebration-title{margin-top:7px;color:#fde68a;font-size:19px;font-weight:900;text-shadow:0 0 16px rgba(250,220,120,.5)}
-.exercise-celebration-text{margin-top:8px;color:#bbf7d0;font-size:12px;line-height:1.9}
-.exercise-confetti{position:absolute;z-index:5;top:50%;left:50%;width:var(--confetti-width,8px);height:var(--confetti-height,12px);border-radius:1px;background:var(--confetti-color,#facc15);opacity:0;pointer-events:none;will-change:transform,opacity;animation:exConfettiBurst var(--burst-duration,4s) cubic-bezier(.12,.68,.22,1) var(--burst-delay,0s) forwards}
-.exercise-confetti.confetti-dot{width:7px;height:7px;border-radius:50%}
-.exercise-confetti.confetti-star{width:auto;height:auto;background:transparent;color:var(--confetti-color);font-size:18px;line-height:1}
-@keyframes exConfettiBurst{0%{opacity:0;transform:translate3d(0,0,0) rotate(0) scale(.25)}8%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}42%{opacity:1;transform:translate3d(var(--burst-x),var(--burst-y),0) rotate(calc(var(--burst-rotate)*.45)) scale(1)}100%{opacity:0;transform:translate3d(var(--burst-end-x),var(--burst-end-y),0) rotate(var(--burst-rotate)) scale(.7)}}
-@keyframes exCelebrationIn{to{opacity:1}}
-@keyframes exGlowPulse{0%{opacity:.25;transform:scale(.7)}45%{opacity:1;transform:scale(1.08)}100%{opacity:.65;transform:scale(1)}}
-@keyframes exCardPop{0%{opacity:0;transform:translateY(18px) scale(.72)}70%{opacity:1;transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.exercise-celebration{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;overflow:hidden;background:radial-gradient(ellipse at 50% 45%,rgba(21,38,32,.82),rgba(3,7,12,.94) 62%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);opacity:0;animation:exOverlayIn .38s ease-out forwards}
+.exercise-celebration::before{content:"";position:absolute;width:min(90vw,680px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(246,215,122,.18),rgba(180,146,66,.07) 32%,transparent 68%);animation:exAura 2.4s ease-out both;pointer-events:none}
+.exercise-celebration.is-closing{animation:exOverlayOut .18s ease-in forwards}
+.exercise-celebration-card{position:relative;z-index:2;width:min(100%,360px);padding:26px 22px 22px;text-align:center;border:1px solid rgba(246,215,122,.48);border-radius:22px;background:linear-gradient(155deg,rgba(28,36,39,.98),rgba(11,17,23,.98) 72%);box-shadow:0 24px 90px #0009,0 0 0 5px rgba(246,215,122,.035),0 0 48px rgba(246,215,122,.12);animation:exCardIn .68s cubic-bezier(.16,1,.3,1) both}
+.exercise-celebration-card::before{content:"";position:absolute;inset:1px;border-radius:21px;background:linear-gradient(135deg,rgba(246,215,122,.08),transparent 38%,rgba(116,190,145,.05));pointer-events:none}
+.exercise-celebration-brand{position:relative;display:flex;justify-content:center;align-items:center;gap:7px;color:#f6d77a;font:800 13px Montserrat,Arial,sans-serif;letter-spacing:2px}
+.exercise-celebration-brand span{display:grid;place-items:center;width:39px;height:39px;border:1px solid #d9b75f;border-radius:12px;background:linear-gradient(145deg,#2b2b22,#111820);box-shadow:0 0 22px #d9b75f24}
+.exercise-celebration-brand i{position:absolute;top:0;right:calc(50% - 36px);width:6px;height:6px;border-radius:50%;background:#9be2b5;box-shadow:0 0 12px #9be2b5}
+.exercise-celebration-kicker{margin-top:15px;color:#a6b0b9;font:700 8px Montserrat,Arial,sans-serif;letter-spacing:2.2px}
+.exercise-celebration-title{margin-top:8px;color:#f8e5a8;font-size:17px;font-weight:900;line-height:1.8}
+.exercise-celebration-exercise{display:inline-block;max-width:100%;margin-top:10px;padding:7px 13px;border:1px solid #b89a4a55;border-radius:9px;background:#d6b45a12;color:#f6d77a;font-size:12px;font-weight:800;line-height:1.7;overflow-wrap:anywhere}
+.exercise-celebration-text{margin:12px 0 18px;color:#aebbc5;font-size:10px;line-height:2}
+.exercise-celebration-close{position:relative;width:100%;min-height:42px;border:1px solid #d7b45a;border-radius:10px;background:linear-gradient(110deg,#f3d783,#c29a43);color:#17150e;font:800 11px Vazirmatn,Arial,sans-serif;cursor:pointer;box-shadow:0 5px 18px #c49a4320;transition:transform .18s ease,filter .18s ease}
+.exercise-celebration-close:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.exercise-celebration-close:focus-visible{outline:2px solid #fff0bd;outline-offset:3px}
+.exercise-confetti{position:absolute;z-index:1;left:50%;top:50%;width:var(--particle-size,5px);height:calc(var(--particle-size,5px)*1.8);border-radius:2px;background:var(--particle-color,#f6d77a);opacity:0;pointer-events:none;will-change:transform,opacity;animation:exParticleFly var(--particle-duration,3s) cubic-bezier(.12,.7,.22,1) var(--particle-delay,0s) forwards}
+.exercise-confetti.confetti-dot{width:calc(var(--particle-size,5px)*1.25);height:calc(var(--particle-size,5px)*1.25);border-radius:50%}
+@keyframes exParticleFly{0%{opacity:0;transform:translate3d(0,0,0) scale(.25) rotate(0)}9%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0)}38%{opacity:1;transform:translate3d(var(--particle-x),var(--particle-y),0) scale(1) rotate(calc(var(--particle-rotate)*.45))}100%{opacity:0;transform:translate3d(calc(var(--particle-x)*1.35),var(--particle-fall),0) scale(.35) rotate(var(--particle-rotate))}}
+@keyframes exOverlayIn{to{opacity:1}}
+@keyframes exOverlayOut{to{opacity:0;visibility:hidden}}
+@keyframes exAura{0%{opacity:0;transform:scale(.6)}35%{opacity:1;transform:scale(1.1)}100%{opacity:.35;transform:scale(1.35)}}
+@keyframes exCardIn{0%{opacity:0;transform:translateY(24px) scale(.9);filter:blur(5px)}70%{opacity:1;transform:translateY(-3px) scale(1.015);filter:blur(0)}100%{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}}
 @media(prefers-reduced-motion:reduce){.exercise-celebration,.exercise-celebration::before,.exercise-celebration-card,.exercise-confetti{animation:none!important}.exercise-celebration{opacity:1}.exercise-confetti{display:none}}
-
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-google-confetti-fix3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-achievement-token-v1"></script>
 
 </body></html>
