@@ -263,12 +263,10 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-celebration-icon{font-size:42px;line-height:1.3;filter:drop-shadow(0 0 12px rgba(250,220,120,.75))}
 .exercise-celebration-title{margin-top:7px;color:#fde68a;font-size:19px;font-weight:900;text-shadow:0 0 16px rgba(250,220,120,.5)}
 .exercise-celebration-text{margin-top:8px;color:#bbf7d0;font-size:12px;line-height:1.9}
-.exercise-confetti{position:absolute;z-index:5;top:-8vh;left:0;font-family:"Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:var(--emoji-size,28px);line-height:1;opacity:0;pointer-events:none;will-change:transform;animation:exEmojiRain var(--fall-duration,5s) linear var(--fall-delay,0s) forwards}
-.exercise-celebration-close{position:relative;z-index:3;margin-top:16px;min-height:36px;padding:7px 22px;border:1px solid #c9a955;border-radius:9px;background:#d8b75e;color:#15120a;font:800 11px Vazirmatn,sans-serif}
-@keyframes exCelebrationIn{to{opacity:1}}
-@keyframes exGlowPulse{0%{opacity:0;transform:scale(.55)}35%{opacity:1;transform:scale(1.15)}100%{opacity:.72;transform:scale(1)}}
-@keyframes exCardPop{0%{opacity:0;transform:scale(.55) translateY(18px)}70%{transform:scale(1.06)}100%{opacity:1;transform:scale(1)}}
-@keyframes exEmojiRain{0%{opacity:0;transform:translate3d(0,-4vh,0) rotate(-8deg)}8%{opacity:1}45%{transform:translate3d(calc(var(--fall-drift)*.35),50vh,0) rotate(calc(var(--fall-rotate)*.45))}85%{opacity:1}100%{opacity:0;transform:translate3d(var(--fall-drift),112vh,0) rotate(var(--fall-rotate))}}
+.exercise-confetti{position:absolute;z-index:5;top:50%;left:50%;width:var(--confetti-width,8px);height:var(--confetti-height,12px);border-radius:1px;background:var(--confetti-color,#facc15);opacity:0;pointer-events:none;will-change:transform,opacity;animation:exConfettiBurst var(--burst-duration,4s) cubic-bezier(.12,.68,.22,1) var(--burst-delay,0s) forwards}
+.exercise-confetti.confetti-dot{width:7px;height:7px;border-radius:50%}
+.exercise-confetti.confetti-star{width:auto;height:auto;background:transparent;color:var(--confetti-color);font-size:18px;line-height:1}
+@keyframes exConfettiBurst{0%{opacity:0;transform:translate3d(0,0,0) rotate(0) scale(.25)}8%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}42%{opacity:1;transform:translate3d(var(--burst-x),var(--burst-y),0) rotate(calc(var(--burst-rotate)*.45)) scale(1)}100%{opacity:0;transform:translate3d(var(--burst-end-x),var(--burst-end-y),0) rotate(var(--burst-rotate)) scale(.7)}}
 @media(prefers-reduced-motion:reduce){.exercise-celebration,.exercise-celebration::before,.exercise-celebration-card,.exercise-confetti{animation:none!important}.exercise-celebration{opacity:1}.exercise-confetti{display:none}}
 
 </style></head>
@@ -277,6 +275,6 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-emoji-rain-v6"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-google-confetti-v1"></script>
 
 </body></html>
