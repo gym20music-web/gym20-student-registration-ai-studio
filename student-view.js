@@ -224,43 +224,55 @@
 
   }
   function celebrateExercise(title){
-    const old=document.getElementById('exerciseCelebration');if(old)old.remove();
-    const overlay=document.createElement('div');overlay.id='exerciseCelebration';overlay.className='exercise-celebration';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','آفرین! تمرین انجام شد');
-    // Google New Year's Eve-inspired confetti burst: particles explode outward, then drift down.
-    const count=Math.min(150,Math.max(95,Math.round(window.innerWidth*window.innerHeight/7500)));
-    const colors=['#facc15','#fb7185','#38bdf8','#a78bfa','#4ade80','#f97316','#f9a8d4','#ffffff'];
+    document.getElementById('exerciseCelebration')?.remove();
+    const overlay=document.createElement('div');
+    overlay.id='exerciseCelebration';overlay.className='exercise-celebration';
+    overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
+    overlay.setAttribute('aria-label','تمرین با موفقیت انجام شد');
+    const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const count=reducedMotion?0:Math.min(92,Math.max(56,Math.round(window.innerWidth*window.innerHeight/13500)));
+    const colors=['#f6d77a','#fff0bd','#d7b45a','#b8e7cb','#ffffff'];
     for(let n=0;n<count;n++){
-      const piece=document.createElement('span');piece.className='exercise-confetti';
-      const shape=Math.random();
-      if(shape>.88){piece.classList.add('confetti-dot');}
-      else if(shape>.72){piece.classList.add('confetti-star');piece.textContent='✦';}
-      piece.style.left=(42+Math.random()*16)+'%';
-      piece.style.top=(38+Math.random()*28)+'%';
-      piece.style.setProperty('--confetti-color',colors[Math.floor(Math.random()*colors.length)]);
-      piece.style.setProperty('--burst-x',(Math.random()*120-60)+'vw');
-      piece.style.setProperty('--burst-y',(-20-Math.random()*65)+'vh');
-      piece.style.setProperty('--burst-end-x',(Math.random()*150-75)+'vw');
-      piece.style.setProperty('--burst-end-y',(70+Math.random()*65)+'vh');
-      piece.style.setProperty('--burst-rotate',(Math.random()*1440-720)+'deg');
-      piece.style.setProperty('--burst-duration',(3200+Math.random()*1700)+'ms');
-      piece.style.setProperty('--burst-delay',(Math.random()*380)+'ms');
-      piece.style.setProperty('--confetti-width',(5+Math.random()*7)+'px');
-      piece.style.setProperty('--confetti-height',(8+Math.random()*11)+'px');
-      overlay.appendChild(piece);
+      const particle=document.createElement('i');particle.className='exercise-confetti';
+      if(Math.random()>.78)particle.classList.add('confetti-dot');
+      particle.style.left=(48+Math.random()*4)+'%';
+      particle.style.top=(46+Math.random()*8)+'%';
+      particle.style.setProperty('--particle-color',colors[Math.floor(Math.random()*colors.length)]);
+      particle.style.setProperty('--particle-x',(Math.random()*92-46)+'vw');
+      particle.style.setProperty('--particle-y',(-16-Math.random()*45)+'vh');
+      particle.style.setProperty('--particle-fall',(42+Math.random()*58)+'vh');
+      particle.style.setProperty('--particle-rotate',(Math.random()*900-450)+'deg');
+      particle.style.setProperty('--particle-delay',(Math.random()*180)+'ms');
+      particle.style.setProperty('--particle-duration',(2600+Math.random()*1100)+'ms');
+      particle.style.setProperty('--particle-size',(3+Math.random()*5)+'px');
+      overlay.appendChild(particle);
     }
     const card=document.createElement('div');card.className='exercise-celebration-card';
-    const icon=document.createElement('div');icon.className='exercise-celebration-icon';icon.textContent='🎉';
-    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='آفرین قهرمان!';
-    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='تمرین «'+title+'» با موفقیت انجام شد! همین قدرت و استمرار رو حفظ کن 💪🔥';
-    const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه می‌دم!';close.addEventListener('click',()=>overlay.remove());
-    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},6500);
+    const brand=document.createElement('div');brand.className='exercise-celebration-brand';brand.innerHTML='<span>G20</span><i></i>';
+    const kicker=document.createElement('div');kicker.className='exercise-celebration-kicker';kicker.textContent='ACHIEVEMENT UNLOCKED';
+    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='تمرین با موفقیت ثبت شد';
+    const exercise=document.createElement('div');exercise.className='exercise-celebration-exercise';exercise.textContent=title;
+    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='هر تکرار، یک قدم به قدرت بیشتر نزدیک‌ترت می‌کند.';
+    const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه مسیر  ↗';
+    const closeCelebration=()=>{overlay.classList.add('is-closing');window.setTimeout(()=>overlay.remove(),180);};
+    close.addEventListener('click',closeCelebration);
+    card.append(brand,kicker,heading,exercise,message,close);overlay.appendChild(card);
+    overlay.addEventListener('click',e=>{if(e.target===overlay)closeCelebration();});
+    const onKey=e=>{if(e.key==='Escape'){closeCelebration();document.removeEventListener('keydown',onKey);}};
+    document.addEventListener('keydown',onKey);
+    document.body.appendChild(overlay);
+    close.focus({preventScroll:true});
+    window.setTimeout(()=>{if(overlay.isConnected){overlay.remove();document.removeEventListener('keydown',onKey);}},5800);
   }
-  async function loadStudentExercises(shortCode,client){
+  async function loadStudentExercises(shortCode,token,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
     if(!panel||!list)return;
     panel.classList.remove('hide');
     try{
-      const {data,error}=await client.schema('gym20').rpc('get_student_exercises_by_code',{p_code:shortCode});
+      const exerciseResult=shortCode
+        ?await client.schema('gym20').rpc('get_student_exercises_by_code',{p_code:shortCode})
+        :await client.schema('gym20').rpc('get_student_exercises_by_token',{p_token:token});
+      const {data,error}=exerciseResult;
       if(error)throw error;
       const items=Array.isArray(data)?data:[];
       if(!items.length){panel.classList.add('hide');return;}
@@ -278,7 +290,10 @@
           const mark=row.querySelector('.exercise-checkmark');if(mark)mark.textContent=completed?'✓':'';
           feedback.textContent=completed?'در حال ثبت انجام تمرین…':'در حال به‌روزرسانی…';
           try{
-            const {data,error}=await client.schema('gym20').rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed});
+            const updateResult=shortCode
+              ?await client.schema('gym20').rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed})
+              :await client.schema('gym20').rpc('set_student_exercise_completion_by_token',{p_token:token,p_exercise_id:id,p_completed:completed});
+            const {data,error}=updateResult;
             if(error)throw error;
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
             feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
@@ -316,7 +331,7 @@
       };
       const data=await getSchedule();
       $('studentName').textContent='هنرجو: '+data.student.full_name;
-      if(shortCode){setupPush(shortCode,client);loadStudentExercises(shortCode,client);}
+      if(shortCode)setupPush(shortCode,client);loadStudentExercises(shortCode,token,client);
       terms=Array.isArray(data.terms)?data.terms:[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
       $('termPanel').classList.remove('hide');
