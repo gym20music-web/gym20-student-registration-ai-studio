@@ -270,7 +270,9 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .achievement-medal-face,.achievement-medal-back{position:absolute;inset:0;display:grid;place-items:center;border-radius:50%;backface-visibility:hidden;border:2px solid #f7df9b;background:radial-gradient(circle at 32% 24%,#fff3c9 0,#dcb85c 12%,#8b6426 33%,#241d11 57%,#cba64d 75%,#f6e4ad 100%);box-shadow:inset 0 0 0 5px #3a2d16,inset 0 0 0 7px #e5c46e,0 15px 24px #000a,0 0 32px #d7b45a40;transform:translateZ(8px)}
 .achievement-medal-face::before{content:"";position:absolute;inset:12px;border:1px solid #f8e6ae;border-radius:50%;box-shadow:inset 0 0 10px #f8e6ae55}
 .achievement-medal-back{transform:rotateY(180deg) translateZ(8px);background:radial-gradient(circle,#d8b25a,#302414 65%,#e7c66d)}
-.achievement-g20{position:relative;color:#fff1c0;font:900 24px Montserrat,Arial,sans-serif;letter-spacing:-2px;text-shadow:0 2px 0 #6b4b1b,0 5px 12px #0009;transform:translateY(-3px)}
+.achievement-cup{position:relative;display:grid;place-items:center;width:100%;height:100%;filter:drop-shadow(0 5px 7px #0008)}
+.achievement-cup svg{width:88px;height:88px;overflow:visible;filter:drop-shadow(0 0 9px #f6d77a35)}
+.achievement-cup-word{position:absolute;bottom:15px;font:900 11px Montserrat,Arial,sans-serif;letter-spacing:1.2px;color:#fff0bd;text-shadow:0 2px 3px #4b3212,0 0 9px #fff0b855}
 .achievement-g20 span{font-size:20px;color:#f3d67e}
 .achievement-star{position:absolute;bottom:20px;color:#fff0b8;font-size:15px;text-shadow:0 0 10px #fff1b8}
 .achievement-beams{position:absolute;z-index:0;top:6%;left:50%;width:min(90vw,500px);height:260px;transform:translateX(-50%);pointer-events:none;background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg 13deg,rgba(246,215,122,.045) 14deg 15deg,transparent 16deg 30deg);mask-image:radial-gradient(ellipse,black,transparent 70%);animation:achievementBeamSpin 30s linear infinite}
@@ -283,9 +285,11 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-celebration-close{position:relative;width:100%;min-height:42px;border:1px solid #d7b45a;border-radius:10px;background:linear-gradient(110deg,#f3d783,#c29a43);color:#17150e;font:800 11px Vazirmatn,Arial,sans-serif;cursor:pointer;box-shadow:0 6px 22px #c49a4325,inset 0 1px 0 #fff8d4;transition:transform .18s ease,filter .18s ease}
 .exercise-celebration-close:hover{filter:brightness(1.07);transform:translateY(-1px)}
 .exercise-celebration-close:focus-visible{outline:2px solid #fff0bd;outline-offset:3px}
-.achievement-particle{position:absolute;z-index:2;left:50%;top:43%;width:4px;height:8px;border-radius:2px;background:var(--p-color);box-shadow:0 0 9px color-mix(in srgb,var(--p-color),transparent 35%);opacity:0;pointer-events:none;animation:achievementParticle 2.8s cubic-bezier(.15,.7,.25,1) var(--p-delay) both}
+.achievement-particle{position:absolute;z-index:2;left:50%;top:43%;width:var(--p-size,6px);height:calc(var(--p-size,6px)*1.6);border-radius:1px;background:var(--p-color);box-shadow:0 0 8px color-mix(in srgb,var(--p-color),transparent 38%);opacity:0;pointer-events:none;animation:achievementParticle var(--p-duration,3.2s) cubic-bezier(.15,.7,.25,1) var(--p-delay) both}
+.achievement-particle.achievement-paper{border-radius:1px;transform-origin:center;backface-visibility:hidden}
+.achievement-particle.achievement-glitter{width:calc(var(--p-size,6px)*.7);height:calc(var(--p-size,6px)*.7);border-radius:50%;box-shadow:0 0 13px var(--p-color),0 0 25px #f6d77a55}
 .achievement-particle:nth-child(3n){width:3px;height:3px;border-radius:50%}
-@keyframes achievementParticle{0%{opacity:0;transform:translate3d(0,0,0) scale(.2) rotate(0)}12%{opacity:.95;transform:translate3d(0,0,0) scale(1) rotate(0)}100%{opacity:0;transform:translate3d(var(--p-x),var(--p-y),0) scale(.35) rotate(var(--p-r))}}
+@keyframes achievementParticle{0%{opacity:0;transform:translate3d(0,0,0) scale(.2) rotate(0)}8%{opacity:1;transform:translate3d(0,0,0) scale(1) rotate(0)}28%{opacity:1;transform:translate3d(calc(var(--p-x)*.24),calc(var(--p-y)*.22),0) scale(1.05) rotate(calc(var(--p-r)*.25))}100%{opacity:0;transform:translate3d(var(--p-x),calc(var(--p-y)*-1.05),0) scale(.65) rotate(var(--p-r))}12%{opacity:.95;transform:translate3d(0,0,0) scale(1) rotate(0)}100%{opacity:0;transform:translate3d(var(--p-x),var(--p-y),0) scale(.35) rotate(var(--p-r))}}
 @keyframes achievementStageIn{0%{opacity:0;transform:translateY(22px) scale(.7) rotateX(18deg)}65%{opacity:1;transform:translateY(-4px) scale(1.04) rotateX(-3deg)}100%{opacity:1;transform:translateY(0) scale(1) rotateX(0)}}
 @keyframes achievementMedalFloat{0%,100%{transform:translate(-50%,-50%) rotateY(-16deg) rotateX(8deg) translateY(0)}50%{transform:translate(-50%,-50%) rotateY(16deg) rotateX(-5deg) translateY(-7px)}}
 @keyframes achievementRing{to{transform:rotateX(68deg) rotateZ(342deg)}}
