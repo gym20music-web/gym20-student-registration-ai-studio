@@ -226,17 +226,26 @@
   function celebrateExercise(title){
     const old=document.getElementById('exerciseCelebration');if(old)old.remove();
     const overlay=document.createElement('div');overlay.id='exerciseCelebration';overlay.className='exercise-celebration';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','آفرین! تمرین انجام شد');
-    // Telegram-style 🎉 emoji rain: gentle fall from the top, spread across the whole screen.
-    const count=Math.min(105,Math.max(65,Math.round(window.innerWidth*window.innerHeight/10500)));
+    // Google New Year's Eve-inspired confetti burst: particles explode outward, then drift down.
+    const count=Math.min(150,Math.max(95,Math.round(window.innerWidth*window.innerHeight/7500)));
+    const colors=['#facc15','#fb7185','#38bdf8','#a78bfa','#4ade80','#f97316','#f9a8d4','#ffffff'];
     for(let n=0;n<count;n++){
-      const piece=document.createElement('span');piece.className='exercise-confetti';piece.textContent='🎉';
-      piece.style.left=(Math.random()*100)+'%';
-      piece.style.setProperty('--fall-duration',(4200+Math.random()*2200)+'ms');
-      piece.style.setProperty('--fall-delay',(Math.random()*1500)+'ms');
-      piece.style.setProperty('--fall-drift',(Math.random()*120-60)+'px');
-      piece.style.setProperty('--fall-rotate',(Math.random()*100-50)+'deg');
-      piece.style.setProperty('--emoji-size',(20+Math.random()*22)+'px');
-      piece.style.opacity=(.78+Math.random()*.22).toFixed(2);
+      const piece=document.createElement('span');piece.className='exercise-confetti';
+      const shape=Math.random();
+      if(shape>.88){piece.classList.add('confetti-dot');}
+      else if(shape>.72){piece.classList.add('confetti-star');piece.textContent='✦';}
+      piece.style.left=(42+Math.random()*16)+'%';
+      piece.style.top=(38+Math.random()*28)+'%';
+      piece.style.setProperty('--confetti-color',colors[Math.floor(Math.random()*colors.length)]);
+      piece.style.setProperty('--burst-x',(Math.random()*120-60)+'vw');
+      piece.style.setProperty('--burst-y',(-20-Math.random()*65)+'vh');
+      piece.style.setProperty('--burst-end-x',(Math.random()*150-75)+'vw');
+      piece.style.setProperty('--burst-end-y',(70+Math.random()*65)+'vh');
+      piece.style.setProperty('--burst-rotate',(Math.random()*1440-720)+'deg');
+      piece.style.setProperty('--burst-duration',(3200+Math.random()*1700)+'ms');
+      piece.style.setProperty('--burst-delay',(Math.random()*380)+'ms');
+      piece.style.setProperty('--confetti-width',(5+Math.random()*7)+'px');
+      piece.style.setProperty('--confetti-height',(8+Math.random()*11)+'px');
       overlay.appendChild(piece);
     }
     const card=document.createElement('div');card.className='exercise-celebration-card';
@@ -244,7 +253,7 @@
     const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='آفرین قهرمان!';
     const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='تمرین «'+title+'» با موفقیت انجام شد! همین قدرت و استمرار رو حفظ کن 💪🔥';
     const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه می‌دم!';close.addEventListener('click',()=>overlay.remove());
-    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},8500);
+    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},6500);
   }
   async function loadStudentExercises(shortCode,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
