@@ -230,39 +230,44 @@
     overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
     overlay.setAttribute('aria-label','تمرین با موفقیت انجام شد');
     const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const count=reducedMotion?0:Math.min(92,Math.max(56,Math.round(window.innerWidth*window.innerHeight/13500)));
-    const colors=['#f6d77a','#fff0bd','#d7b45a','#b8e7cb','#ffffff'];
-    for(let n=0;n<count;n++){
-      const particle=document.createElement('i');particle.className='exercise-confetti';
-      if(Math.random()>.78)particle.classList.add('confetti-dot');
-      particle.style.left=(48+Math.random()*4)+'%';
-      particle.style.top=(46+Math.random()*8)+'%';
-      particle.style.setProperty('--particle-color',colors[Math.floor(Math.random()*colors.length)]);
-      particle.style.setProperty('--particle-x',(Math.random()*92-46)+'vw');
-      particle.style.setProperty('--particle-y',(-16-Math.random()*45)+'vh');
-      particle.style.setProperty('--particle-fall',(42+Math.random()*58)+'vh');
-      particle.style.setProperty('--particle-rotate',(Math.random()*900-450)+'deg');
-      particle.style.setProperty('--particle-delay',(Math.random()*180)+'ms');
-      particle.style.setProperty('--particle-duration',(2600+Math.random()*1100)+'ms');
-      particle.style.setProperty('--particle-size',(3+Math.random()*5)+'px');
-      overlay.appendChild(particle);
-    }
+    const stage=document.createElement('div');stage.className='achievement-stage';
+    const halo=document.createElement('div');halo.className='achievement-halo';
+    const ring=document.createElement('div');ring.className='achievement-ring';
+    const medal=document.createElement('div');medal.className='achievement-medal';
+    const medalFace=document.createElement('div');medalFace.className='achievement-medal-face';
+    medalFace.innerHTML='<span class="achievement-g20">G<span>20</span></span><span class="achievement-star">✦</span>';
+    const medalBack=document.createElement('div');medalBack.className='achievement-medal-back';
+    medal.append(medalFace,medalBack);stage.append(halo,ring,medal);
+    const beams=document.createElement('div');beams.className='achievement-beams';
     const card=document.createElement('div');card.className='exercise-celebration-card';
-    const brand=document.createElement('div');brand.className='exercise-celebration-brand';brand.innerHTML='<span>G20</span><i></i>';
-    const kicker=document.createElement('div');kicker.className='exercise-celebration-kicker';kicker.textContent='ACHIEVEMENT UNLOCKED';
-    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='تمرین با موفقیت ثبت شد';
+    const kicker=document.createElement('div');kicker.className='exercise-celebration-kicker';kicker.textContent='GYM20  /  MILESTONE';
+    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='تمرین با موفقیت انجام شد';
     const exercise=document.createElement('div');exercise.className='exercise-celebration-exercise';exercise.textContent=title;
-    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='هر تکرار، یک قدم به قدرت بیشتر نزدیک‌ترت می‌کند.';
-    const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه مسیر  ↗';
-    const closeCelebration=()=>{overlay.classList.add('is-closing');window.setTimeout(()=>overlay.remove(),180);};
+    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='قدرت با تکرار ساخته می‌شود. امروز یک قدم جلوتر رفتی.';
+    const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه تمرین  ↗';
+    const closeCelebration=()=>{overlay.classList.add('is-closing');window.setTimeout(()=>{overlay.remove();document.removeEventListener('keydown',onKey);},260);};
     close.addEventListener('click',closeCelebration);
-    card.append(brand,kicker,heading,exercise,message,close);overlay.appendChild(card);
+    card.append(kicker,heading,exercise,message,close);
+    overlay.append(stage,beams,card);
+    if(!reducedMotion){
+      const count=Math.min(42,Math.max(24,Math.round(window.innerWidth*window.innerHeight/28000)));
+      const colors=['#f6d77a','#fff2c6','#d4a94d','#e8e0c8'];
+      for(let n=0;n<count;n++){
+        const particle=document.createElement('i');particle.className='achievement-particle';
+        particle.style.setProperty('--p-x',(Math.random()*100-50)+'vw');
+        particle.style.setProperty('--p-y',(Math.random()*-55-12)+'vh');
+        particle.style.setProperty('--p-r',(Math.random()*520-260)+'deg');
+        particle.style.setProperty('--p-delay',(Math.random()*420)+'ms');
+        particle.style.setProperty('--p-color',colors[Math.floor(Math.random()*colors.length)]);
+        overlay.appendChild(particle);
+      }
+    }
+    const onKey=e=>{if(e.key==='Escape')closeCelebration();};
     overlay.addEventListener('click',e=>{if(e.target===overlay)closeCelebration();});
-    const onKey=e=>{if(e.key==='Escape'){closeCelebration();document.removeEventListener('keydown',onKey);}};
     document.addEventListener('keydown',onKey);
     document.body.appendChild(overlay);
     close.focus({preventScroll:true});
-    window.setTimeout(()=>{if(overlay.isConnected){overlay.remove();document.removeEventListener('keydown',onKey);}},5800);
+    window.setTimeout(()=>{if(overlay.isConnected)closeCelebration();},5200);
   }
   async function loadStudentExercises(shortCode,token,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
