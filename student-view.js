@@ -244,7 +244,7 @@
     const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='آفرین قهرمان!';
     const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='تمرین «'+title+'» با موفقیت انجام شد! همین قدرت و استمرار رو حفظ کن 💪🔥';
     const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه می‌دم!';close.addEventListener('click',()=>overlay.remove());
-    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},7600);
+    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},8500);
   }
   async function loadStudentExercises(shortCode,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
