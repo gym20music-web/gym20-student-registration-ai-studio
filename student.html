@@ -267,6 +267,9 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-confetti.confetti-dot{width:7px;height:7px;border-radius:50%}
 .exercise-confetti.confetti-star{width:auto;height:auto;background:transparent;color:var(--confetti-color);font-size:18px;line-height:1}
 @keyframes exConfettiBurst{0%{opacity:0;transform:translate3d(0,0,0) rotate(0) scale(.25)}8%{opacity:1;transform:translate3d(0,0,0) rotate(0) scale(1)}42%{opacity:1;transform:translate3d(var(--burst-x),var(--burst-y),0) rotate(calc(var(--burst-rotate)*.45)) scale(1)}100%{opacity:0;transform:translate3d(var(--burst-end-x),var(--burst-end-y),0) rotate(var(--burst-rotate)) scale(.7)}}
+@keyframes exCelebrationIn{to{opacity:1}}
+@keyframes exGlowPulse{0%{opacity:.25;transform:scale(.7)}45%{opacity:1;transform:scale(1.08)}100%{opacity:.65;transform:scale(1)}}
+@keyframes exCardPop{0%{opacity:0;transform:translateY(18px) scale(.72)}70%{opacity:1;transform:translateY(-3px) scale(1.04)}100%{opacity:1;transform:translateY(0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.exercise-celebration,.exercise-celebration::before,.exercise-celebration-card,.exercise-confetti{animation:none!important}.exercise-celebration{opacity:1}.exercise-confetti{display:none}}
 
 </style></head>
@@ -275,6 +278,6 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-google-confetti-fix2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-google-confetti-fix3"></script>
 
 </body></html>
