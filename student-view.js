@@ -226,18 +226,31 @@
   function celebrateExercise(title){
     const old=document.getElementById('exerciseCelebration');if(old)old.remove();
     const overlay=document.createElement('div');overlay.id='exerciseCelebration';overlay.className='exercise-celebration';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','آفرین! تمرین انجام شد');
-    const colors=['#facc15','#4ade80','#60a5fa','#f472b6','#fb923c','#e9d5ff','#ffffff'];
-    for(let n=0;n<64;n++){
+    const colors=['#ff1744','#ff9100','#ffea00','#00e676','#00e5ff','#2979ff','#d500f9','#ff4081','#ffffff','#f6c453'];
+    const count=Math.min(190,Math.max(150,Math.round(window.innerWidth*window.innerHeight/5200)));
+    for(let n=0;n<count;n++){
       const piece=document.createElement('i');piece.className='exercise-confetti';
-      const angle=(Math.PI*2*n/64)+(Math.random()-.5)*.42,distance=140+Math.random()*Math.max(window.innerWidth,window.innerHeight)*.9;
-      piece.style.setProperty('--piece-color',colors[n%colors.length]);piece.style.setProperty('--piece-x',(Math.cos(angle)*distance)+'px');piece.style.setProperty('--piece-y',(Math.sin(angle)*distance)+'px');piece.style.setProperty('--piece-rotate',(Math.random()*1000-500)+'deg');piece.style.setProperty('--piece-duration',(850+Math.random()*650)+'ms');piece.style.setProperty('--piece-delay',(Math.random()*100)+'ms');piece.style.width=(5+Math.random()*6)+'px';piece.style.height=(8+Math.random()*9)+'px';overlay.appendChild(piece);
+      const angle=(Math.PI*2*n/count)+(Math.random()-.5)*.7;
+      const distance=Math.hypot(window.innerWidth,window.innerHeight)*(.48+Math.random()*.78);
+      const originX=(Math.random()-.5)*Math.min(window.innerWidth*.28,120);
+      const originY=(Math.random()-.5)*Math.min(window.innerHeight*.22,100);
+      piece.style.setProperty('--piece-color',colors[Math.floor(Math.random()*colors.length)]);
+      piece.style.setProperty('--piece-x',(originX+Math.cos(angle)*distance)+'px');
+      piece.style.setProperty('--piece-y',(originY+Math.sin(angle)*distance)+'px');
+      piece.style.setProperty('--piece-rotate',(Math.random()*1600-800)+'deg');
+      piece.style.setProperty('--piece-duration',(1250+Math.random()*1150)+'ms');
+      piece.style.setProperty('--piece-delay',(Math.random()*180)+'ms');
+      piece.style.width=(5+Math.random()*9)+'px';piece.style.height=(9+Math.random()*15)+'px';
+      piece.style.borderRadius=Math.random()>.72?'50%':'2px';
+      piece.style.filter='drop-shadow(0 0 3px '+colors[Math.floor(Math.random()*colors.length)]+')';
+      overlay.appendChild(piece);
     }
     const card=document.createElement('div');card.className='exercise-celebration-card';
-    const icon=document.createElement('div');icon.className='exercise-celebration-icon';icon.textContent='🏆✨';
+    const icon=document.createElement('div');icon.className='exercise-celebration-icon';icon.textContent='🏆✨🎉';
     const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='آفرین قهرمان!';
     const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='تمرین «'+title+'» با موفقیت انجام شد! همین قدرت و استمرار رو حفظ کن 💪🔥';
     const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه می‌دم!';close.addEventListener('click',()=>overlay.remove());
-    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},3200);
+    card.append(icon,heading,message,close);overlay.appendChild(card);overlay.addEventListener('click',e=>{if(e.target===overlay)overlay.remove();});document.body.appendChild(overlay);window.setTimeout(()=>{if(overlay.isConnected)overlay.remove();},4200);
   }
   async function loadStudentExercises(shortCode,client){
     const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
