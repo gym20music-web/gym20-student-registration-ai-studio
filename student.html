@@ -263,7 +263,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-celebration-icon{font-size:42px;line-height:1.3;filter:drop-shadow(0 0 12px rgba(250,220,120,.75))}
 .exercise-celebration-title{margin-top:7px;color:#fde68a;font-size:19px;font-weight:900;text-shadow:0 0 16px rgba(250,220,120,.5)}
 .exercise-celebration-text{margin-top:8px;color:#bbf7d0;font-size:12px;line-height:1.9}
-.exercise-confetti{position:absolute;z-index:1;top:46%;left:50%;width:10px;height:15px;border-radius:2px;background:var(--piece-color);opacity:0;transform:translate(-50%,-50%);animation:exConfettiBurst var(--piece-duration) cubic-bezier(.12,.72,.25,1) var(--piece-delay) forwards}
+.exercise-confetti{position:absolute;z-index:5;top:46%;left:50%;width:10px;height:15px;border-radius:2px;background:var(--piece-color);opacity:0;pointer-events:none;transform:translate(-50%,-50%);animation:exConfettiBurst var(--piece-duration) cubic-bezier(.12,.72,.25,1) var(--piece-delay) forwards}
 .exercise-celebration-close{position:relative;z-index:3;margin-top:16px;min-height:36px;padding:7px 22px;border:1px solid #c9a955;border-radius:9px;background:#d8b75e;color:#15120a;font:800 11px Vazirmatn,sans-serif}
 @keyframes exCelebrationIn{to{opacity:1}}
 @keyframes exGlowPulse{0%{opacity:0;transform:scale(.55)}35%{opacity:1;transform:scale(1.15)}100%{opacity:.72;transform:scale(1)}}
@@ -277,6 +277,6 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🏋️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-cheer-burst-v3"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261106-cheer-burst-v4"></script>
 
 </body></html>
