@@ -256,13 +256,15 @@
         const particle=document.createElement('i');particle.className='achievement-particle';
         if(Math.random()>.62)particle.classList.add('achievement-paper');
         else particle.classList.add('achievement-glitter');
-        particle.style.setProperty('--p-x',(Math.random()*130-65)+'vw');
-        particle.style.setProperty('--p-y',(Math.random()*-85-12)+'vh');
-        particle.style.setProperty('--p-r',(Math.random()*1080-540)+'deg');
-        particle.style.setProperty('--p-delay',(Math.random()*520)+'ms');
-        particle.style.setProperty('--p-duration',(2400+Math.random()*1900)+'ms');
+        particle.style.setProperty('--p-x',(Math.random()*100-50)+'vw');
+        particle.style.setProperty('--p-drift',(Math.random()*54-27)+'vw');
+        particle.style.setProperty('--p-top',(-Math.random()*95-8)+'vh');
+        particle.style.setProperty('--p-r',(Math.random()*1440-720)+'deg');
+        particle.style.setProperty('--p-flip',(Math.random()*.9+.12).toFixed(2));
+        particle.style.setProperty('--p-delay',(Math.random()*1250)+'ms');
+        particle.style.setProperty('--p-duration',(4200+Math.random()*3600)+'ms');
         particle.style.setProperty('--p-color',colors[Math.floor(Math.random()*colors.length)]);
-        particle.style.setProperty('--p-size',(4+Math.random()*8)+'px');
+        particle.style.setProperty('--p-size',(4+Math.random()*9)+'px');
         overlay.appendChild(particle);
       }
     }
