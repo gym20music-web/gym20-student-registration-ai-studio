@@ -235,7 +235,7 @@
     const ring=document.createElement('div');ring.className='achievement-ring';
     const medal=document.createElement('div');medal.className='achievement-medal';
     const medalFace=document.createElement('div');medalFace.className='achievement-medal-face';
-    medalFace.innerHTML='<span class="achievement-g20">G<span>20</span></span><span class="achievement-star">✦</span>';
+    medalFace.innerHTML='<span class="achievement-cup"><svg viewBox="0 0 120 120" aria-hidden="true"><defs><linearGradient id="gym20CupGold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff3bf"/><stop offset=".28" stop-color="#f5d77b"/><stop offset=".58" stop-color="#a97828"/><stop offset=".82" stop-color="#f4d477"/><stop offset="1" stop-color="#fff0b2"/></linearGradient></defs><path d="M34 20h52v12c0 25-10 39-26 43C44 71 34 57 34 32V20Z" fill="url(#gym20CupGold)" stroke="#fff0b8" stroke-width="2"/><path d="M34 28H17v8c0 17 10 26 25 27M86 28h17v8c0 17-10 26-25 27" fill="none" stroke="url(#gym20CupGold)" stroke-width="9" stroke-linecap="round"/><path d="M60 75v14M42 91h36M35 100h50" stroke="url(#gym20CupGold)" stroke-width="8" stroke-linecap="round"/><path d="m60 34 5 10 11 1-8 7 2 11-10-5-10 5 2-11-8-7 11-1 5-10Z" fill="#fff5cf"/></svg><span class="achievement-cup-word">GYM20</span></span>';
     const medalBack=document.createElement('div');medalBack.className='achievement-medal-back';
     medal.append(medalFace,medalBack);stage.append(halo,ring,medal);
     const beams=document.createElement('div');beams.className='achievement-beams';
@@ -250,15 +250,19 @@
     card.append(kicker,heading,exercise,message,close);
     overlay.append(stage,beams,card);
     if(!reducedMotion){
-      const count=Math.min(42,Math.max(24,Math.round(window.innerWidth*window.innerHeight/28000)));
-      const colors=['#f6d77a','#fff2c6','#d4a94d','#e8e0c8'];
+      const count=Math.min(170,Math.max(105,Math.round(window.innerWidth*window.innerHeight/7200)));
+      const colors=['#f6d77a','#fff2c6','#d4a94d','#e8e0c8','#fffaf0','#b98a35'];
       for(let n=0;n<count;n++){
         const particle=document.createElement('i');particle.className='achievement-particle';
-        particle.style.setProperty('--p-x',(Math.random()*100-50)+'vw');
-        particle.style.setProperty('--p-y',(Math.random()*-55-12)+'vh');
-        particle.style.setProperty('--p-r',(Math.random()*520-260)+'deg');
-        particle.style.setProperty('--p-delay',(Math.random()*420)+'ms');
+        if(Math.random()>.62)particle.classList.add('achievement-paper');
+        else particle.classList.add('achievement-glitter');
+        particle.style.setProperty('--p-x',(Math.random()*130-65)+'vw');
+        particle.style.setProperty('--p-y',(Math.random()*-85-12)+'vh');
+        particle.style.setProperty('--p-r',(Math.random()*1080-540)+'deg');
+        particle.style.setProperty('--p-delay',(Math.random()*520)+'ms');
+        particle.style.setProperty('--p-duration',(2400+Math.random()*1900)+'ms');
         particle.style.setProperty('--p-color',colors[Math.floor(Math.random()*colors.length)]);
+        particle.style.setProperty('--p-size',(4+Math.random()*8)+'px');
         overlay.appendChild(particle);
       }
     }
