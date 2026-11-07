@@ -619,7 +619,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
       '<div id="stTemplateModal" class="st-template-modal" hidden><div class="st-template-modal-backdrop" data-template-close></div><section class="st-template-dialog" role="dialog" aria-modal="true" aria-labelledby="stTemplateModalTitle"><div class="st-template-dialog-head"><div><small>GYM20 · NOTIFICATION</small><b id="stTemplateModalTitle">ویرایش متن یادآوری</b></div><button type="button" class="st-template-close" data-template-close aria-label="بستن">×</button></div><p class="st-template-hint">متن پیام را ویرایش کن. متغیرهایی مثل {student} و {time} را برای جایگذاری خودکار حفظ کن.</p><textarea id="stTemplateModalText" rows="6" maxlength="1000" placeholder="متن یادآوری را بنویس…"></textarea><div class="st-template-dialog-actions"><button type="button" class="st-btn" id="stTemplateCancel">انصراف</button><button type="button" class="st-btn primary" id="stTemplateApply">اعمال متن</button></div></section></div>'+
       
-      '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><textarea id="stCustomPushText" rows="1" maxlength="1200" placeholder="متن اعلان فوری…"></textarea></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
+      '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><input id="stCustomPushText" type="text" maxlength="1200" placeholder="متن اعلان فوری…" autocomplete="off"></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
@@ -661,6 +661,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
+    /* Remove captions from the urgent-push controls; single-line input centers text vertically by design. */
+    const urgentPushCompactCss=document.createElement('style');
+    urgentPushCompactCss.id='stUrgentPushCompactCss';
+    urgentPushCompactCss.textContent='#stPushCard .st-custom-push-row .st-field>label{display:none!important}#stPushCard #stCustomPushText{box-sizing:border-box!important;display:block!important;width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 8px!important;line-height:24px!important;text-align:center!important;direction:rtl!important;vertical-align:middle!important}';
+    document.head.appendChild(urgentPushCompactCss);
     /* Center each reminder-hour caption over its matching input. */
     const reminderLabelCenterCss=document.createElement('style');
     reminderLabelCenterCss.id='stReminderLabelCenterCss';
