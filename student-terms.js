@@ -404,6 +404,101 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(sessionFieldsSizingCss);
 
+    /* GYM20 TERM CONTROLS — readable spacing and responsive field layout */
+
+    const termControlsRefineCss=document.createElement('style');
+    termControlsRefineCss.id='stTermControlsRefineCss';
+    termControlsRefineCss.textContent=`
+      #studentTermsTab .st-term-grid{
+        display:grid!important;
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        column-gap:12px!important;row-gap:11px!important;
+        align-items:end!important;
+      }
+      #studentTermsTab .st-term-grid>.st-field{min-width:0!important;width:100%!important}
+      #studentTermsTab .st-term-grid>.st-term-picker-field{grid-column:1/-1!important}
+      #studentTermsTab .st-term-grid .st-field label{
+        display:block!important;margin:0 0 6px!important;
+        font-size:11px!important;line-height:1.6!important;
+        font-weight:600!important;white-space:nowrap!important;
+        color:#e8d7ad!important;
+      }
+      #studentTermsTab .st-term-grid .st-date-wrap{
+        display:flex!important;align-items:center!important;gap:7px!important;
+        width:100%!important;min-width:0!important;
+      }
+      #studentTermsTab .st-term-grid input[data-jalali-date]{
+        box-sizing:border-box!important;flex:1 1 auto!important;width:0!important;min-width:0!important;
+        height:39px!important;min-height:39px!important;padding:7px 9px!important;
+        border:1px solid rgba(214,179,90,.38)!important;border-radius:9px!important;
+        background:#121b28!important;color:#f7f2e6!important;
+        direction:ltr!important;text-align:center!important;
+        font-family:Montserrat,Vazirmatn,Arial,sans-serif!important;
+        font-size:11px!important;font-weight:600!important;letter-spacing:.15px!important;
+        line-height:1.2!important;font-variant-numeric:tabular-nums!important;
+      }
+      #studentTermsTab .st-term-grid input[data-jalali-date]::placeholder{
+        color:#8e96a3!important;opacity:1!important;font-size:10px!important;
+      }
+      #studentTermsTab .st-term-grid .st-calendar-btn{
+        flex:0 0 36px!important;width:36px!important;height:39px!important;min-height:39px!important;
+        display:inline-flex!important;align-items:center!important;justify-content:center!important;
+        padding:0!important;border:1px solid rgba(214,179,90,.52)!important;
+        border-radius:9px!important;background:linear-gradient(145deg,#292536,#171d29)!important;
+        color:#f1ce7c!important;font-size:16px!important;line-height:1!important;
+      }
+      #studentTermsTab .st-term-picker-row{display:flex!important;align-items:center!important;gap:8px!important;width:100%!important}
+      #studentTermsTab .st-term-picker-row .st-custom-select{flex:1 1 auto!important;min-width:0!important;width:0!important}
+      #studentTermsTab .st-term-picker-row .st-custom-select-trigger{
+        display:flex!important;align-items:center!important;justify-content:space-between!important;
+        width:100%!important;height:39px!important;min-height:39px!important;
+        padding:7px 11px!important;border:1px solid rgba(214,179,90,.42)!important;
+        border-radius:9px!important;background:#121b28!important;color:#f5edda!important;
+        font-size:11px!important;line-height:1.5!important;text-align:right!important;
+      }
+      #studentTermsTab .st-term-picker-row .st-custom-value{
+        display:block!important;min-width:0!important;overflow:hidden!important;
+        text-overflow:ellipsis!important;white-space:nowrap!important;
+      }
+      #studentTermsTab .st-term-picker-row .st-custom-arrow{flex:0 0 auto!important;margin-right:8px!important;color:#d6b35a!important}
+      #studentTermsTab .st-term-picker-row .st-icon-delete-term{
+        flex:0 0 36px!important;width:36px!important;height:36px!important;min-height:36px!important;
+        border-radius:9px!important;
+      }
+      #studentTermsTab #stManualCalendar{
+        min-height:40px!important;padding:8px 14px!important;border-radius:9px!important;
+        font-size:11px!important;line-height:1.5!important;white-space:normal!important;
+      }
+      #studentTermsTab .st-create-compact{padding:14px!important}
+      @media(max-width:600px){
+        #studentTermsTab .st-term-grid{column-gap:8px!important;row-gap:10px!important}
+        #studentTermsTab .st-term-grid .st-field label{font-size:10px!important;margin-bottom:5px!important}
+        #studentTermsTab .st-term-grid input[data-jalali-date]{
+          height:36px!important;min-height:36px!important;padding:5px 6px!important;font-size:10px!important;
+        }
+        #studentTermsTab .st-term-grid input[data-jalali-date]::placeholder{font-size:9px!important}
+        #studentTermsTab .st-term-grid .st-calendar-btn{
+          flex-basis:32px!important;width:32px!important;height:36px!important;min-height:36px!important;font-size:14px!important;
+        }
+        #studentTermsTab .st-term-picker-row{gap:7px!important}
+        #studentTermsTab .st-term-picker-row .st-custom-select-trigger{
+          height:36px!important;min-height:36px!important;padding:5px 8px!important;font-size:10px!important;
+        }
+        #studentTermsTab .st-term-picker-row .st-icon-delete-term{
+          flex-basis:34px!important;width:34px!important;height:34px!important;min-height:34px!important;
+        }
+        #studentTermsTab #stManualCalendar{width:100%!important;min-height:38px!important;font-size:10px!important}
+        #studentTermsTab .st-create-compact{padding:10px!important}
+      }
+      @media(max-width:350px){
+        #studentTermsTab .st-term-grid{column-gap:6px!important}
+        #studentTermsTab .st-term-grid input[data-jalali-date]{font-size:9px!important;padding:4px!important}
+        #studentTermsTab .st-term-grid .st-calendar-btn{flex-basis:29px!important;width:29px!important}
+      }
+    `;
+    document.head.appendChild(termControlsRefineCss);
+
+
 
 
 
