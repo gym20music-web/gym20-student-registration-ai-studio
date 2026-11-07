@@ -352,11 +352,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         #studentTermsTab .st-session-fields-modern input,#studentTermsTab .st-session-fields-modern select,#studentTermsTab .st-session-fields-modern .st-custom-select-trigger{height:29px!important;min-height:29px!important;font-size:7.5px!important;padding:2px!important}
       }
       #stPushCard .st-push-heading{font-size:9px!important;line-height:1.5!important;margin-bottom:7px!important}
-      #stPushCard .st-reminder-layout{gap:5px!important}
-      #stPushCard .st-reminder-label-row{gap:6px!important}
-      #stPushCard .st-reminder-label-row label{font-size:9px!important;line-height:1.4!important}
-      #stPushCard .st-reminder-input-row{gap:6px!important}
-      #stPushCard .st-reminder-input-row input{height:28px!important;min-height:28px!important;padding:3px 6px!important;font-size:9px!important;border-radius:6px!important}
+      #stPushCard .st-reminder-layout{gap:3px!important;margin:5px 0 7px!important;padding:6px!important}
+      #stPushCard .st-reminder-label-row{gap:5px!important}
+      #stPushCard .st-reminder-label-row label{font-size:8px!important;line-height:1.2!important}
+      #stPushCard .st-reminder-input-row{gap:5px!important}
+      #stPushCard .st-reminder-input-row input{height:23px!important;min-height:23px!important;padding:2px 5px!important;font-size:8px!important;line-height:1!important;border-radius:5px!important}
       #stPushCard .st-reminder-action-row{gap:6px!important;margin-top:2px!important}
       #stPushCard .st-reminder-action-row .st-btn{height:25px!important;min-height:25px!important;padding:3px 6px!important;font-size:9px!important;border-radius:6px!important}
       #stPushCard .st-reminder-save-row{margin-top:3px!important}
