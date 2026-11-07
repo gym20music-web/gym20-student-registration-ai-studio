@@ -519,6 +519,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         background:#121b28!important;color:#f5edda!important;
         font-size:8px!important;line-height:17px!important;
       }
+      #studentTermsTab .st-student-card #stSummary:empty{display:none!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important}
     `;
     document.head.appendChild(studentPickerCompactCss);
 
@@ -528,7 +529,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         display:block!important;min-height:20px!important;box-sizing:border-box!important;
         margin:2px 0 0!important;padding:1px 7px!important;
         border:0!important;border-radius:0!important;background:transparent!important;
-        color:#d6b35a!important;font-size:8px!important;line-height:16px!important;
+        color:#34d399!important;font-size:8px!important;line-height:16px!important;
         text-align:right!important;
       }
       #studentTermsTab .st-student-card #stStudentLoadStatus:empty{display:none!important}
