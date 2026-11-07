@@ -1520,20 +1520,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     .st-jcal .st-jcal-grid>span{border:0!important;background:transparent!important;color:#d8bc78!important;font-weight:800!important}
     .st-jcal .st-jcal-grid>i{border:0!important;background:transparent!important}
     .st-jcal .st-jcal-day{cursor:pointer!important}
-    .st-jcal .st-jcal-day.term-range,
-    .st-jcal .st-jcal-day.term-range:disabled{
-      background:rgba(22,138,69,.34)!important;border-color:rgba(34,197,94,.7)!important;
-      color:#d9ffe5!important;font-weight:800!important;opacity:1!important;
-    }
     .st-jcal .st-jcal-day.term-range-start,
     .st-jcal .st-jcal-day.term-range-end,
     .st-jcal .st-jcal-day.term-boundary{
       background:#168a45!important;border-color:#4ade80!important;color:#fff!important;
       font-weight:900!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;
     }
-    .st-jcal .st-jcal-day.term-range.selected{outline:2px solid #f1ce7c!important;outline-offset:-2px!important}
     .st-jcal .st-jcal-day:disabled{opacity:.3!important;cursor:not-allowed!important}
-    .st-jcal .st-jcal-day.term-range:disabled{opacity:1!important}
     .st-jcal .st-muted{font-size:8px!important;line-height:1.5!important}
     .st-jcal [data-confirm]{
       box-sizing:border-box!important;min-height:27px!important;height:27px!important;padding:0 8px!important;
