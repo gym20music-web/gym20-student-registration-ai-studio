@@ -568,7 +568,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const veOpen=()=>{
       veCanvas.innerHTML='';veInspector.innerHTML='';veSelected=null;
       const list=[...p.querySelectorAll(veTargets.join(','))].filter(el=>el!==veToolbar&&!el.closest('.g20-ve-toolbar')&&!el.closest('#g20VisualEditorModal')&&el.offsetParent!==null);
-      list.slice(0,180).forEach(el=>{const id=veGetId(el),clone=el.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));clone.querySelectorAll('button,input,select,textarea').forEach(n=>{n.disabled=true;n.removeAttribute('onclick')});clone.classList.add('g20-ve-target');clone.dataset.veSource=id;clone.style.pointerEvents='auto';veCanvas.appendChild(clone);});
+      list.slice(0,180).forEach(el=>{const id=veGetId(el),clone=el.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));clone.querySelectorAll('button,input,select,textarea').forEach(n=>{n.disabled=true;n.removeAttribute('onclick')});clone.classList.add('g20-ve-target');clone.dataset.veSource=id;clone.style.pointerEvents='auto';const grip=document.createElement('span');grip.textContent='↘';grip.title='کشیدن برای تغییر اندازه';grip.style.cssText='position:absolute;left:0;bottom:0;width:18px;height:18px;display:flex;align-items:center;justify-content:center;background:#e7bd59;color:#111;border-radius:4px;cursor:nwse-resize;font-size:12px;touch-action:none';clone.style.position='relative';clone.appendChild(grip);veCanvas.appendChild(clone);});
       veApplySaved();
       veModal.hidden=false;
     };
@@ -580,7 +580,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       veInspector.querySelectorAll('[data-ve-prop]').forEach(inp=>inp.addEventListener('input',()=>{const k=inp.dataset.veProp,v=inp.value;const cssVal=(k==='width'||k==='height'||k==='font-size'||k==='border-radius')?(v===''?'':v+'px'):v;veSelected.style.setProperty(k,cssVal,'important');const id=veGetId(veSelected);veSaved[id]={...(veSaved[id]||{}),[k]:cssVal};}));
     };
     veCanvas.addEventListener('click',e=>{const clone=e.target.closest('.g20-ve-target');if(!clone)return;const id=clone.dataset.veSource;const original=p.querySelector('[data-g20-ve-id="'+id+'"]');if(original)veSelect(id);});
-    veModal.querySelector('#g20OpenVisualEditor').addEventListener('click',veOpen);
+    let veDrag=null;
+    veCanvas.addEventListener('pointerdown',e=>{const clone=e.target.closest('.g20-ve-target');if(!clone)return;veSelect(clone.dataset.veSource);if(e.target.title==='کشیدن برای تغییر اندازه'){e.preventDefault();veDrag={clone,original:p.querySelector('[data-g20-ve-id="'+clone.dataset.veSource+'"]'),x:e.clientX,y:e.clientY,w:clone.getBoundingClientRect().width,h:clone.getBoundingClientRect().height};clone.setPointerCapture?.(e.pointerId);}});
+    veCanvas.addEventListener('pointermove',e=>{if(!veDrag)return;const dx=e.clientX-veDrag.x,dy=e.clientY-veDrag.y,w=Math.max(28,Math.round(veDrag.w-dx)),h=Math.max(24,Math.round(veDrag.h+dy));veDrag.clone.style.width=w+'px';veDrag.clone.style.height=h+'px';if(veDrag.original){veDrag.original.style.setProperty('width',w+'px','important');veDrag.original.style.setProperty('height',h+'px','important');const id=veGetId(veDrag.original);veSaved[id]={...(veSaved[id]||{}),width:w+'px',height:h+'px'};}});
+    veCanvas.addEventListener('pointerup',()=>veDrag=null);veCanvas.addEventListener('pointercancel',()=>veDrag=null);
+    p.querySelector('#g20OpenVisualEditor').addEventListener('click',veOpen);
     veModal.querySelector('#g20VeClose').addEventListener('click',()=>veModal.hidden=true);
     veModal.querySelector('#g20VeSave').addEventListener('click',()=>{try{localStorage.setItem(veKey,JSON.stringify(veSaved));say('ظاهر نمونه در همین مرورگر ذخیره شد.');}catch(e){say('ذخیره مرورگر انجام نشد: '+e.message,true)}});
     veModal.querySelector('#g20VeReset').addEventListener('click',()=>{if(!confirm('تنظیمات ظاهری نمونه بازگردانی شود؟'))return;veSaved={};localStorage.removeItem(veKey);p.querySelectorAll('[data-g20-ve-id]').forEach(el=>{el.removeAttribute('style')});veOpen();});
