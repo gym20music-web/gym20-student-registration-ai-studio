@@ -230,6 +230,8 @@
     overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');
     overlay.setAttribute('aria-label','تمرین با موفقیت انجام شد');
     const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const flash=document.createElement('div');flash.className='achievement-flash';
+    const shockwave=document.createElement('div');shockwave.className='achievement-shockwave';
     const stage=document.createElement('div');stage.className='achievement-stage';
     const halo=document.createElement('div');halo.className='achievement-halo';
     const ring=document.createElement('div');ring.className='achievement-ring';
@@ -240,15 +242,15 @@
     medal.append(medalFace,medalBack);stage.append(halo,ring,medal);
     const beams=document.createElement('div');beams.className='achievement-beams';
     const card=document.createElement('div');card.className='exercise-celebration-card';
-    const kicker=document.createElement('div');kicker.className='exercise-celebration-kicker';kicker.textContent='GYM20  /  MILESTONE';
-    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='تمرین با موفقیت انجام شد';
+    const kicker=document.createElement('div');kicker.className='exercise-celebration-kicker';kicker.textContent='GYM20  •  POWER IN PROGRESS';
+    const heading=document.createElement('div');heading.className='exercise-celebration-title';heading.textContent='یک قدم قوی‌تر شدی!';
     const exercise=document.createElement('div');exercise.className='exercise-celebration-exercise';exercise.textContent=title;
-    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='قدرت با تکرار ساخته می‌شود. امروز یک قدم جلوتر رفتی.';
+    const message=document.createElement('div');message.className='exercise-celebration-text';message.textContent='این حسِ رضایت، نتیجه تلاش خودته. ادامه بده؛ قوی‌تر از دیروز.';
     const close=document.createElement('button');close.className='exercise-celebration-close';close.type='button';close.textContent='ادامه تمرین  ↗';
     const closeCelebration=()=>{overlay.classList.add('is-closing');window.setTimeout(()=>{overlay.remove();document.removeEventListener('keydown',onKey);},260);};
     close.addEventListener('click',closeCelebration);
     card.append(kicker,heading,exercise,message,close);
-    overlay.append(stage,beams,card);
+    overlay.append(flash,shockwave,stage,beams,card);
     if(!reducedMotion){
       const count=Math.min(170,Math.max(105,Math.round(window.innerWidth*window.innerHeight/7200)));
       const colors=['#f6d77a','#fff2c6','#d4a94d','#e8e0c8','#fffaf0','#b98a35'];
