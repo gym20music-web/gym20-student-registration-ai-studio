@@ -170,6 +170,8 @@
     termPolishCss.textContent=`
       /* Keep Persian dates compact but readable. */
       #studentTermsTab .st-term-grid input[data-jalali-date]{font-size:9px!important;letter-spacing:-.15px}
+      /* Center the captions above the term date and term selector fields. */
+      #studentTermsTab .st-term-grid>.st-field>label{display:block!important;width:100%!important;text-align:center!important;align-self:stretch!important;justify-self:stretch!important}
       /* Show month/year cleanly in the term picker; the stored term name is unchanged. */
       #studentTermsTab .st-term-picker-field .st-custom-select-trigger{font-weight:700;letter-spacing:0}
       #studentTermsTab .st-term-picker-field .st-custom-value{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
