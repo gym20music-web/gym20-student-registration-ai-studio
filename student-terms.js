@@ -1230,6 +1230,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     #stPushCard #stCustomPushText{
       resize:none!important;overflow:hidden!important;
     }
+    #stPushCard #stCustomPushText{
+      box-sizing:border-box!important;padding:0 8px!important;
+      text-align:center!important;direction:rtl!important;
+      line-height:22px!important;vertical-align:middle!important;
+    }
     #stPushCard .st-reminder-action-row button,
     #stPushCard .st-reminder-save-row button{
       width:100%!important;
