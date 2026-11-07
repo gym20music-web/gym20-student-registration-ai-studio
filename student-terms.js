@@ -498,6 +498,49 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(termControlsRefineCss);
 
+    /* Compact term creation controls: 24px, 8px text, gold bold labels */
+    const termCreateCompactCss=document.createElement('style');
+    termCreateCompactCss.textContent=`
+      #studentTermsTab .st-create-compact .st-title,
+      #studentTermsTab .st-create-compact .st-field>label{
+        color:#f1ce7c!important;font-weight:700!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid input[data-jalali-date]{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        padding:2px 6px!important;font-size:8px!important;line-height:18px!important;
+        border-radius:6px!important;
+      }
+      #studentTermsTab .st-create-compact .st-date-wrap .st-calendar-btn{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        width:24px!important;flex-basis:24px!important;padding:0!important;
+        font-size:12px!important;border-radius:6px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-custom-select-trigger{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        padding:2px 7px!important;font-size:8px!important;line-height:18px!important;
+        border-radius:6px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-custom-value{
+        font-size:8px!important;line-height:18px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-custom-arrow{font-size:9px!important}
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-icon-delete-term{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        width:24px!important;flex-basis:24px!important;padding:0!important;border-radius:6px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-icon-delete-term svg{width:12px!important;height:12px!important}
+      #studentTermsTab .st-create-compact #stManualCalendar{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        padding:2px 8px!important;font-size:8px!important;line-height:18px!important;
+        border-radius:6px!important;white-space:nowrap!important;
+      }
+      #studentTermsTab .st-create-compact .st-field>label{
+        font-size:8px!important;margin-bottom:3px!important;
+      }
+    `;
+    document.head.appendChild(termCreateCompactCss);
+
+
 
 
 
