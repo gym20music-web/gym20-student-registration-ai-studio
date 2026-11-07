@@ -51,7 +51,8 @@
       const draw=()=>{
         const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1);
         const first=new Date(g+'T12:00:00'),last=new Date(next+'T12:00:00'),days=Math.round((last-first)/86400000),offset=(first.getDay()+1)%7,picked=enDigits(input.value).split('/').map(Number),todayParts=enDigits(jalaliInput(localDate(new Date()))).split('/').map(Number);
-        pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev>‹</button><b>'+monthsFa[jm-1]+' '+fa(jy)+'</b><button type="button" data-next>›</button></div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>'<button type="button" class="st-jcal-day '+(picked[0]===jy&&picked[1]===jm&&picked[2]===i+1?'selected ':'')+(todayParts[0]===jy&&todayParts[1]===jm&&todayParts[2]===i+1?'today':'')+'" data-day="'+(i+1)+'">'+fa(i+1)+'</button>').join('')+'</div>';
+        const termStart=gregorianInput($('stStart')?.value||''),termEnd=gregorianInput($('stEnd')?.value||''),hasTermRange=!!termStart&&!!termEnd&&termEnd>=termStart;
+        pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev>‹</button><b>'+monthsFa[jm-1]+' '+fa(jy)+'</b><button type="button" data-next>›</button></div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const iso=jalaliToGregorian(jy,jm,i+1),inRange=hasTermRange&&iso>=termStart&&iso<=termEnd,isStart=hasTermRange&&iso===termStart,isEnd=hasTermRange&&iso===termEnd;return '<button type="button" class="st-jcal-day '+(inRange?'term-range ':'')+(isStart?'term-range-start ':'')+(isEnd?'term-range-end ':'')+(picked[0]===jy&&picked[1]===jm&&picked[2]===i+1?'selected ':'')+(todayParts[0]===jy&&todayParts[1]===jm&&todayParts[2]===i+1?'today':'')+'" data-day="'+(i+1)+'">'+fa(i+1)+'</button>';}).join('')+'</div>';
         pop.querySelector('[data-prev]').onclick=()=>{if(--jm<1){jm=12;jy--;}draw();};
         pop.querySelector('[data-next]').onclick=()=>{if(++jm>12){jm=1;jy++;}draw();};
         pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{input.value=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0');input.dispatchEvent(new Event('change',{bubbles:true}));pop.remove();});
@@ -991,7 +992,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const minKey=startDate,maxKey=endDate;
         const draw=()=>{
           const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7,monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
-          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),valid=iso>=minKey&&iso<=maxKey&&!existingDates.has(iso),selected=chosen.has(iso),boundary=iso===minKey||iso===maxKey;return '<button type="button" class="st-jcal-day '+(boundary?'term-boundary ':'')+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!selected?'disabled':'')+' title="'+(iso===minKey?'شروع ترم':iso===maxKey?'پایان ترم':'')+'">'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ 'تأیید تاریخ‌های انتخاب‌شده'+' ('+fa(chosen.size)+')</button></div>';
+          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),inRange=iso>=minKey&&iso<=maxKey,valid=inRange&&!existingDates.has(iso),selected=chosen.has(iso),boundary=iso===minKey||iso===maxKey;return '<button type="button" class="st-jcal-day '+(inRange?'term-range ':'')+(iso===minKey?'term-range-start ':'')+(iso===maxKey?'term-range-end ':'')+(boundary?'term-boundary ':'')+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!selected?'disabled':'')+' title="'+(iso===minKey?'شروع ترم':iso===maxKey?'پایان ترم':'')+'">'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ 'تأیید تاریخ‌های انتخاب‌شده'+' ('+fa(chosen.size)+')</button></div>';
           pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
           pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
           pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
@@ -1519,7 +1520,20 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     .st-jcal .st-jcal-grid>span{border:0!important;background:transparent!important;color:#d8bc78!important;font-weight:800!important}
     .st-jcal .st-jcal-grid>i{border:0!important;background:transparent!important}
     .st-jcal .st-jcal-day{cursor:pointer!important}
+    .st-jcal .st-jcal-day.term-range,
+    .st-jcal .st-jcal-day.term-range:disabled{
+      background:rgba(22,138,69,.34)!important;border-color:rgba(34,197,94,.7)!important;
+      color:#d9ffe5!important;font-weight:800!important;opacity:1!important;
+    }
+    .st-jcal .st-jcal-day.term-range-start,
+    .st-jcal .st-jcal-day.term-range-end,
+    .st-jcal .st-jcal-day.term-boundary{
+      background:#168a45!important;border-color:#4ade80!important;color:#fff!important;
+      font-weight:900!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.12)!important;
+    }
+    .st-jcal .st-jcal-day.term-range.selected{outline:2px solid #f1ce7c!important;outline-offset:-2px!important}
     .st-jcal .st-jcal-day:disabled{opacity:.3!important;cursor:not-allowed!important}
+    .st-jcal .st-jcal-day.term-range:disabled{opacity:1!important}
     .st-jcal .st-muted{font-size:8px!important;line-height:1.5!important}
     .st-jcal [data-confirm]{
       box-sizing:border-box!important;min-height:27px!important;height:27px!important;padding:0 8px!important;
