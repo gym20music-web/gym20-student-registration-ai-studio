@@ -1256,5 +1256,47 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }
   `;
   document.head.appendChild(unified24Css);
+
+  // Keep every control in the term date/picker row precisely 24px tall.
+  const termFields24Css=document.createElement('style');
+  termFields24Css.id='gym20TermFields24Css';
+  termFields24Css.textContent=`
+    #studentTermsTab .st-term-grid .st-date-wrap,
+    #studentTermsTab .st-term-grid input[data-jalali-date],
+    #studentTermsTab .st-term-grid .st-calendar-btn,
+    #studentTermsTab .st-term-picker-row .st-custom-select,
+    #studentTermsTab .st-term-picker-row .st-custom-select-trigger,
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term,
+    #studentTermsTab .st-term-picker-row .st-btn{
+      box-sizing:border-box!important;
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding-top:0!important;padding-bottom:0!important;
+      line-height:22px!important;
+    }
+    #studentTermsTab .st-term-grid input[data-jalali-date]{
+      width:100%!important;min-width:0!important;
+      padding-inline:6px!important;font-size:9px!important;
+    }
+    #studentTermsTab .st-term-grid .st-date-wrap{
+      display:flex!important;align-items:center!important;gap:3px!important;
+    }
+    #studentTermsTab .st-term-grid .st-calendar-btn{
+      width:24px!important;min-width:24px!important;flex:0 0 24px!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      padding:0!important;
+    }
+    #studentTermsTab .st-term-picker-row .st-custom-select-trigger{
+      display:flex!important;align-items:center!important;justify-content:space-between!important;
+      padding-inline:6px!important;font-size:9px!important;
+    }
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term,
+    #studentTermsTab .st-term-picker-row .st-btn{
+      width:24px!important;min-width:24px!important;flex:0 0 24px!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      padding:0!important;
+    }
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term svg{width:13px!important;height:13px!important}
+  `;
+  document.head.appendChild(termFields24Css);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
