@@ -1407,4 +1407,142 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   `;
   document.head.appendChild(sessionControls25Css);
 
+
+  // Final override: target the actual rendered markup after select enhancement.
+  // This intentionally wins over legacy rules in both the module and index.html.
+  const sessionAndCalendarFinalCss=document.createElement('style');
+  sessionAndCalendarFinalCss.id='stSessionAndCalendarFinalCss';
+  sessionAndCalendarFinalCss.textContent=`
+    /* Session editor: four stable columns; weekday/date/time/coach controls share one height. */
+    #adminModal #studentTermsTab .st-session-card{box-sizing:border-box!important;width:100%!important;min-width:0!important;overflow:visible!important}
+    #adminModal #studentTermsTab .st-session-fields-modern{
+      display:grid!important;grid-template-columns:minmax(0,.82fr) minmax(0,1.22fr) minmax(0,1fr) minmax(0,1fr)!important;
+      gap:5px!important;align-items:end!important;width:100%!important;min-width:0!important;box-sizing:border-box!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-weekday,
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field{
+      box-sizing:border-box!important;min-width:0!important;width:100%!important;margin:0!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field{
+      display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-end!important;
+      gap:3px!important;white-space:nowrap!important;text-align:center!important;font-size:8px!important;line-height:1.2!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-weekday{
+      display:flex!important;align-items:center!important;justify-content:center!important;
+      height:27px!important;min-height:27px!important;max-height:27px!important;
+      padding:0 3px!important;overflow:hidden!important;white-space:nowrap!important;
+      border:1px solid rgba(214,179,90,.34)!important;border-radius:6px!important;
+      background:rgba(214,179,90,.09)!important;color:#e8cb7c!important;
+      font:700 8px/25px Vazirmatn,Arial,sans-serif!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>input,
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>.st-custom-select,
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>.st-custom-select>.st-custom-select-trigger,
+    #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>select{
+      display:block!important;box-sizing:border-box!important;width:100%!important;min-width:0!important;
+      height:27px!important;min-height:27px!important;max-height:27px!important;
+      margin:0!important;padding:0 4px!important;border-radius:6px!important;line-height:25px!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-date-input,
+    #adminModal #studentTermsTab .st-session-fields-modern .st-time-input{
+      appearance:none!important;-webkit-appearance:none!important;
+      direction:ltr!important;text-align:center!important;white-space:nowrap!important;
+      font-family:Montserrat,Arial,sans-serif!important;font-size:9px!important;font-weight:750!important;
+      font-variant-numeric:lining-nums tabular-nums!important;font-feature-settings:"lnum" 1,"tnum" 1!important;
+      letter-spacing:0!important;color-scheme:dark!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-time-input{
+      cursor:text!important;pointer-events:auto!important;background-image:none!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-custom-select{
+      position:relative!important;display:block!important;width:100%!important;min-width:0!important;
+      height:27px!important;min-height:27px!important;max-height:27px!important;overflow:visible!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-custom-select-native{display:none!important}
+    #adminModal #studentTermsTab .st-session-fields-modern .st-custom-select-trigger{
+      display:flex!important;align-items:center!important;justify-content:center!important;gap:0!important;
+      width:100%!important;height:27px!important;min-height:27px!important;max-height:27px!important;
+      padding:0 3px!important;overflow:hidden!important;text-align:center!important;white-space:nowrap!important;
+      font:700 8px/25px Vazirmatn,Arial,sans-serif!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-custom-value{
+      display:block!important;flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;
+      text-align:center!important;text-overflow:clip!important;white-space:nowrap!important;
+    }
+    #adminModal #studentTermsTab .st-session-fields-modern .st-custom-arrow{display:none!important}
+    #adminModal #studentTermsTab .st-session-head{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
+    #adminModal #studentTermsTab .st-session-head .st-session-calendar{
+      box-sizing:border-box!important;flex:0 0 27px!important;width:27px!important;height:27px!important;
+      min-width:27px!important;min-height:27px!important;max-height:27px!important;padding:0!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    }
+    #adminModal #studentTermsTab .st-session-head .st-row-delete{
+      box-sizing:border-box!important;height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding:0 6px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    }
+    /* Term date inputs and their calendar launchers use the same compact baseline. */
+    #adminModal #studentTermsTab .st-term-grid .st-date-wrap{display:flex!important;align-items:center!important;gap:4px!important;min-width:0!important}
+    #adminModal #studentTermsTab .st-term-grid input[data-jalali-date]{
+      box-sizing:border-box!important;height:27px!important;min-height:27px!important;max-height:27px!important;
+      min-width:0!important;padding:0 5px!important;direction:ltr!important;text-align:center!important;
+      font:700 9px/25px Montserrat,Arial,sans-serif!important;font-variant-numeric:tabular-nums!important;
+    }
+    #adminModal #studentTermsTab .st-term-grid .st-calendar-btn{
+      box-sizing:border-box!important;flex:0 0 27px!important;width:27px!important;height:27px!important;
+      min-width:27px!important;min-height:27px!important;max-height:27px!important;padding:0!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    }
+    /* Both single-date and multi-date Jalali calendars. */
+    .st-jcal{
+      box-sizing:border-box!important;width:252px!important;max-width:calc(100vw - 16px)!important;
+      padding:9px!important;border-radius:11px!important;direction:rtl!important;
+    }
+    .st-jcal .st-jcal-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:7px!important;margin:0 0 7px!important}
+    .st-jcal .st-jcal-head button{
+      box-sizing:border-box!important;width:27px!important;height:27px!important;min-width:27px!important;
+      min-height:27px!important;max-height:27px!important;padding:0!important;display:flex!important;
+      align-items:center!important;justify-content:center!important;font:700 13px/25px Montserrat,Arial,sans-serif!important;
+    }
+    .st-jcal .st-jcal-head b{font:800 10px/27px Vazirmatn,Arial,sans-serif!important}
+    .st-jcal .st-jcal-grid{
+      display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important;
+      grid-auto-rows:29px!important;gap:3px!important;align-items:stretch!important;
+    }
+    .st-jcal .st-jcal-grid>span,
+    .st-jcal .st-jcal-grid>i,
+    .st-jcal .st-jcal-grid>.st-jcal-day{
+      box-sizing:border-box!important;width:100%!important;height:29px!important;min-height:29px!important;
+      max-height:29px!important;margin:0!important;padding:0!important;display:flex!important;
+      align-items:center!important;justify-content:center!important;border-radius:6px!important;
+      font-family:Vazirmatn,Arial,sans-serif!important;font-size:9px!important;line-height:1!important;
+    }
+    .st-jcal .st-jcal-grid>span{border:0!important;background:transparent!important;color:#d8bc78!important;font-weight:800!important}
+    .st-jcal .st-jcal-grid>i{border:0!important;background:transparent!important}
+    .st-jcal .st-jcal-day{cursor:pointer!important}
+    .st-jcal .st-jcal-day:disabled{opacity:.3!important;cursor:not-allowed!important}
+    .st-jcal .st-muted{font-size:8px!important;line-height:1.5!important}
+    .st-jcal [data-confirm]{
+      box-sizing:border-box!important;min-height:27px!important;height:27px!important;padding:0 8px!important;
+      font:700 8px/25px Vazirmatn,Arial,sans-serif!important;white-space:nowrap!important;
+    }
+    @media(max-width:600px){
+      #adminModal #studentTermsTab .st-session-fields-modern{grid-template-columns:minmax(0,.78fr) minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr)!important;gap:4px!important}
+      #adminModal #studentTermsTab .st-session-fields-modern>.st-session-weekday,
+      #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>input,
+      #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>.st-custom-select,
+      #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>.st-custom-select>.st-custom-select-trigger,
+      #adminModal #studentTermsTab .st-session-fields-modern>.st-session-field>select{height:27px!important;min-height:27px!important;max-height:27px!important}
+      #adminModal #studentTermsTab .st-session-fields-modern .st-date-input{font-size:8px!important}
+      #adminModal #studentTermsTab .st-session-fields-modern .st-time-input{font-size:9px!important}
+      #adminModal #studentTermsTab .st-session-fields-modern .st-custom-select-trigger{font-size:7.5px!important}
+    }
+    @media(max-width:360px){
+      #adminModal #studentTermsTab .st-session-fields-modern{grid-template-columns:minmax(0,.72fr) minmax(0,1.18fr) minmax(0,1fr) minmax(0,1fr)!important;gap:3px!important}
+      .st-jcal{width:244px!important;padding:8px!important}
+      .st-jcal .st-jcal-grid{grid-auto-rows:27px!important;gap:2px!important}
+      .st-jcal .st-jcal-grid>span,.st-jcal .st-jcal-grid>i,.st-jcal .st-jcal-grid>.st-jcal-day{height:27px!important;min-height:27px!important;max-height:27px!important}
+    }
+  `;
+  document.head.appendChild(sessionAndCalendarFinalCss);
+
 })();
