@@ -530,7 +530,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
       '<div class="st-reminder-layout">'+
       '<div class="st-reminder-label-row"><label for="stReminder1Hours">ساعت یادآوری اول</label><label for="stReminder2Hours">ساعت یادآوری دوم</label></div>'+
-      '<div class="st-reminder-input-row"><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶"><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲"></div>'+
+      '<div class="st-reminder-input-row"><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶" style="height:16px!important;min-height:16px!important;max-height:16px!important;padding:0 3px!important;font:600 7px/14px Vazirmatn,sans-serif!important"><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲" style="height:16px!important;min-height:16px!important;max-height:16px!important;padding:0 3px!important;font:600 7px/14px Vazirmatn,sans-serif!important"></div>'+
       '<div class="st-reminder-action-row"><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div>'+
       '<div class="st-reminder-save-row"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره اعلان‌ها</button></div>'+
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
@@ -565,19 +565,17 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       }`;
     document.head.appendChild(reminderCompactCss);
 
-    /* Last-word sizing for the two reminder-hour number boxes. */
+    /* Force compact sizing directly on the reminder inputs; inline important wins over legacy theme rules. */
     const reminderHourFinalCss=document.createElement('style');
     reminderHourFinalCss.id='stReminderHourFinalCss';
     reminderHourFinalCss.textContent=`
-      #stPushCard.st-needs-student .st-reminder-input-row input#stReminder1Hours,
-      #stPushCard.st-needs-student .st-reminder-input-row input#stReminder2Hours{
-        box-sizing:border-box!important;width:100%!important;height:21px!important;min-height:21px!important;max-height:21px!important;
-        padding:0 4px!important;font-size:9px!important;line-height:19px!important;font-weight:600!important;
+      #stPushCard #stReminder1Hours,#stPushCard #stReminder2Hours{
+        box-sizing:border-box!important;width:100%!important;height:16px!important;min-height:16px!important;max-height:16px!important;
+        padding:0 3px!important;font-size:7px!important;line-height:14px!important;border-radius:4px!important;
       }
       @media(max-width:720px){
-        #stPushCard.st-needs-student .st-reminder-input-row input#stReminder1Hours,
-        #stPushCard.st-needs-student .st-reminder-input-row input#stReminder2Hours{
-          height:19px!important;min-height:19px!important;max-height:19px!important;font-size:8px!important;line-height:17px!important;
+        #stPushCard #stReminder1Hours,#stPushCard #stReminder2Hours{
+          height:15px!important;min-height:15px!important;max-height:15px!important;font-size:7px!important;line-height:13px!important;
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
