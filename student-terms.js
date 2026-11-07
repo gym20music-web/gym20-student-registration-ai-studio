@@ -565,6 +565,23 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       }`;
     document.head.appendChild(reminderCompactCss);
 
+    /* Last-word sizing for the two reminder-hour number boxes. */
+    const reminderHourFinalCss=document.createElement('style');
+    reminderHourFinalCss.id='stReminderHourFinalCss';
+    reminderHourFinalCss.textContent=`
+      #stPushCard.st-needs-student .st-reminder-input-row input#stReminder1Hours,
+      #stPushCard.st-needs-student .st-reminder-input-row input#stReminder2Hours{
+        box-sizing:border-box!important;width:100%!important;height:21px!important;min-height:21px!important;max-height:21px!important;
+        padding:0 4px!important;font-size:9px!important;line-height:19px!important;font-weight:600!important;
+      }
+      @media(max-width:720px){
+        #stPushCard.st-needs-student .st-reminder-input-row input#stReminder1Hours,
+        #stPushCard.st-needs-student .st-reminder-input-row input#stReminder2Hours{
+          height:19px!important;min-height:19px!important;max-height:19px!important;font-size:8px!important;line-height:17px!important;
+        }
+      }`;
+    document.head.appendChild(reminderHourFinalCss);
+
     bindJalaliDates(p);
     enhanceAllSelects(p);
     const selectObserver=new MutationObserver(records=>records.forEach(rec=>{if(rec.type!=='childList')return;if(rec.target.tagName==='SELECT')refreshCustomSelect(rec.target);rec.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.('#studentTermsTab select'))enhanceSelect(n);n.querySelectorAll?.('#studentTermsTab select,select').forEach(enhanceSelect);}});}));
