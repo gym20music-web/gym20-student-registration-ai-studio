@@ -1125,5 +1125,54 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }
   `;
   document.head.appendChild(publicLinkButtonsCss);
+
+  // Normalize all reminder and immediate-notification controls to the same compact dimensions.
+  const notificationControlsCss=document.createElement('style');
+  notificationControlsCss.id='gym20NotificationControlsUniformCss';
+  notificationControlsCss.textContent=`
+    #stPushCard #stReminder1Hours,
+    #stPushCard #stReminder2Hours,
+    #stPushCard .st-reminder-action-row > .st-edit-template,
+    #stPushCard #stSavePushTemplates,
+    #stPushCard #stCustomPushText,
+    #stPushCard #stSendCustomPush{
+      box-sizing:border-box!important;
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      width:auto;
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding:3px 6px!important;
+      margin:0!important;
+      border-radius:6px!important;
+      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
+      font-size:8px!important;font-weight:600!important;
+      line-height:1!important;
+      text-align:center!important;
+      vertical-align:middle!important;
+    }
+    #stPushCard #stReminder1Hours,
+    #stPushCard #stReminder2Hours{
+      width:100%!important;
+      direction:ltr!important;
+      font-family:Montserrat,Vazirmatn,Arial,sans-serif!important;
+      font-variant-numeric:lining-nums tabular-nums!important;
+    }
+    #stPushCard #stCustomPushText{
+      display:block!important;
+      width:100%!important;
+      min-width:0!important;
+      resize:none!important;
+      overflow:hidden!important;
+      white-space:nowrap!important;
+    }
+    #stPushCard .st-reminder-action-row > .st-edit-template,
+    #stPushCard #stSavePushTemplates,
+    #stPushCard #stSendCustomPush{
+      flex:0 0 auto!important;
+      white-space:nowrap!important;
+    }
+  `;
+  document.head.appendChild(notificationControlsCss);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
