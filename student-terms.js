@@ -1385,4 +1385,24 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     termFieldLabelCenterCss.id='stTermFieldLabelCenterCss';
     termFieldLabelCenterCss.textContent='#studentTermsTab .st-term-grid>.st-field>label{display:block!important;width:100%!important;text-align:center!important;align-self:stretch!important}';
     document.head.appendChild(termFieldLabelCenterCss);
-  })();
+
+  // Final 25px session controls: centered labels, readable date, English time, clean coach selector.
+  const sessionControls25Css=document.createElement('style');
+  sessionControls25Css.id='stSessionControls25Css';
+  sessionControls25Css.textContent=`
+    #studentTermsTab .st-session-fields-modern{grid-template-columns:minmax(46px,.68fr) minmax(88px,1.25fr) minmax(68px,.95fr) minmax(70px,1fr)!important;gap:4px!important;align-items:end!important}
+    #studentTermsTab .st-session-fields-modern .st-session-field{text-align:center!important;align-items:stretch!important}
+    #studentTermsTab .st-session-fields-modern .st-session-weekday,#studentTermsTab .st-session-fields-modern input,#studentTermsTab .st-session-fields-modern select,#studentTermsTab .st-session-fields-modern .st-custom-select,#studentTermsTab .st-session-fields-modern .st-custom-select-trigger{box-sizing:border-box!important;height:25px!important;min-height:25px!important;max-height:25px!important;padding:0 3px!important;line-height:23px!important;font-size:8px!important;border-radius:5px!important}
+    #studentTermsTab .st-session-fields-modern .st-session-weekday{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;white-space:nowrap!important}
+    #studentTermsTab .st-session-fields-modern .st-date-input{width:100%!important;min-width:0!important;direction:ltr!important;text-align:center!important;font:700 8px/23px Montserrat,Vazirmatn,Arial,sans-serif!important;letter-spacing:0!important;font-variant-numeric:tabular-nums!important}
+    #studentTermsTab .st-session-fields-modern .st-time-input{width:100%!important;min-width:0!important;direction:ltr!important;text-align:center!important;appearance:none!important;-webkit-appearance:none!important;color-scheme:dark!important;font:700 9px/23px Montserrat,Arial,sans-serif!important;font-variant-numeric:tabular-nums!important;letter-spacing:0!important}
+    #studentTermsTab .st-session-fields-modern .st-time-input::-webkit-calendar-picker-indicator,#studentTermsTab .st-session-fields-modern .st-time-input::-webkit-clear-button,#studentTermsTab .st-session-fields-modern .st-time-input::-webkit-inner-spin-button{display:none!important;-webkit-appearance:none!important;appearance:none!important}
+    #studentTermsTab .st-session-fields-modern .st-custom-select-trigger{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;text-align:center!important;font-size:8px!important;white-space:nowrap!important}
+    #studentTermsTab .st-session-fields-modern .st-custom-value{flex:1 1 auto!important;min-width:0!important;text-align:center!important}
+    #studentTermsTab .st-session-fields-modern .st-custom-arrow{display:none!important}
+    @media(max-width:720px){#studentTermsTab .st-session-fields-modern{grid-template-columns:minmax(43px,.68fr) minmax(84px,1.25fr) minmax(64px,.95fr) minmax(66px,1fr)!important;gap:3px!important}}
+    @media(max-width:390px){#studentTermsTab .st-session-fields-modern{grid-template-columns:minmax(39px,.65fr) minmax(78px,1.25fr) minmax(59px,.95fr) minmax(62px,1fr)!important;gap:3px!important}#studentTermsTab .st-session-fields-modern .st-date-input{font-size:7.5px!important}#studentTermsTab .st-session-fields-modern .st-time-input{font-size:8px!important}}
+  `;
+  document.head.appendChild(sessionControls25Css);
+
+})();
