@@ -545,6 +545,26 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '#stPushCard.st-needs-student>*{display:none!important}';
     document.head.appendChild(noStudentPushCss);
 
+    /* Compact reminder hour fields to reduce vertical scrolling. */
+    const reminderCompactCss=document.createElement('style');
+    reminderCompactCss.id='stReminderCompactFinalCss';
+    reminderCompactCss.textContent=`
+      #stPushCard .st-reminder-layout{padding:5px!important;gap:3px!important;margin:4px 0 6px!important}
+      #stPushCard .st-reminder-label-row{gap:5px!important}
+      #stPushCard .st-reminder-label-row label{font-size:8px!important;line-height:1.15!important;margin:0!important}
+      #stPushCard .st-reminder-input-row{gap:5px!important}
+      #stPushCard .st-reminder-input-row input{box-sizing:border-box!important;height:20px!important;min-height:20px!important;max-height:20px!important;padding:1px 4px!important;font-size:9px!important;line-height:18px!important;border-radius:5px!important}
+      #stPushCard .st-reminder-action-row{gap:5px!important;margin-top:1px!important}
+      #stPushCard .st-reminder-action-row .st-btn{height:22px!important;min-height:22px!important;padding:1px 5px!important;font-size:8px!important;line-height:18px!important}
+      #stPushCard .st-reminder-save-row{margin-top:2px!important}
+      #stPushCard #stSavePushTemplates{height:24px!important;min-height:24px!important;padding:2px 9px!important;font-size:8px!important}
+      @media(max-width:420px){
+        #stPushCard .st-reminder-layout{padding:4px!important;margin:3px 0 5px!important}
+        #stPushCard .st-reminder-input-row input{height:19px!important;min-height:19px!important;max-height:19px!important;font-size:8px!important;line-height:17px!important}
+        #stPushCard .st-reminder-label-row label{font-size:7.5px!important}
+      }`;
+    document.head.appendChild(reminderCompactCss);
+
     bindJalaliDates(p);
     enhanceAllSelects(p);
     const selectObserver=new MutationObserver(records=>records.forEach(rec=>{if(rec.type!=='childList')return;if(rec.target.tagName==='SELECT')refreshCustomSelect(rec.target);rec.addedNodes.forEach(n=>{if(n.nodeType===1){if(n.matches?.('#studentTermsTab select'))enhanceSelect(n);n.querySelectorAll?.('#studentTermsTab select,select').forEach(enhanceSelect);}});}));
