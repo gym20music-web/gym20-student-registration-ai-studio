@@ -1298,5 +1298,67 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     #studentTermsTab .st-term-picker-row .st-icon-delete-term svg{width:13px!important;height:13px!important}
   `;
   document.head.appendChild(termFields24Css);
+
+  // Keep the four student-link actions compact and visually consistent.
+  const publicActions24Css=document.createElement('style');
+  publicActions24Css.id='gym20PublicActions24Css';
+  publicActions24Css.textContent=`
+    #studentTermsTab .st-public-link .st-public-actions{
+      display:grid!important;
+      grid-template-columns:repeat(4,minmax(0,1fr))!important;
+      align-items:stretch!important;
+      gap:5px!important;
+      margin-top:4px!important;
+      width:100%!important;
+    }
+    #studentTermsTab .st-public-link .st-public-actions .st-btn{
+      box-sizing:border-box!important;
+      display:flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      width:100%!important;
+      min-width:0!important;
+      height:24px!important;
+      min-height:24px!important;
+      max-height:24px!important;
+      margin:0!important;
+      padding:0 3px!important;
+      border:1px solid rgba(214,179,90,.48)!important;
+      border-radius:6px!important;
+      background:linear-gradient(145deg,rgba(214,179,90,.17),rgba(214,179,90,.07))!important;
+      color:#f0d58e!important;
+      font-family:Vazirmatn,Montserrat,sans-serif!important;
+      font-size:8px!important;
+      font-weight:750!important;
+      line-height:1!important;
+      text-align:center!important;
+      text-decoration:none!important;
+      white-space:nowrap!important;
+      overflow:hidden!important;
+      text-overflow:clip!important;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+      cursor:pointer!important;
+    }
+    #studentTermsTab .st-public-link .st-public-actions .st-btn:hover{
+      border-color:#d6b35a!important;
+      background:rgba(214,179,90,.23)!important;
+      color:#fff0c2!important;
+    }
+    #studentTermsTab .st-public-link .st-public-actions .st-btn:focus-visible{
+      outline:2px solid rgba(229,195,110,.8)!important;
+      outline-offset:2px!important;
+    }
+    #studentTermsTab .st-public-link .st-public-actions .st-btn:active{
+      transform:translateY(1px)!important;
+    }
+    @media(max-width:390px){
+      #studentTermsTab .st-public-link .st-public-actions{gap:3px!important}
+      #studentTermsTab .st-public-link .st-public-actions .st-btn{
+        padding:0 2px!important;font-size:7.5px!important;border-radius:5px!important;
+      }
+    }
+  `;
+  document.head.appendChild(publicActions24Css);
+
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
