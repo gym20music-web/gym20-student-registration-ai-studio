@@ -521,75 +521,6 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
-
-    /* GYM20 visual editor pilot: safe layout/style editing for schedule-tab elements. */
-    const visualEditorCss=document.createElement('style');
-    visualEditorCss.id='gym20VisualEditorPilotCss';
-    visualEditorCss.textContent=`
-      #studentTermsTab .g20-ve-toolbar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 10px;padding:8px;border:1px solid #80652f;border-radius:9px;background:#171d27}
-      #studentTermsTab .g20-ve-toolbar strong{color:#e8c46b;font-size:11px}
-      #studentTermsTab .g20-ve-toolbar button{height:30px;min-height:30px;padding:4px 10px;font-size:10px}
-      #g20VisualEditorModal{position:fixed;inset:0;z-index:2147483600;display:flex;align-items:center;justify-content:center;padding:12px;background:#000b;color:#eee;font-family:Vazirmatn,Arial,sans-serif}
-      #g20VisualEditorModal[hidden]{display:none!important}
-      #g20VisualEditorModal .g20-ve-panel{width:min(920px,100%);max-height:92dvh;overflow:auto;background:#151c27;border:1px solid #9b7938;border-radius:13px;padding:12px;box-shadow:0 18px 55px #000b}
-      #g20VisualEditorModal .g20-ve-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
-      #g20VisualEditorModal .g20-ve-head h3{font-size:14px;color:#f0d58a;margin:0}
-      #g20VisualEditorModal .g20-ve-close{font-size:22px!important;min-width:32px;height:32px!important}
-      #g20VisualEditorModal .g20-ve-layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:10px}
-      #g20VisualEditorModal .g20-ve-canvas{min-width:0;max-height:55dvh;overflow:auto;border:1px dashed #66542e;border-radius:9px;padding:8px;background:#0f141c}
-      #g20VisualEditorModal .g20-ve-canvas .g20-ve-target{outline:1px dashed transparent;cursor:pointer}
-      #g20VisualEditorModal .g20-ve-canvas .g20-ve-target.g20-ve-selected{outline:2px solid #e7bd59!important;outline-offset:2px;position:relative}
-      #g20VisualEditorModal .g20-ve-inspector{display:grid;grid-template-columns:1fr 1fr;gap:6px;align-content:start}
-      #g20VisualEditorModal .g20-ve-inspector label{font-size:9px;color:#e7c76e;display:flex;flex-direction:column;gap:3px}
-      #g20VisualEditorModal .g20-ve-inspector input,#g20VisualEditorModal .g20-ve-inspector select{width:100%;min-width:0;height:30px;min-height:30px;font-size:10px;padding:4px;border-radius:6px;background:#0e1520;color:#fff;border:1px solid #4a5260}
-      #g20VisualEditorModal .g20-ve-inspector .wide{grid-column:1/-1}
-      #g20VisualEditorModal .g20-ve-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-      #g20VisualEditorModal .g20-ve-actions button{min-height:32px;font-size:10px}
-      #g20VisualEditorModal .g20-ve-note{font-size:9px;color:#aab3c1;margin:8px 0}
-      @media(max-width:620px){#g20VisualEditorModal .g20-ve-layout{grid-template-columns:1fr}#g20VisualEditorModal .g20-ve-canvas{max-height:38dvh}#g20VisualEditorModal .g20-ve-inspector{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    `;
-    document.head.appendChild(visualEditorCss);
-    const veToolbar=document.createElement('div');veToolbar.className='g20-ve-toolbar';
-    veToolbar.innerHTML='<strong>🎨 ویرایشگر بصری · نمونه برنامه کلاس‌ها</strong><button type="button" class="st-btn" id="g20OpenVisualEditor">ویرایش ظاهر</button>';
-    p.insertBefore(veToolbar,p.firstChild);
-    const veModal=document.createElement('div');veModal.id='g20VisualEditorModal';veModal.hidden=true;
-    veModal.innerHTML='<section class="g20-ve-panel" role="dialog" aria-modal="true" aria-labelledby="g20VeTitle"><div class="g20-ve-head"><h3 id="g20VeTitle">ویرایشگر بصری GYM20</h3><button type="button" class="st-btn g20-ve-close" id="g20VeClose">×</button></div><p class="g20-ve-note">عنصر را از پیش‌نمایش انتخاب کن. برای شروع، ظاهر و اندازه قابل ویرایش است؛ تغییرات فقط در تب برنامه کلاس‌ها اعمال می‌شود.</p><div class="g20-ve-layout"><div class="g20-ve-canvas" id="g20VeCanvas"></div><div class="g20-ve-inspector" id="g20VeInspector"></div></div><div class="g20-ve-actions"><button type="button" class="st-btn primary" id="g20VeSave">ذخیره این دستگاه</button><button type="button" class="st-btn" id="g20VeReset">بازگردانی تنظیمات نمونه</button></div><p class="g20-ve-note">نمونه آزمایشی: تنظیمات فعلاً در مرورگر همین دستگاه ذخیره می‌شوند؛ اتصال ذخیره‌سازی مشترک Supabase در مرحله بعد اضافه می‌شود.</p></section>';
-    document.body.appendChild(veModal);
-    const veCanvas=veModal.querySelector('#g20VeCanvas'),veInspector=veModal.querySelector('#g20VeInspector');
-    const veKey='gym20_visual_editor_schedule_pilot_v1';
-    const veTargets=['.st-card','.st-title','.st-field label','.st-field input','.st-field textarea','.st-btn','.st-actions','#stDraftTable','.st-session-card','.st-session-fields'];
-    let veSelected=null,veSaved={};
-    try{veSaved=JSON.parse(localStorage.getItem(veKey)||'{}')}catch(_){}
-    const veGetId=(el)=>{if(!el.dataset.g20VeId)el.dataset.g20VeId='ve-'+Math.random().toString(36).slice(2,10);return el.dataset.g20VeId};
-    const veApply=(el,props)=>{if(!el||!props)return;for(const [k,v] of Object.entries(props)){if(v===null||v==='')continue;el.style.setProperty(k,v,'important')}};
-    const veApplySaved=()=>{p.querySelectorAll('[data-g20-ve-id]').forEach(el=>veApply(el,veSaved[el.dataset.g20VeId]))};
-    const veLabel=el=>{const tag=el.tagName.toLowerCase(),id=el.id?('#'+el.id):'',txt=(el.innerText||el.placeholder||el.getAttribute('aria-label')||'').trim().replace(/\\s+/g,' ').slice(0,30);return tag+id+(txt?' · '+txt:'')};
-    const veField=(label,key,value,type='text',wide=false)=>'<label class="'+(wide?'wide':'')+'">'+label+'<input data-ve-prop="'+key+'" type="'+type+'" value="'+String(value??'').replace(/&/g,'&amp;').replace(/"/g,'&quot;')+'"></label>';
-    const veOpen=()=>{
-      veCanvas.innerHTML='';veInspector.innerHTML='';veSelected=null;
-      const list=[...p.querySelectorAll(veTargets.join(','))].filter(el=>el!==veToolbar&&!el.closest('.g20-ve-toolbar')&&!el.closest('#g20VisualEditorModal')&&el.offsetParent!==null);
-      list.slice(0,180).forEach(el=>{const id=veGetId(el),clone=el.cloneNode(true);clone.removeAttribute('id');clone.querySelectorAll('[id]').forEach(n=>n.removeAttribute('id'));clone.querySelectorAll('button,input,select,textarea').forEach(n=>{n.disabled=true;n.removeAttribute('onclick')});clone.classList.add('g20-ve-target');clone.dataset.veSource=id;clone.style.pointerEvents='auto';const grip=document.createElement('span');grip.textContent='↘';grip.title='کشیدن برای تغییر اندازه';grip.style.cssText='position:absolute;left:0;bottom:0;width:18px;height:18px;display:flex;align-items:center;justify-content:center;background:#e7bd59;color:#111;border-radius:4px;cursor:nwse-resize;font-size:12px;touch-action:none';clone.style.position='relative';clone.appendChild(grip);veCanvas.appendChild(clone);});
-      veApplySaved();
-      veModal.hidden=false;
-    };
-    const veSelect=(id)=>{
-      veSelected=p.querySelector('[data-g20-ve-id="'+id+'"]');veCanvas.querySelectorAll('.g20-ve-target').forEach(el=>el.classList.toggle('g20-ve-selected',el.dataset.veSource===id));
-      if(!veSelected)return;
-      const cs=getComputedStyle(veSelected),props={'width':veSelected.style.width||'', 'height':veSelected.style.height||'', 'font-size':veSelected.style.fontSize||cs.fontSize,'font-weight':veSelected.style.fontWeight||cs.fontWeight,'padding':veSelected.style.padding||cs.padding,'border-radius':veSelected.style.borderRadius||cs.borderRadius,'color':veSelected.style.color||cs.color,'background-color':veSelected.style.backgroundColor||cs.backgroundColor};
-      veInspector.innerHTML='<label class="wide">عنصر انتخاب‌شده<input readonly value="'+veLabel(veSelected).replace(/"/g,'&quot;')+'"></label>'+veField('عرض (px)','width',props.width,'number')+veField('ارتفاع (px)','height',props.height,'number')+veField('فونت (px)','font-size',parseFloat(props['font-size']),'number')+veField('ضخامت','font-weight',props['font-weight'],'number')+veField('فاصله داخلی','padding',props.padding)+veField('گردی گوشه','border-radius',parseFloat(props['border-radius']),'number')+veField('رنگ متن','color',props.color,'color')+veField('رنگ پس‌زمینه','background-color',props['background-color'],'color');
-      veInspector.querySelectorAll('[data-ve-prop]').forEach(inp=>inp.addEventListener('input',()=>{const k=inp.dataset.veProp,v=inp.value;const cssVal=(k==='width'||k==='height'||k==='font-size'||k==='border-radius')?(v===''?'':v+'px'):v;veSelected.style.setProperty(k,cssVal,'important');const id=veGetId(veSelected);veSaved[id]={...(veSaved[id]||{}),[k]:cssVal};}));
-    };
-    veCanvas.addEventListener('click',e=>{const clone=e.target.closest('.g20-ve-target');if(!clone)return;const id=clone.dataset.veSource;const original=p.querySelector('[data-g20-ve-id="'+id+'"]');if(original)veSelect(id);});
-    let veDrag=null;
-    veCanvas.addEventListener('pointerdown',e=>{const clone=e.target.closest('.g20-ve-target');if(!clone)return;veSelect(clone.dataset.veSource);if(e.target.title==='کشیدن برای تغییر اندازه'){e.preventDefault();veDrag={clone,original:p.querySelector('[data-g20-ve-id="'+clone.dataset.veSource+'"]'),x:e.clientX,y:e.clientY,w:clone.getBoundingClientRect().width,h:clone.getBoundingClientRect().height};clone.setPointerCapture?.(e.pointerId);}});
-    veCanvas.addEventListener('pointermove',e=>{if(!veDrag)return;const dx=e.clientX-veDrag.x,dy=e.clientY-veDrag.y,w=Math.max(28,Math.round(veDrag.w-dx)),h=Math.max(24,Math.round(veDrag.h+dy));veDrag.clone.style.width=w+'px';veDrag.clone.style.height=h+'px';if(veDrag.original){veDrag.original.style.setProperty('width',w+'px','important');veDrag.original.style.setProperty('height',h+'px','important');const id=veGetId(veDrag.original);veSaved[id]={...(veSaved[id]||{}),width:w+'px',height:h+'px'};}});
-    veCanvas.addEventListener('pointerup',()=>veDrag=null);veCanvas.addEventListener('pointercancel',()=>veDrag=null);
-    p.querySelector('#g20OpenVisualEditor').addEventListener('click',veOpen);
-    veModal.querySelector('#g20VeClose').addEventListener('click',()=>veModal.hidden=true);
-    veModal.querySelector('#g20VeSave').addEventListener('click',()=>{try{localStorage.setItem(veKey,JSON.stringify(veSaved));say('ظاهر نمونه در همین مرورگر ذخیره شد.');}catch(e){say('ذخیره مرورگر انجام نشد: '+e.message,true)}});
-    veModal.querySelector('#g20VeReset').addEventListener('click',()=>{if(!confirm('تنظیمات ظاهری نمونه بازگردانی شود؟'))return;veSaved={};localStorage.removeItem(veKey);p.querySelectorAll('[data-g20-ve-id]').forEach(el=>{el.removeAttribute('style')});veOpen();});
-    p.querySelectorAll(veTargets.join(',')).forEach(el=>{if(el!==veToolbar&&!el.closest('.g20-ve-toolbar')){veGetId(el);veApply(el,veSaved[el.dataset.g20VeId])}});
-    
     const save=$('autoCommitBtn');work.insertBefore(p,save||null);
     /* Student menu stays inside its picker so its position and theme remain scoped to the admin panel. */
     const termCard=p.querySelector('.st-create-compact'),schedulePanel=p.querySelector('#stSchedule');if(termCard&&schedulePanel)termCard.appendChild(schedulePanel);
@@ -605,7 +536,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
       '<div id="stTemplateModal" class="st-template-modal" hidden><div class="st-template-modal-backdrop" data-template-close></div><section class="st-template-dialog" role="dialog" aria-modal="true" aria-labelledby="stTemplateModalTitle"><div class="st-template-dialog-head"><div><small>GYM20 · NOTIFICATION</small><b id="stTemplateModalTitle">ویرایش متن یادآوری</b></div><button type="button" class="st-template-close" data-template-close aria-label="بستن">×</button></div><p class="st-template-hint">متن پیام را ویرایش کن. متغیرهایی مثل {student} و {time} را برای جایگذاری خودکار حفظ کن.</p><textarea id="stTemplateModalText" rows="6" maxlength="1000" placeholder="متن یادآوری را بنویس…"></textarea><div class="st-template-dialog-actions"><button type="button" class="st-btn" id="stTemplateCancel">انصراف</button><button type="button" class="st-btn primary" id="stTemplateApply">اعمال متن</button></div></section></div>'+
       
-      '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><textarea id="stCustomPushText" rows="1" maxlength="1200" placeholder="متن اعلان فوری…"></textarea></div><div class="st-field st-send-push-field"><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
+      '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><textarea id="stCustomPushText" rows="1" maxlength="1200" placeholder="متن اعلان فوری…"></textarea></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
@@ -1164,84 +1095,5 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }
   `;
   document.head.appendChild(adminPilotCss);
-
-  // Match all four student-link actions to the existing Telegram-share button dimensions.
-  const publicLinkButtonsCss=document.createElement('style');
-  publicLinkButtonsCss.id='gym20PublicLinkButtonsUniformCss';
-  publicLinkButtonsCss.textContent=`
-    #studentTermsTab #stPublicLinkBox .st-public-actions > #stCopyPublicLinkBtn,
-    #studentTermsTab #stPublicLinkBox .st-public-actions > #stSharePublicLinkBtn,
-    #studentTermsTab #stPublicLinkBox .st-public-actions > #stRenewPublicLinkBtn,
-    #studentTermsTab #stPublicLinkBox .st-public-actions > #stViewPublicLinkBtn{
-      box-sizing:border-box!important;
-      display:inline-flex!important;
-      align-items:center!important;
-      justify-content:center!important;
-      height:24px!important;min-height:24px!important;max-height:24px!important;
-      padding:3px 6px!important;
-      margin:0!important;
-      border-radius:6px!important;
-      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
-      font-size:8px!important;font-weight:600!important;
-      line-height:1!important;
-      white-space:nowrap!important;
-      text-decoration:none!important;
-      vertical-align:middle!important;
-    }
-    #studentTermsTab #stPublicLinkBox .st-public-actions{
-      display:flex!important;align-items:center!important;
-      flex-wrap:wrap!important;gap:4px!important;
-    }
-  `;
-  document.head.appendChild(publicLinkButtonsCss);
-
-  // Normalize all reminder and immediate-notification controls to the same compact dimensions.
-  const notificationControlsCss=document.createElement('style');
-  notificationControlsCss.id='gym20NotificationControlsUniformCss';
-  notificationControlsCss.textContent=`
-    #stPushCard #stReminder1Hours,
-    #stPushCard #stReminder2Hours,
-    #stPushCard .st-reminder-action-row > .st-edit-template,
-    #stPushCard #stSavePushTemplates,
-    #stPushCard #stCustomPushText,
-    #stPushCard #stSendCustomPush{
-      box-sizing:border-box!important;
-      display:inline-flex!important;
-      align-items:center!important;
-      justify-content:center!important;
-      width:auto;
-      height:24px!important;min-height:24px!important;max-height:24px!important;
-      padding:3px 6px!important;
-      margin:0!important;
-      border-radius:6px!important;
-      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
-      font-size:8px!important;font-weight:600!important;
-      line-height:1!important;
-      text-align:center!important;
-      vertical-align:middle!important;
-    }
-    #stPushCard #stReminder1Hours,
-    #stPushCard #stReminder2Hours{
-      width:100%!important;
-      direction:ltr!important;
-      font-family:Montserrat,Vazirmatn,Arial,sans-serif!important;
-      font-variant-numeric:lining-nums tabular-nums!important;
-    }
-    #stPushCard #stCustomPushText{
-      display:block!important;
-      width:100%!important;
-      min-width:0!important;
-      resize:none!important;
-      overflow:hidden!important;
-      white-space:nowrap!important;
-    }
-    #stPushCard .st-reminder-action-row > .st-edit-template,
-    #stPushCard #stSavePushTemplates,
-    #stPushCard #stSendCustomPush{
-      flex:0 0 auto!important;
-      white-space:nowrap!important;
-    }
-  `;
-  document.head.appendChild(notificationControlsCss);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
