@@ -996,5 +996,104 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     #studentTermsTab .st-schedule-row.live .st-session-state.live{background:#facc15!important;color:#17130a!important;border-color:#fde047!important}
   `;
   document.head.appendChild(liveStateCss);
+
+  // GYM20 compact admin pilot: consistent 24px controls and unified typography.
+  const adminPilotCss=document.createElement('style');
+  adminPilotCss.id='gym20StudentTermsAdminPilotCss';
+  adminPilotCss.textContent=`
+    #studentTermsTab .st-btn,
+    #studentTermsTab button.st-btn,
+    #studentTermsTab .st-term-grid input[data-jalali-date],
+    #studentTermsTab .st-term-grid .st-calendar-btn,
+    #studentTermsTab .st-term-picker-row select,
+    #studentTermsTab .st-term-picker-row .st-custom-select-trigger,
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term,
+    #studentTermsTab #stManualCalendar,
+    #studentTermsTab #stPublish,
+    #studentTermsTab .st-session-fields input,
+    #studentTermsTab .st-session-fields select,
+    #studentTermsTab .st-session-fields-modern input,
+    #studentTermsTab .st-session-fields-modern select,
+    #studentTermsTab .st-row-delete,
+    #stPushCard .st-btn,
+    #stPushCard button,
+    #stPushCard input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]) {
+      box-sizing:border-box!important;
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding:0 6px!important;border-radius:6px!important;
+      font-size:8px!important;line-height:1!important;
+      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
+    }
+    #studentTermsTab .st-term-grid .st-calendar-btn,
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term {
+      width:24px!important;min-width:24px!important;flex:0 0 24px!important;
+      padding:0!important;
+    }
+    #studentTermsTab #stManualCalendar{width:auto!important;white-space:nowrap!important}
+    #studentTermsTab .st-term-grid .st-field label,
+    #studentTermsTab .st-term-picker-field label,
+    #studentTermsTab .st-session-fields label,
+    #studentTermsTab .st-session-fields-modern .st-session-field label,
+    #stPushCard .st-reminder-label-row label,
+    #stPushCard .st-hour-field label {
+      font-size:9px!important;font-weight:800!important;line-height:1.25!important;
+      color:#e8c96f!important;
+    }
+    #studentTermsTab .st-title,
+    #stPushCard .st-push-heading {
+      font-size:9px!important;font-weight:800!important;line-height:1.35!important;
+      color:#e8c96f!important;
+    }
+    #studentTermsTab .st-term-grid input[data-jalali-date],
+    #studentTermsTab .st-session-fields .st-date-input,
+    #studentTermsTab .st-session-fields .st-time-input,
+    #studentTermsTab .st-session-fields-modern input,
+    #studentTermsTab .st-session-fields-modern select,
+    #stPushCard #stReminder1Hours,
+    #stPushCard #stReminder2Hours {
+      direction:ltr!important;text-align:center!important;
+      font-family:Montserrat,Vazirmatn,Arial,sans-serif!important;
+      font-size:8px!important;font-weight:700!important;
+      font-variant-numeric:lining-nums tabular-nums!important;
+      font-feature-settings:"lnum" 1,"tnum" 1!important;
+      letter-spacing:0!important;
+    }
+    #studentTermsTab .st-term-grid input[data-jalali-date]::placeholder{
+      font-size:8px!important;
+    }
+    #studentTermsTab .st-session-head strong{font-size:9px!important;font-weight:800!important}
+    #studentTermsTab .st-session-state{font-size:8px!important}
+    #studentTermsTab .st-muted,
+    #studentTermsTab .st-help,
+    #stPushCard .st-muted,
+    #stPushCard #stPushAdminStatus{font-size:8px!important;line-height:1.4!important}
+    #stPushCard .st-reminder-input-row input{
+      width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;
+      font:700 8px/1 Montserrat,Vazirmatn,Arial,sans-serif!important;
+    }
+    #stPushCard #stPushStatusControls .st-push-toggle,
+    #stPushCard #stPushStudentStatus,
+    #stPushCard #stPushTestAdmin{
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      font-size:8px!important;padding:0 6px!important;
+    }
+    #studentTermsTab .st-jcal-head button,
+    #studentTermsTab .st-jcal-day,
+    .st-jcal .st-jcal-head button,
+    .st-jcal .st-jcal-day,
+    .st-jcal [data-confirm]{
+      min-height:24px!important;height:24px!important;font-size:8px!important;
+      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
+    }
+    @media(max-width:600px){
+      #studentTermsTab .st-term-grid{column-gap:6px!important;row-gap:6px!important}
+      #studentTermsTab .st-term-grid .st-field label{font-size:9px!important;margin-bottom:3px!important}
+      #studentTermsTab .st-session-fields input,
+      #studentTermsTab .st-session-fields select,
+      #studentTermsTab .st-session-fields-modern input,
+      #studentTermsTab .st-session-fields-modern select{height:24px!important;min-height:24px!important}
+    }
+  `;
+  document.head.appendChild(adminPilotCss);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
