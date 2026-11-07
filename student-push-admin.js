@@ -51,12 +51,12 @@
     const style=document.createElement('style');style.id='stPushCompactCss';style.textContent=
       '#stPushCard .st-push-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;margin:2px 0 8px;padding:6px 7px;border:1px solid rgba(214,179,90,.18);border-radius:9px;background:rgba(214,179,90,.025)}'+
       '#stPushCard #stPushStatusControls{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex:1 1 auto;min-width:0;flex-wrap:wrap;margin:0;padding:0;border:0}'+
-      '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{box-sizing:border-box;height:28px;min-height:28px;max-height:28px;padding:0 8px!important;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;font-size:9px!important;line-height:1!important;margin:0!important;border-radius:7px!important;flex:0 0 auto}'+
+      '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{box-sizing:border-box!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 7px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:8px!important;line-height:1!important;margin:0!important;border-radius:6px!important;flex:0 0 auto!important;vertical-align:middle!important}'+
       '#stPushCard .st-push-toggle.is-on{border-color:#16a34a!important;color:#4ade80!important}'+
       '#stPushCard .st-push-dot{width:7px;height:7px;flex:0 0 7px;border-radius:50%;display:inline-block;background:#777}'+
       '#stPushCard .st-push-dot.active{background:#22c55e;box-shadow:0 0 6px #22c55e99}'+
       '#stPushCard .st-push-dot.inactive{background:#ef4444;box-shadow:0 0 6px #ef444499}'+
-      '#stPushCard #stPushStudentStatus{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;height:28px;min-height:28px;max-height:28px;padding:0 8px;border:1px solid rgba(214,179,90,.28);border-radius:7px;background:rgba(214,179,90,.055);font-size:9px;line-height:1!important;color:var(--text-secondary);flex:0 0 auto;white-space:nowrap}'+
+      '#stPushCard #stPushStudentStatus{box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 7px!important;border:1px solid rgba(214,179,90,.28)!important;border-radius:6px!important;background:rgba(214,179,90,.055)!important;font-size:8px!important;line-height:1!important;color:var(--text-secondary)!important;flex:0 0 auto!important;white-space:nowrap!important;vertical-align:middle!important}'+
       '#stPushCard #stPushAdminStatus{font-size:9px;line-height:1.4;margin:0;flex:0 1 auto}'+
       '#stPushCard #stPushTestAdmin{flex:0 0 auto}'+
       '#stPushCard .st-push-heading{margin:5px 0 10px;font-size:12px}'+
