@@ -525,11 +525,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const studentLoadStatusCss=document.createElement('style');
     studentLoadStatusCss.textContent=`
       #studentTermsTab .st-student-card #stStudentLoadStatus{
-        display:block!important;min-height:25px!important;box-sizing:border-box!important;
-        margin:3px 0 0!important;padding:3px 7px!important;
-        border:1px solid rgba(214,179,90,.42)!important;border-radius:6px!important;
-        background:#121b28!important;color:#f5edda!important;
-        font-size:8px!important;line-height:17px!important;
+        display:block!important;min-height:20px!important;box-sizing:border-box!important;
+        margin:2px 0 0!important;padding:1px 7px!important;
+        border:0!important;border-radius:0!important;background:transparent!important;
+        color:#d6b35a!important;font-size:8px!important;line-height:16px!important;
+        text-align:right!important;
       }
       #studentTermsTab .st-student-card #stStudentLoadStatus:empty{display:none!important}
     `;
@@ -622,9 +622,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
-      '#stPushCard.st-needs-student{display:block!important;padding:9px 12px!important;min-height:0!important}'+
-      '#stPushCard.st-needs-student::before{content:"ابتدا هنرجو را انتخاب کنید";display:block!important;text-align:center;color:var(--text-secondary);font-size:12px;font-weight:600;padding:7px 4px}'+
-      '#stPushCard.st-needs-student>*{display:none!important}';
+      '#stPushCard.st-needs-student{display:none!important}'+
+      '#stPushCard.st-needs-student::before{content:none!important}';
     document.head.appendChild(noStudentPushCss);
 
     /* Compact reminder hour fields to reduce vertical scrolling. */
