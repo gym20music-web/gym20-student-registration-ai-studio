@@ -498,6 +498,31 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(termControlsRefineCss);
 
+    /* Student picker: compact 25px trigger and matching active-student status */
+    const studentPickerCompactCss=document.createElement('style');
+    studentPickerCompactCss.textContent=`
+      #studentTermsTab .st-student-card .st-student-trigger{
+        height:25px!important;min-height:25px!important;max-height:25px!important;
+        box-sizing:border-box!important;padding:2px 7px!important;
+        border:1px solid rgba(214,179,90,.42)!important;border-radius:6px!important;
+        background:#121b28!important;color:#f5edda!important;
+        font-size:8px!important;line-height:19px!important;
+      }
+      #studentTermsTab .st-student-card .st-student-trigger #stStudentSelected{
+        font-size:8px!important;line-height:19px!important;
+      }
+      #studentTermsTab .st-student-card .st-picker-arrow{font-size:10px!important}
+      #studentTermsTab .st-student-card #stSummary{
+        display:block!important;box-sizing:border-box!important;
+        min-height:25px!important;margin:3px 0 0!important;padding:3px 7px!important;
+        border:1px solid rgba(214,179,90,.42)!important;border-radius:6px!important;
+        background:#121b28!important;color:#f5edda!important;
+        font-size:8px!important;line-height:17px!important;
+      }
+    `;
+    document.head.appendChild(studentPickerCompactCss);
+
+
     /* Compact term creation controls: 24px, 8px text, gold bold labels */
     const termCreateCompactCss=document.createElement('style');
     termCreateCompactCss.textContent=`
@@ -550,7 +575,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const p=document.createElement('div');p.className='admin-panel-tab';p.id=TAB;
     p.innerHTML=
       '<div class="admin-section-subhead">👥 مدیریت هنرجویان، ترم‌ها و برنامه جلسات</div>'+
-      '<div class="st-card st-student-card"><div class="st-field st-student-select-wrap"><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">در حال دریافت هنرجویان…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
+      '<div class="st-card st-student-card"><div class="st-field st-student-select-wrap"><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">انتخاب هنرجو…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
       '<div class="st-card st-create-compact"><div class="st-title">ساخت ترم و مدیریت ترم‌های قبلی</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
