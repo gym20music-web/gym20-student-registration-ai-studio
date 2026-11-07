@@ -612,7 +612,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
       '<div class="st-reminder-layout">'+
       '<div class="st-reminder-label-row"><label for="stReminder1Hours">ساعت یادآوری اول</label><label for="stReminder2Hours">ساعت یادآوری دوم</label></div>'+
-      '<div class="st-reminder-input-row"><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶" style="height:14px!important;min-height:14px!important;max-height:14px!important;padding:0 2px!important;font:600 7px/12px Vazirmatn,sans-serif!important"><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲" style="height:14px!important;min-height:14px!important;max-height:14px!important;padding:0 2px!important;font:600 7px/12px Vazirmatn,sans-serif!important"></div>'+
+      '<div class="st-reminder-input-row"><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶"><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲" style="height:14px!important;min-height:14px!important;max-height:14px!important;padding:0 2px!important;font:600 7px/12px Vazirmatn,sans-serif!important"></div>'+
       '<div class="st-reminder-action-row"><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div>'+
       '<div class="st-reminder-save-row"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره اعلان‌ها</button></div>'+
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
@@ -1177,5 +1177,84 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }
   `;
   document.head.appendChild(adminPilotCss);
+
+  // Final unified 24px controls for notification + term management.
+  const unified24Css=document.createElement('style');
+  unified24Css.id='gym20Unified24ControlsCss';
+  unified24Css.textContent=`
+    #studentTermsTab .st-term-grid input[data-jalali-date],
+    #studentTermsTab .st-term-grid .st-calendar-btn,
+    #studentTermsTab .st-term-picker-row .st-custom-select-trigger,
+    #studentTermsTab .st-term-picker-row .st-btn,
+    #studentTermsTab .st-term-picker-row .st-icon-delete-term,
+    #studentTermsTab #stManualCalendar,
+    #studentTermsTab #stPublish,
+    #stPushCard .st-push-toolbar button,
+    #stPushCard .st-reminder-input-row input,
+    #stPushCard .st-reminder-action-row button,
+    #stPushCard .st-reminder-save-row button,
+    #stPushCard #stCustomPushText,
+    #stPushCard #stSendCustomPush,
+    #stPushCard #stPushTestAdmin,
+    #stPushCard #stPushStatusControls button,
+    #stPushCard #stPushStatusControls .st-push-toggle,
+    #stPushCard .st-custom-select-trigger,
+    #stPushCard .st-custom-select-menu button {
+      box-sizing:border-box!important;
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding:0 6px!important;
+      font-size:8px!important;line-height:22px!important;
+      border-radius:6px!important;
+      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
+    }
+    #studentTermsTab .st-term-grid .st-calendar-btn{
+      width:24px!important;min-width:24px!important;flex:0 0 24px!important;
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+    }
+    #studentTermsTab .st-term-picker-row .st-custom-select-trigger{
+      width:100%!important;display:flex!important;align-items:center!important;justify-content:space-between!important;
+    }
+    #studentTermsTab .st-term-picker-row .st-btn,
+    #studentTermsTab #stManualCalendar,
+    #studentTermsTab #stPublish,
+    #stPushCard button.st-btn{
+      display:inline-flex!important;align-items:center!important;justify-content:center!important;
+      white-space:nowrap!important;
+    }
+    #stPushCard .st-reminder-input-row input,
+    #stPushCard #stCustomPushText{
+      width:100%!important;min-width:0!important;
+      font-size:9px!important;line-height:22px!important;
+      text-align:center!important;
+    }
+    #stPushCard #stCustomPushText{
+      resize:none!important;overflow:hidden!important;
+    }
+    #stPushCard .st-reminder-action-row button,
+    #stPushCard .st-reminder-save-row button{
+      width:100%!important;
+    }
+    #stPushCard .st-reminder-label-row label,
+    #studentTermsTab .st-term-grid .st-field label,
+    #studentTermsTab .st-term-picker-field label{
+      color:#e8c96f!important;font-size:9px!important;font-weight:800!important;
+      line-height:1.25!important;
+    }
+    @media(max-width:600px){
+      #studentTermsTab .st-term-grid input[data-jalali-date],
+      #studentTermsTab .st-term-grid .st-calendar-btn,
+      #studentTermsTab .st-term-picker-row .st-custom-select-trigger,
+      #studentTermsTab .st-term-picker-row .st-btn,
+      #stPushCard .st-reminder-input-row input,
+      #stPushCard .st-reminder-action-row button,
+      #stPushCard .st-reminder-save-row button,
+      #stPushCard #stCustomPushText,
+      #stPushCard #stSendCustomPush,
+      #stPushCard #stPushTestAdmin{
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+      }
+    }
+  `;
+  document.head.appendChild(unified24Css);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
