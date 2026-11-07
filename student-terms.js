@@ -1376,4 +1376,10 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   document.head.appendChild(publicActions24Css);
 
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
-})();
+
+    /* Center the labels above all three term controls. */
+    const termFieldLabelCenterCss=document.createElement('style');
+    termFieldLabelCenterCss.id='stTermFieldLabelCenterCss';
+    termFieldLabelCenterCss.textContent='#studentTermsTab .st-term-grid>.st-field>label{display:block!important;width:100%!important;text-align:center!important;align-self:stretch!important}';
+    document.head.appendChild(termFieldLabelCenterCss);
+  })();
