@@ -522,6 +522,20 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(studentPickerCompactCss);
 
+    const studentLoadStatusCss=document.createElement('style');
+    studentLoadStatusCss.textContent=`
+      #studentTermsTab .st-student-card #stStudentLoadStatus{
+        display:block!important;min-height:25px!important;box-sizing:border-box!important;
+        margin:3px 0 0!important;padding:3px 7px!important;
+        border:1px solid rgba(214,179,90,.42)!important;border-radius:6px!important;
+        background:#121b28!important;color:#f5edda!important;
+        font-size:8px!important;line-height:17px!important;
+      }
+      #studentTermsTab .st-student-card #stStudentLoadStatus:empty{display:none!important}
+    `;
+    document.head.appendChild(studentLoadStatusCss);
+
+
 
     /* Compact term creation controls: 24px, 8px text, gold bold labels */
     const termCreateCompactCss=document.createElement('style');
@@ -575,7 +589,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const p=document.createElement('div');p.className='admin-panel-tab';p.id=TAB;
     p.innerHTML=
       '<div class="admin-section-subhead">👥 مدیریت هنرجویان، ترم‌ها و برنامه جلسات</div>'+
-      '<div class="st-card st-student-card"><div class="st-field st-student-select-wrap"><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">انتخاب هنرجو…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stSummary" class="st-muted"></div></div>'+
+      '<div class="st-card st-student-card"><div class="st-field st-student-select-wrap"><div class="st-student-picker"><button type="button" id="stStudentTrigger" class="st-student-trigger" aria-expanded="false"><span id="stStudentSelected">انتخاب هنرجو…</span><span class="st-picker-arrow">⌄</span></button><div id="stStudentMenu" class="st-student-menu" hidden></div></div></div><div id="stStudentLoadStatus" class="st-muted"></div><div id="stSummary" class="st-muted"></div></div>'+
       '<div id="stMain" class="st-hide">'+
       '<div class="st-card st-create-compact"><div class="st-title">ساخت ترم و مدیریت ترم‌های قبلی</div><form id="stCreate">'+'<input id="stName" type="hidden">'+
       '<div class="st-grid st-term-grid">'+
@@ -751,7 +765,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
       const selected=S.students.find(x=>String(x.id)===String(S.studentId));$('stStudentSelected').textContent=selected?(selected.full_name||'انتخاب هنرجو…'):'انتخاب هنرجو…';
-      if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else say(fa(S.students.length)+' هنرجوی فعال دریافت شد.');
+      if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else {const status=$('stStudentLoadStatus');if(status)status.textContent=fa(S.students.length)+' هنرجوی فعال دریافت شد.';say('');}
     }catch(e){say(e.message||'دریافت هنرجویان ناموفق بود.',true);}
   }
 
