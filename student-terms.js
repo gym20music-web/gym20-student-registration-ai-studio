@@ -1095,5 +1095,35 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }
   `;
   document.head.appendChild(adminPilotCss);
+
+  // Match all four student-link actions to the existing Telegram-share button dimensions.
+  const publicLinkButtonsCss=document.createElement('style');
+  publicLinkButtonsCss.id='gym20PublicLinkButtonsUniformCss';
+  publicLinkButtonsCss.textContent=`
+    #studentTermsTab #stPublicLinkBox .st-public-actions > #stCopyPublicLinkBtn,
+    #studentTermsTab #stPublicLinkBox .st-public-actions > #stSharePublicLinkBtn,
+    #studentTermsTab #stPublicLinkBox .st-public-actions > #stRenewPublicLinkBtn,
+    #studentTermsTab #stPublicLinkBox .st-public-actions > #stViewPublicLinkBtn{
+      box-sizing:border-box!important;
+      display:inline-flex!important;
+      align-items:center!important;
+      justify-content:center!important;
+      height:24px!important;min-height:24px!important;max-height:24px!important;
+      padding:3px 6px!important;
+      margin:0!important;
+      border-radius:6px!important;
+      font-family:Vazirmatn,Montserrat,Arial,sans-serif!important;
+      font-size:8px!important;font-weight:600!important;
+      line-height:1!important;
+      white-space:nowrap!important;
+      text-decoration:none!important;
+      vertical-align:middle!important;
+    }
+    #studentTermsTab #stPublicLinkBox .st-public-actions{
+      display:flex!important;align-items:center!important;
+      flex-wrap:wrap!important;gap:4px!important;
+    }
+  `;
+  document.head.appendChild(publicLinkButtonsCss);
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
 })();
