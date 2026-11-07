@@ -661,6 +661,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
+    /* Center each reminder-hour caption over its matching input. */
+    const reminderLabelCenterCss=document.createElement('style');
+    reminderLabelCenterCss.id='stReminderLabelCenterCss';
+    reminderLabelCenterCss.textContent='#stPushCard .st-reminder-label-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:center!important}#stPushCard .st-reminder-label-row label{display:block!important;width:100%!important;text-align:center!important;justify-self:stretch!important}';
+    document.head.appendChild(reminderLabelCenterCss);
 
     bindJalaliDates(p);
     enhanceAllSelects(p);
