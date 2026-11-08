@@ -1454,6 +1454,44 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
   if(!document.getElementById('stCalendarActionOrderCss')){const x=document.createElement('style');x.id='stCalendarActionOrderCss';x.textContent="\n#studentTermsTab .st-term-grid>.st-calendar-action-row{\n  grid-column:1/-1!important;display:flex!important;align-items:center!important;\n  justify-content:flex-start!important;gap:8px!important;margin:0!important;\n  padding:2px 0!important;min-width:0!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  width:auto!important;min-width:0!important;height:31px!important;min-height:31px!important;\n  max-height:31px!important;padding:4px 12px!important;border-radius:7px!important;\n  font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCount{font-size:9px!important}\n@media(max-width:600px){\n #studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  height:29px!important;min-height:29px!important;max-height:29px!important;\n  padding:3px 9px!important;font-size:9px!important\n }\n}\n";document.head.appendChild(x);}
 
+    /* Keep calendar action and student-term selector side by side. */
+    const stCalendarTermInlineCss=document.createElement('style');
+    stCalendarTermInlineCss.id='stCalendarTermInlineCss';
+    stCalendarTermInlineCss.textContent=`
+      #studentTermsTab .st-create-compact .st-term-grid{
+        grid-template-columns:repeat(2,minmax(0,1fr))!important;
+        column-gap:10px!important;row-gap:9px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row{
+        grid-column:auto!important;align-self:end!important;
+        min-width:0!important;min-height:36px!important;
+        display:flex!important;align-items:center!important;
+        justify-content:flex-start!important;margin:0!important;padding:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field{
+        grid-column:auto!important;min-width:0!important;margin:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row #stManualCalendar{
+        width:100%!important;height:36px!important;min-height:36px!important;
+        max-height:36px!important;padding:4px 7px!important;
+        font-size:10px!important;white-space:normal!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-picker-row{min-width:0!important}
+      #studentTermsTab .st-create-compact .st-term-picker-row select,
+      #studentTermsTab .st-create-compact .st-term-picker-row .st-custom-select-trigger{
+        min-width:0!important;width:100%!important;box-sizing:border-box!important;
+      }
+      @media(max-width:600px){
+        #studentTermsTab .st-create-compact .st-term-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+        #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row #stManualCalendar{
+          height:34px!important;min-height:34px!important;max-height:34px!important;
+          padding:3px 5px!important;font-size:9px!important;
+        }
+      }
+    `;
+    document.head.appendChild(stCalendarTermInlineCss);
+
+
     /* Center the labels above all three term controls. */
     const termFieldLabelCenterCss=document.createElement('style');
     termFieldLabelCenterCss.id='stTermFieldLabelCenterCss';
