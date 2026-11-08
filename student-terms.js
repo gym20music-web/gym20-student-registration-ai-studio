@@ -706,6 +706,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 14px;width:14px;height:14px;margin:0;padding:0;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .15s,text-shadow .15s,transform .15s}
+      #stPushCard .st-hour-option.is-two-digit{flex-basis:19px;width:19px}
       #stPushCard .st-hour-option.is-selected{margin-inline:4px;color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 8px rgba(246,196,83,.95);transform:scale(1.18)}
       #stPushCard .st-hour-option.is-adjacent{margin-inline:1px}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
@@ -776,7 +777,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       reminderLoops.set(id,loop);
       loop.innerHTML=Array.from({length:75},(_,index)=>{
         const hour=index%25;
-        return '<span class="st-hour-option" data-hour="'+hour+'" data-index="'+index+'" role="option" aria-selected="false">'+hour+'</span>';
+        return '<span class="st-hour-option'+(hour>=10?' is-two-digit':'')+'" data-hour="'+hour+'" data-index="'+index+'" role="option" aria-selected="false">'+hour+'</span>';
       }).join('');
       const commit=()=>{
         const mid=loop.scrollLeft+loop.clientWidth/2;
