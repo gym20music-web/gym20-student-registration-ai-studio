@@ -648,7 +648,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
       '<div class="st-reminder-layout">'+
       '<div class="st-reminder-label-row"><label for="stReminder1Hours">ساعت یادآوری اول</label><label for="stReminder2Hours">ساعت یادآوری دوم</label></div>'+
-      '<div class="st-reminder-input-row"><div class="st-hour-scroll-wrap"><input id="stReminder1Hours" type="hidden" value="6"><div class="st-hour-scroll" data-hour-scroll="stReminder1Hours" role="listbox" aria-label="انتخاب ساعت یادآوری اول" tabindex="0"></div></div><div class="st-hour-scroll-wrap"><input id="stReminder2Hours" type="hidden" value="2"><div class="st-hour-scroll" data-hour-scroll="stReminder2Hours" role="listbox" aria-label="انتخاب ساعت یادآوری دوم" tabindex="0"></div></div></div>'+
+      '<div class="st-reminder-input-row"><div class="st-hour-scroll-wrap"><input id="stReminder1Hours" type="hidden" value="6"><input class="st-hour-range" type="range" min="0" max="24" step="1" value="6" data-hour-range="stReminder1Hours" aria-label="ساعت یادآوری اول"><output class="st-hour-value" for="stReminder1Hours">6</output></div><div class="st-hour-scroll-wrap"><input id="stReminder2Hours" type="hidden" value="2"><input class="st-hour-range" type="range" min="0" max="24" step="1" value="2" data-hour-range="stReminder2Hours" aria-label="ساعت یادآوری دوم"><output class="st-hour-value" for="stReminder2Hours">2</output></div></div>'+
       '<div class="st-reminder-action-row"><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div>'+
       '<div class="st-reminder-save-row"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره اعلان‌ها</button></div>'+
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
@@ -696,35 +696,19 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
-    /* Horizontal 1–24 hour scrollers: preserve the existing 14px/13px box dimensions and 7px type. */
+    /* Compact native hour sliders: reliable mouse/touch drag on desktop and mobile. */
     const hourScrollerCss=document.createElement('style');
     hourScrollerCss.id='stReminderHorizontalScrollerCss';
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
-      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:4px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
-      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:auto!important;cursor:grab;user-select:none;-webkit-user-select:none}
-      #stPushCard .st-hour-scroll.is-dragging{cursor:grabbing;scroll-snap-type:none}
-      #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
-      #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
-      #stPushCard .st-hour-option,#stPushCard .st-hour-option:hover,#stPushCard .st-hour-option:active,#stPushCard .st-hour-option:focus{box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;height:12px!important;min-height:12px!important;padding:0!important;margin:0!important;border:0!important;border-left:0!important;border-right:0!important;outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,transform .18s}
-      #stPushCard .st-hour-option.is-selected{color:#fff!important;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900!important;transform:scale(1.12)}
-      #stPushCard .st-hour-scroll .st-hour-option,
-      #stPushCard .st-hour-scroll .st-hour-option:hover,
-      #stPushCard .st-hour-scroll .st-hour-option:active,
-      #stPushCard .st-hour-scroll .st-hour-option:focus,
-      #stPushCard .st-hour-scroll .st-hour-option:focus-visible{
-        appearance:none!important;-webkit-appearance:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
-        box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;min-width:14px!important;height:12px!important;min-height:12px!important;
-        margin:0!important;padding:0!important;border:0!important;border-inline:0!important;border-left:0!important;border-right:0!important;
-        outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;
-        color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;text-decoration:none!important;
-        position:relative!important;scroll-snap-align:center;cursor:pointer!important;transition:color .18s,text-shadow .18s,transform .18s
-      }
-      #stPushCard .st-hour-scroll .st-hour-option::before,
-      #stPushCard .st-hour-scroll .st-hour-option::after{content:""!important;display:none!important;visibility:hidden!important;width:0!important;height:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
-      #stPushCard .st-hour-option.is-selected{color:#fff!important;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900!important;transform:scale(1.12)}
-      #stPushCard .st-hour-option:focus-visible{outline:0!important;box-shadow:none!important}
-      @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:13px;min-height:13px;max-height:13px}#stPushCard .st-hour-option{height:11px;min-height:11px;line-height:11px}}
+      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:18px;min-height:18px;max-height:18px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:5px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
+      #stPushCard .st-hour-range{appearance:none!important;-webkit-appearance:none!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0 3px!important;border:0!important;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(4.1667% - 1px),rgba(246,196,83,.38) calc(4.1667% - 1px),rgba(246,196,83,.38) 4.1667%)!important;cursor:ew-resize!important;touch-action:pan-x!important;outline:none!important}
+      #stPushCard .st-hour-range::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(246,196,83,.28)}
+      #stPushCard .st-hour-range::-moz-range-track{height:3px;border-radius:3px;background:rgba(246,196,83,.28)}
+      #stPushCard .st-hour-range::-webkit-slider-thumb{-webkit-appearance:none;width:7px;height:7px;margin-top:-2px;border:1px solid #fff;border-radius:50%;background:#f6c453;box-shadow:0 0 5px #f6c453}
+      #stPushCard .st-hour-range::-moz-range-thumb{width:7px;height:7px;border:1px solid #fff;border-radius:50%;background:#f6c453;box-shadow:0 0 5px #f6c453}
+      #stPushCard .st-hour-value{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);min-width:13px;padding:0 2px;border-radius:3px;background:#111a27;color:#fff;font:800 8px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;pointer-events:none;text-shadow:0 0 4px rgba(255,255,255,.65)}
+      @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
     `;
     document.head.appendChild(hourScrollerCss);
 
@@ -765,82 +749,29 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
      $('stTemplateApply').addEventListener('click',()=>{if(activeTemplateId)$(activeTemplateId).value=templateModalText.value;closeTemplateModal();});
      templateModalText.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')$('stTemplateApply').click();if(e.key==='Escape')closeTemplateModal();});
     
-    /* Build swipeable horizontal hour strips while keeping the original setting IDs/values for saving. */
-    const hourScrollerTimers=new Map();
-    function centerHourOption(scroller,value,behavior='auto'){
-      if(!scroller)return;
-      const hour=Math.max(0,Math.min(24,Number(value)||0));
-      const option=scroller.querySelector('[data-hour="'+hour+'"]');
-      if(!option)return;
-      scroller.querySelectorAll('.st-hour-option').forEach(el=>{
-        const selected=el===option;
-        el.classList.toggle('is-selected',selected);
-        el.setAttribute('aria-selected',String(selected));
-      });
-      const position=()=>{
-        if(!scroller.clientWidth)return;
-        const stripRect=scroller.getBoundingClientRect();
-        const optionRect=option.getBoundingClientRect();
-        const target=scroller.scrollLeft+(optionRect.left+optionRect.width/2-stripRect.left-scroller.clientWidth/2);
-        scroller.scrollTo({left:Math.max(0,Math.min(scroller.scrollWidth-scroller.clientWidth,target)),behavior:behavior==='smooth'?'smooth':'auto'});
-      };
-      position();
-      requestAnimationFrame(position);
-    }
+    /* Native range controls: browser-managed pointer/touch dragging, with hidden IDs retained for saving. */
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
-      const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
-      if(!hidden||!scroller)return;
-      scroller.innerHTML=Array.from({length:25},(_,i)=>i).map(hour=>'<span class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false" tabindex="-1">'+hour+'</span>').join('');
-      scroller.querySelectorAll('.st-hour-option').forEach(option=>option.addEventListener('click',()=>{
-        hidden.value=option.dataset.hour;centerHourOption(scroller,hidden.value,'smooth');
-        scroller.querySelectorAll('.st-hour-option').forEach(el=>el.setAttribute('aria-selected',String(el===option)));
-      }));
-      const commitScroll=()=>{
-        const center=scroller.scrollLeft+scroller.clientWidth/2;
-        let closest=null,distance=Infinity;
-        scroller.querySelectorAll('.st-hour-option').forEach(option=>{
-          const mid=option.getBoundingClientRect().left-scroller.getBoundingClientRect().left+option.offsetWidth/2+scroller.scrollLeft,delta=Math.abs(mid-center);
-          if(delta<distance){distance=delta;closest=option;}
-        });
-        if(closest){hidden.value=closest.dataset.hour;scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===closest;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});}
+      const hidden=$(id),range=p.querySelector('[data-hour-range="'+id+'"]');
+      if(!hidden||!range)return;
+      const output=range.parentElement.querySelector('.st-hour-value');
+      const sync=value=>{
+        const n=Math.max(0,Math.min(24,Number(value)||0));
+        hidden.value=String(n);range.value=String(n);
+        if(output)output.textContent=String(n);
+        range.setAttribute('aria-valuenow',String(n));
       };
-      scroller.addEventListener('scroll',()=>{
-        clearTimeout(hourScrollerTimers.get(id));
-        hourScrollerTimers.set(id,setTimeout(commitScroll,90));
-      },{passive:true});
-      scroller.addEventListener('wheel',event=>{if(Math.abs(event.deltaY)>Math.abs(event.deltaX)){event.preventDefault();scroller.scrollLeft+=event.deltaY;}},{passive:false});
-      /* Desktop mouse: click-and-drag the strip horizontally, like a touch swipe. */
-      let dragStartX=0,dragStartScroll=0,dragMoved=false,dragging=false;
-      scroller.addEventListener('pointerdown',event=>{
-        if(event.pointerType!=='mouse'||event.button!==0)return;
-        dragging=true;dragMoved=false;dragStartX=event.clientX;dragStartScroll=scroller.scrollLeft;
-        scroller.classList.add('is-dragging');
-        try{scroller.setPointerCapture(event.pointerId);}catch(_){}
+      sync(hidden.value);
+      range.addEventListener('input',()=>sync(range.value));
+      range.addEventListener('change',()=>sync(range.value));
+      range.addEventListener('wheel',event=>{
         event.preventDefault();
+        const direction=Math.sign(event.deltaY||event.deltaX);
+        sync(Number(range.value)+(direction>0?1:-1));
+      },{passive:false});
+      range.addEventListener('keydown',event=>{
+        if(event.key==='Home')sync(0);
+        else if(event.key==='End')sync(24);
       });
-      scroller.addEventListener('pointermove',event=>{
-        if(!dragging)return;
-        const delta=event.clientX-dragStartX;
-        if(Math.abs(delta)>3)dragMoved=true;
-        scroller.scrollLeft=dragStartScroll-delta;
-      });
-      const endMouseDrag=event=>{
-        if(!dragging)return;
-        dragging=false;scroller.classList.remove('is-dragging');
-        if(dragMoved){event.preventDefault();scroller.dataset.suppressClick='1';setTimeout(()=>delete scroller.dataset.suppressClick,0);}
-        if(event.pointerId!==undefined){try{scroller.releasePointerCapture(event.pointerId);}catch(_){}}
-      };
-      scroller.addEventListener('pointerup',endMouseDrag);
-      scroller.addEventListener('pointercancel',endMouseDrag);
-      scroller.addEventListener('click',event=>{if(scroller.dataset.suppressClick==='1'){event.preventDefault();event.stopPropagation();delete scroller.dataset.suppressClick;}},true);
-      scroller.addEventListener('keydown',event=>{
-        if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
-        event.preventDefault();
-        const current=Number.isInteger(Number(hidden.value))?Number(hidden.value):1;
-        const next=event.key==='Home'?0:event.key==='End'?24:Math.max(0,Math.min(24,current+(event.key==='ArrowRight'?1:-1)));
-        hidden.value=String(next);centerHourOption(scroller,next,'smooth');
-      });
-      centerHourOption(scroller,hidden.value,'instant');
     });
     $('stSendCustomPush').addEventListener('click',sendCustomPush);$('stPushTestAdmin').addEventListener('click',sendTestPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
