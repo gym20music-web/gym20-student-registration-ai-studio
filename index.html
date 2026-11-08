@@ -119,6 +119,26 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .admin-login-lock{color:#c7a957;font-size:1.15rem;}
 .admin-login-input-wrap input{width:100%;min-width:0;height:48px;border:0;outline:0;background:transparent;color:var(--text-primary);font:inherit;font-size:.86rem;direction:rtl;}
 .admin-login-input-wrap input::placeholder{color:var(--text-secondary);opacity:.7;}
+
+/* Keep browser autofill from turning admin login fields white */
+.admin-login-input-wrap input:-webkit-autofill,
+.admin-login-input-wrap input:-webkit-autofill:hover,
+.admin-login-input-wrap input:-webkit-autofill:focus,
+.admin-login-input-wrap input:-webkit-autofill:active{
+ -webkit-text-fill-color:var(--text-primary)!important;
+ caret-color:var(--text-primary)!important;
+ -webkit-box-shadow:0 0 0 1000px var(--surface-card) inset!important;
+ box-shadow:0 0 0 1000px var(--surface-card) inset!important;
+ transition:background-color 999999s ease-out 0s!important;
+ border-radius:8px!important;
+}
+.admin-login-input-wrap input:autofill{
+ color:var(--text-primary)!important;background-color:transparent!important;
+}
+.admin-login-input-wrap:has(input:-webkit-autofill){
+ background:var(--surface-card)!important;
+}
+
 .admin-login-eye{border:0;background:transparent;color:var(--text-secondary);font-size:1.05rem;cursor:pointer;padding:6px;}
 .admin-login-error{min-height:22px;margin-top:7px;text-align:right;color:#fb7185;font-size:.7rem;}
 .admin-login-submit{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:48px;margin-top:7px;border:1px solid rgba(214,179,90,.55);border-radius:11px;background:linear-gradient(110deg,#a98235,#e0c16e);color:#17130a;font-size:.84rem;font-weight:900;cursor:pointer;box-shadow:0 8px 22px rgba(190,150,60,.18);transition:transform .18s,filter .18s;}
