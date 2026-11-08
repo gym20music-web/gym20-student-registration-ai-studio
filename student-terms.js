@@ -340,6 +340,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       @keyframes stClockSheet{from{opacity:.65;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
       @media(prefers-reduced-motion:reduce){.st-time-picker-backdrop,.st-time-picker,.st-time-wheel-item{animation:none!important;transition:none!important}}
     `;
+    document.head.appendChild(sessionTimePickerCss);
 
     const statusPaletteCss=document.createElement('style');statusPaletteCss.id='stStatusPaletteCss';statusPaletteCss.textContent=`
       #studentTermsTab .st-session-card{transition:background-color .2s,border-color .2s!important}
