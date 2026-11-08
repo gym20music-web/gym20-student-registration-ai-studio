@@ -843,6 +843,16 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     $('stReminder1Hours').value=String(Number.isInteger(reminder1)&&reminder1>=0&&reminder1<=24?reminder1:6);
     $('stReminder2Hours').value=String(Number.isInteger(reminder2)&&reminder2>=0&&reminder2<=24?reminder2:2);
     const syncReminderHourScrollers=()=>p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value),value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):(input.id==='stReminder1Hours'?6:2);input.value=String(value);centerHourOption(scroller,value,'instant');}});
+    /* The admin tab may be hidden while settings load. Re-center once its real width becomes available. */
+    if(typeof ResizeObserver!=='undefined'){
+      const reminderHourResizeObserver=new ResizeObserver(entries=>entries.forEach(entry=>{
+        const scroller=entry.target,input=$(scroller.dataset.hourScroll);
+        if(!input||entry.contentRect.width<=0)return;
+        const value=Number(input.value);
+        if(Number.isInteger(value))requestAnimationFrame(()=>centerHourOption(scroller,value,'instant'));
+      }));
+      p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>reminderHourResizeObserver.observe(scroller));
+    }
     syncReminderHourScrollers();
     requestAnimationFrame(()=>{syncReminderHourScrollers();requestAnimationFrame(syncReminderHourScrollers);});
     setTimeout(syncReminderHourScrollers,120);setTimeout(syncReminderHourScrollers,350);setTimeout(syncReminderHourScrollers,700);
