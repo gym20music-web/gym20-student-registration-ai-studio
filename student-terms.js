@@ -705,9 +705,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:smooth;cursor:ew-resize}
       #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
-      #stPushCard .st-hour-option{box-sizing:border-box;flex:0 0 14px;width:14px;height:12px;min-height:12px;padding:0;border:0;border-radius:3px;background:transparent;color:#aab6c5;font:600 7px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;scroll-snap-align:center;cursor:pointer;transition:color .18s,background .18s,text-shadow .18s,flex-basis .18s,width .18s}
-      #stPushCard .st-hour-option.is-selected{flex-basis:18px;width:18px;color:#fff;background:rgba(255,255,255,.13);box-shadow:0 0 5px rgba(255,255,255,.2),inset 0 0 4px rgba(255,255,255,.12);text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95);font-weight:900}
-      #stPushCard .st-hour-option:focus-visible{outline:1px solid rgba(255,255,255,.9);outline-offset:-1px}
+      #stPushCard .st-hour-option{box-sizing:border-box;flex:0 0 14px;width:14px;height:12px;min-height:12px;padding:0;border:0!important;outline:0!important;border-radius:0;background:transparent!important;color:#fff;font:600 7px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,flex-basis .18s,width .18s,transform .18s}
+      #stPushCard .st-hour-option.is-selected{flex-basis:18px;width:18px;color:#fff;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900;transform:scale(1.12)}
+      #stPushCard .st-hour-option:focus-visible{outline:0!important;box-shadow:none!important}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:13px;min-height:13px;max-height:13px}#stPushCard .st-hour-option{height:11px;min-height:11px;line-height:11px}}
     `;
     document.head.appendChild(hourScrollerCss);
