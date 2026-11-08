@@ -701,7 +701,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     hourScrollerCss.id='stReminderHorizontalScrollerCss';
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
-      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:4px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008; direction:ltr}
+      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;direction:ltr}
       #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:smooth;cursor:ew-resize}
       #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
