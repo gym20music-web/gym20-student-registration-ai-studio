@@ -752,56 +752,59 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 
 
 /* GYM20 · Promo settings — soft 3D admin styling */
-#promoTab{--promo-edge:color-mix(in srgb,var(--border) 72%,var(--neon-blue) 28%);}
-#promoTab .admin-input-group{
-  position:relative;margin:0 0 13px;padding:12px 13px 13px;
-  border:1px solid var(--promo-edge);border-radius:14px;
-  background:linear-gradient(145deg,color-mix(in srgb,var(--surface-card) 94%,white 6%),var(--surface-card));
-  box-shadow:0 5px 12px rgba(0,0,0,.13),inset 0 1px 0 rgba(255,255,255,.055);
-  transition:border-color .2s,box-shadow .2s,transform .2s;
+#promoTab{--promo-edge:rgba(214,179,90,.28);}
+#promoTab .promo-settings-shell{
+  padding:15px;border:1px solid var(--promo-edge);border-radius:16px;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface-card) 96%,#d6b35a 4%),var(--surface-card));
+  box-shadow:0 10px 25px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.055);
 }
-#promoTab .admin-input-group:focus-within{
-  border-color:color-mix(in srgb,var(--neon-blue) 58%,var(--border));
-  box-shadow:0 7px 17px rgba(0,0,0,.16),0 0 0 3px color-mix(in srgb,var(--neon-blue) 10%,transparent),inset 0 1px 0 rgba(255,255,255,.07);
+#promoTab .promo-settings-head{display:flex;align-items:center;gap:11px;padding:2px 2px 13px;border-bottom:1px solid var(--border);margin-bottom:12px}
+#promoTab .promo-settings-icon{display:grid;place-items:center;width:39px;height:39px;flex:0 0 39px;border:1px solid rgba(214,179,90,.35);border-radius:12px;background:rgba(214,179,90,.1);font-size:19px}
+#promoTab .promo-settings-head h3{margin:0 0 2px!important;color:var(--text-primary);font-size:13px!important}
+#promoTab .promo-settings-head p{margin:0;color:var(--text-secondary);font-size:10px!important}
+#promoTab .promo-toggle-stack{display:grid;gap:8px;padding:10px;border:1px solid var(--border);border-radius:12px;background:color-mix(in srgb,var(--bg) 62%,var(--surface-card));margin-bottom:13px}
+#promoTab .promo-toggle-row{display:flex;align-items:flex-start;gap:9px;cursor:pointer;padding:3px 2px}
+#promoTab .promo-toggle-row input{width:16px;height:16px;flex:0 0 16px;margin:2px 0 0;accent-color:#d6b35a;cursor:pointer}
+#promoTab .promo-toggle-copy{display:grid;gap:2px}
+#promoTab .promo-toggle-copy strong{font-size:11px;color:var(--text-primary);font-weight:750}
+#promoTab .promo-toggle-copy small{font-size:9px;color:var(--text-secondary);line-height:1.7}
+#promoTab .promo-toggle-secondary{padding-top:9px;border-top:1px solid var(--border)}
+#promoTab .promo-fields-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 11px}
+#promoTab .admin-input-group{min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+#promoTab .admin-input-group:focus-within{border:0;box-shadow:none}
+#promoTab .admin-input-group label{display:block;margin:0 0 5px;color:var(--text-primary);font-size:10px;font-weight:700;line-height:1.7}
+#promoTab .admin-input-group input:not([type=hidden]),#promoTab .admin-input-group textarea{
+  width:100%;min-height:35px;padding:7px 9px;border:1px solid color-mix(in srgb,var(--border) 75%,#d6b35a 25%);
+  border-radius:9px;background:color-mix(in srgb,var(--bg) 75%,var(--surface-card));color:var(--text-primary);
+  font:inherit;font-size:11px;line-height:1.7;box-shadow:inset 0 2px 4px rgba(0,0,0,.12);outline:none;
+  transition:border-color .18s,box-shadow .18s,background .18s
 }
-#promoTab .admin-input-group label{
-  display:block;margin:0 0 7px;color:var(--text-primary);font-size:.76rem;font-weight:700;line-height:1.8;
-}
-#promoTab .admin-input-group input,
-#promoTab .admin-input-group textarea{
-  width:100%;min-height:39px;padding:9px 11px;border-radius:10px;
-  border:1px solid color-mix(in srgb,var(--border) 75%,var(--text-secondary) 25%);
-  background:color-mix(in srgb,var(--bg) 72%,var(--surface-card) 28%);
-  color:var(--text-primary);font:inherit;font-size:.8rem;line-height:1.8;
-  box-shadow:inset 0 2px 4px rgba(0,0,0,.13);
-  outline:none;transition:border-color .18s,background .18s,box-shadow .18s;
-}
-#promoTab .admin-input-group textarea{min-height:88px;resize:vertical;}
-#promoTab .admin-input-group input:focus,
-#promoTab .admin-input-group textarea:focus{
-  border-color:var(--neon-blue);background:var(--surface);
-  box-shadow:0 0 0 3px color-mix(in srgb,var(--neon-blue) 12%,transparent),inset 0 1px 3px rgba(0,0,0,.1);
-}
-#promoTab .admin-input-group input::placeholder,
-#promoTab .admin-input-group textarea::placeholder{color:var(--text-secondary);opacity:.82;font-size:.72rem;}
-#promoTab .admin-input-group>div[style*="font-size"]{
-  margin-top:7px!important;padding:7px 9px;border-radius:8px;
-  background:color-mix(in srgb,var(--neon-blue) 6%,var(--surface-card));
-  border:1px solid color-mix(in srgb,var(--neon-blue) 14%,var(--border));
-  font-size:.68rem!important;line-height:1.8;
-}
-#promoTab>div:first-child{
-  padding:12px 14px!important;margin:0 0 14px!important;border-radius:14px!important;
-  background:linear-gradient(145deg,var(--surface-card),color-mix(in srgb,var(--surface-card) 88%,var(--bg)))!important;
-  border-color:var(--border)!important;
-  box-shadow:0 5px 14px rgba(0,0,0,.14),inset 0 1px 0 rgba(255,255,255,.06);
-}
-#promoTab #editPromoEnabled{width:17px!important;height:17px!important;accent-color:var(--neon-blue);cursor:pointer;}
-#promoTab>div:first-child label{font-size:.78rem!important;line-height:1.8;}
+#promoTab .admin-input-group textarea{min-height:67px;resize:vertical}
+#promoTab .admin-input-group input:focus,#promoTab .admin-input-group textarea:focus{border-color:#d6b35a;background:var(--surface);box-shadow:0 0 0 3px rgba(214,179,90,.1)}
+#promoTab .admin-input-group input::placeholder,#promoTab .admin-input-group textarea::placeholder{color:var(--text-secondary);opacity:.78;font-size:10px}
+#promoTab .promo-field-wide{grid-column:1/-1}
+#promoTab .promo-link-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
+#promoTab .promo-fetch-btn{min-height:35px!important;padding:5px 10px!important;border:1px solid rgba(214,179,90,.5)!important;border-radius:9px!important;background:rgba(214,179,90,.12)!important;color:#e7cb86!important;font-size:10px!important;white-space:nowrap}
+#promoTab .promo-field-hint{margin:5px 0 0;color:var(--text-secondary);font-size:9px!important;line-height:1.7}
+#promoTab .promo-channel-status{margin-top:7px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:9px;line-height:1.7}
+#promoTab .promo-channel-status.success{color:#6ee7b7;border-color:rgba(52,211,153,.28);background:rgba(52,211,153,.06)}
+#promoTab .promo-channel-status.error{color:#fca5a5;border-color:rgba(248,113,113,.28);background:rgba(248,113,113,.06)}
+#promoTab .promo-channel-preview{margin-top:7px;padding:8px;border-radius:8px;background:rgba(214,179,90,.07);border:1px solid rgba(214,179,90,.2)}
+#promoTab .promo-channel-preview[hidden]{display:none}
+#promoTab .promo-channel-preview strong{display:block;color:#e7cb86;font-size:10px}
+#promoTab .promo-channel-preview p{margin:3px 0 0;color:var(--text-primary);font-size:10px;line-height:1.8;white-space:pre-wrap;overflow-wrap:anywhere}
+.promo-channel-name{margin:0 0 7px;color:#d6b35a;font-size:11px;font-weight:800;text-align:center}
+.promo-channel-description{margin:10px 0 14px;padding:10px 12px;border:1px solid rgba(214,179,90,.28);border-radius:10px;background:rgba(214,179,90,.07);color:var(--text-primary);font-size:11px;line-height:1.9;text-align:right;white-space:pre-wrap;overflow-wrap:anywhere}
+.promo-channel-description[hidden],.promo-channel-name[hidden]{display:none}
 @media(max-width:720px){
-  #promoTab .admin-input-group{padding:10px 11px;margin-bottom:10px;border-radius:12px;}
-  #promoTab .admin-input-group label{font-size:.72rem;}
-  #promoTab .admin-input-group input,#promoTab .admin-input-group textarea{font-size:.78rem;min-height:37px;}
+ #promoTab .promo-settings-shell{padding:11px;border-radius:13px}
+ #promoTab .promo-fields-grid{grid-template-columns:1fr;gap:10px}
+ #promoTab .promo-field-wide{grid-column:auto}
+ #promoTab .promo-link-row{grid-template-columns:minmax(0,1fr);gap:6px}
+ #promoTab .promo-fetch-btn{width:100%}
+ #promoTab .promo-settings-head h3{font-size:12px!important}
+ #promoTab .promo-toggle-copy strong{font-size:10px}
+ #promoTab .promo-toggle-copy small{font-size:9px}
 }
 </style>
 </head>
@@ -943,19 +946,21 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 </div>
 <div class="toast" id="toast">شماره کارت کپی شد! ✅</div>
 
-<!-- بنر تبلیغاتی پاپ‌آپ استایل میوکس -->
+<!-- بنر تبلیغاتی داینامیک کانال -->
 <div class="promo-modal" id="meoxPromoModal">
     <div class="promo-card">
-        <button class="promo-close-btn" id="closeMeoxPromo">✕</button>
-        <img src="" referrerpolicy="no-referrer" alt="Meox Accessory" class="promo-img" id="meoxPromoImg">
-        <div class="promo-title" id="meoxPromoTitle">✨ گالری اکسسوری و استایل میوکس</div>
-        <div class="promo-text" id="meoxPromoText">خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!</div>
-        <div class="promo-code-container">
-            <span class="promo-code-label">کد تخفیف اختصاصی:</span>
-            <span class="promo-code-val" id="meoxDiscountCode">MEOX20</span>
+        <button class="promo-close-btn" id="closeMeoxPromo" aria-label="بستن">✕</button>
+        <img src="" referrerpolicy="no-referrer" alt="تصویر کانال تبلیغ‌شده" class="promo-img" id="meoxPromoImg">
+        <div class="promo-channel-name" id="meoxPromoChannelName" hidden></div>
+        <div class="promo-title" id="meoxPromoTitle">✨ عنوان بنر تبلیغاتی</div>
+        <div class="promo-text" id="meoxPromoText"></div>
+        <div class="promo-channel-description" id="meoxPromoChannelDescription" hidden></div>
+        <div class="promo-code-container" id="meoxPromoCodeContainer">
+            <span class="promo-code-label">کد تخفیف هدیه:</span>
+            <span class="promo-code-val" id="meoxDiscountCode"></span>
             <button class="promo-copy-btn" id="copyMeoxCodeBtn">📋 کپی کد</button>
         </div>
-        <a href="https://t.me/" target="_blank" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات 🛍️</a>
+        <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات 🛍️</a>
     </div>
 </div>
 
@@ -1035,22 +1040,44 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         </div>
 
         <div class="admin-panel-tab" id="promoTab">
-            <div style="background:var(--surface-card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px;margin-bottom:6px;">
-                <label style="display:flex;align-items:center;gap:5px;font-size:.68rem;font-weight:bold;cursor:pointer;">
-                    <input type="checkbox" id="editPromoEnabled" style="width:13px;height:13px;accent-color:var(--neon-blue);">
-                    <span>نمایش پاپ‌آپ تبلیغاتی در ورود هنرجو</span>
-                </label>
-            </div>
-            <div class="admin-input-group">
-                <label style="color:var(--neon-green);font-weight:bold;">لینک یا آیدی تلگرام کانال میوکس (مثال: @meox یا https://t.me/meox):</label>
-                <input type="text" id="editPromoLink" placeholder="@MEOWX_ACCS">
-                <div style="font-size:.6rem;color:var(--text-secondary);margin-top:2px;">✨ عکس پروفایل کانال به طور خودکار به عنوان تصویر بنر نمایش داده خواهد شد.</div>
-            </div>
-            <div class="admin-input-group"><label>عنوان بنر تبلیغاتی:</label><input type="text" id="editPromoTitle"></div>
-            <div class="admin-input-group"><label>متن توضیحات تبلیغ:</label><textarea rows="2" id="editPromoText"></textarea></div>
-            <div class="admin-input-group"><label>کد تخفیف هدیه:</label><input type="text" id="editPromoCode"></div>
-            <div class="admin-input-group"><label>لینک عکس دستی (اختیاری):</label><input type="text" id="editPromoImg" placeholder="در صورت خالی بودن، خودکار عکس کانال لود می‌شود"></div>
-            <div class="admin-input-group"><label>متن دکمه ورود و خرید:</label><input type="text" id="editPromoBtn"></div>
+            <section class="promo-settings-shell" aria-labelledby="promoSettingsTitle">
+                <header class="promo-settings-head">
+                    <div class="promo-settings-icon">🛍️</div>
+                    <div><h3 id="promoSettingsTitle">مدیریت بنر تبلیغاتی</h3><p>تنظیم یکپارچه تبلیغ کانال‌ها و فروشگاه‌های مختلف</p></div>
+                </header>
+                <div class="promo-toggle-stack">
+                    <label class="promo-toggle-row">
+                        <input type="checkbox" id="editPromoEnabled">
+                        <span class="promo-toggle-copy"><strong>نمایش پاپ‌آپ تبلیغاتی در ورود هنرجو</strong><small>با غیرفعال‌کردن این گزینه، کل بنر برای هنرجویان نمایش داده نمی‌شود.</small></span>
+                    </label>
+                    <label class="promo-toggle-row promo-toggle-secondary">
+                        <input type="checkbox" id="editPromoShowDescription">
+                        <span class="promo-toggle-copy"><strong>نمایش بیو و توضیحات خود کانال</strong><small>در صورت فعال‌بودن، توضیحات واقعی کانال تلگرام زیر متن تبلیغ نمایش داده می‌شود.</small></span>
+                    </label>
+                </div>
+                <div class="promo-fields-grid">
+                    <div class="admin-input-group promo-field-wide">
+                        <label for="editPromoLink">لینک یا آیدی کانال تلگرام</label>
+                        <div class="promo-link-row">
+                            <input type="text" id="editPromoLink" placeholder="@MEOWX_ACCS یا https://t.me/..." autocomplete="off">
+                            <button type="button" id="fetchPromoChannelBtn" class="promo-fetch-btn">دریافت اطلاعات کانال</button>
+                        </div>
+                        <p class="promo-field-hint">تصویر پروفایل کانال به‌صورت خودکار بارگذاری می‌شود؛ برای دریافت عنوان و بیوی واقعی، دکمه دریافت اطلاعات را بزنید.</p>
+                        <div id="promoChannelFetchStatus" class="promo-channel-status" role="status" aria-live="polite">هنوز اطلاعات کانالی دریافت نشده است.</div>
+                        <div id="promoChannelPreview" class="promo-channel-preview" hidden>
+                            <strong id="promoChannelPreviewTitle"></strong>
+                            <p id="promoChannelPreviewDescription"></p>
+                        </div>
+                        <input type="hidden" id="editPromoChannelTitle">
+                        <input type="hidden" id="editPromoChannelDescription">
+                    </div>
+                    <div class="admin-input-group"><label for="editPromoTitle">عنوان بنر تبلیغاتی</label><input type="text" id="editPromoTitle" placeholder="مثلاً گالری اکسسوری و استایل"></div>
+                    <div class="admin-input-group"><label for="editPromoText">متن اصلی تبلیغ</label><textarea rows="2" id="editPromoText" placeholder="متن معرفی، پیشنهاد ویژه یا تخفیف را بنویسید"></textarea></div>
+                    <div class="admin-input-group"><label for="editPromoCode">کد تخفیف هدیه</label><input type="text" id="editPromoCode" placeholder="مثلاً MEOX20"></div>
+                    <div class="admin-input-group"><label for="editPromoImg">لینک عکس دستی (اختیاری)</label><input type="text" id="editPromoImg" placeholder="خالی باشد، تصویر کانال استفاده می‌شود"></div>
+                    <div class="admin-input-group promo-field-wide"><label for="editPromoBtn">متن دکمه ورود و خرید</label><input type="text" id="editPromoBtn" placeholder="ورود به کانال و مشاهده محصولات 🛍️"></div>
+                </div>
+            </section>
         </div>
 
         <div class="admin-panel-tab" id="textsTab">
@@ -1956,7 +1983,7 @@ function loadAdminForm(){
     const ctO=appData.contact||{};safeSetValue('editPhone',ctO.phone||'');safeSetValue('editInsta',ctO.instagram||'');safeSetValue('editTele',ctO.telegram||'');
     safeSetValue('editBrandTag',appData.brandTag||'');safeSetValue('editBannerTitle',appData.bannerTitle||'');safeSetValue('editBannerSubtitle',appData.bannerSubtitle||'');safeSetValue('editBannerBg',appData.bannerBg||'');
     const mO=appData.musicChannel||{};safeSetValue('editMusicName',mO.name||'');safeSetValue('editMusicId',mO.id||'');safeSetValue('editMusicLink',mO.link||'');
-    const pO=appData.promoPopup||{};const pChk=document.getElementById('editPromoEnabled');if(pChk)pChk.checked=pO.enabled!==false;safeSetValue('editPromoTitle',pO.title||'');safeSetValue('editPromoText',pO.text||'');safeSetValue('editPromoCode',pO.code||'');safeSetValue('editPromoLink',pO.link||'');safeSetValue('editPromoImg',pO.img||'');safeSetValue('editPromoBtn',pO.btnText||'');
+    const pO=appData.promoPopup||{};const pChk=document.getElementById('editPromoEnabled');if(pChk)pChk.checked=pO.enabled!==false;const pDescChk=document.getElementById('editPromoShowDescription');if(pDescChk)pDescChk.checked=pO.showChannelDescription===true;safeSetValue('editPromoTitle',pO.title||'');safeSetValue('editPromoText',pO.text||'');safeSetValue('editPromoCode',pO.code||'');safeSetValue('editPromoLink',pO.link||'');safeSetValue('editPromoImg',pO.img||'');safeSetValue('editPromoBtn',pO.btnText||'');safeSetValue('editPromoChannelTitle',pO.channelTitle||'');safeSetValue('editPromoChannelDescription',pO.channelDescription||'');renderPromoChannelPreview(pO.channelTitle||'',pO.channelDescription||'',!!(pO.channelTitle||pO.channelDescription));
     
     // لود تنظیمات تلگرام
     const tgO=appData.telegramConfig||{};
@@ -1990,7 +2017,7 @@ function collectFormData(){
     appData.card={bank:"بانک سامان",number:raw.replace(/(\d{4})/g,'$1-').slice(0,19),cleanNumber:raw,owner:getVal('editCardOwner'),gatewayLink:getVal('editGatewayLink')};
     appData.contact={phone:toEnglishDigits(getVal('editPhone')),instagram:getVal('editInsta'),telegram:getVal('editTele')};
     appData.musicChannel={name:getVal('editMusicName')||'کانال موزیک GYM20MUSIC',id:getVal('editMusicId')||'@GYM20MUSIC',link:getVal('editMusicLink')||'https://t.me/GYM20MUSIC',avatar:"music.jpg"};
-    appData.promoPopup={enabled:document.getElementById('editPromoEnabled').checked,title:getVal('editPromoTitle'),text:getVal('editPromoText'),code:getVal('editPromoCode'),link:getVal('editPromoLink'),img:getVal('editPromoImg'),btnText:getVal('editPromoBtn')};
+    appData.promoPopup={enabled:document.getElementById('editPromoEnabled').checked,showChannelDescription:document.getElementById('editPromoShowDescription').checked,title:getVal('editPromoTitle'),text:getVal('editPromoText'),code:getVal('editPromoCode'),link:getVal('editPromoLink'),img:getVal('editPromoImg'),btnText:getVal('editPromoBtn'),channelTitle:getVal('editPromoChannelTitle'),channelDescription:getVal('editPromoChannelDescription')};
 
     // ذخیره تنظیمات تلگرام
     appData.telegramConfig={
@@ -2109,31 +2136,88 @@ function loadTelegramAvatarSafely(imgElement, cleanUser) {
 
 function applyPromoPopupData(){
     const pO=appData.promoPopup||{};
-    safeSetText('meoxPromoTitle',pO.title||'✨ گالری اکسسوری و استایل میوکس');
-    safeSetText('meoxPromoText',pO.text||'خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!');
-    safeSetText('meoxDiscountCode',pO.code||'MEOX20');
+    safeSetText('meoxPromoTitle',pO.title||'✨ عنوان بنر تبلیغاتی');
+    safeSetText('meoxPromoText',pO.text||'');
+    safeSetText('meoxDiscountCode',pO.code||'');
     safeSetText('meoxPromoBtn',pO.btnText||'ورود به کانال و مشاهده محصولات 🛍️');
-    
-    let link = (pO.link || '').trim();
-    const cleanUser = cleanTelegramUsername(link);
-    if(link && !link.startsWith('http://') && !link.startsWith('https://')) {
-        link = 'https://t.me/' + cleanUser;
-    }
+    const codeWrap=document.getElementById('meoxPromoCodeContainer');
+    if(codeWrap)codeWrap.style.display=pO.code?'flex':'none';
+    const channelName=document.getElementById('meoxPromoChannelName');
+    if(channelName){channelName.textContent=pO.channelTitle||'';channelName.hidden=!pO.channelTitle;}
+    const channelDescription=document.getElementById('meoxPromoChannelDescription');
+    if(channelDescription){channelDescription.textContent=pO.showChannelDescription?(pO.channelDescription||'') : '';channelDescription.hidden=!(pO.showChannelDescription&&pO.channelDescription);}
+    let link=(pO.link||'').trim();
+    const cleanUser=cleanTelegramUsername(link);
+    if(link&&!/^https?:\/\//i.test(link))link='https://t.me/'+cleanUser;
     const pBtn=document.getElementById('meoxPromoBtn');if(pBtn)pBtn.href=link||'https://t.me/';
-    
     const pImg=document.getElementById('meoxPromoImg');
     if(pImg){
-        if(cleanUser){
-            loadTelegramAvatarSafely(pImg, cleanUser);
-        } else if(pO.img && pO.img.trim().length > 5){
-            pImg.onerror = null;
-            pImg.src = pO.img.trim();
-        } else {
-            pImg.onerror = null;
-            pImg.src = 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';
-        }
+        if(pO.img&&pO.img.trim().length>5){pImg.onerror=null;pImg.src=pO.img.trim();}
+        else if(cleanUser){loadTelegramAvatarSafely(pImg,cleanUser);}
+        else{pImg.onerror=null;pImg.src='https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?w=300&auto=format&fit=crop&q=80';}
     }
 }
+
+function renderPromoChannelPreview(title,description,visible=true){
+    const wrap=document.getElementById('promoChannelPreview');
+    const titleEl=document.getElementById('promoChannelPreviewTitle');
+    const descEl=document.getElementById('promoChannelPreviewDescription');
+    if(titleEl)titleEl.textContent=title||'';
+    if(descEl)descEl.textContent=description||'توضیحی برای این کانال ثبت نشده است.';
+    if(wrap)wrap.hidden=!visible||(!title&&!description);
+}
+function setPromoChannelStatus(message,type=''){
+    const el=document.getElementById('promoChannelFetchStatus');
+    if(!el)return;
+    el.textContent=message;el.className='promo-channel-status'+(type?' '+type:'');
+}
+let promoFetchInFlight=false;
+let promoFetchedForLink='';
+async function fetchPromoChannelInfo(){
+    const input=document.getElementById('editPromoLink');
+    const btn=document.getElementById('fetchPromoChannelBtn');
+    const link=(input?.value||'').trim();
+    const username=cleanTelegramUsername(link);
+    if(!username){setPromoChannelStatus('ابتدا لینک یا آیدی عمومی کانال را وارد کنید.','error');return;}
+    if(promoFetchInFlight)return;
+    if(promoFetchedForLink===username&&document.getElementById('editPromoChannelDescription')?.value){
+        setPromoChannelStatus('اطلاعات همین کانال قبلاً دریافت شده است.','success');return;
+    }
+    promoFetchInFlight=true;
+    if(btn){btn.disabled=true;btn.textContent='در حال دریافت…';}
+    setPromoChannelStatus('در حال دریافت عنوان و توضیحات کانال از تلگرام…');
+    try{
+        const response=await fetch(GYM20_SUPABASE_URL+'/functions/v1/telegram-channel-info',{
+            method:'POST',
+            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json'},
+            body:JSON.stringify({channel:link})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok||result.error)throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
+        safeSetValue('editPromoChannelTitle',result.title||'');
+        safeSetValue('editPromoChannelDescription',result.description||'');
+        promoFetchedForLink=username;
+        renderPromoChannelPreview(result.title||'',result.description||'',true);
+        setPromoChannelStatus(result.description?'اطلاعات کانال با موفقیت دریافت شد.':'عنوان کانال دریافت شد؛ کانال توضیحاتی برای نمایش ندارد.','success');
+    }catch(error){
+        setPromoChannelStatus(error.message||'ارتباط با سرویس تلگرام برقرار نشد.','error');
+    }finally{
+        promoFetchInFlight=false;
+        if(btn){btn.disabled=false;btn.textContent='دریافت اطلاعات کانال';}
+    }
+}
+const promoFetchBtn=document.getElementById('fetchPromoChannelBtn');
+if(promoFetchBtn)promoFetchBtn.addEventListener('click',fetchPromoChannelInfo);
+const promoLinkInput=document.getElementById('editPromoLink');
+if(promoLinkInput)promoLinkInput.addEventListener('input',()=>{
+    const username=cleanTelegramUsername(promoLinkInput.value);
+    if(username!==promoFetchedForLink){
+        safeSetValue('editPromoChannelTitle','');safeSetValue('editPromoChannelDescription','');
+        renderPromoChannelPreview('','',false);
+        setPromoChannelStatus('آیدی کانال تغییر کرد؛ برای دریافت اطلاعات جدید، دکمه بالا را بزنید.');
+    }
+});
+
 
 const meoxPromoModal=document.getElementById('meoxPromoModal');
 const closeMeoxPromo=document.getElementById('closeMeoxPromo');
