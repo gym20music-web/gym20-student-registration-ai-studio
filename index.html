@@ -2165,7 +2165,7 @@ function applyPromoPopupData(){
 function renderClickablePromoBio(container,rawText){
     container.replaceChildren();
     const source=String(rawText||'');
-    const pattern=/(https?:\\/\\/[^\\s<>"']+|(?:t\\.me|telegram\\.me)\\/[A-Za-z0-9_+/?=.%#-]+|@[A-Za-z0-9_]{4,}|(?:اینستاگرام|instagram)\\s*[:：]\\s*([A-Za-z0-9._]{2,}))/gi;
+    const pattern=/(https?:\/\/[^\s<>"']+|(?:t\.me|telegram\.me)\/[A-Za-z0-9_+/?=.%#-]+|@[A-Za-z0-9_]{4,}|(?:اینستاگرام|instagram)\s*[:：]\s*([A-Za-z0-9._]{2,}))/gi;
     let cursor=0,match;
     while((match=pattern.exec(source))!==null){
         if(match.index>cursor)container.appendChild(document.createTextNode(source.slice(cursor,match.index)));
@@ -2175,7 +2175,7 @@ function renderClickablePromoBio(container,rawText){
         else{
             const trailing=visible.match(/[),.!؟،؛]+$/);
             if(trailing)visible=visible.slice(0,-trailing[0].length);
-            href=/^https?:\\/\\//i.test(visible)?visible:'https://'+visible;
+            href=/^https?:\/\//i.test(visible)?visible:'https://'+visible;
         }
         const a=document.createElement('a');
         a.className='promo-bio-link';a.href=href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=visible;
