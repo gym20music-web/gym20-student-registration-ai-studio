@@ -1491,6 +1491,32 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(stCalendarTermInlineCss);
 
+    /* Remove the term caption and vertically align its control with the calendar button. */
+    const stTermPickerCleanAlignCss=document.createElement('style');
+    stTermPickerCleanAlignCss.id='stTermPickerCleanAlignCss';
+    stTermPickerCleanAlignCss.textContent=`
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field>label{
+        display:none!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field{
+        align-self:center!important;justify-self:stretch!important;
+        display:flex!important;flex-direction:column!important;justify-content:center!important;
+        min-height:36px!important;padding:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row{
+        width:100%!important;height:36px!important;min-height:36px!important;
+        align-items:center!important;margin:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row select,
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row .st-custom-select-trigger{
+        height:36px!important;min-height:36px!important;max-height:36px!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row{
+        align-self:center!important;min-height:36px!important;
+      }
+    `;
+    document.head.appendChild(stTermPickerCleanAlignCss);
+
 
     /* Center the labels above all three term controls. */
     const termFieldLabelCenterCss=document.createElement('style');
