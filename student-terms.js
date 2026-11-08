@@ -702,7 +702,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
       #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:4px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
-      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:auto!important;cursor:ew-resize}
+      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:auto!important;cursor:grab;user-select:none;-webkit-user-select:none}
+      #stPushCard .st-hour-scroll.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
       #stPushCard .st-hour-option,#stPushCard .st-hour-option:hover,#stPushCard .st-hour-option:active,#stPushCard .st-hour-option:focus{box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;height:12px!important;min-height:12px!important;padding:0!important;margin:0!important;border:0!important;border-left:0!important;border-right:0!important;outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,transform .18s}
@@ -766,7 +767,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     
     /* Build swipeable horizontal hour strips while keeping the original setting IDs/values for saving. */
     const hourScrollerTimers=new Map();
-    function centerHourOption(scroller,value,behavior='instant'){
+    function centerHourOption(scroller,value,behavior='auto'){
       if(!scroller)return;
       const hour=Math.max(0,Math.min(24,Number(value)||0));
       const option=scroller.querySelector('[data-hour="'+hour+'"]');
@@ -776,15 +777,15 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         el.classList.toggle('is-selected',selected);
         el.setAttribute('aria-selected',String(selected));
       });
-      /* Each hour cell is exactly 14px wide with a 4px flex gap.
-         The symmetric half-width spacers place hour 0 at the center initially,
-         so advancing by 18px per hour is deterministic even on hidden tabs/mobile. */
       const position=()=>{
-        scroller.style.scrollBehavior='auto';
-        scroller.scrollLeft=hour*18;
+        if(!scroller.clientWidth)return;
+        const stripRect=scroller.getBoundingClientRect();
+        const optionRect=option.getBoundingClientRect();
+        const target=scroller.scrollLeft+(optionRect.left+optionRect.width/2-stripRect.left-scroller.clientWidth/2);
+        scroller.scrollTo({left:Math.max(0,Math.min(scroller.scrollWidth-scroller.clientWidth,target)),behavior:behavior==='smooth'?'smooth':'auto'});
       };
       position();
-      requestAnimationFrame(()=>{position();requestAnimationFrame(position);});
+      requestAnimationFrame(position);
     }
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
       const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
@@ -808,6 +809,30 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         hourScrollerTimers.set(id,setTimeout(commitScroll,90));
       },{passive:true});
       scroller.addEventListener('wheel',event=>{if(Math.abs(event.deltaY)>Math.abs(event.deltaX)){event.preventDefault();scroller.scrollLeft+=event.deltaY;}},{passive:false});
+      /* Desktop mouse: click-and-drag the strip horizontally, like a touch swipe. */
+      let dragStartX=0,dragStartScroll=0,dragMoved=false,dragging=false;
+      scroller.addEventListener('pointerdown',event=>{
+        if(event.pointerType!=='mouse'||event.button!==0)return;
+        dragging=true;dragMoved=false;dragStartX=event.clientX;dragStartScroll=scroller.scrollLeft;
+        scroller.classList.add('is-dragging');
+        try{scroller.setPointerCapture(event.pointerId);}catch(_){}
+        event.preventDefault();
+      });
+      scroller.addEventListener('pointermove',event=>{
+        if(!dragging)return;
+        const delta=event.clientX-dragStartX;
+        if(Math.abs(delta)>3)dragMoved=true;
+        scroller.scrollLeft=dragStartScroll-delta;
+      });
+      const endMouseDrag=event=>{
+        if(!dragging)return;
+        dragging=false;scroller.classList.remove('is-dragging');
+        if(dragMoved){event.preventDefault();scroller.dataset.suppressClick='1';setTimeout(()=>delete scroller.dataset.suppressClick,0);}
+        if(event.pointerId!==undefined){try{scroller.releasePointerCapture(event.pointerId);}catch(_){}}
+      };
+      scroller.addEventListener('pointerup',endMouseDrag);
+      scroller.addEventListener('pointercancel',endMouseDrag);
+      scroller.addEventListener('click',event=>{if(scroller.dataset.suppressClick==='1'){event.preventDefault();event.stopPropagation();delete scroller.dataset.suppressClick;}},true);
       scroller.addEventListener('keydown',event=>{
         if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
         event.preventDefault();
