@@ -776,14 +776,12 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         el.classList.toggle('is-selected',selected);
         el.setAttribute('aria-selected',String(selected));
       });
+      /* Each hour cell is exactly 14px wide with a 4px flex gap.
+         The symmetric half-width spacers place hour 0 at the center initially,
+         so advancing by 18px per hour is deterministic even on hidden tabs/mobile. */
       const position=()=>{
-        const rect=option.getBoundingClientRect();
-        const box=scroller.getBoundingClientRect();
-        const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
-        const delta=(rect.left-box.left)-(scroller.clientWidth-rect.width)/2;
-        const target=Math.max(0,Math.min(max,scroller.scrollLeft+delta));
         scroller.style.scrollBehavior='auto';
-        scroller.scrollTo({left:target,top:0,behavior:'auto'});
+        scroller.scrollLeft=hour*18;
       };
       position();
       requestAnimationFrame(()=>{position();requestAnimationFrame(position);});
