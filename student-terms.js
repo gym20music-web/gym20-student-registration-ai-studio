@@ -702,7 +702,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
       #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:18px;min-height:18px;max-height:18px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:5px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
-      #stPushCard .st-hour-loop{display:flex;align-items:center;gap:7px;width:100%;height:100%;box-sizing:border-box;padding:0 calc(50% - 8px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;cursor:grab;user-select:none;-webkit-user-select:none;scroll-behavior:auto}
+      #stPushCard .st-hour-loop{position:relative;display:flex;align-items:center;gap:7px;width:100%;height:100%;box-sizing:border-box;padding:0 calc(50% - 8px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;cursor:grab;user-select:none;-webkit-user-select:none;scroll-behavior:auto}
       #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 16px;width:16px;height:14px;margin:0;padding:0;color:rgba(255,255,255,.72);font:600 8px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .15s,text-shadow .15s,transform .15s}
@@ -843,6 +843,14 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       centerReminderHour(id,Number(hidden.value),true);
     }
     ['stReminder1Hours','stReminder2Hours'].forEach(setupReminderLoop);
+    if(typeof ResizeObserver!=='undefined'){
+      const reminderLoopResizeObserver=new ResizeObserver(entries=>entries.forEach(entry=>{
+        if(entry.contentRect.width<=0)return;
+        const id=entry.target.dataset.hourLoop,input=$(id);
+        if(input)requestAnimationFrame(()=>centerReminderHour(id,input.value,true));
+      }));
+      reminderLoops.forEach(loop=>reminderLoopResizeObserver.observe(loop));
+    }
     S.syncReminderHourLoops=()=>{
       ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
         const input=$(id);
