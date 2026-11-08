@@ -978,10 +978,11 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const pad=n=>String(n).padStart(2,'0');
     const overlay=document.createElement('div');overlay.className='st-time-picker-backdrop';
     const makeWheel=(key,label,max,value)=>{const count=max+1;return '<div class="st-time-slider" data-kind="'+key+'"><div class="st-time-slider-head"><label>'+label+'</label><output class="st-time-slider-value">'+pad(value)+'</output></div><div class="st-time-wheel" tabindex="0" role="listbox" aria-label="'+(key==='hour'?'انتخاب ساعت':'انتخاب دقیقه')+'"><div class="st-time-wheel-spacer" aria-hidden="true"></div>'+Array.from({length:count*5},(_,i)=>{const n=i%count;return '<div class="st-time-wheel-item'+(i===count*2+value?' selected':'')+'" data-value="'+n+'" role="option" aria-selected="'+(n===value?'true':'false')+'">'+pad(n)+'</div>';}).join('')+'<div class="st-time-wheel-spacer" aria-hidden="true"></div><div class="st-time-wheel-indicator" aria-hidden="true"></div></div></div>';};
-    overlay.innerHTML='<section class="st-time-picker" role="dialog" aria-modal="true" aria-label="تنظیم ساعت کلاس"><header><span>تنظیم ساعت کلاس</span><button type="button" class="st-time-picker-close" aria-label="بستن">×</button></header><div class="st-time-picker-preview"><small>CLASS TIME</small><strong class="st-time-preview-value">'+pad(hour)+':'+pad(minute)+'</strong></div><div class="st-time-picker-controls">'+makeWheel('hour','HOUR',23,hour)+makeWheel('minute','MINUTE',59,minute)+'</div><footer><button type="button" class="st-time-picker-cancel">انصراف</button><button type="button" class="st-time-picker-apply">ثبت ساعت</button></footer></section>';
+    overlay.innerHTML='<section class="st-time-picker" role="dialog" aria-modal="true" aria-label="تنظیم ساعت کلاس"><header><span>تنظیم ساعت کلاس</span><button type="button" class="st-time-picker-close" aria-label="بستن">×</button></header><div class="st-time-picker-preview"><small>CLASS TIME</small><strong class="st-time-preview-value">'+pad(hour)+':'+pad(minute)+'</strong></div><div class="st-time-picker-controls">'+makeWheel('hour','HOUR',23,hour)+makeWheel('minute','MINUTE',59,minute)+'</div></section>';
     const body=document.body,doc=document.documentElement,oldBodyOverflow=body.style.overflow,oldDocOverflow=doc.style.overflow;
     let onKey;
-    const close=()=>{overlay.remove();body.style.overflow=oldBodyOverflow;doc.style.overflow=oldDocOverflow;if(onKey)document.removeEventListener('keydown',onKey);};
+    const commitTime=()=>{input.value=pad(hour)+':'+pad(minute);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));};
+    const close=()=>{if(!overlay.isConnected)return;commitTime();overlay.remove();body.style.overflow=oldBodyOverflow;doc.style.overflow=oldDocOverflow;if(onKey)document.removeEventListener('keydown',onKey);};
     const syncPreview=()=>{overlay.querySelector('.st-time-preview-value').textContent=pad(hour)+':'+pad(minute);};
     const setValue=(key,value)=>{
       const max=key==='hour'?23:59; if(key==='hour')hour=Math.max(0,Math.min(max,value));else minute=Math.max(0,Math.min(max,value));
@@ -989,6 +990,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       overlay.querySelector('[data-kind="'+key+'"] .st-time-slider-value').textContent=pad(chosen);
       items.forEach((el,i)=>{const distance=Math.abs(i-center),active=distance<.55&&Number(el.dataset.value)===chosen;el.classList.toggle('selected',active);el.setAttribute('aria-selected',active?'true':'false');el.style.opacity=String(Math.max(.22,1-distance*.24));el.style.filter=distance<1?'blur(0)':'blur(.15px)';});
       syncPreview();
+      input.value=pad(hour)+':'+pad(minute);
+      input.dispatchEvent(new Event('input',{bubbles:true}));
     };
     ['hour','minute'].forEach(key=>{
       const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel');
@@ -1000,8 +1003,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       },{passive:true});
       wheel.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'){e.preventDefault();const step=e.key.startsWith('Page')?5:1,current=key==='hour'?hour:minute,next=current+(e.key==='ArrowUp'||e.key==='PageUp'?-step:step);setValue(key,next);wheel.scrollTo({top:(2*(key==='hour'?24:60)+(key==='hour'?hour:minute))*26,behavior:'smooth'});}});
     });
-    overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('.st-time-picker-close,.st-time-picker-cancel'))close();});
-    overlay.querySelector('.st-time-picker-apply').addEventListener('click',()=>{input.value=pad(hour)+':'+pad(minute);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));close();});
+    overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('.st-time-picker-close'))close();});
     onKey=e=>{if(e.key==='Escape')close();};document.addEventListener('keydown',onKey);
     body.style.overflow='hidden';doc.style.overflow='hidden';document.body.appendChild(overlay);
     requestAnimationFrame(()=>{const hw=overlay.querySelector('[data-kind="hour"] .st-time-wheel'),mw=overlay.querySelector('[data-kind="minute"] .st-time-wheel');hw.scrollTop=(48+hour)*26;mw.scrollTop=(120+minute)*26;setValue('hour',hour);setValue('minute',minute);});
