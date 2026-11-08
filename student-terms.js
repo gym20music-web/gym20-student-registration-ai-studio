@@ -319,12 +319,12 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       .st-time-picker-preview{display:flex;align-items:center;justify-content:center;gap:9px;padding:9px 8px 4px}
       .st-time-picker-preview small{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.4px}
       .st-time-picker-preview strong{color:#f0cf7a;font:650 23px/1 Montserrat,Arial,sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px #e7bd6238}
-      .st-time-picker-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:5px 12px 10px}
-      .st-time-slider{min-width:0;display:flex;flex-direction:column;align-items:center;padding:0 3px}
+      .st-time-picker-controls{display:grid;grid-template-columns:repeat(2,minmax(0,116px));justify-content:center;gap:6px;padding:5px 8px 10px;margin-inline:auto}
+      .st-time-slider{min-width:0;width:100%;display:flex;flex-direction:column;align-items:center;padding:0}
       .st-time-slider-head{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:5px}
       .st-time-slider-head label{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.5px}
       .st-time-slider-value{color:#e9c875;font:700 11px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums}
-      .st-time-wheel{position:relative;width:100%;height:150px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;border:1px solid #ffffff0b;border-radius:13px;background:linear-gradient(180deg,#0c121a,#111923 48%,#0c121a);touch-action:pan-y;mask-image:linear-gradient(180deg,transparent 0%,#000 17%,#000 83%,transparent 100%)}
+      .st-time-wheel{position:relative;width:88%;height:150px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;border:1px solid #ffffff0b;border-radius:13px;background:linear-gradient(180deg,#0c121a,#111923 48%,#0c121a);touch-action:pan-y;mask-image:linear-gradient(180deg,transparent 0%,#000 17%,#000 83%,transparent 100%)}
       .st-time-wheel::-webkit-scrollbar{display:none}
       .st-time-wheel-spacer{height:60px;pointer-events:none}
       .st-time-wheel-item{height:30px;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;color:#657181;font:500 12px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums;transition:color .16s,font-size .16s,text-shadow .16s;user-select:none}
