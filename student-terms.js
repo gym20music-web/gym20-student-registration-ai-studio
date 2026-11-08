@@ -635,7 +635,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-field st-term-picker-field"><label>ترم‌های هنرجو</label><div class="st-term-picker-row"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger st-icon-delete-term" id="stDeleteTerm" disabled aria-label="حذف ترم" title="حذف ترم" style="width:36px;min-width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="width:17px;height:17px;display:block"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 13h11l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>'+
       '</div></form></div>'+
       '<div id="stSchedule" class="st-hide">'+
-      '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
+      '<div class="st-card">'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی</button></div></div>'+
       '</div></div>'+
       '<div id="stFeedback" class="request-feedback" role="status" aria-live="polite"></div>';
