@@ -1564,6 +1564,46 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     `;
     document.head.appendChild(stTermPicker24pxCss);
 
+    /* Override admin-modal and custom-select wrapper sizing: every visible layer is 24px. */
+    const stTermPickerHard24Css=document.createElement('style');
+    stTermPickerHard24Css.id='stTermPickerHard24Css';
+    stTermPickerHard24Css.textContent=`
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row,
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>.st-custom-select,
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>.st-custom-select .st-custom-select-trigger,
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>#stDeleteTerm,
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row,
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row>#stManualCalendar{
+        box-sizing:border-box!important;
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        margin-top:0!important;margin-bottom:0!important;
+        padding-top:0!important;padding-bottom:0!important;
+        align-self:center!important;
+      }
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row{
+        display:flex!important;align-items:center!important;gap:4px!important;
+        width:100%!important;overflow:visible!important;
+      }
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>.st-custom-select{
+        display:block!important;position:relative!important;flex:1 1 0!important;
+        width:0!important;min-width:0!important;overflow:visible!important;
+      }
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>.st-custom-select .st-custom-select-trigger{
+        display:flex!important;align-items:center!important;justify-content:space-between!important;
+        width:100%!important;min-width:0!important;padding:0 6px!important;
+        line-height:22px!important;font-size:8px!important;border-radius:6px!important;
+      }
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row>#stDeleteTerm{
+        display:inline-flex!important;align-items:center!important;justify-content:center!important;
+        flex:0 0 24px!important;width:24px!important;min-width:24px!important;max-width:24px!important;
+      }
+      #adminModal #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row>#stManualCalendar{
+        display:inline-flex!important;align-items:center!important;justify-content:center!important;
+        width:100%!important;line-height:22px!important;font-size:8px!important;
+      }
+    `;
+    document.head.appendChild(stTermPickerHard24Css);
+
   // Unified compact session editor: four equal-height controls with proportional widths.
   const sessionControls25Css=document.createElement('style');
   sessionControls25Css.id='stSessionControls25Css';
