@@ -702,7 +702,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
       #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:4px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
-      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:smooth;cursor:ew-resize}
+      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:auto!important;cursor:ew-resize}
       #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
       #stPushCard .st-hour-option,#stPushCard .st-hour-option:hover,#stPushCard .st-hour-option:active,#stPushCard .st-hour-option:focus{box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;height:12px!important;min-height:12px!important;padding:0!important;margin:0!important;border:0!important;border-left:0!important;border-right:0!important;outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,transform .18s}
@@ -780,8 +780,10 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const rect=option.getBoundingClientRect();
         const box=scroller.getBoundingClientRect();
         const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
-        const target=Math.max(0,Math.min(max,scroller.scrollLeft+(rect.left-box.left)-(scroller.clientWidth-rect.width)/2));
-        scroller.scrollLeft=target;
+        const delta=(rect.left-box.left)-(scroller.clientWidth-rect.width)/2;
+        const target=Math.max(0,Math.min(max,scroller.scrollLeft+delta));
+        scroller.style.scrollBehavior='auto';
+        scroller.scrollTo({left:target,top:0,behavior:'auto'});
       };
       position();
       requestAnimationFrame(()=>{position();requestAnimationFrame(position);});
