@@ -786,7 +786,8 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 #promoTab .promo-link-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px}
 #promoTab .promo-fetch-btn{min-height:35px!important;padding:5px 10px!important;border:1px solid rgba(214,179,90,.5)!important;border-radius:9px!important;background:rgba(214,179,90,.12)!important;color:#e7cb86!important;font-size:10px!important;white-space:nowrap}
 #promoTab .promo-field-hint{margin:5px 0 0;color:var(--text-secondary);font-size:9px!important;line-height:1.7}
-#promoTab .promo-channel-status{margin-top:7px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:9px;line-height:1.7}
+#promoTab .promo-bio-link{color:#f3c969;text-decoration:underline;text-decoration-color:rgba(243,201,105,.55);text-underline-offset:3px;font-weight:700;overflow-wrap:anywhere;cursor:pointer;transition:color .18s ease}.promo-bio-link:hover,.promo-bio-link:focus{color:#fff;text-decoration-color:#fff;outline:none}
+.promo-channel-status{margin-top:7px;padding:6px 8px;border:1px solid var(--border);border-radius:8px;color:var(--text-secondary);font-size:9px;line-height:1.7}
 #promoTab .promo-channel-status.success{color:#6ee7b7;border-color:rgba(52,211,153,.28);background:rgba(52,211,153,.06)}
 #promoTab .promo-channel-status.error{color:#fca5a5;border-color:rgba(248,113,113,.28);background:rgba(248,113,113,.06)}
 #promoTab .promo-channel-preview{margin-top:7px;padding:8px;border-radius:8px;background:rgba(214,179,90,.07);border:1px solid rgba(214,179,90,.2)}
@@ -2145,7 +2146,10 @@ function applyPromoPopupData(){
     const channelName=document.getElementById('meoxPromoChannelName');
     if(channelName){channelName.textContent=pO.channelTitle||'';channelName.hidden=!pO.channelTitle;}
     const channelDescription=document.getElementById('meoxPromoChannelDescription');
-    if(channelDescription){channelDescription.textContent=pO.showChannelDescription?(pO.channelDescription||'') : '';channelDescription.hidden=!(pO.showChannelDescription&&pO.channelDescription);}
+    if(channelDescription){
+        if(pO.showChannelDescription&&pO.channelDescription){renderClickablePromoBio(channelDescription,pO.channelDescription);channelDescription.hidden=false;}
+        else{channelDescription.replaceChildren();channelDescription.hidden=true;}
+    }
     let link=(pO.link||'').trim();
     const cleanUser=cleanTelegramUsername(link);
     if(link&&!/^https?:\/\//i.test(link))link='https://t.me/'+cleanUser;
@@ -2158,6 +2162,28 @@ function applyPromoPopupData(){
     }
 }
 
+function renderClickablePromoBio(container,rawText){
+    container.replaceChildren();
+    const source=String(rawText||'');
+    const pattern=/(https?:\\/\\/[^\\s<>"']+|(?:t\\.me|telegram\\.me)\\/[A-Za-z0-9_+/?=.%#-]+|@[A-Za-z0-9_]{4,}|(?:اینستاگرام|instagram)\\s*[:：]\\s*([A-Za-z0-9._]{2,}))/gi;
+    let cursor=0,match;
+    while((match=pattern.exec(source))!==null){
+        if(match.index>cursor)container.appendChild(document.createTextNode(source.slice(cursor,match.index)));
+        let visible=match[0],href='';
+        if(match[2])href='https://www.instagram.com/'+match[2].replace(/^@/,'')+'/';
+        else if(/^@/.test(visible))href='https://t.me/'+visible.slice(1);
+        else{
+            const trailing=visible.match(/[),.!؟،؛]+$/);
+            if(trailing)visible=visible.slice(0,-trailing[0].length);
+            href=/^https?:\\/\\//i.test(visible)?visible:'https://'+visible;
+        }
+        const a=document.createElement('a');
+        a.className='promo-bio-link';a.href=href;a.target='_blank';a.rel='noopener noreferrer';a.textContent=visible;
+        container.appendChild(a);
+        cursor=pattern.lastIndex;
+    }
+    if(cursor<source.length)container.appendChild(document.createTextNode(source.slice(cursor)));
+}
 function renderPromoChannelPreview(title,description,visible=true){
     const wrap=document.getElementById('promoChannelPreview');
     const titleEl=document.getElementById('promoChannelPreviewTitle');
