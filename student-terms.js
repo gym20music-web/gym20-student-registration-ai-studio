@@ -705,8 +705,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-loop{position:relative;display:flex;align-items:center;gap:1px;width:100%;height:100%;box-sizing:border-box;padding:0 calc(50% - 7px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;cursor:grab;user-select:none;-webkit-user-select:none;scroll-behavior:auto}
       #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
-      #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 14px;width:14px;height:14px;margin:0;padding:0;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .15s,text-shadow .15s,transform .15s}
-      #stPushCard .st-hour-option.is-two-digit{flex-basis:19px;width:19px}
+      #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 14px;width:14px;height:14px;margin:0;padding:0;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .08s,text-shadow .08s,transform .08s}
+      #stPushCard .st-hour-option.is-two-digit{flex:0 0 22px;width:22px;margin-inline:2px;letter-spacing:.2px}
       #stPushCard .st-hour-option.is-selected{margin-inline:4px;color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 8px rgba(246,196,83,.95);transform:scale(1.18)}
       #stPushCard .st-hour-option.is-adjacent{margin-inline:1px}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
@@ -779,14 +779,14 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const hour=index%25;
         return '<span class="st-hour-option'+(hour>=10?' is-two-digit':'')+'" data-hour="'+hour+'" data-index="'+index+'" role="option" aria-selected="false">'+hour+'</span>';
       }).join('');
-      const commit=()=>{
+      const paintCenter=()=>{
         const mid=loop.scrollLeft+loop.clientWidth/2;
         let nearest=null,dist=Infinity;
         loop.querySelectorAll('.st-hour-option').forEach(el=>{
           const center=el.offsetLeft+el.offsetWidth/2,d=Math.abs(center-mid);
           if(d<dist){dist=d;nearest=el;}
         });
-        if(!nearest)return;
+        if(!nearest)return null;
         const index=Number(nearest.dataset.index),hour=Number(nearest.dataset.hour);
         hidden.value=String(hour);
         loop.querySelectorAll('.st-hour-option').forEach(el=>{
@@ -796,13 +796,21 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
           el.classList.toggle('is-adjacent',adjacent);
           el.setAttribute('aria-selected',String(active));
         });
+        return {index,hour};
+      };
+      const commit=()=>{
+        const selected=paintCenter();
+        if(!selected)return;
+        const {index,hour}=selected;
         /* Rebase to the middle copy after settling, preserving the selected hour. */
         if(index<25||index>=50){
           const middle=loop.querySelector('[data-index="'+(25+hour)+'"]');
           if(middle)loop.scrollLeft=middle.offsetLeft+middle.offsetWidth/2-loop.clientWidth/2;
+          paintCenter();
         }
       };
       loop.addEventListener('scroll',()=>{
+        paintCenter();
         clearTimeout(reminderLoopTimers.get(id));
         reminderLoopTimers.set(id,setTimeout(commit,110));
       },{passive:true});
