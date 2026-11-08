@@ -648,7 +648,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
       '<div class="st-reminder-layout">'+
       '<div class="st-reminder-label-row"><label for="stReminder1Hours">ساعت یادآوری اول</label><label for="stReminder2Hours">ساعت یادآوری دوم</label></div>'+
-      '<div class="st-reminder-input-row"><input id="stReminder1Hours" type="text" inputmode="numeric" maxlength="3" value="6" placeholder="۶"><input id="stReminder2Hours" type="text" inputmode="numeric" maxlength="3" value="2" placeholder="۲" style="height:14px!important;min-height:14px!important;max-height:14px!important;padding:0 2px!important;font:600 7px/12px Vazirmatn,sans-serif!important"></div>'+
+      '<div class="st-reminder-input-row"><div class="st-hour-scroll-wrap"><input id="stReminder1Hours" type="hidden" value="6"><div class="st-hour-scroll" data-hour-scroll="stReminder1Hours" role="listbox" aria-label="انتخاب ساعت یادآوری اول" tabindex="0"></div></div><div class="st-hour-scroll-wrap"><input id="stReminder2Hours" type="hidden" value="2"><div class="st-hour-scroll" data-hour-scroll="stReminder2Hours" role="listbox" aria-label="انتخاب ساعت یادآوری دوم" tabindex="0"></div></div></div>'+
       '<div class="st-reminder-action-row"><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div>'+
       '<div class="st-reminder-save-row"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره اعلان‌ها</button></div>'+
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
@@ -696,6 +696,22 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
+    /* Horizontal 1–24 hour scrollers: preserve the existing 14px/13px box dimensions and 7px type. */
+    const hourScrollerCss=document.createElement('style');
+    hourScrollerCss.id='stReminderHorizontalScrollerCss';
+    hourScrollerCss.textContent=`
+      #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:14px;min-height:14px;max-height:14px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:4px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008; direction:ltr}
+      #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:0;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:smooth;cursor:ew-resize}
+      #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
+      #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
+      #stPushCard .st-hour-option{box-sizing:border-box;flex:0 0 10px;width:10px;height:12px;min-height:12px;padding:0;border:0;border-radius:3px;background:transparent;color:#9ca9ba;font:600 7px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;scroll-snap-align:center;cursor:pointer;transition:color .18s,background .18s,text-shadow .18s,transform .18s}
+      #stPushCard .st-hour-option.is-selected{color:#ffe19a;background:linear-gradient(180deg,#80632d,#4b391b);text-shadow:0 0 5px #f6c45399;font-weight:900}
+      #stPushCard .st-hour-option:focus-visible{outline:1px solid #f6c453;outline-offset:-1px}
+      @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:13px;min-height:13px;max-height:13px}#stPushCard .st-hour-option{height:11px;min-height:11px;line-height:11px}}
+    `;
+    document.head.appendChild(hourScrollerCss);
+
     /* Remove captions from the urgent-push controls; single-line input centers text vertically by design. */
     const urgentPushCompactCss=document.createElement('style');
     urgentPushCompactCss.id='stUrgentPushCompactCss';
@@ -733,7 +749,47 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
      $('stTemplateApply').addEventListener('click',()=>{if(activeTemplateId)$(activeTemplateId).value=templateModalText.value;closeTemplateModal();});
      templateModalText.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')$('stTemplateApply').click();if(e.key==='Escape')closeTemplateModal();});
     
-    ['stReminder1Hours','stReminder2Hours'].forEach(id=>$(id).addEventListener('input',()=>{const el=$(id);el.value=enDigits(el.value).replace(/[^0-9]/g,'').slice(0,3);}));
+    /* Build swipeable horizontal hour strips while keeping the original setting IDs/values for saving. */
+    const hourScrollerTimers=new Map();
+    function centerHourOption(scroller,value,behavior='instant'){
+      if(!scroller)return;
+      const option=scroller.querySelector('[data-hour="'+Number(value)+'"]');
+      if(!option)return;
+      scroller.querySelectorAll('.st-hour-option').forEach(el=>el.classList.toggle('is-selected',el===option));
+      const left=option.offsetLeft-(scroller.clientWidth-option.offsetWidth)/2;
+      scroller.scrollTo({left,behavior});
+    }
+    ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
+      const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
+      if(!hidden||!scroller)return;
+      scroller.innerHTML=Array.from({length:24},(_,i)=>i+1).map(hour=>'<button type="button" class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false">'+hour+'</button>').join('');
+      scroller.querySelectorAll('.st-hour-option').forEach(option=>option.addEventListener('click',()=>{
+        hidden.value=option.dataset.hour;centerHourOption(scroller,hidden.value,'smooth');
+        scroller.querySelectorAll('.st-hour-option').forEach(el=>el.setAttribute('aria-selected',String(el===option)));
+      }));
+      const commitScroll=()=>{
+        const center=scroller.scrollLeft+scroller.clientWidth/2;
+        let closest=null,distance=Infinity;
+        scroller.querySelectorAll('.st-hour-option').forEach(option=>{
+          const mid=option.offsetLeft+option.offsetWidth/2,delta=Math.abs(mid-center);
+          if(delta<distance){distance=delta;closest=option;}
+        });
+        if(closest){hidden.value=closest.dataset.hour;scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===closest;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});}
+      };
+      scroller.addEventListener('scroll',()=>{
+        clearTimeout(hourScrollerTimers.get(id));
+        hourScrollerTimers.set(id,setTimeout(commitScroll,90));
+      },{passive:true});
+      scroller.addEventListener('wheel',event=>{if(Math.abs(event.deltaY)>Math.abs(event.deltaX)){event.preventDefault();scroller.scrollLeft+=event.deltaY;}},{passive:false});
+      scroller.addEventListener('keydown',event=>{
+        if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+        event.preventDefault();
+        const current=Number(hidden.value)||1;
+        const next=event.key==='Home'?1:event.key==='End'?24:Math.max(1,Math.min(24,current+(event.key==='ArrowRight'?1:-1)));
+        hidden.value=String(next);centerHourOption(scroller,next,'smooth');
+      });
+      centerHourOption(scroller,hidden.value,'instant');
+    });
     $('stSendCustomPush').addEventListener('click',sendCustomPush);$('stPushTestAdmin').addEventListener('click',sendTestPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
   }
@@ -756,6 +812,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     $('stReminder2').value=S.reminderDraft.reminder_2_template;
     $('stReminder1Hours').value=String(S.reminderDraft.reminder_1_hours);
     $('stReminder2Hours').value=String(S.reminderDraft.reminder_2_hours);
+    p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const value=Math.max(1,Math.min(24,Number(input.value)||1));input.value=String(value);const option=scroller.querySelector('[data-hour="'+value+'"]');if(option){scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===option;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});scroller.scrollLeft=option.offsetLeft-(scroller.clientWidth-option.offsetWidth)/2;}}});
     updateTemplatePreview('stReminder1');updateTemplatePreview('stReminder2');
     S.pushTemplatesLoaded=true;
   }
