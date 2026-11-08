@@ -707,7 +707,21 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
       #stPushCard .st-hour-option,#stPushCard .st-hour-option:hover,#stPushCard .st-hour-option:active,#stPushCard .st-hour-option:focus{box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;height:12px!important;min-height:12px!important;padding:0!important;margin:0!important;border:0!important;border-left:0!important;border-right:0!important;outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,transform .18s}
       #stPushCard .st-hour-option.is-selected{color:#fff!important;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900!important;transform:scale(1.12)}
-      #stPushCard .st-hour-option::before,#stPushCard .st-hour-option::after{content:none!important;display:none!important;border:0!important;background:none!important;box-shadow:none!important}
+      #stPushCard .st-hour-scroll .st-hour-option,
+      #stPushCard .st-hour-scroll .st-hour-option:hover,
+      #stPushCard .st-hour-scroll .st-hour-option:active,
+      #stPushCard .st-hour-scroll .st-hour-option:focus,
+      #stPushCard .st-hour-scroll .st-hour-option:focus-visible{
+        appearance:none!important;-webkit-appearance:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+        box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;min-width:14px!important;height:12px!important;min-height:12px!important;
+        margin:0!important;padding:0!important;border:0!important;border-inline:0!important;border-left:0!important;border-right:0!important;
+        outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;
+        color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;text-decoration:none!important;
+        position:relative!important;scroll-snap-align:center;cursor:pointer!important;transition:color .18s,text-shadow .18s,transform .18s
+      }
+      #stPushCard .st-hour-scroll .st-hour-option::before,
+      #stPushCard .st-hour-scroll .st-hour-option::after{content:""!important;display:none!important;visibility:hidden!important;width:0!important;height:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+      #stPushCard .st-hour-option.is-selected{color:#fff!important;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900!important;transform:scale(1.12)}
       #stPushCard .st-hour-option:focus-visible{outline:0!important;box-shadow:none!important}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:13px;min-height:13px;max-height:13px}#stPushCard .st-hour-option{height:11px;min-height:11px;line-height:11px}}
     `;
@@ -763,7 +777,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
       const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
       if(!hidden||!scroller)return;
-      scroller.innerHTML=Array.from({length:25},(_,i)=>i).map(hour=>'<button type="button" class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false">'+hour+'</button>').join('');
+      scroller.innerHTML=Array.from({length:25},(_,i)=>i).map(hour=>'<span class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false" tabindex="-1">'+hour+'</span>').join('');
       scroller.querySelectorAll('.st-hour-option').forEach(option=>option.addEventListener('click',()=>{
         hidden.value=option.dataset.hour;centerHourOption(scroller,hidden.value,'smooth');
         scroller.querySelectorAll('.st-hour-option').forEach(el=>el.setAttribute('aria-selected',String(el===option)));
