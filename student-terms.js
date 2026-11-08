@@ -311,94 +311,35 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const sessionHeaderCalendarLayout=document.createElement('style');sessionHeaderCalendarLayout.id='stSessionHeaderCalendarLayout';sessionHeaderCalendarLayout.textContent="#studentTermsTab .st-session-head{display:grid!important;grid-template-columns:29px auto minmax(0,1fr) auto!important;align-items:center!important;gap:7px!important;margin:0 0 7px!important}#studentTermsTab .st-session-head .st-session-calendar{grid-column:1;grid-row:1;align-self:center!important;width:27px!important;height:25px!important;min-height:25px!important;font-size:13px!important}#studentTermsTab .st-session-head strong{grid-column:2;grid-row:1;font-size:10px!important}#studentTermsTab .st-session-head .st-session-state{grid-column:3;grid-row:1;justify-self:start!important;margin:0!important}#studentTermsTab .st-session-head .st-row-delete{grid-column:4;grid-row:1;justify-self:end!important}#studentTermsTab .st-session-fields-modern{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;align-items:end!important}#studentTermsTab .st-session-fields-modern .st-session-weekday{height:29px!important;align-self:end!important}#studentTermsTab .st-session-fields-modern .st-session-field{min-width:0!important}#studentTermsTab .st-session-fields-modern .st-session-field input,#studentTermsTab .st-session-fields-modern .st-session-field select,#studentTermsTab .st-session-fields-modern .st-session-field .st-custom-select-trigger{width:100%!important;min-width:0!important;height:29px!important;min-height:29px!important;padding:3px 4px!important;font-size:9px!important}#studentTermsTab .st-session-fields-modern .st-time-input{font-size:10px!important}@media(max-width:600px){#studentTermsTab .st-session-head{grid-template-columns:27px auto minmax(0,1fr) auto!important;gap:5px!important}#studentTermsTab .st-session-fields-modern{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}#studentTermsTab .st-session-fields-modern .st-session-field{font-size:8px!important}#studentTermsTab .st-session-fields-modern .st-session-field input,#studentTermsTab .st-session-fields-modern .st-session-field select,#studentTermsTab .st-session-fields-modern .st-session-field .st-custom-select-trigger{height:28px!important;min-height:28px!important;font-size:8px!important;padding:2px 3px!important}#studentTermsTab .st-session-fields-modern .st-session-weekday{height:28px!important;font-size:8px!important}}@media(max-width:360px){#studentTermsTab .st-session-fields-modern{gap:3px!important}#studentTermsTab .st-session-fields-modern .st-session-field{font-size:7px!important}#studentTermsTab .st-session-fields-modern .st-session-field input,#studentTermsTab .st-session-fields-modern .st-session-field select,#studentTermsTab .st-session-fields-modern .st-session-field .st-custom-select-trigger{font-size:7.5px!important;padding:2px!important}}";
     document.head.appendChild(sessionHeaderCalendarLayout);
     const sessionTimePickerCss=document.createElement('style');sessionTimePickerCss.id='stSessionTimePickerCss';sessionTimePickerCss.textContent=`
-      .st-time-picker-backdrop{position:fixed;inset:0;z-index:25000;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(3,5,8,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);animation:stFluidFade .22s ease-out}
-      .st-time-picker{width:min(470px,100%);overflow:hidden;border:1px solid #f3ed3c22;border-radius:24px;background:#171918;color:#eceee7;box-shadow:0 28px 90px #000c,0 0 42px #e8e52a0b;font-family:Vazirmatn,Montserrat,sans-serif;animation:stFluidEnter .32s cubic-bezier(.2,.85,.25,1)}
-      .st-time-picker>header{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 19px;border-bottom:1px solid #ffffff0c;color:#e9e9dc;font-size:11px;font-weight:800}
-      .st-time-picker>header span:before{content:'◷';margin-left:9px;color:#f4f13a;font-size:18px;vertical-align:middle}
-      .st-time-picker-close{width:30px;height:30px;border:1px solid #ffffff18;border-radius:50%;background:#ffffff08;color:#c4c7be;font-size:19px}
-      .st-time-picker-preview{display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 12px 2px}
-      .st-time-picker-preview small{color:#858a80;font:700 9px Montserrat,sans-serif;letter-spacing:1.5px}
-      .st-time-picker-preview strong{color:#f4f13a;font:600 31px/1 Montserrat,Arial,sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 22px #f4f13a38;transition:transform .22s cubic-bezier(.2,.9,.2,1)}
-      .st-time-picker-preview strong.bump{transform:scale(1.1)}
-      .st-time-picker-controls{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:8px 13px 7px}
-      .st-time-slider{min-width:0;display:flex;flex-direction:column;align-items:center}
-      .st-time-slider-head{width:100%;display:flex;align-items:center;justify-content:center;gap:8px;padding:5px 0 0}
-      .st-time-slider-head label{color:#8d9288;font:700 9px Montserrat,sans-serif;letter-spacing:2px}
-      .st-time-slider-value{color:#f4f13a;font:700 13px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums}
-      .st-fluid-visual{position:relative;width:100%;height:242px;max-width:205px;overflow:hidden;touch-action:pan-y}
-      .st-fluid-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-      .st-fluid-line-glow{fill:none;stroke:#f4f13a;stroke-width:7;stroke-linecap:round;opacity:.19;filter:blur(7px)}
-      .st-fluid-line{fill:none;stroke:#f4f13a;stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 5px #f4f13a)}
-      .st-fluid-tick{stroke:#62665d;stroke-width:1.3}
-      .st-fluid-tick.major{stroke:#9b9e8e;stroke-width:1.6}
-      .st-fluid-label{fill:#777c72;font:12px Montserrat,Arial,sans-serif;text-anchor:end}
-      .st-fluid-label.active{fill:#d5d7c9}
-      .st-fluid-knob-shadow{fill:#000;opacity:.6}
-      .st-fluid-knob-ring{fill:#222522;stroke:#383c34;stroke-width:2}
-      .st-fluid-knob-core{fill:#1c201d;stroke:#ffffff0d;stroke-width:1}
-      .st-fluid-arrows{fill:#aeb2a6}
-      .st-fluid-number{fill:#f4f13a;font:500 43px Montserrat,Arial,sans-serif;letter-spacing:-2px;dominant-baseline:middle;font-variant-numeric:tabular-nums;filter:drop-shadow(0 0 12px #f4f13a24)}
-      .st-fluid-range{position:absolute;z-index:3;width:242px;height:54px;left:calc(50% - 121px);top:calc(50% - 27px);margin:0;opacity:.001;transform:rotate(-90deg);transform-origin:center;cursor:ns-resize;touch-action:pan-y;-webkit-appearance:none;appearance:none;background:transparent}
-      .st-fluid-range::-webkit-slider-runnable-track{height:54px;background:transparent}
-      .st-fluid-range::-moz-range-track{height:54px;background:transparent}
-      .st-fluid-range::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:54px;height:54px;border:0;border-radius:50%;background:transparent}
-      .st-fluid-range::-moz-range-thumb{width:54px;height:54px;border:0;border-radius:50%;background:transparent}
-      .st-time-picker>footer{display:grid;grid-template-columns:.8fr 1.2fr;gap:9px;padding:12px 18px calc(15px + env(safe-area-inset-bottom));border-top:1px solid #ffffff0d}
-      .st-time-picker>footer button{min-height:40px;border:1px solid #ffffff18;border-radius:10px;background:#ffffff07;color:#b5b9ae;font:700 10px Vazirmatn,sans-serif}
-      .st-time-picker>footer .st-time-picker-apply{border:1px solid #f4f13a;background:#f4f13a;color:#171918;font-weight:900;box-shadow:0 0 20px #f4f13a22}
+      .st-time-picker-backdrop{position:fixed;inset:0;z-index:25000;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(2,5,10,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:stClockFade .2s ease-out}
+      .st-time-picker{width:min(330px,100%);overflow:hidden;border:1px solid #d8b65a35;border-radius:20px;background:radial-gradient(ellipse at 50% 0%,#26303b 0%,#151b23 55%,#10151c 100%);color:#edf0f4;box-shadow:0 24px 70px #000b,0 0 34px #d8b65a12;font-family:Vazirmatn,Montserrat,sans-serif;animation:stClockIn .24s cubic-bezier(.2,.85,.25,1)}
+      .st-time-picker>header{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 15px;border-bottom:1px solid #ffffff0c;color:#e9edf2;font-size:10px;font-weight:800}
+      .st-time-picker>header span:before{content:'◷';margin-left:8px;color:#e4bd62;font-size:16px;vertical-align:middle}
+      .st-time-picker-close{width:27px;height:27px;border:1px solid #ffffff18;border-radius:50%;background:#ffffff08;color:#c4cbd4;font-size:17px;line-height:1}
+      .st-time-picker-preview{display:flex;align-items:center;justify-content:center;gap:9px;padding:13px 10px 7px}
+      .st-time-picker-preview small{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.4px}
+      .st-time-picker-preview strong{color:#f0cf7a;font:650 27px/1 Montserrat,Arial,sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px #e7bd6238}
+      .st-time-picker-controls{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:7px 16px 13px}
+      .st-time-slider{min-width:0;display:flex;flex-direction:column;align-items:center;padding:0 5px}
+      .st-time-slider-head{width:100%;display:flex;align-items:center;justify-content:center;gap:7px;margin-bottom:7px}
+      .st-time-slider-head label{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.5px}
+      .st-time-slider-value{color:#e9c875;font:700 11px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums}
+      .st-time-wheel{position:relative;width:100%;height:190px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;border:1px solid #ffffff0b;border-radius:13px;background:linear-gradient(180deg,#0c121a,#111923 48%,#0c121a);touch-action:pan-y;mask-image:linear-gradient(180deg,transparent 0%,#000 17%,#000 83%,transparent 100%)}
+      .st-time-wheel::-webkit-scrollbar{display:none}
+      .st-time-wheel-spacer{height:76px;pointer-events:none}
+      .st-time-wheel-item{height:38px;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;color:#657181;font:500 14px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums;transition:color .16s,font-size .16s,text-shadow .16s;user-select:none}
+      .st-time-wheel-item.selected{color:#f3d27f;font-size:20px;font-weight:750;text-shadow:0 0 14px #e8bf6340}
+      .st-time-wheel-indicator{position:absolute;left:7px;right:7px;top:76px;height:38px;border-top:1px solid #e8c66a55;border-bottom:1px solid #e8c66a55;border-radius:7px;background:linear-gradient(90deg,#e8c66a08,#e8c66a16,#e8c66a08);pointer-events:none}
+      .st-time-wheel-caption{margin-top:6px;color:#758293;font-size:8px}
+      .st-time-picker>footer{display:grid;grid-template-columns:.8fr 1.2fr;gap:8px;padding:10px 15px calc(12px + env(safe-area-inset-bottom));border-top:1px solid #ffffff0d}
+      .st-time-picker>footer button{min-height:35px;border:1px solid #ffffff18;border-radius:9px;background:#ffffff07;color:#b5c0cc;font:700 9px Vazirmatn,sans-serif;transition:transform .16s,background .16s}
+      .st-time-picker>footer .st-time-picker-apply{border:1px solid #e8c66a;background:linear-gradient(135deg,#f1d58e,#c99b43);color:#171b21;font-weight:900;box-shadow:0 4px 15px #d9ad5630}
       .st-time-picker>footer button:active{transform:scale(.97)}
-      @keyframes stFluidFade{from{opacity:0}to{opacity:1}}@keyframes stFluidEnter{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-      @media(max-width:480px){.st-time-picker-backdrop{align-items:flex-end;padding:0}.st-time-picker{width:100%;border-radius:23px 23px 0 0;border-bottom:0;animation:stFluidSheet .3s cubic-bezier(.2,.85,.25,1)}.st-time-picker-controls{padding:7px 8px 5px;gap:0}.st-fluid-visual{height:226px;max-width:190px}.st-fluid-range{width:226px;left:calc(50% - 113px);top:calc(50% - 27px)}.st-time-picker-preview{padding-top:12px}.st-time-picker>header{padding:0 17px}}
-      @keyframes stFluidSheet{from{opacity:.6;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-      @media(prefers-reduced-motion:reduce){.st-time-picker-backdrop,.st-time-picker,.st-time-picker-preview strong{animation:none;transition:none}}
-
-      .st-time-picker-backdrop{overscroll-behavior:contain;touch-action:pan-y}
-      .st-time-picker{max-height:min(88dvh,760px);overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none}
-      .st-time-picker::-webkit-scrollbar{display:none}
-      .st-fluid-visual,.st-fluid-range{touch-action:none!important}
-      .st-time-modes{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin:11px 16px 3px;padding:4px;border:1px solid #ffffff12;border-radius:12px;background:#0d1210}
-      .st-time-modes button{min-height:31px;border:1px solid transparent;border-radius:8px;background:transparent;color:#828a7d;font:800 9px Montserrat,Arial,sans-serif;letter-spacing:1px;transition:background .2s,color .2s,box-shadow .2s}
-      .st-time-modes button.active{color:#171918;background:linear-gradient(135deg,#f7f34a,#d6c92a);box-shadow:0 3px 14px #f4f13a30}
-      .st-time-mode-pane[hidden]{display:none!important}
-      .st-time-hint{margin:0 12px 9px;text-align:center;color:#71796c;font-size:9px}
-      .st-dial-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(94px,.65fr);gap:9px;align-items:center;padding:12px 17px 15px}
-      .st-dial-wrap{position:relative;width:min(100%,260px);aspect-ratio:1;margin:auto;touch-action:none}
-      .st-dial-svg{width:100%;height:100%;overflow:visible;touch-action:none;user-select:none}
-      .st-dial-track{fill:#111713;stroke:#3d4438;stroke-width:2}
-      .st-dial-tick{stroke:#687060;stroke-width:1.5;stroke-linecap:round}
-      .st-dial-tick.major{stroke:#d1c94a;stroke-width:2.5}
-      .st-dial-label{fill:#c4c9b8;font:9px Montserrat,Arial,sans-serif;text-anchor:middle}
-      .st-dial-hand{stroke:#f4f13a;stroke-width:3;stroke-linecap:round;filter:drop-shadow(0 0 7px #f4f13a)}
-      .st-dial-hub{fill:#f4f13a;stroke:#171918;stroke-width:4}
-      .st-dial-hit{fill:transparent;stroke:transparent;pointer-events:all;cursor:grab}
-      .st-dial-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none}
-      .st-dial-center b{color:#f4f13a;font:700 clamp(27px,8vw,39px) Montserrat,Arial,sans-serif;text-shadow:0 0 18px #f4f13a44}
-      .st-dial-center small{margin-top:3px;color:#778071;font:700 8px Montserrat,sans-serif;letter-spacing:2px}
-      .st-minute-wheel-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
-      .st-minute-wheel-wrap>label{color:#a2a996;font:800 9px Montserrat,sans-serif;letter-spacing:2px}
-      .st-minute-wheel{height:170px;width:76px;overflow-y:auto;overscroll-behavior:contain;scroll-snap-type:y mandatory;scrollbar-width:none;touch-action:pan-y;background:linear-gradient(90deg,#101611,#20271d,#101611);border:1px solid #777d382e;border-radius:13px;box-shadow:inset 0 0 18px #0009;position:relative}
-      .st-minute-wheel::-webkit-scrollbar{display:none}
-      .st-minute-wheel-item{height:34px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;color:#737d6b;font:500 15px Montserrat,Arial,sans-serif;transition:color .12s,transform .12s}
-      .st-minute-wheel-item.selected{color:#f4f13a;font-size:21px;font-weight:800;text-shadow:0 0 12px #f4f13a55}
-      .st-minute-wheel-spacer{display:block;height:68px;flex:0 0 68px;pointer-events:none}
-      .st-wheel-caption{color:#687365;font-size:8px}
-      .st-digital-panel{padding:16px 18px 19px}
-      .st-digital-readout{display:flex;justify-content:center;align-items:center;gap:5px;padding:17px 10px;margin-bottom:18px;border:1px solid #d7d52b3b;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#f4f13a12,transparent 70%),#0b100d;box-shadow:inset 0 0 25px #000a,0 0 24px #f4f13a0c}
-      .st-digital-readout span{color:#f4f13a;font:700 clamp(42px,12vw,58px)/1 Montserrat,Arial,sans-serif;letter-spacing:2px;font-variant-numeric:tabular-nums;text-shadow:0 0 20px #f4f13a55}
-      .st-digital-readout i{color:#a9ad74;font:700 38px Montserrat,sans-serif;animation:stDigitalColon 1s steps(2,end) infinite}
-      .st-digital-units{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-      .st-digital-unit{min-width:0;padding:10px;border:1px solid #ffffff12;border-radius:12px;background:#ffffff04}
-      .st-digital-unit>label{display:block;margin-bottom:8px;text-align:center;color:#89917f;font-size:10px;font-weight:800}
-      .st-digital-stepper{display:grid;grid-template-columns:30px minmax(0,1fr) 30px;align-items:center;gap:4px}
-      .st-digital-stepper button{height:30px;border:1px solid #d5d13c4a;border-radius:8px;background:#f4f13a12;color:#f4f13a;font-size:19px}
-      .st-digital-stepper output{text-align:center;color:#e9eacb;font:700 18px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums}
-      .st-digital-unit input{width:100%;margin:12px 0 0;accent-color:#e7e23a;touch-action:pan-x}
-      .st-digital-panel>p{text-align:center;color:#697363;font-size:9px;margin:13px 0 0}
-      @keyframes stDigitalColon{50%{opacity:.35}}
-      @media(max-width:480px){.st-time-picker-backdrop{align-items:flex-end;padding:0}.st-time-picker{max-height:91dvh;border-radius:23px 23px 0 0}.st-time-modes{margin:9px 13px 2px}.st-dial-layout{padding:9px 14px 13px;grid-template-columns:minmax(0,1fr) 82px;gap:5px}.st-dial-wrap{max-width:225px}.st-minute-wheel{height:158px}.st-digital-panel{padding:12px 14px 16px}.st-digital-unit{padding:8px 6px}}
-      @media(prefers-reduced-motion:reduce){.st-time-modes button,.st-minute-wheel-item,.st-digital-readout i{transition:none!important;animation:none!important}}
-
-    `;document.head.appendChild(sessionTimePickerCss);
+      @keyframes stClockFade{from{opacity:0}to{opacity:1}}@keyframes stClockIn{from{opacity:0;transform:translateY(9px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+      @media(max-width:480px){.st-time-picker-backdrop{align-items:flex-end;padding:0}.st-time-picker{width:100%;max-width:390px;border-radius:20px 20px 0 0;border-bottom:0;animation:stClockSheet .24s cubic-bezier(.2,.85,.25,1)}.st-time-picker-controls{padding:7px 20px 12px;gap:12px}.st-time-wheel{height:182px}.st-time-wheel-spacer{height:72px}.st-time-wheel-indicator{top:72px}.st-time-wheel-item{height:38px}.st-time-picker-preview{padding-top:11px}}
+      @keyframes stClockSheet{from{opacity:.65;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+      @media(prefers-reduced-motion:reduce){.st-time-picker-backdrop,.st-time-picker,.st-time-wheel-item{animation:none!important;transition:none!important}}
+    `;
 
     const statusPaletteCss=document.createElement('style');statusPaletteCss.id='stStatusPaletteCss';statusPaletteCss.textContent=`
       #studentTermsTab .st-session-card{transition:background-color .2s,border-color .2s!important}
@@ -1032,85 +973,35 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   function openSessionTimePicker(input){
     document.querySelector('.st-time-picker-backdrop')?.remove();
     const current=enDigits(input.value||'18:00').split(':'),initialHour=Math.max(0,Math.min(23,Number(current[0])||0)),initialMinute=Math.max(0,Math.min(59,Number(current[1])||0));
-    let hour=initialHour,minute=initialMinute,mode='fluid',wheelFrame=0;
+    let hour=initialHour,minute=initialMinute,frames={hour:0,minute:0};
     const pad=n=>String(n).padStart(2,'0');
     const overlay=document.createElement('div');overlay.className='st-time-picker-backdrop';
-    const makeSlider=(key,label,value,max,majorStep)=>{
-      const marks=[];
-      for(let i=0;i<=max;i++){
-        const y=12+(1-i/max)*216,major=i%majorStep===0||i===max;
-        marks.push('<line class="st-fluid-tick '+(major?'major':'')+'" x1="'+(major?35:42)+'" y1="'+y.toFixed(2)+'" x2="59" y2="'+y.toFixed(2)+'"/>');
-        if(major)marks.push('<text class="st-fluid-label" x="29" y="'+(y+4).toFixed(2)+'">'+pad(i)+'</text>');
-      }
-      return '<div class="st-time-slider" data-kind="'+key+'"><div class="st-time-slider-head"><label>'+label+'</label><output class="st-time-slider-value">'+pad(value)+'</output></div><div class="st-fluid-visual"><svg class="st-fluid-svg" viewBox="0 0 180 240" preserveAspectRatio="none" aria-hidden="true">'+marks.join('')+'<path class="st-fluid-line-glow" d="M60 12 L60 228"/><path class="st-fluid-line" d="M60 12 L60 228"/><circle class="st-fluid-knob-shadow" cx="91" cy="120" r="25"/><circle class="st-fluid-knob-ring" cx="91" cy="120" r="22"/><circle class="st-fluid-knob-core" cx="91" cy="120" r="16"/><path class="st-fluid-arrows" d="M91 110l-5 7h10z M91 130l-5-7h10z"/><text class="st-fluid-number" x="119" y="133">'+pad(value)+'</text></svg><input class="st-fluid-range" type="range" min="0" max="'+max+'" step="1" value="'+value+'" aria-label="'+(key==='hour'?'ساعت':'دقیقه')+'"></div></div>';
-    };
-    const dialTicks=Array.from({length:24},(_,i)=>{
-      const a=(i/24)*Math.PI*2-Math.PI/2,major=i%2===0,r1=major?81:86,r2=96,cx=110,cy=110;
-      return '<line class="st-dial-tick '+(major?'major':'')+'" x1="'+(cx+Math.cos(a)*r1).toFixed(2)+'" y1="'+(cy+Math.sin(a)*r1).toFixed(2)+'" x2="'+(cx+Math.cos(a)*r2).toFixed(2)+'" y2="'+(cy+Math.sin(a)*r2).toFixed(2)+'"/>'+(major?'<text class="st-dial-label" x="'+(cx+Math.cos(a)*70).toFixed(2)+'" y="'+(cy+Math.sin(a)*70+4).toFixed(2)+'">'+pad(i)+'</text>':'');
-    }).join('');
-    overlay.innerHTML='<section class="st-time-picker" role="dialog" aria-modal="true" aria-label="تنظیم ساعت کلاس"><header><span>تنظیم ساعت کلاس</span><button type="button" class="st-time-picker-close" aria-label="بستن">×</button></header><div class="st-time-picker-preview"><small>CLASS TIME</small><strong class="st-time-preview-value">'+pad(hour)+':'+pad(minute)+'</strong></div><nav class="st-time-modes" aria-label="حالت انتخاب ساعت"><button type="button" data-mode="fluid" class="active">FLUID</button><button type="button" data-mode="dial">DIAL</button><button type="button" data-mode="digital">DIGITAL</button></nav><div class="st-time-mode-pane" data-pane="fluid"><div class="st-time-picker-controls">'+makeSlider('hour','HOUR',hour,23,6)+makeSlider('minute','MINUTE',minute,59,10)+'</div><p class="st-time-hint">برای تغییر مقدار، نشانگر را نرم بالا و پایین بکش</p></div><div class="st-time-mode-pane" data-pane="dial" hidden><div class="st-dial-layout"><div class="st-dial-wrap"><svg class="st-dial-svg" viewBox="0 0 220 220" role="img" aria-label="صفحه چرخشی انتخاب ساعت"><circle class="st-dial-track" cx="110" cy="110" r="91"/>'+dialTicks+'<line class="st-dial-hand" x1="110" y1="110" x2="110" y2="24"/><circle class="st-dial-hub" cx="110" cy="110" r="7"/><circle class="st-dial-hit" cx="110" cy="110" r="104"/></svg><div class="st-dial-center"><b class="st-dial-hour">'+pad(hour)+'</b><small>HOUR</small></div></div><div class="st-minute-wheel-wrap"><label>MINUTE</label><div class="st-minute-wheel" tabindex="0" aria-label="اسکرول برای انتخاب دقیقه"><div class="st-minute-wheel-spacer"></div><div class="st-minute-wheel-value">'+pad(minute)+'</div><div class="st-minute-wheel-spacer"></div></div><small class="st-wheel-caption">اسکرول عمودی</small></div></div></div><div class="st-time-mode-pane" data-pane="digital" hidden><div class="st-digital-panel"><div class="st-digital-readout"><span class="st-digital-hour">'+pad(hour)+'</span><i>:</i><span class="st-digital-minute">'+pad(minute)+'</span></div><div class="st-digital-units"><div class="st-digital-unit"><label>ساعت</label><div class="st-digital-stepper"><button type="button" data-step="hour" data-delta="-1" aria-label="کاهش ساعت">−</button><output data-digital="hour">'+pad(hour)+'</output><button type="button" data-step="hour" data-delta="1" aria-label="افزایش ساعت">+</button></div><input type="range" min="0" max="23" value="'+hour+'" data-digital-range="hour" aria-label="ساعت"/></div><div class="st-digital-unit"><label>دقیقه</label><div class="st-digital-stepper"><button type="button" data-step="minute" data-delta="-1" aria-label="کاهش دقیقه">−</button><output data-digital="minute">'+pad(minute)+'</output><button type="button" data-step="minute" data-delta="1" aria-label="افزایش دقیقه">+</button></div><input type="range" min="0" max="59" value="'+minute+'" data-digital-range="minute" aria-label="دقیقه"/></div></div><p>تنظیم دقیق با کلیدهای + و − یا کشیدن نوار</p></div></div><footer><button type="button" class="st-time-picker-cancel">انصراف</button><button type="button" class="st-time-picker-apply">ثبت ساعت</button></footer></section>';
-    const preview=overlay.querySelector('.st-time-preview-value'),wheel=overlay.querySelector('.st-minute-wheel'),body= document.body,doc=document.documentElement,oldBodyOverflow=body.style.overflow,oldDocOverflow=doc.style.overflow,oldBodyTouch=body.style.touchAction;
-    const close=()=>{overlay.remove();body.style.overflow=oldBodyOverflow;doc.style.overflow=oldDocOverflow;body.style.touchAction=oldBodyTouch;if(onKey)document.removeEventListener('keydown',onKey);};
+    const makeWheel=(key,label,max,value)=>'<div class="st-time-slider" data-kind="'+key+'"><div class="st-time-slider-head"><label>'+label+'</label><output class="st-time-slider-value">'+pad(value)+'</output></div><div class="st-time-wheel" tabindex="0" role="listbox" aria-label="'+(key==='hour'?'انتخاب ساعت':'انتخاب دقیقه')+'"><div class="st-time-wheel-spacer" aria-hidden="true"></div>'+Array.from({length:max+1},(_,i)=>'<div class="st-time-wheel-item'+(i===value?' selected':'')+'" data-value="'+i+'" role="option" aria-selected="'+(i===value?'true':'false')+'">'+pad(i)+'</div>').join('')+'<div class="st-time-wheel-spacer" aria-hidden="true"></div><div class="st-time-wheel-indicator" aria-hidden="true"></div></div><small class="st-time-wheel-caption">برای انتخاب، عمودی اسکرول کن</small></div>';
+    overlay.innerHTML='<section class="st-time-picker" role="dialog" aria-modal="true" aria-label="تنظیم ساعت کلاس"><header><span>تنظیم ساعت کلاس</span><button type="button" class="st-time-picker-close" aria-label="بستن">×</button></header><div class="st-time-picker-preview"><small>CLASS TIME</small><strong class="st-time-preview-value">'+pad(hour)+':'+pad(minute)+'</strong></div><div class="st-time-picker-controls">'+makeWheel('hour','HOUR',23,hour)+makeWheel('minute','MINUTE',59,minute)+'</div><footer><button type="button" class="st-time-picker-cancel">انصراف</button><button type="button" class="st-time-picker-apply">ثبت ساعت</button></footer></section>';
+    const body=document.body,doc=document.documentElement,oldBodyOverflow=body.style.overflow,oldDocOverflow=doc.style.overflow;
     let onKey;
-    const syncPreview=(animate=false)=>{
-      const value=pad(hour)+':'+pad(minute);preview.textContent=value;
-      overlay.querySelector('.st-dial-hour').textContent=pad(hour);
-      overlay.querySelector('.st-digital-hour').textContent=pad(hour);overlay.querySelector('.st-digital-minute').textContent=pad(minute);
-      overlay.querySelector('[data-digital="hour"]').textContent=pad(hour);overlay.querySelector('[data-digital="minute"]').textContent=pad(minute);
-      overlay.querySelector('[data-digital-range="hour"]').value=hour;overlay.querySelector('[data-digital-range="minute"]').value=minute;
-      if(animate){preview.classList.remove('bump');requestAnimationFrame(()=>{preview.classList.add('bump');});}
+    const close=()=>{overlay.remove();body.style.overflow=oldBodyOverflow;doc.style.overflow=oldDocOverflow;if(onKey)document.removeEventListener('keydown',onKey);};
+    const syncPreview=()=>{overlay.querySelector('.st-time-preview-value').textContent=pad(hour)+':'+pad(minute);};
+    const setValue=(key,value)=>{
+      if(key==='hour')hour=Math.max(0,Math.min(23,value));else minute=Math.max(0,Math.min(59,value));
+      const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel');
+      overlay.querySelector('[data-kind="'+key+'"] .st-time-slider-value').textContent=pad(key==='hour'?hour:minute);
+      wheel.querySelectorAll('.st-time-wheel-item').forEach(el=>{const active=Number(el.dataset.value)===(key==='hour'?hour:minute);el.classList.toggle('selected',active);el.setAttribute('aria-selected',active?'true':'false');});
+      syncPreview();
     };
-    const paintFluid=(key,value)=>{
-      if(key==='hour')hour=value;else minute=value;
-      const max=key==='hour'?23:59,slider=overlay.querySelector('[data-kind="'+key+'"]'),range=slider.querySelector('.st-fluid-range'),svg=slider.querySelector('.st-fluid-svg'),y=12+(1-value/max)*216;
-      range.value=value;slider.querySelector('.st-time-slider-value').textContent=pad(value);
-      const line='M60 12 L60 '+(y-37).toFixed(2)+' C60 '+(y-17).toFixed(2)+' 44 '+(y-17).toFixed(2)+' 44 '+y.toFixed(2)+' C44 '+(y+17).toFixed(2)+' 60 '+(y+17).toFixed(2)+' 60 '+(y+37).toFixed(2)+' L60 228';
-      svg.querySelector('.st-fluid-line').setAttribute('d',line);svg.querySelector('.st-fluid-line-glow').setAttribute('d',line);
-      ['.st-fluid-knob-shadow','.st-fluid-knob-ring','.st-fluid-knob-core'].forEach(sel=>svg.querySelector(sel).setAttribute('cy',y));
-      svg.querySelector('.st-fluid-arrows').setAttribute('transform','translate(0 '+(y-120).toFixed(2)+')');
-      svg.querySelector('.st-fluid-number').textContent=pad(value);
-      svg.querySelectorAll('.st-fluid-label').forEach(el=>el.classList.toggle('active',Number(el.textContent)===value));
-      syncPreview(true);
-    };
-    const paintDial=()=>{
-      const a=(hour/24)*Math.PI*2-Math.PI/2,x=110+Math.cos(a)*86,y=110+Math.sin(a)*86;
-      overlay.querySelector('.st-dial-hand').setAttribute('x2',x.toFixed(2));overlay.querySelector('.st-dial-hand').setAttribute('y2',y.toFixed(2));
-      syncPreview(true);
-    };
-    const renderWheel=()=>{
-      const vals=['<div class="st-minute-wheel-spacer" aria-hidden="true"></div>'];for(let i=0;i<60;i++)vals.push('<div class="st-minute-wheel-item" data-minute="'+i+'">'+pad(i)+'</div>');vals.push('<div class="st-minute-wheel-spacer" aria-hidden="true"></div>');
-      wheel.innerHTML=vals.join('');wheel.scrollTop=minute*34;
-      wheel.querySelectorAll('.st-minute-wheel-item').forEach(el=>el.classList.toggle('selected',Number(el.dataset.minute)===minute));
-    };
-    const setMode=next=>{
-      mode=next;overlay.querySelectorAll('[data-mode]').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));
-      overlay.querySelectorAll('[data-pane]').forEach(p=>p.hidden=p.dataset.pane!==mode);
-      if(mode==='dial'){paintDial();renderWheel();}
-    };
-    overlay.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
-    ['hour','minute'].forEach(key=>overlay.querySelector('[data-kind="'+key+'"] .st-fluid-range').addEventListener('input',e=>paintFluid(key,Number(e.target.value))));
-    const dial=overlay.querySelector('.st-dial-svg'),dialValue=ev=>{
-      const rect=dial.getBoundingClientRect(),cx=rect.left+rect.width/2,cy=rect.top+rect.height/2,dx=ev.clientX-cx,dy=ev.clientY-cy;
-      let deg=Math.atan2(dy,dx)*180/Math.PI+90;if(deg<0)deg+=360;
-      hour=Math.round(deg/360*24)%24;paintDial();
-    };
-    let dialDragging=false;
-    dial.addEventListener('pointerdown',e=>{dialDragging=true;dial.setPointerCapture?.(e.pointerId);dialValue(e);});
-    dial.addEventListener('pointermove',e=>{if(dialDragging)dialValue(e);});
-    ['pointerup','pointercancel','lostpointercapture'].forEach(t=>dial.addEventListener(t,()=>{dialDragging=false;}));
-    wheel.addEventListener('scroll',()=>{
-      if(wheelFrame)cancelAnimationFrame(wheelFrame);
-      wheelFrame=requestAnimationFrame(()=>{minute=Math.max(0,Math.min(59,Math.round(wheel.scrollTop/34)));wheel.querySelectorAll('.st-minute-wheel-item').forEach(el=>el.classList.toggle('selected',Number(el.dataset.minute)===minute));syncPreview();});
-    },{passive:true});
-    wheel.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();minute=(minute+(e.key==='ArrowDown'?1:59))%60;wheel.scrollTo({top:minute*34,behavior:'smooth'});}});
-    overlay.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{const k=b.dataset.step,delta=Number(b.dataset.delta);if(k==='hour')hour=(hour+delta+24)%24;else minute=(minute+delta+60)%60;syncPreview(true);}));
-    overlay.querySelectorAll('[data-digital-range]').forEach(r=>r.addEventListener('input',()=>{if(r.dataset.digitalRange==='hour')hour=Number(r.value);else minute=Number(r.value);syncPreview();}));
+    ['hour','minute'].forEach(key=>{
+      const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel');
+      wheel.addEventListener('scroll',()=>{
+        if(frames[key])cancelAnimationFrame(frames[key]);
+        frames[key]=requestAnimationFrame(()=>{const next=Math.max(0,Math.min(key==='hour'?23:59,Math.round(wheel.scrollTop/38)));setValue(key,next);});
+      },{passive:true});
+      wheel.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'){e.preventDefault();const step=e.key.startsWith('Page')?5:1,current=key==='hour'?hour:minute,next=current+(e.key==='ArrowUp'||e.key==='PageUp'?-step:step);setValue(key,next);wheel.scrollTo({top:(key==='hour'?hour:minute)*38,behavior:'smooth'});}});
+    });
     overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('.st-time-picker-close,.st-time-picker-cancel'))close();});
     overlay.querySelector('.st-time-picker-apply').addEventListener('click',()=>{input.value=pad(hour)+':'+pad(minute);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));close();});
     onKey=e=>{if(e.key==='Escape')close();};document.addEventListener('keydown',onKey);
-    body.style.overflow='hidden';doc.style.overflow='hidden';body.style.touchAction='none';
-    document.body.appendChild(overlay);
-    paintFluid('hour',hour);paintFluid('minute',minute);paintDial();renderWheel();syncPreview();
+    body.style.overflow='hidden';doc.style.overflow='hidden';document.body.appendChild(overlay);
+    requestAnimationFrame(()=>{overlay.querySelector('[data-kind="hour"] .st-time-wheel').scrollTop=hour*38;overlay.querySelector('[data-kind="minute"] .st-time-wheel').scrollTop=minute*38;});
   }
   function drawDraft(){
     const sorted=S.rows.slice().sort((a,b)=>localDate(a.starts_at).localeCompare(localDate(b.starts_at))||Date.parse(a.starts_at)-Date.parse(b.starts_at)||Number(a.session_number)-Number(b.session_number));
