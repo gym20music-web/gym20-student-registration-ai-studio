@@ -1524,6 +1524,46 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     termFieldLabelCenterCss.textContent='#studentTermsTab .st-term-grid>.st-field>label{display:block!important;width:100%!important;text-align:center!important;align-self:stretch!important}';
     document.head.appendChild(termFieldLabelCenterCss);
 
+    /* Exact 24px shared baseline for the calendar and term selector controls. */
+    const stTermPicker24pxCss=document.createElement('style');
+    stTermPicker24pxCss.id='stTermPicker24pxCss';
+    stTermPicker24pxCss.textContent=`
+      #studentTermsTab .st-create-compact .st-term-grid{
+        align-items:center!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row,
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field{
+        align-self:center!important;display:flex!important;align-items:center!important;
+        height:24px!important;min-height:24px!important;max-height:24px!important;
+        margin:0!important;padding:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-calendar-action-row #stManualCalendar{
+        box-sizing:border-box!important;width:100%!important;height:24px!important;
+        min-height:24px!important;max-height:24px!important;padding:0 5px!important;
+        line-height:22px!important;font-size:8px!important;white-space:nowrap!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row{
+        box-sizing:border-box!important;display:flex!important;align-items:center!important;
+        width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;
+        gap:4px!important;margin:0!important;padding:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row select,
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row .st-custom-select,
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row .st-custom-select-trigger,
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row #stDeleteTerm{
+        box-sizing:border-box!important;height:24px!important;min-height:24px!important;
+        max-height:24px!important;line-height:22px!important;margin:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row #stDeleteTerm{
+        width:24px!important;min-width:24px!important;max-width:24px!important;
+        flex:0 0 24px!important;padding:0!important;
+      }
+      #studentTermsTab .st-create-compact .st-term-grid>.st-term-picker-field .st-term-picker-row #stDeleteTerm svg{
+        width:12px!important;height:12px!important;
+      }
+    `;
+    document.head.appendChild(stTermPicker24pxCss);
+
   // Unified compact session editor: four equal-height controls with proportional widths.
   const sessionControls25Css=document.createElement('style');
   sessionControls25Css.id='stSessionControls25Css';
