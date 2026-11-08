@@ -705,8 +705,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-scroll{display:flex;align-items:center;gap:4px;width:100%;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;scroll-behavior:smooth;cursor:ew-resize}
       #stPushCard .st-hour-scroll::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-scroll::before,#stPushCard .st-hour-scroll::after{content:"";flex:0 0 calc(50% - 5px);height:1px}
-      #stPushCard .st-hour-option{box-sizing:border-box;flex:0 0 14px;width:14px;height:12px;min-height:12px;padding:0;border:0!important;outline:0!important;border-radius:0!important;background:transparent!important;color:#fff;font:600 7px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,flex-basis .18s,width .18s,transform .18s}
-      #stPushCard .st-hour-option.is-selected{flex-basis:18px;width:18px;color:#fff;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900;transform:scale(1.12)}
+      #stPushCard .st-hour-option,#stPushCard .st-hour-option:hover,#stPushCard .st-hour-option:active,#stPushCard .st-hour-option:focus{box-sizing:border-box!important;flex:0 0 14px!important;width:14px!important;height:12px!important;min-height:12px!important;padding:0!important;margin:0!important;border:0!important;border-left:0!important;border-right:0!important;outline:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;color:#fff!important;font:600 7px/12px Vazirmatn,Montserrat,sans-serif!important;text-align:center!important;scroll-snap-align:center;cursor:pointer;transition:color .18s,text-shadow .18s,transform .18s}
+      #stPushCard .st-hour-option.is-selected{color:#fff!important;background:transparent!important;box-shadow:none!important;text-shadow:0 0 3px #fff,0 0 7px rgba(255,255,255,.95),0 0 11px rgba(255,255,255,.55);font-weight:900!important;transform:scale(1.12)}
       #stPushCard .st-hour-option:focus-visible{outline:0!important;box-shadow:none!important}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:13px;min-height:13px;max-height:13px}#stPushCard .st-hour-option{height:11px;min-height:11px;line-height:11px}}
     `;
@@ -762,7 +762,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
       const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
       if(!hidden||!scroller)return;
-      scroller.innerHTML=Array.from({length:24},(_,i)=>i+1).map(hour=>'<button type="button" class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false">'+hour+'</button>').join('');
+      scroller.innerHTML=Array.from({length:25},(_,i)=>i).map(hour=>'<button type="button" class="st-hour-option" data-hour="'+hour+'" role="option" aria-selected="false">'+hour+'</button>').join('');
       scroller.querySelectorAll('.st-hour-option').forEach(option=>option.addEventListener('click',()=>{
         hidden.value=option.dataset.hour;centerHourOption(scroller,hidden.value,'smooth');
         scroller.querySelectorAll('.st-hour-option').forEach(el=>el.setAttribute('aria-selected',String(el===option)));
@@ -784,8 +784,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       scroller.addEventListener('keydown',event=>{
         if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
         event.preventDefault();
-        const current=Number(hidden.value)||1;
-        const next=event.key==='Home'?1:event.key==='End'?24:Math.max(1,Math.min(24,current+(event.key==='ArrowRight'?1:-1)));
+        const current=Number.isInteger(Number(hidden.value))?Number(hidden.value):1;
+        const next=event.key==='Home'?0:event.key==='End'?24:Math.max(0,Math.min(24,current+(event.key==='ArrowRight'?1:-1)));
         hidden.value=String(next);centerHourOption(scroller,next,'smooth');
       });
       centerHourOption(scroller,hidden.value,'instant');
@@ -812,7 +812,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     $('stReminder2').value=S.reminderDraft.reminder_2_template;
     $('stReminder1Hours').value=String(S.reminderDraft.reminder_1_hours);
     $('stReminder2Hours').value=String(S.reminderDraft.reminder_2_hours);
-    p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const value=Math.max(1,Math.min(24,Number(input.value)||1));input.value=String(value);const option=scroller.querySelector('[data-hour="'+value+'"]');if(option){scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===option;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});scroller.scrollLeft=option.getBoundingClientRect().left-scroller.getBoundingClientRect().left+scroller.scrollLeft-(scroller.clientWidth-option.offsetWidth)/2;}}});
+    p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value);const value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):1;input.value=String(value);const option=scroller.querySelector('[data-hour="'+value+'"]');if(option){scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===option;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});scroller.scrollLeft=option.getBoundingClientRect().left-scroller.getBoundingClientRect().left+scroller.scrollLeft-(scroller.clientWidth-option.offsetWidth)/2;}}});
     updateTemplatePreview('stReminder1');updateTemplatePreview('stReminder2');
     S.pushTemplatesLoaded=true;
   }
