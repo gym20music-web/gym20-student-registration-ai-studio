@@ -825,9 +825,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     if(S.reminderDraft.reminder_2_template===legacy2)S.reminderDraft.reminder_2_template=DEFAULT_PUSH_TEMPLATES.reminder_2_template;
     $('stReminder1').value=S.reminderDraft.reminder_1_template;
     $('stReminder2').value=S.reminderDraft.reminder_2_template;
-    $('stReminder1Hours').value=String(S.reminderDraft.reminder_1_hours);
-    $('stReminder2Hours').value=String(S.reminderDraft.reminder_2_hours);
-    p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value);const value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):1;input.value=String(value);const option=scroller.querySelector('[data-hour="'+value+'"]');if(option){scroller.querySelectorAll('.st-hour-option').forEach(el=>{const selected=el===option;el.classList.toggle('is-selected',selected);el.setAttribute('aria-selected',String(selected));});scroller.scrollLeft=option.getBoundingClientRect().left-scroller.getBoundingClientRect().left+scroller.scrollLeft-(scroller.clientWidth-option.offsetWidth)/2;}}});
+    const reminder1=Number(S.reminderDraft.reminder_1_hours),reminder2=Number(S.reminderDraft.reminder_2_hours);
+    $('stReminder1Hours').value=String(Number.isInteger(reminder1)&&reminder1>=0&&reminder1<=24?reminder1:6);
+    $('stReminder2Hours').value=String(Number.isInteger(reminder2)&&reminder2>=0&&reminder2<=24?reminder2:2);
+    const syncReminderHourScrollers=()=>p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value),value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):(input.id==='stReminder1Hours'?6:2);input.value=String(value);centerHourOption(scroller,value,'instant');}});
+    syncReminderHourScrollers();
+    requestAnimationFrame(()=>{syncReminderHourScrollers();requestAnimationFrame(syncReminderHourScrollers);});
+    setTimeout(syncReminderHourScrollers,120);
     updateTemplatePreview('stReminder1');updateTemplatePreview('stReminder2');
     S.pushTemplatesLoaded=true;
   }
