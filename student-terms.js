@@ -631,9 +631,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-grid st-term-grid">'+
       '<div class="st-field"><label>شروع ترم</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
       '<div class="st-field"><label>پایان ترم</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
+      '<div class="st-actions st-calendar-action-row"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted"></span></div>'+
       '<div class="st-field st-term-picker-field"><label>ترم‌های هنرجو</label><div class="st-term-picker-row"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger st-icon-delete-term" id="stDeleteTerm" disabled aria-label="حذف ترم" title="حذف ترم" style="width:36px;min-width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="width:17px;height:17px;display:block"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 13h11l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>'+
-      '</div>'+
-      '<div class="st-actions"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted"></span></div></form></div>'+
+      '</div></form></div>'+
       '<div id="stSchedule" class="st-hide">'+
       '<div class="st-card"><div class="st-title">جلسات انتخاب‌شده ترم</div>'+
       '<div id="stDraftTable" class="st-table-wrap"></div><div class="st-actions"><button class="st-btn primary" type="button" id="stPublish">ثبت نهایی</button></div></div>'+
@@ -1452,6 +1452,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   document.head.appendChild(publicActions24Css);
 
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
+  if(!document.getElementById('stCalendarActionOrderCss')){const x=document.createElement('style');x.id='stCalendarActionOrderCss';x.textContent="\n#studentTermsTab .st-term-grid>.st-calendar-action-row{\n  grid-column:1/-1!important;display:flex!important;align-items:center!important;\n  justify-content:flex-start!important;gap:8px!important;margin:0!important;\n  padding:2px 0!important;min-width:0!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  width:auto!important;min-width:0!important;height:31px!important;min-height:31px!important;\n  max-height:31px!important;padding:4px 12px!important;border-radius:7px!important;\n  font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCount{font-size:9px!important}\n@media(max-width:600px){\n #studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  height:29px!important;min-height:29px!important;max-height:29px!important;\n  padding:3px 9px!important;font-size:9px!important\n }\n}\n";document.head.appendChild(x);}
 
     /* Center the labels above all three term controls. */
     const termFieldLabelCenterCss=document.createElement('style');
@@ -1631,3 +1632,4 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   document.head.appendChild(sessionAndCalendarFinalCss);
 
 })();
+/* Put calendar session selection directly above the student term selector. */
