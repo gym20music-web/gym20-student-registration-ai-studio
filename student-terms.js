@@ -706,7 +706,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 12px;width:12px;height:16px;margin:0;padding:0;border:1px solid transparent;border-radius:5px;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .08s,text-shadow .08s,transform .08s,border-color .08s,background .08s,box-shadow .08s;flex-shrink:0}
-      #stPushCard .st-hour-option.is-two-digit{flex:0 0 21px!important;width:21px!important;min-width:21px!important;max-width:21px!important;flex-shrink:0!important;margin-inline:.5px;letter-spacing:0}
+      #stPushCard .st-hour-option.is-two-digit{flex:0 0 19px!important;width:19px!important;min-width:19px!important;max-width:19px!important;flex-shrink:0!important;margin-inline:.25px;letter-spacing:0}
       #stPushCard .st-hour-option.is-selected{margin-inline:1.5px;border-color:transparent;background:transparent;color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 9px rgba(255,255,255,.95);box-shadow:none;transform:scale(1.08);z-index:2}
       #stPushCard .st-hour-option.is-two-digit.is-selected{margin-inline:.5px}
       #stPushCard .st-hour-option.is-adjacent{margin-inline:0}
