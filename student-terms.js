@@ -768,11 +768,21 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const hourScrollerTimers=new Map();
     function centerHourOption(scroller,value,behavior='instant'){
       if(!scroller)return;
-      const option=scroller.querySelector('[data-hour="'+Number(value)+'"]');
+      const hour=Math.max(0,Math.min(24,Number(value)||0));
+      const option=scroller.querySelector('[data-hour="'+hour+'"]');
       if(!option)return;
-      scroller.querySelectorAll('.st-hour-option').forEach(el=>el.classList.toggle('is-selected',el===option));
-      const left=option.getBoundingClientRect().left-scroller.getBoundingClientRect().left+scroller.scrollLeft-(scroller.clientWidth-option.offsetWidth)/2;
-      scroller.scrollTo({left,behavior});
+      scroller.querySelectorAll('.st-hour-option').forEach(el=>{
+        const selected=el===option;
+        el.classList.toggle('is-selected',selected);
+        el.setAttribute('aria-selected',String(selected));
+      });
+      const position=()=>{ 
+        const max=Math.max(0,scroller.scrollWidth-scroller.clientWidth);
+        const target=Math.max(0,Math.min(max,option.offsetLeft-(scroller.clientWidth-option.offsetWidth)/2));
+        scroller.scrollLeft=target;
+      };
+      position();
+      requestAnimationFrame(position);
     }
     ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
       const hidden=$(id),scroller=p.querySelector('[data-hour-scroll="'+id+'"]');
@@ -831,7 +841,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const syncReminderHourScrollers=()=>p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value),value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):(input.id==='stReminder1Hours'?6:2);input.value=String(value);centerHourOption(scroller,value,'instant');}});
     syncReminderHourScrollers();
     requestAnimationFrame(()=>{syncReminderHourScrollers();requestAnimationFrame(syncReminderHourScrollers);});
-    setTimeout(syncReminderHourScrollers,120);
+    setTimeout(syncReminderHourScrollers,120);setTimeout(syncReminderHourScrollers,350);
     updateTemplatePreview('stReminder1');updateTemplatePreview('stReminder2');
     S.pushTemplatesLoaded=true;
   }
