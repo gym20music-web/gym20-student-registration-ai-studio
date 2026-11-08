@@ -101,7 +101,7 @@
       .st-picker-arrow{color:#d6b35a;font-size:18px}
       .st-student-menu{position:absolute!important;z-index:10050!important;top:calc(100% + 6px)!important;right:0!important;left:0!important;width:100%!important;max-height:min(48vh,300px);overflow-y:auto;overflow-x:hidden;padding:5px;border:1px solid rgba(214,179,90,.65);border-radius:11px;background:#171e2b!important;color:#f3f0e8!important;box-shadow:0 14px 32px #000b;box-sizing:border-box;direction:rtl}.st-student-option{display:flex!important;min-height:40px;box-sizing:border-box;line-height:1.5}.st-student-option span{min-width:0;overflow:hidden;text-overflow:ellipsis}.st-student-option small{flex:0 0 auto}
       .st-student-menu[hidden]{display:none!important}
-      .st-student-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 9px;border:0;border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#eee;text-align:right;font:inherit;font-size:12px;cursor:pointer}
+      .st-student-option{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;padding:10px 9px;border:1px solid rgba(255,255,255,.22);border-bottom:1px solid rgba(255,255,255,.07);background:transparent;color:#eee;text-align:right;font:inherit;font-size:12px;cursor:pointer}
       .st-student-option:last-child{border-bottom:0}
       .st-student-option small{color:#b7a16c;font-size:10px;white-space:nowrap}
       .st-student-option.selected{background:rgba(214,179,90,.13);color:#f2d48b;border-radius:7px}
@@ -707,7 +707,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 14px;width:14px;height:16px;margin:0;padding:0;border:1px solid transparent;border-radius:5px;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .08s,text-shadow .08s,transform .08s,border-color .08s,background .08s,box-shadow .08s;flex-shrink:0}
       #stPushCard .st-hour-option.is-two-digit{flex:0 0 28px!important;width:28px!important;min-width:28px!important;max-width:28px!important;flex-shrink:0!important;margin-inline:3px;letter-spacing:.35px}
-      #stPushCard .st-hour-option.is-selected{margin-inline:4px;border:0;background:transparent;color:#fff;font-weight:900;text-shadow:none;box-shadow:none;transform:none;z-index:2}
+      #stPushCard .st-hour-option.is-selected{margin-inline:4px;border-color:transparent;background:transparent;color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 9px rgba(255,255,255,.95);box-shadow:none;transform:scale(1.08);z-index:2}
       #stPushCard .st-hour-option.is-adjacent{margin-inline:1px}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
     `;
