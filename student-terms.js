@@ -701,13 +701,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     hourScrollerCss.id='stReminderHorizontalScrollerCss';
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
-      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:18px;min-height:18px;max-height:18px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(255,255,255,.22);border-radius:5px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
+      #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:18px;min-height:18px;max-height:18px;overflow:hidden;box-sizing:border-box;border:0;border-radius:5px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
             #stPushCard .st-hour-loop{position:relative;display:flex;align-items:center;gap:1px;width:100%;height:100%;box-sizing:border-box;padding:0 calc(50% - 7px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;cursor:grab;user-select:none;-webkit-user-select:none;scroll-behavior:auto}
       #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
       #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
       #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 14px;width:14px;height:16px;margin:0;padding:0;border:1px solid transparent;border-radius:5px;color:rgba(255,255,255,.72);font:600 9px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .08s,text-shadow .08s,transform .08s,border-color .08s,background .08s,box-shadow .08s;flex-shrink:0}
       #stPushCard .st-hour-option.is-two-digit{flex:0 0 28px!important;width:28px!important;min-width:28px!important;max-width:28px!important;flex-shrink:0!important;margin-inline:3px;letter-spacing:.35px}
-      #stPushCard .st-hour-option.is-selected{margin-inline:4px;border-color:transparent;background:transparent;color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 9px rgba(255,255,255,.95);box-shadow:none;transform:scale(1.08);z-index:2}
+      #stPushCard .st-hour-option.is-selected{margin-inline:4px;border:0;background:transparent;color:#fff;font-weight:900;text-shadow:none;box-shadow:none;transform:none;z-index:2}
       #stPushCard .st-hour-option.is-adjacent{margin-inline:1px}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
     `;
