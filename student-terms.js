@@ -1014,7 +1014,10 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     initTermCalendars($('stDraftTable'));
     enhanceAllSelects($('stDraftTable'));
     $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
-    $('stDraftTable').querySelectorAll('[data-time]').forEach(input=>input.addEventListener('click',()=>openSessionTimePicker(input)));
+    $('stDraftTable').querySelectorAll('[data-time]').forEach(input=>{
+      input.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();openSessionTimePicker(input);},{passive:false});
+      input.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openSessionTimePicker(input);}});
+    });
     const syncSessionEditor=e=>{const input=e.target;if(!input?.matches?.('[data-date],[data-time]'))return;const n=Number(input.dataset.date||input.dataset.time),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;const dateInput=$('stDraftTable').querySelector('[data-date="'+n+'"]'),timeInput=$('stDraftTable').querySelector('[data-time="'+n+'"]');timeInput.value=enDigits(timeInput.value||'');const dateParts=enDigits(dateInput?.value||'').trim().split('/'),timeParts=(timeInput?.value||'').split(':');if(!dateInput||!timeInput||dateParts.length!==3||dateParts.some((v,i)=>v.length!==(i===0?4:2)||!/^\d+$/.test(v))||timeParts.length<2||timeParts[0].length!==2||timeParts[1].length!==2)return;try{const date=gregorianInput(dateInput.value),start=localISO(date,timeInput.value),mins=rowMinutes(row);row.starts_at=start;row.ends_at=new Date(new Date(start).getTime()+mins*60000).toISOString();const card=input.closest('.st-session-card'),weekday=card?.querySelector('.st-session-weekday');if(weekday)weekday.textContent=weekdayFa(date);if(e.type==='change'&&input.matches('[data-date]')){drawDraft();return;}refreshDraftSessionStates();}catch(err){if(e.type!=='input')say(err.message||'ثبت زمان جلسه ناموفق بود.',true);}};
     const editorRoot=$('stDraftTable');if(!editorRoot.dataset.sessionEditorBound){editorRoot.dataset.sessionEditorBound='1';editorRoot.addEventListener('input',syncSessionEditor);editorRoot.addEventListener('change',syncSessionEditor);editorRoot.addEventListener('blur',syncSessionEditor,true);}
   }
