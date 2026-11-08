@@ -380,7 +380,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       .st-minute-wheel::-webkit-scrollbar{display:none}
       .st-minute-wheel-item{height:34px;display:flex;align-items:center;justify-content:center;scroll-snap-align:center;color:#737d6b;font:500 15px Montserrat,Arial,sans-serif;transition:color .12s,transform .12s}
       .st-minute-wheel-item.selected{color:#f4f13a;font-size:21px;font-weight:800;text-shadow:0 0 12px #f4f13a55}
-      .st-minute-wheel-spacer{display:none}
+      .st-minute-wheel-spacer{display:block;height:68px;flex:0 0 68px;pointer-events:none}
       .st-wheel-caption{color:#687365;font-size:8px}
       .st-digital-panel{padding:16px 18px 19px}
       .st-digital-readout{display:flex;justify-content:center;align-items:center;gap:5px;padding:17px 10px;margin-bottom:18px;border:1px solid #d7d52b3b;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#f4f13a12,transparent 70%),#0b100d;box-shadow:inset 0 0 25px #000a,0 0 24px #f4f13a0c}
@@ -1078,7 +1078,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       syncPreview(true);
     };
     const renderWheel=()=>{
-      const vals=[];for(let i=0;i<60;i++)vals.push('<div class="st-minute-wheel-item" data-minute="'+i+'">'+pad(i)+'</div>');
+      const vals=['<div class="st-minute-wheel-spacer" aria-hidden="true"></div>'];for(let i=0;i<60;i++)vals.push('<div class="st-minute-wheel-item" data-minute="'+i+'">'+pad(i)+'</div>');vals.push('<div class="st-minute-wheel-spacer" aria-hidden="true"></div>');
       wheel.innerHTML=vals.join('');wheel.scrollTop=minute*34;
       wheel.querySelectorAll('.st-minute-wheel-item').forEach(el=>el.classList.toggle('selected',Number(el.dataset.minute)===minute));
     };
