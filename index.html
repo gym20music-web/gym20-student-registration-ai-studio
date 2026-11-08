@@ -1713,7 +1713,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261108-hour-scroll-plain-number-v76')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261108-hour-scroll-span-no-divider-v77')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261108-notification-status-v15'))
       .then(()=>loadGym20Module('./student-exercises.js?v=20261106-exercises-v2'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
