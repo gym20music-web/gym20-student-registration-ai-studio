@@ -312,31 +312,31 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     document.head.appendChild(sessionHeaderCalendarLayout);
     const sessionTimePickerCss=document.createElement('style');sessionTimePickerCss.id='stSessionTimePickerCss';sessionTimePickerCss.textContent=`
       .st-time-picker-backdrop{position:fixed;inset:0;z-index:25000;display:flex;align-items:center;justify-content:center;padding:14px;background:rgba(2,5,10,.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:stClockFade .2s ease-out}
-      .st-time-picker{width:min(300px,100%);overflow:hidden;border:1px solid #d8b65a35;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#26303b 0%,#151b23 55%,#10151c 100%);color:#edf0f4;box-shadow:0 24px 70px #000b,0 0 34px #d8b65a12;font-family:Vazirmatn,Montserrat,sans-serif;animation:stClockIn .24s cubic-bezier(.2,.85,.25,1)}
-      .st-time-picker>header{height:38px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #ffffff0c;color:#e9edf2;font-size:10px;font-weight:800}
+      .st-time-picker{width:min(270px,calc(100% - 24px));overflow:hidden;border:1px solid #d8b65a35;border-radius:16px;background:radial-gradient(ellipse at 50% 0%,#26303b 0%,#151b23 55%,#10151c 100%);color:#edf0f4;box-shadow:0 24px 70px #000b,0 0 34px #d8b65a12;font-family:Vazirmatn,Montserrat,sans-serif;animation:stClockIn .24s cubic-bezier(.2,.85,.25,1)}
+      .st-time-picker>header{height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border-bottom:1px solid #ffffff0c;color:#e9edf2;font-size:10px;font-weight:800}
       .st-time-picker>header span:before{content:'◷';margin-left:8px;color:#e4bd62;font-size:16px;vertical-align:middle}
       .st-time-picker-close{width:24px;height:24px;border:1px solid #ffffff18;border-radius:50%;background:#ffffff08;color:#c4cbd4;font-size:17px;line-height:1}
-      .st-time-picker-preview{display:flex;align-items:center;justify-content:center;gap:9px;padding:9px 8px 4px}
+      .st-time-picker-preview{display:flex;align-items:center;justify-content:center;gap:9px;padding:7px 8px 3px}
       .st-time-picker-preview small{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.4px}
-      .st-time-picker-preview strong{color:#f0cf7a;font:650 23px/1 Montserrat,Arial,sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px #e7bd6238}
-      .st-time-picker-controls{display:grid;grid-template-columns:repeat(2,minmax(0,116px));justify-content:center;gap:6px;padding:5px 8px 10px;margin-inline:auto}
+      .st-time-picker-preview strong{color:#f0cf7a;font:650 21px/1 Montserrat,Arial,sans-serif;letter-spacing:1px;font-variant-numeric:tabular-nums;text-shadow:0 0 18px #e7bd6238}
+      .st-time-picker-controls{display:grid;grid-template-columns:repeat(2,minmax(0,104px));justify-content:center;gap:5px;padding:4px 6px 8px;margin-inline:auto}
       .st-time-slider{min-width:0;width:100%;display:flex;flex-direction:column;align-items:center;padding:0}
       .st-time-slider-head{width:100%;display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:5px}
       .st-time-slider-head label{color:#8290a0;font:700 8px Montserrat,sans-serif;letter-spacing:1.5px}
       .st-time-slider-value{color:#e9c875;font:700 11px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums}
-      .st-time-wheel{position:relative;width:88%;height:150px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;scroll-snap-type:y mandatory;scroll-behavior:smooth;border:1px solid #ffffff0b;border-radius:13px;background:linear-gradient(180deg,#0c121a,#111923 48%,#0c121a);touch-action:pan-y;mask-image:linear-gradient(180deg,transparent 0%,#000 17%,#000 83%,transparent 100%)}
+      .st-time-wheel{position:relative;width:88%;height:132px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:none;scroll-snap-type:y proximity;scroll-behavior:auto;border:1px solid #ffffff0b;border-radius:13px;background:linear-gradient(180deg,#0c121a,#111923 48%,#0c121a);touch-action:pan-y;mask-image:linear-gradient(180deg,transparent 0%,#000 17%,#000 83%,transparent 100%)}
       .st-time-wheel::-webkit-scrollbar{display:none}
-      .st-time-wheel-spacer{height:60px;pointer-events:none}
-      .st-time-wheel-item{height:30px;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;color:#657181;font:500 12px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums;transition:color .16s,font-size .16s,text-shadow .16s;user-select:none}
+      .st-time-wheel-spacer{height:52px;pointer-events:none}
+      .st-time-wheel-item{height:26px;display:flex;align-items:center;justify-content:center;scroll-snap-align:start;color:#657181;font:500 12px Montserrat,Arial,sans-serif;font-variant-numeric:tabular-nums;transition:color .24s,font-size .24s,text-shadow .24s,opacity .24s,filter .24s;user-select:none}
       .st-time-wheel-item.selected{color:#f3d27f;font-size:16px;font-weight:750;text-shadow:0 0 14px #e8bf6340}
-      .st-time-wheel-indicator{position:absolute;left:7px;right:7px;top:60px;height:30px;border-top:1px solid #e8c66a55;border-bottom:1px solid #e8c66a55;border-radius:7px;background:linear-gradient(90deg,#e8c66a08,#e8c66a16,#e8c66a08);pointer-events:none}
+      .st-time-wheel-indicator{position:absolute;left:7px;right:7px;top:52px;height:26px;border-top:1px solid #d9bd78aa;border-bottom:1px solid #e8c66a55;border-radius:7px;background:linear-gradient(90deg,#e8c66a08,#e8c66a16,#e8c66a08);pointer-events:none}
       .st-time-wheel-caption{margin-top:0;color:#758293;font-size:8px}
       .st-time-picker>footer{display:grid;grid-template-columns:.8fr 1.2fr;gap:7px;padding:8px 12px calc(9px + env(safe-area-inset-bottom));border-top:1px solid #ffffff0d}
       .st-time-picker>footer button{min-height:32px;border:1px solid #ffffff18;border-radius:9px;background:#ffffff07;color:#b5c0cc;font:700 9px Vazirmatn,sans-serif;transition:transform .16s,background .16s}
       .st-time-picker>footer .st-time-picker-apply{border:1px solid #e8c66a;background:linear-gradient(135deg,#f1d58e,#c99b43);color:#171b21;font-weight:900;box-shadow:0 4px 15px #d9ad5630}
       .st-time-picker>footer button:active{transform:scale(.97)}
       @keyframes stClockFade{from{opacity:0}to{opacity:1}}@keyframes stClockIn{from{opacity:0;transform:translateY(9px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-      @media(max-width:480px){.st-time-picker-backdrop{align-items:flex-end;padding:0}.st-time-picker{width:100%;max-width:360px;border-radius:16px 16px 0 0;border-bottom:0;animation:stClockSheet .24s cubic-bezier(.2,.85,.25,1)}.st-time-picker-controls{padding:5px 14px 9px;gap:10px}.st-time-wheel{height:150px}.st-time-wheel-spacer{height:60px}.st-time-wheel-indicator{top:60px}.st-time-wheel-item{height:30px}.st-time-picker-preview{padding-top:8px}}
+      @media(max-width:480px){.st-time-picker-backdrop{align-items:flex-end;padding:0}.st-time-picker{width:calc(100% - 24px);max-width:320px;border-radius:16px;animation:stClockIn .24s cubic-bezier(.2,.85,.25,1)}.st-time-picker-controls{padding:4px 8px 8px;gap:7px}.st-time-wheel{height:132px}.st-time-wheel-spacer{height:52px}.st-time-wheel-indicator{top:52px}.st-time-wheel-item{height:26px}.st-time-picker-preview{padding-top:7px}}
       @keyframes stClockSheet{from{opacity:.65;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
       @media(prefers-reduced-motion:reduce){.st-time-picker-backdrop,.st-time-picker,.st-time-wheel-item{animation:none!important;transition:none!important}}
     `;
@@ -977,32 +977,34 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     let hour=initialHour,minute=initialMinute,frames={hour:0,minute:0};
     const pad=n=>String(n).padStart(2,'0');
     const overlay=document.createElement('div');overlay.className='st-time-picker-backdrop';
-    const makeWheel=(key,label,max,value)=>'<div class="st-time-slider" data-kind="'+key+'"><div class="st-time-slider-head"><label>'+label+'</label><output class="st-time-slider-value">'+pad(value)+'</output></div><div class="st-time-wheel" tabindex="0" role="listbox" aria-label="'+(key==='hour'?'انتخاب ساعت':'انتخاب دقیقه')+'"><div class="st-time-wheel-spacer" aria-hidden="true"></div>'+Array.from({length:max+1},(_,i)=>'<div class="st-time-wheel-item'+(i===value?' selected':'')+'" data-value="'+i+'" role="option" aria-selected="'+(i===value?'true':'false')+'">'+pad(i)+'</div>').join('')+'<div class="st-time-wheel-spacer" aria-hidden="true"></div><div class="st-time-wheel-indicator" aria-hidden="true"></div></div></div>';
+    const makeWheel=(key,label,max,value)=>{const count=max+1;return '<div class="st-time-slider" data-kind="'+key+'"><div class="st-time-slider-head"><label>'+label+'</label><output class="st-time-slider-value">'+pad(value)+'</output></div><div class="st-time-wheel" tabindex="0" role="listbox" aria-label="'+(key==='hour'?'انتخاب ساعت':'انتخاب دقیقه')+'"><div class="st-time-wheel-spacer" aria-hidden="true"></div>'+Array.from({length:count*5},(_,i)=>{const n=i%count;return '<div class="st-time-wheel-item'+(i===count*2+value?' selected':'')+'" data-value="'+n+'" role="option" aria-selected="'+(n===value?'true':'false')+'">'+pad(n)+'</div>';}).join('')+'<div class="st-time-wheel-spacer" aria-hidden="true"></div><div class="st-time-wheel-indicator" aria-hidden="true"></div></div></div>';};
     overlay.innerHTML='<section class="st-time-picker" role="dialog" aria-modal="true" aria-label="تنظیم ساعت کلاس"><header><span>تنظیم ساعت کلاس</span><button type="button" class="st-time-picker-close" aria-label="بستن">×</button></header><div class="st-time-picker-preview"><small>CLASS TIME</small><strong class="st-time-preview-value">'+pad(hour)+':'+pad(minute)+'</strong></div><div class="st-time-picker-controls">'+makeWheel('hour','HOUR',23,hour)+makeWheel('minute','MINUTE',59,minute)+'</div><footer><button type="button" class="st-time-picker-cancel">انصراف</button><button type="button" class="st-time-picker-apply">ثبت ساعت</button></footer></section>';
     const body=document.body,doc=document.documentElement,oldBodyOverflow=body.style.overflow,oldDocOverflow=doc.style.overflow;
     let onKey;
     const close=()=>{overlay.remove();body.style.overflow=oldBodyOverflow;doc.style.overflow=oldDocOverflow;if(onKey)document.removeEventListener('keydown',onKey);};
     const syncPreview=()=>{overlay.querySelector('.st-time-preview-value').textContent=pad(hour)+':'+pad(minute);};
     const setValue=(key,value)=>{
-      if(key==='hour')hour=Math.max(0,Math.min(23,value));else minute=Math.max(0,Math.min(59,value));
-      const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel');
-      overlay.querySelector('[data-kind="'+key+'"] .st-time-slider-value').textContent=pad(key==='hour'?hour:minute);
-      wheel.querySelectorAll('.st-time-wheel-item').forEach(el=>{const active=Number(el.dataset.value)===(key==='hour'?hour:minute);el.classList.toggle('selected',active);el.setAttribute('aria-selected',active?'true':'false');});
+      const max=key==='hour'?23:59; if(key==='hour')hour=Math.max(0,Math.min(max,value));else minute=Math.max(0,Math.min(max,value));
+      const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel'),chosen=key==='hour'?hour:minute,items=wheel.querySelectorAll('.st-time-wheel-item'),center=Math.round(wheel.scrollTop/26);
+      overlay.querySelector('[data-kind="'+key+'"] .st-time-slider-value').textContent=pad(chosen);
+      items.forEach((el,i)=>{const distance=Math.abs(i-center),active=distance<.55&&Number(el.dataset.value)===chosen;el.classList.toggle('selected',active);el.setAttribute('aria-selected',active?'true':'false');el.style.opacity=String(Math.max(.22,1-distance*.24));el.style.filter=distance<1?'blur(0)':'blur(.15px)';});
       syncPreview();
     };
     ['hour','minute'].forEach(key=>{
       const wheel=overlay.querySelector('[data-kind="'+key+'"] .st-time-wheel');
       wheel.addEventListener('scroll',()=>{
         if(frames[key])cancelAnimationFrame(frames[key]);
-        frames[key]=requestAnimationFrame(()=>{const next=Math.max(0,Math.min(key==='hour'?23:59,Math.round(wheel.scrollTop/30)));setValue(key,next);});
+        frames[key]=requestAnimationFrame(()=>{const count=key==='hour'?24:60,cycle=count*26,raw=Math.round(wheel.scrollTop/26),next=((raw%count)+count)%count;setValue(key,next);
+          if(wheel.scrollTop<cycle){wheel.scrollTop+=cycle*2;}else if(wheel.scrollTop>cycle*4){wheel.scrollTop-=cycle*2;}
+        });
       },{passive:true});
-      wheel.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'){e.preventDefault();const step=e.key.startsWith('Page')?5:1,current=key==='hour'?hour:minute,next=current+(e.key==='ArrowUp'||e.key==='PageUp'?-step:step);setValue(key,next);wheel.scrollTo({top:(key==='hour'?hour:minute)*30,behavior:'smooth'});}});
+      wheel.addEventListener('keydown',e=>{if(e.key==='ArrowDown'||e.key==='ArrowUp'||e.key==='PageDown'||e.key==='PageUp'){e.preventDefault();const step=e.key.startsWith('Page')?5:1,current=key==='hour'?hour:minute,next=current+(e.key==='ArrowUp'||e.key==='PageUp'?-step:step);setValue(key,next);wheel.scrollTo({top:(2*(key==='hour'?24:60)+(key==='hour'?hour:minute))*26,behavior:'smooth'});}});
     });
     overlay.addEventListener('click',e=>{if(e.target===overlay||e.target.closest('.st-time-picker-close,.st-time-picker-cancel'))close();});
     overlay.querySelector('.st-time-picker-apply').addEventListener('click',()=>{input.value=pad(hour)+':'+pad(minute);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));close();});
     onKey=e=>{if(e.key==='Escape')close();};document.addEventListener('keydown',onKey);
     body.style.overflow='hidden';doc.style.overflow='hidden';document.body.appendChild(overlay);
-    requestAnimationFrame(()=>{overlay.querySelector('[data-kind="hour"] .st-time-wheel').scrollTop=hour*30;overlay.querySelector('[data-kind="minute"] .st-time-wheel').scrollTop=minute*30;});
+    requestAnimationFrame(()=>{const hw=overlay.querySelector('[data-kind="hour"] .st-time-wheel'),mw=overlay.querySelector('[data-kind="minute"] .st-time-wheel');hw.scrollTop=(48+hour)*26;mw.scrollTop=(120+minute)*26;setValue('hour',hour);setValue('minute',minute);});
   }
   function drawDraft(){
     const sorted=S.rows.slice().sort((a,b)=>localDate(a.starts_at).localeCompare(localDate(b.starts_at))||Date.parse(a.starts_at)-Date.parse(b.starts_at)||Number(a.session_number)-Number(b.session_number));
