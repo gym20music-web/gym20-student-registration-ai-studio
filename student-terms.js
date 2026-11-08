@@ -648,7 +648,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
       '<div class="st-reminder-layout">'+
       '<div class="st-reminder-label-row"><label for="stReminder1Hours">ساعت یادآوری اول</label><label for="stReminder2Hours">ساعت یادآوری دوم</label></div>'+
-      '<div class="st-reminder-input-row"><div class="st-hour-scroll-wrap"><input id="stReminder1Hours" type="hidden" value="6"><input class="st-hour-range" type="range" min="0" max="24" step="1" value="6" data-hour-range="stReminder1Hours" aria-label="ساعت یادآوری اول"><output class="st-hour-value" for="stReminder1Hours">6</output></div><div class="st-hour-scroll-wrap"><input id="stReminder2Hours" type="hidden" value="2"><input class="st-hour-range" type="range" min="0" max="24" step="1" value="2" data-hour-range="stReminder2Hours" aria-label="ساعت یادآوری دوم"><output class="st-hour-value" for="stReminder2Hours">2</output></div></div>'+
+      '<div class="st-reminder-input-row"><div class="st-hour-scroll-wrap"><input id="stReminder1Hours" type="hidden" value="6"><div class="st-hour-loop" data-hour-loop="stReminder1Hours" role="listbox" aria-label="ساعت یادآوری اول" tabindex="0"></div></div><div class="st-hour-scroll-wrap"><input id="stReminder2Hours" type="hidden" value="2"><div class="st-hour-loop" data-hour-loop="stReminder2Hours" role="listbox" aria-label="ساعت یادآوری دوم" tabindex="0"></div></div></div>'+
       '<div class="st-reminder-action-row"><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder1">ویرایش متن</button><button type="button" class="st-btn st-edit-template" data-edit-template="stReminder2">ویرایش متن</button></div>'+
       '<div class="st-reminder-save-row"><button type="button" class="st-btn primary" id="stSavePushTemplates">ذخیره اعلان‌ها</button></div>'+
       '<div class="st-reminder-hidden"><textarea id="stReminder1" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea><textarea id="stReminder2" class="st-template-editor" rows="3" maxlength="1000" hidden></textarea></div></div>'+
@@ -696,18 +696,17 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         }
       }`;
     document.head.appendChild(reminderHourFinalCss);
-    /* Compact native hour sliders: reliable mouse/touch drag on desktop and mobile. */
+    /* Compact seamless circular number belt for reminder hours. */
     const hourScrollerCss=document.createElement('style');
     hourScrollerCss.id='stReminderHorizontalScrollerCss';
     hourScrollerCss.textContent=`
       #stPushCard .st-reminder-input-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
       #stPushCard .st-hour-scroll-wrap{position:relative;min-width:0;width:100%;height:18px;min-height:18px;max-height:18px;overflow:hidden;box-sizing:border-box;border:1px solid rgba(214,179,90,.62);border-radius:5px;background:linear-gradient(90deg,#111a27,#202b3a 50%,#111a27);box-shadow:inset 0 1px 2px #0008;direction:ltr}
-      #stPushCard .st-hour-range{appearance:none!important;-webkit-appearance:none!important;position:absolute!important;inset:0!important;width:100%!important;height:100%!important;margin:0!important;padding:0 3px!important;border:0!important;background:repeating-linear-gradient(90deg,transparent 0,transparent calc(4.1667% - 1px),rgba(246,196,83,.38) calc(4.1667% - 1px),rgba(246,196,83,.38) 4.1667%)!important;cursor:ew-resize!important;touch-action:pan-x!important;outline:none!important}
-      #stPushCard .st-hour-range::-webkit-slider-runnable-track{height:3px;border-radius:3px;background:rgba(246,196,83,.28)}
-      #stPushCard .st-hour-range::-moz-range-track{height:3px;border-radius:3px;background:rgba(246,196,83,.28)}
-      #stPushCard .st-hour-range::-webkit-slider-thumb{-webkit-appearance:none;width:7px;height:7px;margin-top:-2px;border:1px solid #fff;border-radius:50%;background:#f6c453;box-shadow:0 0 5px #f6c453}
-      #stPushCard .st-hour-range::-moz-range-thumb{width:7px;height:7px;border:1px solid #fff;border-radius:50%;background:#f6c453;box-shadow:0 0 5px #f6c453}
-      #stPushCard .st-hour-value{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);min-width:13px;padding:0 2px;border-radius:3px;background:#111a27;color:#fff;font:800 8px/12px Vazirmatn,Montserrat,sans-serif;text-align:center;pointer-events:none;text-shadow:0 0 4px rgba(255,255,255,.65)}
+      #stPushCard .st-hour-loop{display:flex;align-items:center;gap:7px;width:100%;height:100%;box-sizing:border-box;padding:0 calc(50% - 8px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-ms-overflow-style:none;overscroll-behavior-x:contain;touch-action:pan-x;cursor:grab;user-select:none;-webkit-user-select:none;scroll-behavior:auto}
+      #stPushCard .st-hour-loop::-webkit-scrollbar{display:none}
+      #stPushCard .st-hour-loop.is-dragging{cursor:grabbing;scroll-snap-type:none}
+      #stPushCard .st-hour-option{display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box;flex:0 0 16px;width:16px;height:14px;margin:0;padding:0;color:rgba(255,255,255,.72);font:600 8px/14px Vazirmatn,Montserrat,sans-serif;text-align:center;white-space:nowrap;scroll-snap-align:center;cursor:pointer;transition:color .15s,text-shadow .15s,transform .15s}
+      #stPushCard .st-hour-option.is-selected{color:#fff;font-weight:900;text-shadow:0 0 4px #fff,0 0 8px rgba(246,196,83,.95);transform:scale(1.18)}
       @media(max-width:720px){#stPushCard .st-hour-scroll-wrap{height:17px;min-height:17px;max-height:17px}}
     `;
     document.head.appendChild(hourScrollerCss);
@@ -749,30 +748,107 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
      $('stTemplateApply').addEventListener('click',()=>{if(activeTemplateId)$(activeTemplateId).value=templateModalText.value;closeTemplateModal();});
      templateModalText.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')$('stTemplateApply').click();if(e.key==='Escape')closeTemplateModal();});
     
-    /* Native range controls: browser-managed pointer/touch dragging, with hidden IDs retained for saving. */
-    ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
-      const hidden=$(id),range=p.querySelector('[data-hour-range="'+id+'"]');
-      if(!hidden||!range)return;
-      const output=range.parentElement.querySelector('.st-hour-value');
-      const sync=value=>{
-        const n=Math.max(0,Math.min(24,Number(value)||0));
-        hidden.value=String(n);range.value=String(n);
-        if(output)output.textContent=String(n);
-        range.setAttribute('aria-valuenow',String(n));
-      };
-      sync(hidden.value);
-      range.addEventListener('input',()=>sync(range.value));
-      range.addEventListener('change',()=>sync(range.value));
-      range.addEventListener('wheel',event=>{
-        event.preventDefault();
-        const direction=Math.sign(event.deltaY||event.deltaX);
-        sync(Number(range.value)+(direction>0?1:-1));
-      },{passive:false});
-      range.addEventListener('keydown',event=>{
-        if(event.key==='Home')sync(0);
-        else if(event.key==='End')sync(24);
+    /* Circular 0–24 number belt. Three repeated cycles keep the scroll seamless in both directions. */
+    const reminderLoopTimers=new Map();
+    const reminderLoops=new Map();
+    function centerReminderHour(id,value,instant=true){
+      const loop=reminderLoops.get(id),hidden=$(id);
+      if(!loop||!hidden)return;
+      const hour=((Math.round(Number(value)||0)%25)+25)%25;
+      const options=loop.querySelectorAll('.st-hour-option');
+      const target=options[25+hour];
+      if(!target)return;
+      hidden.value=String(hour);
+      loop.querySelectorAll('.st-hour-option').forEach(el=>{
+        const active=el===target;
+        el.classList.toggle('is-selected',active);
+        el.setAttribute('aria-selected',String(active));
       });
-    });
+      const left=target.offsetLeft+target.offsetWidth/2-loop.clientWidth/2;
+      loop.scrollTo({left:Math.max(0,left),behavior:instant?'auto':'smooth'});
+    }
+    function setupReminderLoop(id){
+      const hidden=$(id),loop=p.querySelector('[data-hour-loop="'+id+'"]');
+      if(!hidden||!loop)return;
+      reminderLoops.set(id,loop);
+      loop.innerHTML=Array.from({length:75},(_,index)=>{
+        const hour=index%25;
+        return '<span class="st-hour-option" data-hour="'+hour+'" data-index="'+index+'" role="option" aria-selected="false">'+hour+'</span>';
+      }).join('');
+      const commit=()=>{
+        const mid=loop.scrollLeft+loop.clientWidth/2;
+        let nearest=null,dist=Infinity;
+        loop.querySelectorAll('.st-hour-option').forEach(el=>{
+          const center=el.offsetLeft+el.offsetWidth/2,d=Math.abs(center-mid);
+          if(d<dist){dist=d;nearest=el;}
+        });
+        if(!nearest)return;
+        const index=Number(nearest.dataset.index),hour=Number(nearest.dataset.hour);
+        hidden.value=String(hour);
+        loop.querySelectorAll('.st-hour-option').forEach(el=>{
+          const active=el===nearest;
+          el.classList.toggle('is-selected',active);
+          el.setAttribute('aria-selected',String(active));
+        });
+        /* Rebase to the middle copy after settling, preserving the selected hour. */
+        if(index<25||index>=50){
+          const middle=loop.querySelector('[data-index="'+(25+hour)+'"]');
+          if(middle)loop.scrollLeft=middle.offsetLeft+middle.offsetWidth/2-loop.clientWidth/2;
+        }
+      };
+      loop.addEventListener('scroll',()=>{
+        clearTimeout(reminderLoopTimers.get(id));
+        reminderLoopTimers.set(id,setTimeout(commit,110));
+      },{passive:true});
+      loop.addEventListener('click',event=>{
+        const option=event.target.closest('.st-hour-option');
+        if(option)centerReminderHour(id,Number(option.dataset.hour),false);
+      });
+      loop.addEventListener('wheel',event=>{
+        if(Math.abs(event.deltaY)>Math.abs(event.deltaX)){event.preventDefault();loop.scrollLeft+=event.deltaY;}
+      },{passive:false});
+      let dragging=false,startX=0,startLeft=0,moved=false;
+      loop.addEventListener('pointerdown',event=>{
+        if(event.pointerType!=='mouse'||event.button!==0)return;
+        dragging=true;moved=false;startX=event.clientX;startLeft=loop.scrollLeft;
+        loop.classList.add('is-dragging');
+        try{loop.setPointerCapture(event.pointerId);}catch(_){}
+        event.preventDefault();
+      });
+      loop.addEventListener('pointermove',event=>{
+        if(!dragging)return;
+        const dx=event.clientX-startX;
+        if(Math.abs(dx)>3)moved=true;
+        loop.scrollLeft=startLeft-dx;
+      });
+      const finish=event=>{
+        if(!dragging)return;
+        dragging=false;loop.classList.remove('is-dragging');
+        if(moved){loop.dataset.dragged='1';setTimeout(()=>delete loop.dataset.dragged,0);}
+        if(event.pointerId!==undefined){try{loop.releasePointerCapture(event.pointerId);}catch(_){}}
+        commit();
+      };
+      loop.addEventListener('pointerup',finish);
+      loop.addEventListener('pointercancel',finish);
+      loop.addEventListener('click',event=>{
+        if(loop.dataset.dragged==='1'){event.preventDefault();event.stopPropagation();delete loop.dataset.dragged;}
+      },true);
+      loop.addEventListener('keydown',event=>{
+        if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;
+        event.preventDefault();
+        const current=Number(hidden.value)||0;
+        const next=event.key==='Home'?0:event.key==='End'?24:(current+(event.key==='ArrowRight'?1:-1)+25)%25;
+        centerReminderHour(id,next,false);
+      });
+      centerReminderHour(id,Number(hidden.value),true);
+    }
+    ['stReminder1Hours','stReminder2Hours'].forEach(setupReminderLoop);
+    S.syncReminderHourLoops=()=>{
+      ['stReminder1Hours','stReminder2Hours'].forEach(id=>{
+        const input=$(id);
+        if(input)centerReminderHour(id,input.value,true);
+      });
+    };
     $('stSendCustomPush').addEventListener('click',sendCustomPush);$('stPushTestAdmin').addEventListener('click',sendTestPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
   }
@@ -796,20 +872,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const reminder1=Number(S.reminderDraft.reminder_1_hours),reminder2=Number(S.reminderDraft.reminder_2_hours);
     $('stReminder1Hours').value=String(Number.isInteger(reminder1)&&reminder1>=0&&reminder1<=24?reminder1:6);
     $('stReminder2Hours').value=String(Number.isInteger(reminder2)&&reminder2>=0&&reminder2<=24?reminder2:2);
-    const syncReminderHourScrollers=()=>p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>{const input=$(scroller.dataset.hourScroll);if(input){const raw=Number(input.value),value=Number.isInteger(raw)?Math.max(0,Math.min(24,raw)):(input.id==='stReminder1Hours'?6:2);input.value=String(value);centerHourOption(scroller,value,'instant');}});
-    /* The admin tab may be hidden while settings load. Re-center once its real width becomes available. */
-    if(typeof ResizeObserver!=='undefined'){
-      const reminderHourResizeObserver=new ResizeObserver(entries=>entries.forEach(entry=>{
-        const scroller=entry.target,input=$(scroller.dataset.hourScroll);
-        if(!input||entry.contentRect.width<=0)return;
-        const value=Number(input.value);
-        if(Number.isInteger(value))requestAnimationFrame(()=>centerHourOption(scroller,value,'instant'));
-      }));
-      p.querySelectorAll('[data-hour-scroll]').forEach(scroller=>reminderHourResizeObserver.observe(scroller));
-    }
-    syncReminderHourScrollers();
-    requestAnimationFrame(()=>{syncReminderHourScrollers();requestAnimationFrame(syncReminderHourScrollers);});
-    setTimeout(syncReminderHourScrollers,120);setTimeout(syncReminderHourScrollers,350);setTimeout(syncReminderHourScrollers,700);
+    if(S.syncReminderHourLoops)S.syncReminderHourLoops();
+    requestAnimationFrame(()=>S.syncReminderHourLoops?.());
+    setTimeout(()=>S.syncReminderHourLoops?.(),120);
     updateTemplatePreview('stReminder1');updateTemplatePreview('stReminder2');
     S.pushTemplatesLoaded=true;
   }
