@@ -2914,27 +2914,38 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 (function(){
   function getRegionEls(){return {trigger:document.getElementById('customRegionTrigger'),menu:document.getElementById('customRegionMenu'),wrap:document.getElementById('customRegionDropdown')};}
   let pendingRegionId='';
+  function getWheelCycle(wheel){
+    const items=wheel?wheel.querySelectorAll('.region-wheel-item'):[];
+    const count=Number(wheel&&wheel.dataset.regionCount)||Math.floor(items.length/3);
+    if(!count||items.length<count*3)return 0;
+    return items[count].offsetTop-items[0].offsetTop;
+  }
+  function recycleWheelPosition(wheel){
+    const cycle=getWheelCycle(wheel);if(!cycle)return;
+    const y=wheel.scrollTop;
+    // Keep the viewport in the middle copy; shifting by exactly one cycle
+    // preserves the same visible rows and avoids edge-triggered jumps.
+    if(y<cycle*.55)wheel.scrollTop=y+cycle;
+    else if(y>cycle*1.45)wheel.scrollTop=y-cycle;
+  }
   function updateWheelFocus(menu){
     const wheel=menu&&menu.querySelector('#customRegionWheelList');if(!wheel)return;
     const items=Array.from(wheel.querySelectorAll('.region-wheel-item'));
     if(!items.length)return;
-    const count=Number(wheel.dataset.regionCount)||Math.floor(items.length/3);
-    const cycle=count>0&&items.length>=count*3?items[count].offsetTop-items[0].offsetTop:0;
     const center=wheel.getBoundingClientRect().top+wheel.clientHeight/2;
-    let nearestIndex=0,distance=Infinity;
-    items.forEach((item,i)=>{const r=item.getBoundingClientRect();const d=Math.abs((r.top+r.height/2)-center);if(d<distance){distance=d;nearestIndex=i;}});
-    // Recycle the outer copies without a visible jump.
-    if(cycle>0&&nearestIndex<count){wheel.scrollTop+=cycle;nearestIndex+=count;}
-    else if(cycle>0&&nearestIndex>=count*2){wheel.scrollTop-=cycle;nearestIndex-=count;}
-    const nearest=items[nearestIndex];
+    let nearest=items[0],distance=Infinity;
+    items.forEach(item=>{const r=item.getBoundingClientRect();const d=Math.abs((r.top+r.height/2)-center);if(d<distance){distance=d;nearest=item;}});
     items.forEach(item=>item.classList.toggle('wheel-focus',item===nearest));
     pendingRegionId=nearest.dataset.regionId||pendingRegionId;
   }
   function centerWheelItem(menu,id){
     const wheel=menu&&menu.querySelector('#customRegionWheelList');if(!wheel)return;
     const item=Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id&&x.dataset.regionCopy==='1')||Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id);
-    if(item)wheel.scrollTo({top:Math.max(0,item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2),behavior:'smooth'});
-    requestAnimationFrame(()=>updateWheelFocus(menu));
+    if(item){
+      // Start in the middle copy, already aligned; no opening animation jump.
+      wheel.scrollTop=Math.max(0,item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2);
+      updateWheelFocus(menu);
+    }
   }
   document.addEventListener('click',function(e){
     const x=getRegionEls();if(!x.menu||!x.wrap)return;
@@ -2959,10 +2970,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
       const wheel=x.menu.querySelector('#customRegionWheelList');
       if(wheel){
         wheel._gym20UserScrolled=false;
-        wheel.addEventListener('touchstart',()=>{wheel._gym20UserScrolled=true;},{passive:true});
-        wheel.addEventListener('wheel',()=>{wheel._gym20UserScrolled=true;},{passive:true});
-        wheel.addEventListener('scroll',()=>{
-          if(!wheel._gym20WheelFrame){wheel._gym20WheelFrame=requestAnimationFrame(()=>{wheel._gym20WheelFrame=0;updateWheelFocus(x.menu);});}
+        const settleWheel=()=>{
           clearTimeout(wheel._gym20SettleTimer);
           wheel._gym20SettleTimer=setTimeout(()=>{
             updateWheelFocus(x.menu);
@@ -2970,7 +2978,28 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
               wheel._gym20UserScrolled=false;
               window.gym20SelectRegion(pendingRegionId);
             }
-          },190);
+          },260);
+        };
+        wheel.addEventListener('touchstart',()=>{wheel._gym20UserScrolled=true;},{passive:true});
+        wheel.addEventListener('pointerdown',()=>{wheel._gym20UserScrolled=true;},{passive:true});
+        wheel.addEventListener('wheel',()=>{wheel._gym20UserScrolled=true;},{passive:true});
+        wheel.addEventListener('scroll',()=>{
+          if(!wheel._gym20WheelFrame){
+            wheel._gym20WheelFrame=requestAnimationFrame(()=>{
+              wheel._gym20WheelFrame=0;
+              recycleWheelPosition(wheel);
+              updateWheelFocus(x.menu);
+            });
+          }
+          settleWheel();
+        },{passive:true});
+        wheel.addEventListener('scrollend',()=>{
+          clearTimeout(wheel._gym20SettleTimer);
+          updateWheelFocus(x.menu);
+          if(wheel._gym20UserScrolled&&pendingRegionId&&typeof window.gym20SelectRegion==='function'){
+            wheel._gym20UserScrolled=false;
+            window.gym20SelectRegion(pendingRegionId);
+          }
         },{passive:true});
         requestAnimationFrame(()=>{if(pendingRegionId)centerWheelItem(x.menu,pendingRegionId);else updateWheelFocus(x.menu);});
       }
@@ -3012,15 +3041,15 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 #customRegionWheelList{
   position:relative;z-index:0;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
   padding:89px 12px!important;box-sizing:border-box;scroll-padding-block:89px;
-  scroll-snap-type:y mandatory;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
-  touch-action:pan-y;scroll-behavior:smooth;scrollbar-width:none;
+  scroll-snap-type:y proximity;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
+  touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none;
 }
 #customRegionWheelList::-webkit-scrollbar{display:none}
 #customRegionWheelList .region-wheel-item{
   position:relative;z-index:0;display:flex!important;align-items:center!important;justify-content:space-between!important;
   width:100%;height:42px!important;min-height:42px!important;flex:0 0 42px!important;
   margin:0!important;padding:5px 13px!important;border:1px solid transparent!important;border-radius:11px!important;
-  box-sizing:border-box!important;scroll-snap-align:center;scroll-snap-stop:always;
+  box-sizing:border-box!important;scroll-snap-align:center;scroll-snap-stop:normal;
   opacity:.43;transform:scale(.91);filter:blur(.25px);
   transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease!important;
 }
