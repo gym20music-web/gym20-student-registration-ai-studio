@@ -1033,7 +1033,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <span class="promo-code-val" id="meoxDiscountCode"></span>
             <button class="promo-copy-btn" id="copyMeoxCodeBtn">📋 کپی کد</button>
         </div>
-        <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات 🛍️</a>
+        <a href="https://t.me/" target="_blank" rel="noopener noreferrer" class="promo-action-btn" id="meoxPromoBtn">ورود به کانال و مشاهده محصولات ⚡</a>
     </div>
 </div>
 
@@ -1116,16 +1116,16 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <section class="promo-settings-shell" aria-labelledby="promoSettingsTitle">
                 <header class="promo-settings-head">
                     <div class="promo-settings-icon">🛍️</div>
-                    <div><h3 id="promoSettingsTitle">مدیریت بنر تبلیغاتی</h3><p>تنظیم یکپارچه تبلیغ کانال‌ها و فروشگاه‌های مختلف</p></div>
+                    <div><h3 id="promoSettingsTitle">مدیریت بنر تبلیغاتی</h3></div>
                 </header>
                 <div class="promo-toggle-stack">
                     <label class="promo-toggle-row">
                         <input type="checkbox" id="editPromoEnabled">
-                        <span class="promo-toggle-copy"><strong>نمایش پاپ‌آپ تبلیغاتی در ورود هنرجو</strong><small>با غیرفعال‌کردن این گزینه، کل بنر برای هنرجویان نمایش داده نمی‌شود.</small></span>
+                        <span class="promo-toggle-copy"><strong>نمایش پاپ‌آپ تبلیغاتی در ورود هنرجو</strong></span>
                     </label>
                     <label class="promo-toggle-row promo-toggle-secondary">
                         <input type="checkbox" id="editPromoShowDescription">
-                        <span class="promo-toggle-copy"><strong>نمایش بیو و توضیحات خود کانال</strong><small>در صورت فعال‌بودن، توضیحات واقعی کانال تلگرام زیر متن تبلیغ نمایش داده می‌شود.</small></span>
+                        <span class="promo-toggle-copy"><strong>نمایش بیو و توضیحات خود کانال</strong></span>
                     </label>
                 </div>
                 <div class="promo-fields-grid">
@@ -1135,7 +1135,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                             <input type="text" id="editPromoLink" placeholder="@MEOWX_ACCS یا https://t.me/..." autocomplete="off">
                             <button type="button" id="fetchPromoChannelBtn" class="promo-fetch-btn">دریافت اطلاعات کانال</button>
                         </div>
-                        <p class="promo-field-hint">تصویر پروفایل کانال به‌صورت خودکار بارگذاری می‌شود؛ برای دریافت عنوان و بیوی واقعی، دکمه دریافت اطلاعات را بزنید.</p>
+                        
                         <div id="promoChannelFetchStatus" class="promo-channel-status" role="status" aria-live="polite">هنوز اطلاعات کانالی دریافت نشده است.</div>
                         <div id="promoChannelPreview" class="promo-channel-preview" hidden>
                             <strong id="promoChannelPreviewTitle"></strong>
@@ -2852,6 +2852,11 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
 }
 
+
+/* Promo editor textarea: touch-friendly resize handle */
+#editPromoText{min-height:76px!important;height:76px;resize:vertical!important;overflow:auto!important;touch-action:pan-y!important;padding:10px 12px!important;line-height:1.85!important;cursor:text}
+#editPromoText:focus{min-height:92px!important}
+@media(max-width:600px){#editPromoText{min-height:82px!important;height:82px;resize:vertical!important;font-size:11px!important}#editPromoText:focus{min-height:100px!important}}
 </style>
 <script>
 (function(){
