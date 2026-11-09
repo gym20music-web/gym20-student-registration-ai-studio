@@ -1022,9 +1022,9 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="music-info">
                 <div class="music-title"><span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span></div>
                 <div class="music-mini-player" aria-hidden="true">
+                  <div class="music-mini-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
                   <div class="music-mini-track"><span class="music-mini-progress"></span><span class="music-mini-knob"></span></div>
-                  <div class="music-mini-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-                  <div class="music-mini-controls"><span>⇆</span><span>◁</span><span class="music-mini-pause">Ⅱ</span><span>▷</span><span>↻</span></div>
+                  <div class="music-mini-controls"><span>↻</span><span>◁</span><span class="music-mini-pause">Ⅱ</span><span>▷</span><span>⇆</span></div>
                 </div>
             </div>
             <button class="music-join-btn" type="button" id="btn_musicJoin">عضویت 🎵</button>
@@ -2910,18 +2910,18 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 </script>
 
 <style>
-/* Compact decorative mini-player: visual only, no audio or playback handlers. */
-.music-mini-player{width:100%;height:24px;margin-top:2px;display:flex;flex-direction:column;justify-content:space-between;gap:1px;direction:ltr;overflow:hidden}
-.music-mini-track{height:7px;min-height:7px;position:relative;display:flex;align-items:center;justify-content:center}
-.music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:2px;border-radius:4px;background:rgba(190,202,216,.24);transform:translateY(-50%);box-shadow:inset 0 1px 1px rgba(0,0,0,.45)}
-.music-mini-progress{position:absolute;left:1px;top:50%;width:37%;height:2px;border-radius:4px;background:linear-gradient(90deg,#8b9aaa,#e4ebf2);transform:translateY(-50%);box-shadow:0 0 5px rgba(190,205,220,.35)}
-.music-mini-knob{position:absolute;left:calc(37% - 3px);top:50%;width:6px;height:6px;border-radius:50%;background:linear-gradient(145deg,#fff,#9aa8b7);border:1px solid rgba(255,255,255,.7);transform:translateY(-50%);box-shadow:0 1px 3px rgba(0,0,0,.7),0 0 5px rgba(200,215,230,.35)}
-.music-mini-eq{position:relative;z-index:2;align-self:center;height:6px;width:31%;display:flex;align-items:center;justify-content:space-around;gap:2px;padding:0;background:transparent;border-radius:0;box-shadow:none;pointer-events:none;flex:none}
-.music-mini-eq i{display:block;width:2px;height:3px;border-radius:3px;background:#cbd5df;box-shadow:0 0 4px rgba(205,220,235,.5);animation:musicMiniPulse .72s ease-in-out infinite alternate}
-.music-mini-eq i:nth-child(2n){height:6px;animation-delay:-.24s}.music-mini-eq i:nth-child(3n){height:4px;animation-delay:-.48s}.music-mini-eq i:nth-child(4n){height:7px;animation-delay:-.12s}
-.music-mini-controls{height:8px;display:flex;align-items:center;justify-content:center;gap:13px;color:#aeb9c5;font:700 8px/1 Arial,sans-serif;letter-spacing:0}
-.music-mini-controls span{display:inline-flex;align-items:center;justify-content:center;min-width:8px;height:8px;text-shadow:0 1px 2px rgba(0,0,0,.65)}
-.music-mini-controls .music-mini-pause{font-size:9px;color:#edf2f7;text-shadow:0 0 5px rgba(220,230,240,.45)}
+/* Premium compact 3D mini-player: three clean, full-width stacked rows; visual only. */
+.music-mini-player{width:100%;height:31px;margin-top:3px;display:flex;flex-direction:column;justify-content:space-between;gap:3px;direction:ltr;overflow:hidden}
+.music-mini-eq{position:relative;align-self:stretch;width:100%;height:10px;min-height:10px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:0 2px;box-sizing:border-box;pointer-events:none}
+.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:3px;border-radius:3px;background:linear-gradient(180deg,#f2f6fb 0%,#8e9cac 55%,#536171 100%);box-shadow:0 1px 1px rgba(0,0,0,.8),0 0 4px rgba(190,210,230,.28);transform-origin:center;animation:musicMiniPulse .72s ease-in-out infinite alternate}
+.music-mini-eq i:nth-child(4n){height:8px;animation-delay:-.16s}.music-mini-eq i:nth-child(4n + 1){height:5px;animation-delay:-.38s}.music-mini-eq i:nth-child(3n){height:6px;animation-delay:-.52s}.music-mini-eq i:nth-child(7n){height:9px;animation-delay:-.24s}
+.music-mini-track{height:7px;min-height:7px;width:100%;position:relative;display:flex;align-items:center;justify-content:center}
+.music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:3px;border-radius:5px;background:linear-gradient(180deg,rgba(10,14,20,.95),rgba(175,190,207,.22));transform:translateY(-50%);box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
+.music-mini-progress{position:absolute;left:1px;top:50%;width:37%;height:3px;border-radius:5px;background:linear-gradient(90deg,#657486,#dce5ef 78%,#fff);transform:translateY(-50%);box-shadow:0 0 5px rgba(190,210,230,.35),inset 0 1px 0 rgba(255,255,255,.55)}
+.music-mini-knob{position:absolute;left:calc(37% - 4px);top:50%;width:7px;height:7px;border-radius:50%;background:linear-gradient(145deg,#fff 0%,#c6d0dc 42%,#718092 100%);border:1px solid rgba(255,255,255,.72);transform:translateY(-50%);box-shadow:0 1px 3px rgba(0,0,0,.8),0 0 5px rgba(200,215,230,.35)}
+.music-mini-controls{height:10px;min-height:10px;width:100%;display:flex;align-items:center;justify-content:space-around;gap:0;color:#aeb9c5;font:700 10px/1 Arial,sans-serif;letter-spacing:0}
+.music-mini-controls span{display:inline-flex;align-items:center;justify-content:center;width:20%;height:10px;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(205,220,235,.2)}
+.music-mini-controls .music-mini-pause{font-size:11px;color:#f2f6fa;text-shadow:0 0 5px rgba(220,230,240,.45),0 1px 2px #000}
 @keyframes musicMiniPulse{from{transform:scaleY(.35);opacity:.65}to{transform:scaleY(1);opacity:1}}
 @media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.7)}}
 </style>
