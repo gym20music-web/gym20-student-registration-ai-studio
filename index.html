@@ -2960,7 +2960,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 
 
 <script>
-/* Dense, close-set circular spectrum with a more expressive wave on the right. */
+/* Dense circular spectrum: restrained moving bars on the left, stronger wave on the right. */
 (function(){
   const ring=document.querySelector('#musicCardLink .music-avatar-ring');
   if(!ring)return;
@@ -2978,18 +2978,23 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   function draw(time){
     const t=time/1000;
     bars.forEach(({el,angle})=>{
-      /* With the ring's 0° axis at the top, positive sin() is the right half. */
-      const right=Math.max(0,Math.sin(angle));
-      const left=1-right;
+      /* 0° points up; positive sin() is the right half of the ring. */
+      const side=Math.sin(angle);
+      const right=Math.max(0,side);
+      const left=Math.max(0,-side);
       const broad=(Math.sin(t*1.35+angle*1.8)+1)/2;
       const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
       const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
       const rightWave=broad*.42+rolling*.36+ripple*.22;
-      const quietLeft=.28+Math.sin(t*1.0+angle*1.6)*.055;
-      const level=quietLeft*left+rightWave*right;
-      const height=2.1+left*.75+right*(1.4+level*5.2);
+      const leftWave=.16+((Math.sin(t*1.25+angle*2.1)+1)/2)*.16;
+      /* A few slim peaks drift through the quieter left side. */
+      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*1.05+angle*4.1)),14);
+      const height=2.1
+        +right*(1.4+rightWave*5.2)
+        +left*(.2+leftWave*2.0+leftPeaks*3.5);
+      const activity=right*rightWave+left*(leftWave*.45+leftPeaks*.35);
       el.style.height=height.toFixed(1)+'px';
-      el.style.opacity=(.62+level*.25).toFixed(2);
+      el.style.opacity=(.6+activity*.28).toFixed(2);
     });
   }
   draw(0);
