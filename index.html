@@ -2643,6 +2643,10 @@ async function loadDataAndInit(){
     acceptConfig(data);
   }).catch(error=>console.warn('GYM20 local config load failed:',error));
 }
+loadDataAndInit().then(()=>{
+  gym20AppDataLoaded=true;
+  if(gym20OwnerAuthorized)openAuthorizedAdminPanel();
+}).catch(err=>console.error('GYM20 initial configuration failed:',err));
 resumeGym20AdminSession();
 </script>
 
