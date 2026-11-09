@@ -2927,7 +2927,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   function centerWheelItem(menu,id){
     const wheel=menu&&menu.querySelector('#customRegionWheelList');if(!wheel)return;
     const item=Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id);
-    if(item)item.scrollIntoView({block:'center',behavior:'smooth'});
+    if(item)wheel.scrollTo({top:Math.max(0,item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2),behavior:'smooth'});
     requestAnimationFrame(()=>updateWheelFocus(menu));
   }
   document.addEventListener('click',function(e){
