@@ -2608,8 +2608,7 @@ async function fetchLiveGym20SiteConfig(){
   return null;
 }
 async function loadDataAndInit(){
-  let initialRendered=false,promoTriggered=false,resolveInitial;
-  const initialReady=new Promise(resolve=>{resolveInitial=resolve;});
+  let initialRendered=false,promoTriggered=false;
   function acceptConfig(data){
     if(!isValidGym20SiteConfig(data))return false;
     try{localStorage.setItem('sports_reg_data',JSON.stringify(data));}catch(e){}
@@ -2620,7 +2619,6 @@ async function loadDataAndInit(){
     if(shouldShowPromo&&appData.promoPopup?.enabled!==false)promoTriggered=true;
     if(!initialRendered){
       initialRendered=true;
-      resolveInitial();
     }else if(gym20OwnerAuthorized&&document.getElementById('adminModal').style.display==='flex'){
       loadAdminForm();
     }
@@ -2633,25 +2631,18 @@ async function loadDataAndInit(){
     if(isValidGym20SiteConfig(cached))acceptConfig(cached);
   }catch(e){}
 
-  // تازه‌سازی زنده از Supabase در پس‌زمینه؛ برای هر درخواست محدودیت زمانی داریم.
+  // دریافت تنظیمات زنده از Supabase کاملاً در پس‌زمینه انجام می‌شود.
+  // کندی یا قطعی دیتابیس نباید نمایش صفحه اصلی یا آماده‌شدن رابط را متوقف کند.
   fetchLiveGym20SiteConfig().then(data=>{if(data)acceptConfig(data);}).catch(()=>{});
 
-  // تنظیمات فایل محلی و Supabase هم‌زمان دریافت می‌شوند؛ تا رسیدن داده معتبر، متن‌های ثابت HTML پاک نمی‌شوند.
-  if(!initialRendered){
-    const localConfigRequest=gym20FetchWithTimeout('./data.json',{cache:'no-store'},5000).then(async response=>{
-      if(!response.ok)throw new Error('data.json HTTP '+response.status);
-      const data=await response.json();
-      acceptConfig(data);
-    }).catch(error=>console.warn('GYM20 local config load failed:',error));
-    await Promise.race([initialReady,new Promise(resolve=>setTimeout(resolve,5200))]);
-    if(!initialRendered)resolveInitial();
-    localConfigRequest.catch(()=>{});
-  }
+  // فایل محلی نیز در پس‌زمینه دریافت می‌شود؛ محتوای اولیه HTML از قبل قابل نمایش است.
+  // استفاده از کش عادی مرورگر، درخواست شبکه غیرضروری در هر بار بازدید را کاهش می‌دهد.
+  gym20FetchWithTimeout('./data.json',{cache:'default'},5000).then(async response=>{
+    if(!response.ok)throw new Error('data.json HTTP '+response.status);
+    const data=await response.json();
+    acceptConfig(data);
+  }).catch(error=>console.warn('GYM20 local config load failed:',error));
 }
-loadDataAndInit().then(()=>{
-  gym20AppDataLoaded=true;
-  if(gym20OwnerAuthorized)openAuthorizedAdminPanel();
-}).catch(err=>console.error('GYM20 initial configuration failed:',err));
 resumeGym20AdminSession();
 </script>
 
