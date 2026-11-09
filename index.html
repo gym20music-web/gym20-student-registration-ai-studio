@@ -2932,7 +2932,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 .music-avatar-wrap{position:relative;width:70px;height:70px;flex:0 0 70px;display:inline-flex;align-items:center;justify-content:center;isolation:isolate;overflow:visible}
 .music-avatar-wrap .music-avatar{position:relative;z-index:2;width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
 .music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none;overflow:visible}
-.music-avatar-ring i{position:absolute;left:calc(50% - .6px);top:50%;display:block;width:1.2px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.7;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-24px) scaleY(-1);will-change:height;transition:height 180ms cubic-bezier(.2,.7,.25,1),opacity 180ms ease}
+.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height;transition:opacity 160ms ease}
 @media(prefers-reduced-motion:reduce){.music-avatar-ring i{transition:none!important}}
 </style>
 
@@ -2960,12 +2960,12 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 
 
 <script>
-/*/* Dense circular spectrum with a stronger, flowing wave on the right side. */
+/* Dense, close-set circular spectrum with a more expressive wave on the right. */
 (function(){
   const ring=document.querySelector('#musicCardLink .music-avatar-ring');
   if(!ring)return;
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const total=56;
+  const total=72;
   ring.replaceChildren();
   const bars=[];
   for(let i=0;i<total;i++){
@@ -2978,17 +2978,18 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   function draw(time){
     const t=time/1000;
     bars.forEach(({el,angle})=>{
-      const right=Math.max(0,Math.cos(angle));
+      /* With the ring's 0° axis at the top, positive sin() is the right half. */
+      const right=Math.max(0,Math.sin(angle));
       const left=1-right;
-      const slowWave=(Math.sin(t*1.45+angle*2.1)+1)/2;
-      const flowingWave=(Math.sin(t*2.15-angle*3.2)+1)/2;
-      const fineWave=(Math.sin(t*3.1+angle*5.4)+1)/2;
-      const rightWave=slowWave*.48+flowingWave*.34+fineWave*.18;
-      const leftWave=.5+Math.sin(t*1.1+angle*1.7)*.12;
-      const level=leftWave*left+rightWave*right;
-      const height=2.2+left*.9+right*(1.1+level*3.8);
+      const broad=(Math.sin(t*1.35+angle*1.8)+1)/2;
+      const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
+      const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
+      const rightWave=broad*.42+rolling*.36+ripple*.22;
+      const quietLeft=.28+Math.sin(t*1.0+angle*1.6)*.055;
+      const level=quietLeft*left+rightWave*right;
+      const height=2.1+left*.75+right*(1.4+level*5.2);
       el.style.height=height.toFixed(1)+'px';
-      el.style.opacity=(.58+level*.25).toFixed(2);
+      el.style.opacity=(.62+level*.25).toFixed(2);
     });
   }
   draw(0);
@@ -3001,6 +3002,6 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     else{raf=requestAnimationFrame(animate);}
   });
 })();
-script>
+</script>
 </body>
 </html>
