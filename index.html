@@ -2913,21 +2913,9 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 /* Premium natural spectrum: smooth staggered movement, no flashing/on-off effect; visual only. */
 .music-mini-player{width:100%;height:31px;margin-top:3px;display:flex;flex-direction:column;justify-content:space-between;gap:3px;direction:ltr;overflow:hidden}
 .music-mini-eq{position:relative;align-self:center;width:88%;height:10px;min-height:10px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:0 2px;box-sizing:border-box;pointer-events:none}
-.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#f7f9fc 0%,#c0cad5 34%,#778697 72%,#4d5a69 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:scaleY(.55);transform-origin:center;will-change:transform;animation:musicMiniSpectrum 1.05s cubic-bezier(.42,0,.58,1) infinite}
-.music-mini-eq i:nth-child(5n+1){animation-duration:1.32s;animation-delay:-.82s}
-.music-mini-eq i:nth-child(5n+2){animation-duration:.91s;animation-delay:-.37s}
-.music-mini-eq i:nth-child(5n+3){animation-duration:1.18s;animation-delay:-.66s}
-.music-mini-eq i:nth-child(5n+4){animation-duration:.78s;animation-delay:-.21s}
-.music-mini-eq i:nth-child(5n){animation-duration:1.46s;animation-delay:-1.03s}
-/* Uneven bar heights create a real spectrum silhouette instead of a row of twins. */
-.music-mini-eq i:nth-child(8n+1){height:3px}
-.music-mini-eq i:nth-child(8n+2){height:7px}
-.music-mini-eq i:nth-child(8n+3){height:4px}
-.music-mini-eq i:nth-child(8n+4){height:9px}
-.music-mini-eq i:nth-child(8n+5){height:5px}
-.music-mini-eq i:nth-child(8n+6){height:2px}
-.music-mini-eq i:nth-child(8n+7){height:8px}
-.music-mini-eq i:nth-child(8n){height:4px}
+.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#fbfcff 0%,#d0d9e4 30%,#8797a9 68%,#4b5969 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:none;transform-origin:center;opacity:.96;will-change:height;transition:height 135ms cubic-bezier(.22,.61,.36,1)}
+
+
 .music-mini-eq i:nth-child(7n){max-width:3.5px;background:linear-gradient(180deg,#fff 0%,#d7dfe8 40%,#8797a8 100%)}
 .music-mini-track{height:7px;min-height:7px;width:100%;position:relative;display:flex;align-items:center;justify-content:center}
 .music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:3px;border-radius:5px;background:linear-gradient(180deg,rgba(10,14,20,.95),rgba(175,190,207,.22));transform:translateY(-50%);box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
@@ -2940,5 +2928,35 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 @media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.62)}}
 </style>
 
+
+<script>
+/* Simulated live spectrum footage for the decorative GYM20 music card (not audio-reactive). */
+(function(){
+  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion)return;
+  const bars=Array.from(document.querySelectorAll('#musicCardLink .music-mini-eq i'));
+  if(!bars.length)return;
+  let anchors=Array.from({length:9},()=>.15+Math.random()*.85);
+  const tick=()=>{
+    if(document.hidden)return;
+    anchors=anchors.map((v,i)=>{
+      const drift=(Math.random()-.5)*.72;
+      return Math.max(.08,Math.min(1,v+drift));
+    });
+    const n=bars.length;
+    bars.forEach((bar,i)=>{
+      const pos=i/(n-1)*(anchors.length-1);
+      const left=Math.floor(pos), mix=pos-left;
+      const smooth=mix*mix*(3-2*mix);
+      const wave=anchors[left]*(1-smooth)+anchors[Math.min(left+1,anchors.length-1)]*smooth;
+      const detail=(Math.random()-.5)*.32;
+      const height=Math.max(2,Math.min(10,2+8*(wave+detail)));
+      bar.style.height=height.toFixed(1)+'px';
+    });
+  };
+  tick();
+  window.setInterval(tick,135);
+})();
+</script>
 </body>
 </html>
