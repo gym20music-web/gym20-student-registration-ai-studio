@@ -2283,22 +2283,32 @@ async function fetchPromoChannelInfo(){
     const username=cleanTelegramUsername(link);
     if(!username){setPromoChannelStatus('ابتدا لینک یا آیدی عمومی کانال را وارد کنید.','error');return;}
     if(promoFetchInFlight)return;
-    if(promoFetchedForLink===username&&document.getElementById('editPromoChannelDescription')?.value){
-        setPromoChannelStatus('اطلاعات همین کانال قبلاً دریافت شده است.','success');return;
-    }
     promoFetchInFlight=true;
     if(btn){btn.disabled=true;btn.textContent='در حال دریافت…';}
     setPromoChannelStatus('در حال دریافت عنوان و توضیحات کانال از تلگرام…');
     try{
-        const response=await fetch(GYM20_SUPABASE_URL+'/functions/v1/telegram-channel-info',{
-            method:'POST',
-            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json'},
-            body:JSON.stringify({channel:link})
-        });
-        const result=await response.json().catch(()=>({}));
-        if(!response.ok||result.error)throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
+        let result={},lastFetchError=null;
+        // اگر تلگرام پاسخ ناقص بدهد، دو بار دیگر با فاصله کوتاه تلاش می‌کنیم.
+        for(let attempt=0;attempt<3;attempt++){
+            try{
+                const response=await fetch(GYM20_SUPABASE_URL+'/functions/v1/telegram-channel-info',{
+                    method:'POST',
+                    headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json'},
+                    body:JSON.stringify({channel:link})
+                });
+                result=await response.json().catch(()=>({}));
+                if(!response.ok||result.error)throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
+                lastFetchError=null;
+                if(String(result.description||result.bio||'').trim()||attempt===2)break;
+            }catch(fetchError){
+                lastFetchError=fetchError;
+                if(attempt===2)throw fetchError;
+            }
+            await new Promise(resolve=>setTimeout(resolve,450*(attempt+1)));
+        }
+        if(lastFetchError)throw lastFetchError;
         const fetchedTitle=String(result.title||'').trim();
-        const fetchedDescription=String(result.description||'').trim();
+        const fetchedDescription=String(result.description||result.bio||'').trim();
         const previousTitle=(document.getElementById('editPromoChannelTitle')?.value||'').trim();
         const previousDescription=(document.getElementById('editPromoChannelDescription')?.value||'').trim();
         // اگر تلگرام موقتاً بیو را خالی برگرداند، متن قبلی را پاک نکن.
@@ -2310,7 +2320,7 @@ async function fetchPromoChannelInfo(){
         renderPromoChannelPreview(displayTitle,displayDescription,!!(displayTitle||displayDescription));
         if(fetchedDescription)setPromoChannelStatus('عنوان و بیوی کانال با موفقیت دریافت شد.','success');
         else if(previousDescription)setPromoChannelStatus('تلگرام این بار بیو را برنگرداند؛ متن ذخیره‌شده قبلی حفظ شد.','success');
-        else setPromoChannelStatus('عنوان کانال دریافت شد؛ تلگرام در این درخواست بیویی برنگرداند.','error');
+        else setPromoChannelStatus('عنوان کانال دریافت شد؛ تلگرام پس از ۳ تلاش بیویی برنگرداند.','error');
     }catch(error){
         setPromoChannelStatus(error.message||'ارتباط با سرویس تلگرام برقرار نشد.','error');
     }finally{
