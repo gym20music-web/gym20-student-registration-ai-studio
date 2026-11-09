@@ -1078,7 +1078,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="admin-sidebar-brand"><strong>GYM20</strong><small>مدیریت آکادمی و تنظیمات</small></div>
             <nav class="admin-tabs" aria-label="بخش‌های پنل مدیریت">
             <button class="admin-tab-btn active" onclick="switchAdminTab('pricesTab')">💰 ضرایب کلاس</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('promoTab')">🛍️ تبلیغات و بنر</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('promoTab')">⚡ تبلیغات و بنر</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('telegramTab')">✈️ اعلان تلگرام</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها و کلاس‌ها</button>
@@ -1115,7 +1115,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         <div class="admin-panel-tab" id="promoTab">
             <section class="promo-settings-shell" aria-labelledby="promoSettingsTitle">
                 <header class="promo-settings-head">
-                    <div class="promo-settings-icon">🛍️</div>
+                    <div class="promo-settings-icon">⚡</div>
                     <div><h3 id="promoSettingsTitle">مدیریت بنر تبلیغاتی</h3></div>
                 </header>
                 <div class="promo-toggle-stack">
@@ -1148,7 +1148,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                     <div class="admin-input-group"><label for="editPromoText">متن اصلی تبلیغ</label><textarea rows="2" id="editPromoText" placeholder="متن معرفی، پیشنهاد ویژه یا تخفیف را بنویسید"></textarea></div>
                     <div class="admin-input-group"><label for="editPromoCode">🎁 کد تخفیف هدیه</label><input type="text" id="editPromoCode" placeholder="مثلاً MEOX20"></div>
                     <div class="admin-input-group"><label for="editPromoImg">لینک عکس دستی (اختیاری)</label><input type="text" id="editPromoImg" placeholder="خالی باشد، تصویر کانال استفاده می‌شود"></div>
-                    <div class="admin-input-group promo-field-wide"><label for="editPromoBtn">متن دکمه ورود و خرید</label><input type="text" id="editPromoBtn" placeholder="ورود به کانال و مشاهده محصولات 🛍️"></div>
+                    <div class="admin-input-group promo-field-wide"><label for="editPromoBtn">متن دکمه ورود و خرید</label><input type="text" id="editPromoBtn" placeholder="ورود به کانال و مشاهده محصولات ⚡"></div>
                 </div>
             </section>
         </div>
@@ -2212,7 +2212,7 @@ function applyPromoPopupData(){
     safeSetText('meoxPromoTitle',pO.title||'✨ عنوان بنر تبلیغاتی');
     safeSetText('meoxPromoText',pO.text||'');
     safeSetText('meoxDiscountCode',pO.code||'');
-    safeSetText('meoxPromoBtn',pO.btnText||'ورود به کانال و مشاهده محصولات 🛍️');
+    safeSetText('meoxPromoBtn',pO.btnText||'ورود به کانال و مشاهده محصولات ⚡');
     const codeWrap=document.getElementById('meoxPromoCodeContainer');
     if(codeWrap)codeWrap.style.display=pO.code?'flex':'none';
     const channelName=document.getElementById('meoxPromoChannelName');
@@ -2557,7 +2557,7 @@ function normalizeGym20SiteConfig(data){
   if(!appData.rules)appData.rules={};
   if(!appData.rules.online)appData.rules.online="• برگزاری کلاس‌ها به‌صورت زنده (Live) با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها.";
   if(!appData.classTypesConfig)appData.classTypesConfig={normal:{enabled:true,statusText:"",allowedStyles:[]},semi:{enabled:true,statusText:"",allowedStyles:[]},private:{enabled:true,statusText:"",allowedStyles:[]},vip:{enabled:true,statusText:"",allowedStyles:[]},online:{enabled:true,statusText:"",allowedStyles:[]}};
-  if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
+  if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات ⚡"};
 }
 function renderGym20SiteConfig(showPromo){
   renderCustomRegionDropdown();
