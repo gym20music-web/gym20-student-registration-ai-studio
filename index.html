@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="./data.json" as="fetch" crossorigin>
+<link rel="preload" href="./music.jpg" as="image" fetchpriority="high">
+<link rel="preconnect" href="https://wsrv.nl" crossorigin>
+<link rel="preconnect" href="https://images.weserv.nl" crossorigin>
+<link rel="preconnect" href="https://t.me" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <link rel="preconnect" href="https://iqjujumhoawlugrmjvyj.supabase.co" crossorigin>
@@ -1009,7 +1013,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
         <a href="https://t.me/GYM20MUSIC" target="_blank" class="music-channel-card" id="musicCardLink">
-            <img src="music.jpg" data-source="music.jpg" loading="lazy" decoding="async" width="42" height="42" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
+            <img src="music.jpg" data-source="music.jpg" loading="eager" fetchpriority="high" decoding="async" width="42" height="42" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
             <div class="music-info">
                 <div class="music-title"><span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span></div>
                 <div class="music-handle" id="musicHandleText">@GYM20MUSIC</div>
@@ -1024,7 +1028,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 <div class="promo-modal" id="meoxPromoModal">
     <div class="promo-card">
         <button class="promo-close-btn" id="closeMeoxPromo" aria-label="بستن">✕</button>
-        <img src="" referrerpolicy="no-referrer" alt="تصویر کانال تبلیغ‌شده" class="promo-img" id="meoxPromoImg">
+        <img src="" referrerpolicy="no-referrer" alt="تصویر کانال تبلیغ‌شده" class="promo-img" id="meoxPromoImg" loading="eager" fetchpriority="high" decoding="async">
         <div class="promo-channel-name" id="meoxPromoChannelName" hidden></div>
         <div class="promo-title" id="meoxPromoTitle">✨ عنوان بنر تبلیغاتی</div>
         <div class="promo-text" id="meoxPromoText"></div>
