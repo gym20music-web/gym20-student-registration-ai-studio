@@ -2910,11 +2910,16 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 </script>
 
 <style>
-/* Premium compact 3D mini-player: three clean, full-width stacked rows; visual only. */
+/* Premium natural spectrum: smooth staggered movement, no flashing/on-off effect; visual only. */
 .music-mini-player{width:100%;height:31px;margin-top:3px;display:flex;flex-direction:column;justify-content:space-between;gap:3px;direction:ltr;overflow:hidden}
 .music-mini-eq{position:relative;align-self:stretch;width:100%;height:10px;min-height:10px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:0 2px;box-sizing:border-box;pointer-events:none}
-.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:3px;border-radius:3px;background:linear-gradient(180deg,#f2f6fb 0%,#8e9cac 55%,#536171 100%);box-shadow:0 1px 1px rgba(0,0,0,.8),0 0 4px rgba(190,210,230,.28);transform-origin:center;animation:musicMiniPulse .72s ease-in-out infinite alternate}
-.music-mini-eq i:nth-child(4n){height:8px;animation-delay:-.16s}.music-mini-eq i:nth-child(4n + 1){height:5px;animation-delay:-.38s}.music-mini-eq i:nth-child(3n){height:6px;animation-delay:-.52s}.music-mini-eq i:nth-child(7n){height:9px;animation-delay:-.24s}
+.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#f7f9fc 0%,#c0cad5 34%,#778697 72%,#4d5a69 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:scaleY(.55);transform-origin:center;will-change:transform;animation:musicMiniSpectrum 1.05s cubic-bezier(.42,0,.58,1) infinite}
+.music-mini-eq i:nth-child(5n+1){animation-duration:1.32s;animation-delay:-.82s}
+.music-mini-eq i:nth-child(5n+2){animation-duration:.91s;animation-delay:-.37s}
+.music-mini-eq i:nth-child(5n+3){animation-duration:1.18s;animation-delay:-.66s}
+.music-mini-eq i:nth-child(5n+4){animation-duration:.78s;animation-delay:-.21s}
+.music-mini-eq i:nth-child(5n){animation-duration:1.46s;animation-delay:-1.03s}
+.music-mini-eq i:nth-child(7n){max-width:3.5px;background:linear-gradient(180deg,#fff 0%,#d7dfe8 40%,#8797a8 100%)}
 .music-mini-track{height:7px;min-height:7px;width:100%;position:relative;display:flex;align-items:center;justify-content:center}
 .music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:3px;border-radius:5px;background:linear-gradient(180deg,rgba(10,14,20,.95),rgba(175,190,207,.22));transform:translateY(-50%);box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
 .music-mini-progress{position:absolute;left:1px;top:50%;width:37%;height:3px;border-radius:5px;background:linear-gradient(90deg,#657486,#dce5ef 78%,#fff);transform:translateY(-50%);box-shadow:0 0 5px rgba(190,210,230,.35),inset 0 1px 0 rgba(255,255,255,.55)}
@@ -2922,8 +2927,8 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 .music-mini-controls{height:10px;min-height:10px;width:100%;display:flex;align-items:center;justify-content:space-around;gap:0;color:#aeb9c5;font:700 10px/1 Arial,sans-serif;letter-spacing:0}
 .music-mini-controls span{display:inline-flex;align-items:center;justify-content:center;width:20%;height:10px;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(205,220,235,.2)}
 .music-mini-controls .music-mini-pause{font-size:11px;color:#f2f6fa;text-shadow:0 0 5px rgba(220,230,240,.45),0 1px 2px #000}
-@keyframes musicMiniPulse{from{transform:scaleY(.35);opacity:.65}to{transform:scaleY(1);opacity:1}}
-@media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.7)}}
+@keyframes musicMiniSpectrum{0%,100%{transform:scaleY(.22)}18%{transform:scaleY(.58)}37%{transform:scaleY(.94)}56%{transform:scaleY(.38)}76%{transform:scaleY(.76)}}
+@media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.62)}}
 </style>
 
 </body>
