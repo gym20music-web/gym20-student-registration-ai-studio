@@ -2165,7 +2165,7 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
 
 function applyDataToUI(){
     const aT=appData.theme||'stealth';selectedThemeKey=aT;document.body.setAttribute('data-color-theme',aT);
-    safeSetText('brandTag',appData.brandTag||'');safeSetText('bannerTitle',appData.bannerTitle||'');safeSetText('bannerSubtitle',appData.bannerSubtitle||'');
+    safeSetText('brandTag',appData.brandTag||'آکادمی تخصصی ورزش GYM20🤸');safeSetText('bannerTitle',appData.bannerTitle||'سلام، وقتتون بخیر 🌱');safeSetText('bannerSubtitle',appData.bannerSubtitle||'شرایط برگزاری کلاس‌های ورزشی تخصصی | انتخاب سبک‌ها و محاسبه هوشمند شهریه');
     const hero=document.getElementById('heroBanner');if(hero&&appData.bannerBg)hero.style.backgroundImage=`linear-gradient(135deg,rgba(0,0,0,0.65),rgba(0,0,0,0.65)),url('${appData.bannerBg}')`;
     const bO=appData.buttons||{};
     safeSetText('btn_onlinePay',bO.onlinePay||'💳 پرداخت آنلاین');safeSetText('btn_copyCard',bO.copyCard||'📋 کپی کارت');safeSetText('btn_sendReceipt',bO.sendReceipt||'📩 ارسال فیش');safeSetText('btn_submitReg',bO.submitReg||'ارسال درخواست ثبت‌نام');safeSetText('btn_musicJoin',bO.musicJoin||'عضویت 🎵');safeSetText('instaLink',bO.instaBtn||'📸 اینستاگرام');safeSetText('teleLink',bO.teleBtn||'✈️ تلگرام / ایتا');safeSetText('phoneLink',bO.phoneBtn||'📞 تماس تلفنی');
@@ -2636,18 +2636,16 @@ async function loadDataAndInit(){
   // تازه‌سازی زنده از Supabase در پس‌زمینه؛ برای هر درخواست محدودیت زمانی داریم.
   fetchLiveGym20SiteConfig().then(data=>{if(data)acceptConfig(data);}).catch(()=>{});
 
-  // نمایش فوری صفحه با تنظیمات پیش‌فرض؛ دریافت فایل و تنظیمات زنده در پس‌زمینه انجام می‌شود.
+  // تنظیمات فایل محلی و Supabase هم‌زمان دریافت می‌شوند؛ تا رسیدن داده معتبر، متن‌های ثابت HTML پاک نمی‌شوند.
   if(!initialRendered){
-    normalizeGym20SiteConfig({});
-    renderGym20SiteConfig(false);
-    initialRendered=true;
-    resolveInitial();
-    gym20FetchWithTimeout('data.json',{},2200).then(async response=>{
-      if(response.ok){
-        const data=await response.json();
-        acceptConfig(data);
-      }
-    }).catch(()=>{});
+    const localConfigRequest=gym20FetchWithTimeout('./data.json',{cache:'no-store'},5000).then(async response=>{
+      if(!response.ok)throw new Error('data.json HTTP '+response.status);
+      const data=await response.json();
+      acceptConfig(data);
+    }).catch(error=>console.warn('GYM20 local config load failed:',error));
+    await Promise.race([initialReady,new Promise(resolve=>setTimeout(resolve,5200))]);
+    if(!initialRendered)resolveInitial();
+    localConfigRequest.catch(()=>{});
   }
 }
 loadDataAndInit().then(()=>{
