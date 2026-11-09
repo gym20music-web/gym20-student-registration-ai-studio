@@ -2986,13 +2986,14 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
       const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
       const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
       const rightWave=broad*.42+rolling*.36+ripple*.22;
-      const leftWave=.16+((Math.sin(t*1.25+angle*2.1)+1)/2)*.16;
-      /* A few slim peaks drift through the quieter left side. */
-      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*1.05+angle*4.1)),14);
+      /* Left side stays shorter, but carries a soft moving ripple. */
+      const leftWave=.10+((Math.sin(t*1.35+angle*2.7)+1)/2)*.13;
+      /* A handful of taller bars travel through the small left-side wave. */
+      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*.9+angle*3.7)),12);
       const height=2.1
         +right*(1.4+rightWave*5.2)
-        +left*(.2+leftWave*2.0+leftPeaks*3.5);
-      const activity=right*rightWave+left*(leftWave*.45+leftPeaks*.35);
+        +left*(.75+leftWave*2.0+leftPeaks*3.1);
+      const activity=right*rightWave+left*(leftWave*.55+leftPeaks*.3);
       el.style.height=height.toFixed(1)+'px';
       el.style.opacity=(.6+activity*.28).toFixed(2);
     });
