@@ -337,7 +337,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       .st-time-picker>footer button:active{transform:scale(.97)}
       @keyframes stClockFade{from{opacity:0}to{opacity:1}}@keyframes stClockIn{from{opacity:0;transform:translateY(9px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
       @media(max-width:480px){.st-time-picker-backdrop{align-items:center!important;justify-content:center!important;padding:12px!important}.st-time-picker{width:min(320px,calc(100% - 24px));max-width:320px;max-height:calc(100dvh - 24px);overflow-y:auto;border-radius:16px;animation:stClockIn .24s cubic-bezier(.2,.85,.25,1)}.st-time-picker-controls{padding:4px 8px 8px;gap:7px}.st-time-wheel{height:132px}.st-time-wheel-spacer{height:52px}.st-time-wheel-indicator{top:52px}.st-time-wheel-item{height:26px}.st-time-picker-preview{padding-top:7px}}
-      .st-coach-swipe{position:relative;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;height:31px!important;min-height:31px!important;padding:3px 6px!important;border:1px solid rgba(214,179,90,.35)!important;border-radius:7px!important;background:linear-gradient(145deg,#202b3a,#111a27)!important;color:#f4e9ce!important;cursor:grab!important;touch-action:pan-y!important;user-select:none!important;-webkit-user-select:none!important;white-space:nowrap!important;transition:background .22s,border-color .22s,box-shadow .22s,transform .22s!important}.st-coach-swipe-name{font-weight:800!important;font-size:10px!important}.st-coach-swipe.coach-dragging{cursor:grabbing!important;transition:none!important;box-shadow:0 0 0 2px rgba(214,179,90,.18)!important}.st-coach-swipe.coach-left,.st-coach-swipe.coach-right{border-color:#e5c36e!important;box-shadow:0 0 0 2px rgba(214,179,90,.14)!important}.st-coach-swipe:active,.st-coach-swipe.swiped{border-color:#e5c36e!important;background:linear-gradient(145deg,#343d48,#1c2530)!important;box-shadow:0 0 0 2px rgba(214,179,90,.12)!important}
+      .st-coach-swipe{position:relative;display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;min-width:0!important;height:31px!important;min-height:31px!important;padding:3px 6px!important;border:1px solid rgba(214,179,90,.35)!important;border-radius:7px!important;background:linear-gradient(145deg,#202b3a,#111a27)!important;color:#f4e9ce!important;cursor:grab!important;touch-action:pan-y!important;user-select:none!important;-webkit-user-select:none!important;white-space:nowrap!important;transition:background .22s,border-color .22s,box-shadow .22s,transform .22s!important}.st-coach-swipe-name{font-weight:800!important;font-size:10px!important}.st-coach-swipe:active,.st-coach-swipe.swiped{border-color:#e5c36e!important;background:linear-gradient(145deg,#343d48,#1c2530)!important;box-shadow:0 0 0 2px rgba(214,179,90,.12)!important}
       @keyframes stClockSheet{from{opacity:.65;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
       @media(prefers-reduced-motion:reduce){.st-time-picker-backdrop,.st-time-picker,.st-time-wheel-item{animation:none!important;transition:none!important}}
     `;
@@ -1166,41 +1166,12 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     const editorRoot=$('stDraftTable');if(!editorRoot.dataset.sessionEditorBound){editorRoot.dataset.sessionEditorBound='1';editorRoot.addEventListener('input',syncSessionEditor);editorRoot.addEventListener('change',syncSessionEditor);editorRoot.addEventListener('blur',syncSessionEditor,true);
       // Delegated time-picker trigger: reliably works for every session card, including dynamically redrawn rows.
       editorRoot.addEventListener('click',e=>{const input=e.target.closest('[data-time]');if(!input||!editorRoot.contains(input))return;e.preventDefault();e.stopPropagation();openSessionTimePicker(input);});
-      // Coach control: horizontal drag/swipe with a small visual follow-through.
-      let coachSwipe=null,coachClickGuard=0;
-      const changeCoach=(control)=>{
-        const n=control.dataset.coachSwipe,input=editorRoot.querySelector('[data-coach="'+n+'"]'),label=control.querySelector('.st-coach-swipe-name');
-        if(!input||!label)return;
-        const next=input.value==='هانیه'?'بهروز':'هانیه';
-        input.value=next;label.textContent=next;
-        control.classList.remove('coach-left','coach-right');control.classList.add(next==='بهروز'?'coach-left':'coach-right');
-        input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));
-        setTimeout(()=>control.classList.remove('coach-left','coach-right'),220);
-      };
-      editorRoot.addEventListener('pointerdown',e=>{
-        const control=e.target.closest('[data-coach-swipe]');if(!control)return;
-        coachSwipe={control,x:e.clientX,y:e.clientY,pointerId:e.pointerId,moved:false};
-        control.classList.add('coach-dragging');
-        try{control.setPointerCapture(e.pointerId);}catch(_){}
-      });
-      editorRoot.addEventListener('pointermove',e=>{
-        if(!coachSwipe||coachSwipe.pointerId!==e.pointerId)return;
-        const dx=e.clientX-coachSwipe.x,dy=e.clientY-coachSwipe.y;
-        if(Math.abs(dx)>8&&Math.abs(dx)>Math.abs(dy)){coachSwipe.moved=true;coachSwipe.control.style.transform='translateX('+Math.max(-12,Math.min(12,dx*.22))+'px)';}
-      });
-      const finishCoachSwipe=e=>{
-        if(!coachSwipe||coachSwipe.pointerId!==e.pointerId)return;
-        const {control,x,y,moved}=coachSwipe;coachSwipe=null;control.classList.remove('coach-dragging');control.style.transform='';
-        const dx=e.clientX-x,dy=e.clientY-y;
-        if(moved&&Math.abs(dx)>=22&&Math.abs(dx)>Math.abs(dy)){changeCoach(control);coachClickGuard=Date.now()+450;}
-      };
-      editorRoot.addEventListener('pointerup',finishCoachSwipe);
-      editorRoot.addEventListener('pointercancel',e=>{if(coachSwipe){coachSwipe.control.classList.remove('coach-dragging');coachSwipe.control.style.transform='';}coachSwipe=null;});
-      editorRoot.addEventListener('click',e=>{
-        const control=e.target.closest('[data-coach-swipe]');if(!control)return;
-        if(Date.now()<coachClickGuard){e.preventDefault();e.stopPropagation();return;}
-        changeCoach(control);
-      });
+      // Coach selector is intentionally swipe-based instead of a dropdown.
+      let coachSwipe=null;
+      editorRoot.addEventListener('pointerdown',e=>{const control=e.target.closest('[data-coach-swipe]');if(!control)return;coachSwipe={control,x:e.clientX,y:e.clientY,pointerId:e.pointerId};control.setPointerCapture?.(e.pointerId);});
+      editorRoot.addEventListener('pointerup',e=>{if(!coachSwipe||coachSwipe.pointerId!==e.pointerId)return;const {control,x,y}=coachSwipe;coachSwipe=null;const dx=e.clientX-x,dy=e.clientY-y;if(Math.abs(dx)<24||Math.abs(dx)<Math.abs(dy))return;const n=control.dataset.coachSwipe,input=editorRoot.querySelector('[data-coach="'+n+'"]'),label=control.querySelector('.st-coach-swipe-name');if(!input||!label)return;const next=input.value==='هانیه'?'بهروز':'هانیه';input.value=next;label.textContent=next;control.classList.add('swiped');setTimeout(()=>control.classList.remove('swiped'),260);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));});
+      editorRoot.addEventListener('pointercancel',()=>{coachSwipe=null;});
+      editorRoot.addEventListener('click',e=>{const control=e.target.closest('[data-coach-swipe]');if(!control||control.classList.contains('swiped')){if(control)control.classList.remove('swiped');return;}const n=control.dataset.coachSwipe,input=editorRoot.querySelector('[data-coach="'+n+'"]'),label=control.querySelector('.st-coach-swipe-name');if(!input||!label)return;const next=input.value==='هانیه'?'بهروز':'هانیه';input.value=next;label.textContent=next;input.dispatchEvent(new Event('change',{bubbles:true}));});
     }
   }
 
