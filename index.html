@@ -1022,7 +1022,8 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <div class="music-info">
                 <div class="music-title"><span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span></div>
                 <div class="music-mini-player" aria-hidden="true">
-                  <div class="music-mini-track"><span class="music-mini-progress"></span><span class="music-mini-knob"></span><span class="music-mini-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
+                  <div class="music-mini-track"><span class="music-mini-progress"></span><span class="music-mini-knob"></span></div>
+                  <div class="music-mini-eq"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
                   <div class="music-mini-controls"><span>⇆</span><span>◁</span><span class="music-mini-pause">Ⅱ</span><span>▷</span><span>↻</span></div>
                 </div>
             </div>
@@ -2910,12 +2911,12 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 
 <style>
 /* Compact decorative mini-player: visual only, no audio or playback handlers. */
-.music-mini-player{width:100%;height:17px;margin-top:2px;display:flex;flex-direction:column;justify-content:space-between;gap:1px;direction:ltr;overflow:hidden}
-.music-mini-track{height:8px;position:relative;display:flex;align-items:center;justify-content:center}
+.music-mini-player{width:100%;height:24px;margin-top:2px;display:flex;flex-direction:column;justify-content:space-between;gap:1px;direction:ltr;overflow:hidden}
+.music-mini-track{height:7px;min-height:7px;position:relative;display:flex;align-items:center;justify-content:center}
 .music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:2px;border-radius:4px;background:rgba(190,202,216,.24);transform:translateY(-50%);box-shadow:inset 0 1px 1px rgba(0,0,0,.45)}
 .music-mini-progress{position:absolute;left:1px;top:50%;width:37%;height:2px;border-radius:4px;background:linear-gradient(90deg,#8b9aaa,#e4ebf2);transform:translateY(-50%);box-shadow:0 0 5px rgba(190,205,220,.35)}
 .music-mini-knob{position:absolute;left:calc(37% - 3px);top:50%;width:6px;height:6px;border-radius:50%;background:linear-gradient(145deg,#fff,#9aa8b7);border:1px solid rgba(255,255,255,.7);transform:translateY(-50%);box-shadow:0 1px 3px rgba(0,0,0,.7),0 0 5px rgba(200,215,230,.35)}
-.music-mini-eq{position:absolute;z-index:2;left:5%;top:50%;transform:translateY(-50%);height:10px;width:31%;display:flex;align-items:center;justify-content:space-around;gap:2px;padding:0;background:transparent;border-radius:0;box-shadow:none;pointer-events:none}
+.music-mini-eq{position:relative;z-index:2;align-self:center;height:6px;width:31%;display:flex;align-items:center;justify-content:space-around;gap:2px;padding:0;background:transparent;border-radius:0;box-shadow:none;pointer-events:none;flex:none}
 .music-mini-eq i{display:block;width:2px;height:3px;border-radius:3px;background:#cbd5df;box-shadow:0 0 4px rgba(205,220,235,.5);animation:musicMiniPulse .72s ease-in-out infinite alternate}
 .music-mini-eq i:nth-child(2n){height:6px;animation-delay:-.24s}.music-mini-eq i:nth-child(3n){height:4px;animation-delay:-.48s}.music-mini-eq i:nth-child(4n){height:7px;animation-delay:-.12s}
 .music-mini-controls{height:8px;display:flex;align-items:center;justify-content:center;gap:13px;color:#aeb9c5;font:700 8px/1 Arial,sans-serif;letter-spacing:0}
