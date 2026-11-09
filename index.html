@@ -2983,10 +2983,9 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     wheel.addEventListener('scroll',()=>{
       const now=wheel.scrollTop,delta=Math.abs(now-wheel._gym20LastScrollTop);
       wheel._gym20LastScrollTop=now;
-      if(delta>2){
-        if(wheel._gym20PointerDown)wheel._gym20GestureMoved=true;
-        else if(wheel._gym20AllowProgrammatic!==true)wheel._gym20GestureMoved=true;
-      }
+      // Only a real user gesture (pointer drag or mouse-wheel) may arm selection.
+      // Opening/centering the wheel can emit scroll events too; those must never select a region.
+      if(delta>2&&wheel._gym20PointerDown)wheel._gym20GestureMoved=true;
       if(!wheel._gym20Frame){
         wheel._gym20Frame=requestAnimationFrame(()=>{
           wheel._gym20Frame=0;recycle(wheel);updateFocus(menu);
