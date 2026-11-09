@@ -1887,7 +1887,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261108-session-date-order-v88')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261109-coach-swipe-v89')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261108-notification-status-v15'))
       .then(()=>loadGym20Module('./student-exercises.js?v=20261106-exercises-v2'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
