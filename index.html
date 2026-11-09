@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="./data.json" as="fetch" crossorigin>
-<link rel="preload" href="./music.jpg" as="image" fetchpriority="high">
+<link rel="preload" href="./music.jpg?v=20261109" as="image" fetchpriority="high">
 <link rel="preconnect" href="https://wsrv.nl" crossorigin>
 <link rel="preconnect" href="https://images.weserv.nl" crossorigin>
 <link rel="preconnect" href="https://t.me" crossorigin>
@@ -1013,7 +1013,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
             <a href="#" class="social-btn" id="phoneLink">📞 تماس تلفنی</a>
         </div>
         <a href="https://t.me/GYM20MUSIC" target="_blank" class="music-channel-card" id="musicCardLink">
-            <img src="music.jpg" data-source="music.jpg" loading="eager" fetchpriority="high" decoding="async" width="42" height="42" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
+            <img src="./music.jpg?v=20261109" data-source="./music.jpg?v=20261109" loading="eager" fetchpriority="high" decoding="async" width="42" height="42" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=150&auto=format&fit=crop&q=80'" alt="GYM20MUSIC" class="music-avatar" id="musicAvatarImg">
             <div class="music-info">
                 <div class="music-title"><span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span></div>
                 <div class="music-handle" id="musicHandleText">@GYM20MUSIC</div>
@@ -2184,7 +2184,7 @@ function applyDataToUI(){
     const cO=appData.card||{};safeSetText('cardNumberText',cO.number||'');safeSetText('cardOwnerText',cO.owner||'');
     const gw=document.getElementById('onlineGatewayBtn');if(gw){if(cO.gatewayLink&&cO.gatewayLink.length>5){gw.href=cO.gatewayLink;gw.style.display='flex';}else gw.style.display='none';}
     const ctO=appData.contact||{};const inL=document.getElementById('instaLink');if(inL)inL.href=ctO.instagram||'#';const teL=document.getElementById('teleLink');if(teL)teL.href=ctO.telegram||'#';const phL=document.getElementById('phoneLink');if(phL)phL.href='tel:'+(ctO.phone||'');const sR=document.getElementById('sendReceiptBtn');if(sR)sR.href='sms:'+(ctO.phone||'')+'?body=سلام استاد، فیش واریزی ارسال شد.';
-    const mO=appData.musicChannel||{};safeSetText('musicTitleText',mO.name||'✈️ کانال موزیک GYM20MUSIC 🎧');safeSetText('musicHandleText',mO.id||'@GYM20MUSIC');const mcL=document.getElementById('musicCardLink');if(mcL)mcL.href=mO.link||'#';const mAv=document.getElementById('musicAvatarImg');const desiredMusicAvatar=typeof mO.avatar==='string'&&mO.avatar.trim()?mO.avatar.trim():'music.jpg';if(mAv&&mAv.dataset.source!==desiredMusicAvatar){mAv.dataset.source=desiredMusicAvatar;mAv.src=desiredMusicAvatar;}
+    const mO=appData.musicChannel||{};safeSetText('musicTitleText',mO.name||'✈️ کانال موزیک GYM20MUSIC 🎧');safeSetText('musicHandleText',mO.id||'@GYM20MUSIC');const mcL=document.getElementById('musicCardLink');if(mcL)mcL.href=mO.link||'#';const mAv=document.getElementById('musicAvatarImg');const desiredMusicAvatar='./music.jpg?v=20261109';if(mAv&&mAv.dataset.source!==desiredMusicAvatar){mAv.dataset.source=desiredMusicAvatar;mAv.src=desiredMusicAvatar;}
     applyPromoPopupData();updateDynamicRules();renderCustomRegionDropdown();
 }
 
@@ -2297,11 +2297,20 @@ async function fetchPromoChannelInfo(){
         });
         const result=await response.json().catch(()=>({}));
         if(!response.ok||result.error)throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
-        safeSetValue('editPromoChannelTitle',result.title||'');
-        safeSetValue('editPromoChannelDescription',result.description||'');
+        const fetchedTitle=String(result.title||'').trim();
+        const fetchedDescription=String(result.description||'').trim();
+        const previousTitle=(document.getElementById('editPromoChannelTitle')?.value||'').trim();
+        const previousDescription=(document.getElementById('editPromoChannelDescription')?.value||'').trim();
+        // اگر تلگرام موقتاً بیو را خالی برگرداند، متن قبلی را پاک نکن.
+        if(fetchedTitle)safeSetValue('editPromoChannelTitle',fetchedTitle);
+        if(fetchedDescription)safeSetValue('editPromoChannelDescription',fetchedDescription);
         promoFetchedForLink=username;
-        renderPromoChannelPreview(result.title||'',result.description||'',true);
-        setPromoChannelStatus(result.description?'اطلاعات کانال با موفقیت دریافت شد.':'عنوان کانال دریافت شد؛ کانال توضیحاتی برای نمایش ندارد.','success');
+        const displayTitle=fetchedTitle||previousTitle;
+        const displayDescription=fetchedDescription||previousDescription;
+        renderPromoChannelPreview(displayTitle,displayDescription,!!(displayTitle||displayDescription));
+        if(fetchedDescription)setPromoChannelStatus('عنوان و بیوی کانال با موفقیت دریافت شد.','success');
+        else if(previousDescription)setPromoChannelStatus('تلگرام این بار بیو را برنگرداند؛ متن ذخیره‌شده قبلی حفظ شد.','success');
+        else setPromoChannelStatus('عنوان کانال دریافت شد؛ تلگرام در این درخواست بیویی برنگرداند.','error');
     }catch(error){
         setPromoChannelStatus(error.message||'ارتباط با سرویس تلگرام برقرار نشد.','error');
     }finally{
