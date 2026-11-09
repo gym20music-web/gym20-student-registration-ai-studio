@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
 <link rel="preconnect" href="https://iqjujumhoawlugrmjvyj.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="//iqjujumhoawlugrmjvyj.supabase.co">
 <title>آکادمی تخصصی ورزش GYM20🤸</title>
@@ -2615,8 +2615,9 @@ async function loadDataAndInit(){
     try{localStorage.setItem('sports_reg_data',JSON.stringify(data));}catch(e){}
     if(initialRendered&&gym20UserInteracted&&Array.isArray(appData.regions)&&appData.regions.length>0)return true;
     normalizeGym20SiteConfig(data);
-    renderGym20SiteConfig(!promoTriggered);
-    if(!promoTriggered)promoTriggered=true;
+    const shouldShowPromo=!promoTriggered;
+    renderGym20SiteConfig(shouldShowPromo);
+    if(shouldShowPromo&&appData.promoPopup?.enabled!==false)promoTriggered=true;
     if(!initialRendered){
       initialRendered=true;
       resolveInitial();
@@ -2635,21 +2636,18 @@ async function loadDataAndInit(){
   // تازه‌سازی زنده از Supabase در پس‌زمینه؛ برای هر درخواست محدودیت زمانی داریم.
   fetchLiveGym20SiteConfig().then(data=>{if(data)acceptConfig(data);}).catch(()=>{});
 
-  // بازدید اول: فایل کوچک هم‌مبدأ و Supabase هم‌زمان بررسی می‌شوند.
+  // نمایش فوری صفحه با تنظیمات پیش‌فرض؛ دریافت فایل و تنظیمات زنده در پس‌زمینه انجام می‌شود.
   if(!initialRendered){
+    normalizeGym20SiteConfig({});
+    renderGym20SiteConfig(false);
+    initialRendered=true;
+    resolveInitial();
     gym20FetchWithTimeout('data.json',{},2200).then(async response=>{
       if(response.ok){
         const data=await response.json();
         acceptConfig(data);
       }
     }).catch(()=>{});
-    await Promise.race([initialReady,new Promise(resolve=>setTimeout(resolve,1600))]);
-    if(!initialRendered){
-      normalizeGym20SiteConfig({});
-      renderGym20SiteConfig(false);
-      initialRendered=true;
-      resolveInitial();
-    }
   }
 }
 loadDataAndInit().then(()=>{
