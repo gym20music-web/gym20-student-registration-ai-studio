@@ -1512,10 +1512,6 @@ function renderCustomRegionDropdown(){
         wheel.appendChild(item);
     });
     customRegionMenuEl.appendChild(wheel);
-    const footer=document.createElement('div');
-    footer.className='region-wheel-footer';
-    footer.innerHTML='<span class="region-wheel-hint">برای انتخاب، گزینهٔ وسط را تنظیم کنید</span><button type="button" id="customRegionConfirm">تأیید منطقه <span>✓</span></button>';
-    customRegionMenuEl.appendChild(footer);
     updateRegionDependentVisibility();
 }
 
@@ -2934,12 +2930,9 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     const x=getRegionEls();if(!x.menu||!x.wrap)return;
     const item=e.target&&e.target.closest?e.target.closest('.region-wheel-item'):null;
     if(item&&x.menu.contains(item)){
-      e.preventDefault();e.stopPropagation();pendingRegionId=item.dataset.regionId||'';
-      centerWheelItem(x.menu,pendingRegionId);return;
-    }
-    if(e.target&&e.target.closest&&e.target.closest('#customRegionConfirm')&&x.menu.contains(e.target.closest('#customRegionConfirm'))){
       e.preventDefault();e.stopPropagation();
-      if(pendingRegionId&&typeof window.gym20SelectRegion==='function')window.gym20SelectRegion(pendingRegionId);
+      const id=item.dataset.regionId||'';
+      if(id&&typeof window.gym20SelectRegion==='function')window.gym20SelectRegion(id);
     }
   },true);
   window.gym20ToggleRegionDropdown=function(e){
@@ -2955,7 +2948,20 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
       pendingRegionId=selected?selected.dataset.regionId:'';
       const wheel=x.menu.querySelector('#customRegionWheelList');
       if(wheel){
-        wheel.addEventListener('scroll',()=>{if(!wheel._gym20WheelFrame){wheel._gym20WheelFrame=requestAnimationFrame(()=>{wheel._gym20WheelFrame=0;updateWheelFocus(x.menu);});}},{passive:true});
+        wheel._gym20UserScrolled=false;
+        wheel.addEventListener('touchstart',()=>{wheel._gym20UserScrolled=true;},{passive:true});
+        wheel.addEventListener('wheel',()=>{wheel._gym20UserScrolled=true;},{passive:true});
+        wheel.addEventListener('scroll',()=>{
+          if(!wheel._gym20WheelFrame){wheel._gym20WheelFrame=requestAnimationFrame(()=>{wheel._gym20WheelFrame=0;updateWheelFocus(x.menu);});}
+          clearTimeout(wheel._gym20SettleTimer);
+          wheel._gym20SettleTimer=setTimeout(()=>{
+            updateWheelFocus(x.menu);
+            if(wheel._gym20UserScrolled&&pendingRegionId&&typeof window.gym20SelectRegion==='function'){
+              wheel._gym20UserScrolled=false;
+              window.gym20SelectRegion(pendingRegionId);
+            }
+          },190);
+        },{passive:true});
         requestAnimationFrame(()=>{if(pendingRegionId)centerWheelItem(x.menu,pendingRegionId);else updateWheelFocus(x.menu);});
       }
     }
@@ -2976,10 +2982,9 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   position:absolute!important;top:calc(100% + 7px)!important;right:0!important;left:0!important;bottom:auto!important;
   width:100%!important;height:226px!important;max-height:226px!important;padding:0!important;
   display:none;overflow:hidden!important;box-sizing:border-box!important;
-  background:linear-gradient(155deg,rgba(37,44,53,.985),rgba(19,24,31,.99))!important;
-  border:1px solid rgba(220,190,119,.34)!important;border-radius:17px!important;
-  box-shadow:0 20px 42px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.07),0 0 20px rgba(214,179,90,.07)!important;
-  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:1205!important;transform:none!important;
+  background:transparent!important;border:0!important;border-radius:0!important;
+  box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  z-index:1205!important;transform:none!important;
 }
 #customRegionMenu.open{display:flex!important;flex-direction:column!important}
 #customRegionMenu:before{
@@ -3017,24 +3022,11 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 #customRegionWheelList .region-wheel-item.wheel-focus .region-item-title{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}
 #customRegionWheelList .region-wheel-item .region-item-check{font-size:12px!important;color:#e8c778!important;margin-right:6px!important;opacity:0}
 #customRegionWheelList .region-wheel-item.wheel-focus .region-item-check{opacity:1}
-.region-wheel-footer{
-  position:relative;z-index:4;flex:0 0 43px;display:flex;align-items:center;justify-content:space-between;gap:8px;
-  padding:4px 12px 7px;border-top:1px solid rgba(255,255,255,.055);
-  background:linear-gradient(180deg,rgba(23,29,37,.9),rgba(17,22,29,.98));
-}
-.region-wheel-hint{font-size:9px;color:#9ba6b2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#customRegionConfirm{
-  flex:none;border:1px solid rgba(226,195,126,.5)!important;border-radius:9px!important;padding:6px 13px!important;
-  min-height:30px;background:linear-gradient(135deg,#d8b66d,#a98643)!important;color:#17140e!important;
-  font-size:10px!important;font-weight:900!important;box-shadow:0 3px 12px rgba(0,0,0,.24),0 0 12px rgba(214,179,90,.11)!important;
-}
-#customRegionConfirm:active{transform:scale(.97)!important}
 @media(max-width:720px){
  #customRegionMenu{height:218px!important;max-height:218px!important;border-radius:16px!important}
  #customRegionWheelList{padding:88px 10px!important;scroll-padding-block:88px}
  #customRegionWheelList .region-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
  #customRegionMenu:before{height:40px}
- .region-wheel-footer{flex-basis:42px;padding:4px 10px 6px}
  #customRegionWheelList .region-item-title{font-size:11px!important}
  #customRegionWheelList .region-wheel-item.wheel-focus .region-item-title{font-size:12.5px!important}
 }
