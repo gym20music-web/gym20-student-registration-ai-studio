@@ -2912,7 +2912,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     document.body.classList.toggle('region-sheet-open',open);
     x.menu.style.display=open?'block':'none';x.menu.style.visibility=open?'visible':'hidden';x.menu.style.pointerEvents=open?'auto':'none';
     x.trigger.setAttribute('aria-expanded',String(open));
-    if(open){const selected=x.menu.querySelector('.custom-dropdown-item.selected');if(selected)requestAnimationFrame(()=>selected.scrollIntoView({block:'center',behavior:'smooth'}));}
+    if(open){const selected=x.menu.querySelector('.custom-dropdown-item.selected');if(selected)requestAnimationFrame(()=>{x.menu.scrollTop=Math.max(0,selected.offsetTop-(x.menu.clientHeight-selected.offsetHeight)/2);});}
   };
   document.addEventListener('click',function(e){
     const x=getRegionEls();if(!x.trigger||!x.menu)return;
@@ -2922,344 +2922,87 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 })();
 </script>
 
-<style>
-/* Mobile region drawer: native finger scrolling with momentum. */
-@media(max-width:720px){
-  #customRegionMenu{
-    position:fixed!important;
-    top:auto!important;
-    right:10px!important;
-    left:10px!important;
-    bottom:max(10px,env(safe-area-inset-bottom))!important;
-    width:auto!important;
-    max-height:min(68dvh,560px)!important;
-    overflow-x:hidden!important;
-    overflow-y:auto!important;
-    -webkit-overflow-scrolling:touch!important;
-    overscroll-behavior-y:contain!important;
-    touch-action:pan-y!important;
-    scroll-behavior:auto!important;
-    scroll-snap-type:none!important;
-    padding:15px 10px calc(14px + env(safe-area-inset-bottom))!important;
-    border:1px solid rgba(0,243,255,.34)!important;
-    border-radius:20px!important;
-    background:linear-gradient(155deg,rgba(25,31,42,.99),rgba(11,15,22,.99))!important;
-    box-shadow:0 22px 60px rgba(0,0,0,.72),inset 0 1px 0 rgba(255,255,255,.055)!important;
-    scrollbar-width:thin;
-    scrollbar-color:rgba(0,243,255,.42) transparent;
-    transform:translateZ(0);
-    -webkit-transform:translateZ(0);
-    will-change:transform;
-  }
-  #customRegionMenu.open:before{
-    content:"";
-    display:block;
-    position:sticky;
-    top:0;
-    width:42px;
-    height:4px;
-    margin:0 auto 12px;
-    border-radius:8px;
-    background:linear-gradient(90deg,rgba(0,243,255,.28),rgba(255,255,255,.58),rgba(0,243,255,.28));
-    pointer-events:none;
-  }
-  #customRegionMenu::-webkit-scrollbar{width:3px}
-  #customRegionMenu::-webkit-scrollbar-thumb{background:rgba(0,243,255,.38);border-radius:8px}
-  #customRegionMenu .custom-dropdown-item{
-    min-height:49px;
-    margin:0 0 5px;
-    padding:9px 12px;
-    border:1px solid rgba(255,255,255,.055);
-    background:rgba(255,255,255,.025);
-    transition:background .16s ease,border-color .16s ease;
-    scroll-margin-block:8px;
-  }
-  #customRegionMenu .custom-dropdown-item:active{
-    background:rgba(0,243,255,.10);
-    border-color:rgba(0,243,255,.3);
-    transform:scale(.992);
-  }
-  #customRegionMenu .custom-dropdown-item.selected{
-    background:linear-gradient(100deg,rgba(0,243,255,.12),rgba(0,243,255,.045));
-    border-color:rgba(0,243,255,.48);
-    box-shadow:inset 3px 0 0 rgba(0,243,255,.65);
-  }
-}
-</style>
 
 <style>
-/* Clear wheel-style region picker: centered selection, readable labels, finger momentum. */
-#customRegionMenu{
-  scrollbar-width:thin;
-  scrollbar-color:rgba(214,179,90,.62) rgba(255,255,255,.035);
-  overscroll-behavior-y:contain;
-  -webkit-overflow-scrolling:touch;
-  touch-action:pan-y;
-}
-#customRegionMenu .custom-dropdown-item{
-  min-height:52px;
-  padding:10px 13px;
-  margin:4px 0;
-  border:1px solid rgba(255,255,255,.075);
-  border-radius:11px;
-  background:rgba(255,255,255,.035);
-  scroll-snap-align:center;
-  scroll-margin-block:45%;
-  transition:background .2s ease,border-color .2s ease,transform .2s ease,opacity .2s ease;
-}
-#customRegionMenu .region-item-title{
-  color:#f4f6fa!important;
-  font-size:13px!important;
-  line-height:1.6!important;
-  font-weight:700!important;
-  letter-spacing:0!important;
-}
-#customRegionMenu .region-item-sub{
-  color:#b9c2cf!important;
-  font-size:11px!important;
-  line-height:1.55!important;
-  font-weight:500!important;
-}
-#customRegionMenu .custom-dropdown-item.selected{
-  background:linear-gradient(100deg,rgba(214,179,90,.20),rgba(214,179,90,.075))!important;
-  border:1px solid rgba(239,203,119,.85)!important;
-  box-shadow:inset -3px 0 0 #e8c36f,0 0 16px rgba(214,179,90,.12)!important;
-  transform:scale(1.015);
-}
-#customRegionMenu .custom-dropdown-item.selected .region-item-title{
-  color:#ffe2a0!important;
-  font-size:14px!important;
-  font-weight:900!important;
-}
-#customRegionMenu .custom-dropdown-item.selected .region-item-sub{
-  color:#e5d5b4!important;
-  font-weight:650!important;
-}
-#customRegionMenu .region-item-check{
-  color:#ffe2a0!important;
-  font-size:15px!important;
-  font-weight:900!important;
-}
-#customRegionMenu .custom-dropdown-item.selected .region-item-check{opacity:1!important}
-#customRegionMenu::-webkit-scrollbar{width:4px}
-#customRegionMenu::-webkit-scrollbar-thumb{background:rgba(214,179,90,.62);border-radius:8px}
-@media(max-width:720px){
-  #customRegionMenu{
-    max-height:min(70dvh,580px)!important;
-    padding:18px 11px calc(18px + env(safe-area-inset-bottom))!important;
-    scroll-snap-type:y mandatory!important;
-    scroll-padding-block:42%!important;
-    scrollbar-width:none;
-    background:linear-gradient(160deg,#1a2230 0%,#101722 100%)!important;
-    border:1px solid rgba(214,179,90,.42)!important;
-    border-radius:22px 22px 18px 18px!important;
-    box-shadow:0 24px 65px rgba(0,0,0,.78),inset 0 1px 0 rgba(255,255,255,.07)!important;
-  }
-  #customRegionMenu .custom-dropdown-item{min-height:58px;padding:11px 14px;margin:5px 0}
-  #customRegionMenu .region-item-title{font-size:14px!important}
-  #customRegionMenu .region-item-sub{font-size:11.5px!important}
-  #customRegionMenu .custom-dropdown-item.selected .region-item-title{font-size:15px!important}
-}
-</style>
-
-<style>
-/* Premium natural spectrum: smooth staggered movement, no flashing/on-off effect; visual only. */
-.music-mini-player{width:100%;height:31px;margin-top:3px;display:flex;flex-direction:column;justify-content:space-between;gap:3px;direction:ltr;overflow:hidden}
-.music-mini-eq{position:relative;align-self:center;width:88%;height:10px;min-height:10px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:0 2px;box-sizing:border-box;pointer-events:none}
-.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#fbfcff 0%,#d0d9e4 30%,#8797a9 68%,#4b5969 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:none;transform-origin:center;opacity:.96;will-change:height;transition:height 135ms cubic-bezier(.22,.61,.36,1)}
-
-
-.music-mini-eq i:nth-child(7n){max-width:3.5px;background:linear-gradient(180deg,#fff 0%,#d7dfe8 40%,#8797a8 100%)}
-.music-mini-track{height:7px;min-height:7px;width:100%;position:relative;display:flex;align-items:center;justify-content:center}
-.music-mini-track:before{content:"";position:absolute;left:1px;right:1px;top:50%;height:3px;border-radius:5px;background:linear-gradient(180deg,rgba(10,14,20,.95),rgba(175,190,207,.22));transform:translateY(-50%);box-shadow:inset 0 1px 2px rgba(0,0,0,.9),0 1px 0 rgba(255,255,255,.08)}
-.music-mini-progress{position:absolute;left:1px;top:50%;width:37%;height:3px;border-radius:5px;background:linear-gradient(90deg,#657486,#dce5ef 78%,#fff);transform:translateY(-50%);box-shadow:0 0 5px rgba(190,210,230,.35),inset 0 1px 0 rgba(255,255,255,.55)}
-.music-mini-knob{position:absolute;left:calc(37% - 4px);top:50%;width:7px;height:7px;border-radius:50%;background:linear-gradient(145deg,#fff 0%,#c6d0dc 42%,#718092 100%);border:1px solid rgba(255,255,255,.72);transform:translateY(-50%);box-shadow:0 1px 3px rgba(0,0,0,.8),0 0 5px rgba(200,215,230,.35)}
-.music-mini-controls{height:10px;min-height:10px;width:100%;display:flex;align-items:center;justify-content:space-around;gap:0;color:#aeb9c5;font:700 10px/1 Arial,sans-serif;letter-spacing:0}
-.music-mini-controls span{display:inline-flex;align-items:center;justify-content:center;width:20%;height:10px;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(205,220,235,.2)}
-.music-mini-controls .music-mini-pause{font-size:11px;color:#f2f6fa;text-shadow:0 0 5px rgba(220,230,240,.45),0 1px 2px #000}
-@keyframes musicMiniSpectrum{0%,100%{transform:scaleY(.32)}16%{transform:scaleY(.78)}34%{transform:scaleY(1.08)}53%{transform:scaleY(.46)}72%{transform:scaleY(.9)}88%{transform:scaleY(.58)}}
-@media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.62)}}
-
-/* Fine circular spectrum surrounding the music channel artwork. */
-.music-avatar-wrap{position:relative;width:70px;height:70px;flex:0 0 70px;display:inline-flex;align-items:center;justify-content:center;isolation:isolate;overflow:visible}
-.music-avatar-wrap .music-avatar{position:relative;z-index:2;width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
-.music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none;overflow:visible}
-.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height;transition:opacity 160ms ease}
-@media(prefers-reduced-motion:reduce){.music-avatar-ring i{transition:none!important}}
-</style>
-
-
-<script>
-/* Smooth simulated spectrum on the miniature seek bar; visual only. */
-(function(){
-  const bars=Array.from(document.querySelectorAll('#musicCardLink .music-mini-eq i'));
-  if(!bars.length)return;
-  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(reduceMotion)return;
-  let anchors=Array.from({length:11},()=>.12+Math.random()*.88);
-  const tick=()=>{
-    if(document.hidden)return;
-    anchors=anchors.map(v=>Math.max(.06,Math.min(1,v+(Math.random()-.5)*.62)));
-    bars.forEach((bar,i)=>{
-      const p=i/(bars.length-1)*(anchors.length-1),a=Math.floor(p),t=p-a;
-      const sm=t*t*(3-2*t),wave=anchors[a]*(1-sm)+anchors[Math.min(a+1,anchors.length-1)]*sm;
-      bar.style.height=(2+8*Math.max(.05,Math.min(1,wave+(Math.random()-.5)*.22))).toFixed(1)+'px';
-    });
-  };
-  tick();window.setInterval(tick,120);
-})();
-</script>
-
-
-<script>
-/* Dense circular spectrum: restrained moving bars on the left, stronger wave on the right. */
-(function(){
-  const ring=document.querySelector('#musicCardLink .music-avatar-ring');
-  if(!ring)return;
-  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const total=72;
-  ring.replaceChildren();
-  const bars=[];
-  for(let i=0;i<total;i++){
-    const bar=document.createElement('i');
-    const angle=i*360/total;
-    bar.style.setProperty('--angle',angle+'deg');
-    ring.appendChild(bar);
-    bars.push({el:bar,angle:angle*Math.PI/180});
-  }
-  function draw(time){
-    const t=time/1000;
-    bars.forEach(({el,angle})=>{
-      /* 0° points up; positive sin() is the right half of the ring. */
-      const side=Math.sin(angle);
-      const right=Math.max(0,side);
-      const left=Math.max(0,-side);
-      const broad=(Math.sin(t*1.35+angle*1.8)+1)/2;
-      const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
-      const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
-      const rightWave=broad*.42+rolling*.36+ripple*.22;
-      /* Left side stays shorter, but carries a soft moving ripple. */
-      const leftWave=.10+((Math.sin(t*1.35+angle*2.7)+1)/2)*.13;
-      /* A handful of taller bars travel through the small left-side wave. */
-      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*.9+angle*3.7)),12);
-      const height=2.1
-        +right*(1.4+rightWave*5.2)
-        +left*(.75+leftWave*2.0+leftPeaks*3.1);
-      const activity=right*rightWave+left*(leftWave*.55+leftPeaks*.3);
-      el.style.height=height.toFixed(1)+'px';
-      el.style.opacity=(.6+activity*.28).toFixed(2);
-    });
-  }
-  draw(0);
-  if(reduceMotion)return;
-  let raf=0;
-  function animate(now){draw(now);raf=requestAnimationFrame(animate);}
-  raf=requestAnimationFrame(animate);
-  document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){cancelAnimationFrame(raf);}
-    else{raf=requestAnimationFrame(animate);}
-  });
-})();
-</script>
-
-<style>
-/* Region picker stays attached to its field on every screen; compact typography. */
-#customRegionDropdown{position:relative!important}
+/* GYM20 region picker: compact native scrolling, accessible and touch-friendly. */
+#customRegionDropdown{position:relative!important;overflow:visible!important}
 #customRegionMenu{
   position:absolute!important;
   top:calc(100% + 5px)!important;
   right:0!important;left:0!important;bottom:auto!important;
   width:100%!important;
-  max-height:min(280px,44vh)!important;
-  padding:7px!important;
-  border-radius:13px!important;
-  overflow-x:hidden!important;overflow-y:auto!important;
-  transform:none!important;
-  scroll-snap-type:y proximity!important;
-  scroll-padding-block:12px!important;
-  background:linear-gradient(160deg,#1a2230 0%,#101722 100%)!important;
-  border:1px solid rgba(214,179,90,.38)!important;
-  box-shadow:0 12px 30px rgba(0,0,0,.48),0 0 14px rgba(214,179,90,.08)!important;
-  z-index:1205!important;
-}
-#customRegionMenu.open:before{display:none!important}
-#customRegionMenu .custom-dropdown-item{
-  min-height:40px!important;
-  padding:6px 9px!important;
-  margin:2px 0!important;
-  border-radius:8px!important;
-  scroll-margin-block:8px!important;
-}
-#customRegionMenu .region-item-title{
-  font-size:12px!important;line-height:1.45!important;font-weight:650!important;
-}
-#customRegionMenu .region-item-sub{
-  font-size:10px!important;line-height:1.4!important;font-weight:450!important;
-}
-#customRegionMenu .custom-dropdown-item.selected .region-item-title{
-  font-size:12.5px!important;font-weight:850!important;
-}
-#customRegionMenu .custom-dropdown-item.selected .region-item-sub{font-size:10px!important}
-#customRegionMenu .region-item-check{font-size:12px!important}
-@media(max-width:720px){
-  #customRegionMenu{
-    position:absolute!important;
-    top:calc(100% + 5px)!important;
-    right:0!important;left:0!important;bottom:auto!important;
-    width:100%!important;
-    max-height:min(270px,42vh)!important;
-    padding:6px!important;
-    border-radius:12px!important;
-    scroll-snap-type:y proximity!important;
-    transform:none!important;
-  }
-  #customRegionMenu .custom-dropdown-item{min-height:38px!important;padding:5px 8px!important}
-  #customRegionMenu .region-item-title{font-size:11.5px!important}
-  #customRegionMenu .region-item-sub{font-size:9.5px!important}
-  #customRegionMenu .custom-dropdown-item.selected .region-item-title{font-size:12px!important}
-}
-</style>
-
-
-<style>
-/* Compact two-row region list with natural continuous touch scrolling. */
-#customRegionMenu{
-  max-height:88px!important;
-  overflow-y:auto!important;
+  box-sizing:border-box!important;
+  height:94px!important;
+  max-height:94px!important;
+  padding:5px 7px!important;
+  display:none;
   overflow-x:hidden!important;
-  scroll-snap-type:none!important;
-  scroll-behavior:auto!important;
+  overflow-y:auto!important;
   overscroll-behavior-y:contain!important;
   -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  scroll-behavior:auto!important;
+  scroll-snap-type:none!important;
   scrollbar-width:thin!important;
+  scrollbar-color:rgba(214,179,90,.58) rgba(255,255,255,.035)!important;
+  background:linear-gradient(160deg,#1a2230 0%,#101722 100%)!important;
+  border:1px solid rgba(214,179,90,.38)!important;
+  border-radius:12px!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.42),0 0 12px rgba(214,179,90,.07)!important;
+  transform:none!important;
+  z-index:1205!important;
 }
+#customRegionMenu.open{display:block!important}
+#customRegionMenu.open:before{display:none!important}
+#customRegionMenu::-webkit-scrollbar{width:3px}
+#customRegionMenu::-webkit-scrollbar-track{background:rgba(255,255,255,.035);border-radius:8px}
+#customRegionMenu::-webkit-scrollbar-thumb{background:rgba(214,179,90,.58);border-radius:8px}
 #customRegionMenu .custom-dropdown-item{
-  min-height:38px!important;
+  box-sizing:border-box!important;
+  display:flex!important;
+  flex:0 0 38px!important;
   height:38px!important;
-  padding:4px 8px!important;
+  min-height:38px!important;
   margin:2px 0!important;
+  padding:4px 8px!important;
+  border-radius:8px!important;
   scroll-snap-align:none!important;
+  scroll-margin:0!important;
+  transition:background-color .14s ease,border-color .14s ease!important;
 }
-#customRegionMenu .region-item-title{font-size:11px!important;line-height:1.35!important;font-weight:650!important}
-#customRegionMenu .region-item-sub{font-size:9px!important;line-height:1.25!important}
-#customRegionMenu .custom-dropdown-item.selected .region-item-title{font-size:11.5px!important;font-weight:850!important}
+#customRegionMenu .custom-dropdown-item:active{transform:none!important}
+#customRegionMenu .region-item-title{font-size:11px!important;line-height:1.3!important;font-weight:650!important}
+#customRegionMenu .region-item-sub{font-size:9px!important;line-height:1.2!important}
+#customRegionMenu .custom-dropdown-item.selected{
+  background:rgba(214,179,90,.12)!important;
+  border:1px solid rgba(214,179,90,.52)!important;
+  box-shadow:inset 0 0 0 1px rgba(214,179,90,.04)!important;
+}
+#customRegionMenu .custom-dropdown-item.selected .region-item-title{color:#f0d18a!important;font-size:11.5px!important;font-weight:800!important}
 #customRegionMenu .custom-dropdown-item.selected .region-item-sub{font-size:9px!important}
-#customRegionMenu .region-item-check{font-size:11px!important;margin-right:4px!important}
+#customRegionMenu .region-item-check{color:#e5c477!important;font-size:11px!important;margin-right:4px!important}
+#customRegionMenu .custom-dropdown-item:focus-visible{outline:2px solid rgba(214,179,90,.8)!important;outline-offset:-2px!important}
 @media(max-width:720px){
   #customRegionMenu{
-    max-height:84px!important;
+    height:88px!important;
+    max-height:88px!important;
     padding:4px 6px!important;
-    scroll-snap-type:none!important;
-    scroll-behavior:auto!important;
+    border-radius:11px!important;
     -webkit-overflow-scrolling:touch!important;
   }
   #customRegionMenu .custom-dropdown-item{
-    min-height:36px!important;height:36px!important;
-    padding:3px 7px!important;margin:2px 0!important;
+    flex-basis:36px!important;
+    height:36px!important;
+    min-height:36px!important;
+    margin:2px 0!important;
+    padding:3px 7px!important;
   }
   #customRegionMenu .region-item-title{font-size:10.5px!important}
   #customRegionMenu .region-item-sub{font-size:8.5px!important}
   #customRegionMenu .custom-dropdown-item.selected .region-item-title{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  #customRegionMenu .custom-dropdown-item{transition:none!important}
 }
 </style>
 
