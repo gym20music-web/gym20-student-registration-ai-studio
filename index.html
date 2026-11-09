@@ -1500,17 +1500,21 @@ function renderCustomRegionDropdown(){
     wheel.className='region-wheel-list';
     wheel.setAttribute('role','listbox');
     wheel.setAttribute('aria-label','انتخاب منطقه');
-    regions.forEach(reg=>{
+    // Three identical cycles create a seamless, practically endless wheel.
+    // The middle cycle is the resting zone; edge cycles are silently recycled.
+    wheel.dataset.regionCount=String(regions.length);
+    [0,1,2].forEach(copyIndex=>regions.forEach(reg=>{
         const isSel=reg.id===currentRegionId;
         const p=formatRegionDisplayName(reg.name);
         const item=document.createElement('div');
         item.className=`custom-dropdown-item region-wheel-item ${isSel?'selected':''}`;
         item.dataset.regionId=reg.id;
+        item.dataset.regionCopy=String(copyIndex);
         item.setAttribute('role','option');
         item.setAttribute('aria-selected',String(isSel));
         item.innerHTML=`<div class="region-item-text"><div class="region-item-title">${p.title}</div>${p.desc?`<div class="region-item-sub">${p.desc}</div>`:''}</div><span class="region-item-check">✓</span>`;
         wheel.appendChild(item);
-    });
+    }));
     customRegionMenuEl.appendChild(wheel);
     updateRegionDependentVisibility();
 }
@@ -2914,15 +2918,21 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     const wheel=menu&&menu.querySelector('#customRegionWheelList');if(!wheel)return;
     const items=Array.from(wheel.querySelectorAll('.region-wheel-item'));
     if(!items.length)return;
+    const count=Number(wheel.dataset.regionCount)||Math.floor(items.length/3);
+    const cycle=count>0&&items.length>=count*3?items[count].offsetTop-items[0].offsetTop:0;
     const center=wheel.getBoundingClientRect().top+wheel.clientHeight/2;
-    let nearest=items[0],distance=Infinity;
-    items.forEach(item=>{const r=item.getBoundingClientRect();const d=Math.abs((r.top+r.height/2)-center);if(d<distance){distance=d;nearest=item;}});
+    let nearestIndex=0,distance=Infinity;
+    items.forEach((item,i)=>{const r=item.getBoundingClientRect();const d=Math.abs((r.top+r.height/2)-center);if(d<distance){distance=d;nearestIndex=i;}});
+    // Recycle the outer copies without a visible jump.
+    if(cycle>0&&nearestIndex<count){wheel.scrollTop+=cycle;nearestIndex+=count;}
+    else if(cycle>0&&nearestIndex>=count*2){wheel.scrollTop-=cycle;nearestIndex-=count;}
+    const nearest=items[nearestIndex];
     items.forEach(item=>item.classList.toggle('wheel-focus',item===nearest));
     pendingRegionId=nearest.dataset.regionId||pendingRegionId;
   }
   function centerWheelItem(menu,id){
     const wheel=menu&&menu.querySelector('#customRegionWheelList');if(!wheel)return;
-    const item=Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id);
+    const item=Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id&&x.dataset.regionCopy==='1')||Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id);
     if(item)wheel.scrollTo({top:Math.max(0,item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2),behavior:'smooth'});
     requestAnimationFrame(()=>updateWheelFocus(menu));
   }
@@ -2979,11 +2989,13 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 /* GYM20 premium Wheel Selector — centered gold focus, smooth touch snapping. */
 #customRegionDropdown{position:relative!important;overflow:visible!important}
 #customRegionMenu{
-  position:absolute!important;top:calc(100% + 7px)!important;right:0!important;left:0!important;bottom:auto!important;
-  width:100%!important;height:226px!important;max-height:226px!important;padding:0!important;
+  position:absolute!important;top:calc(100% + 6px)!important;right:0!important;left:0!important;bottom:auto!important;
+  width:100%!important;height:222px!important;max-height:222px!important;padding:0!important;
   display:none;overflow:hidden!important;box-sizing:border-box!important;
-  background:transparent!important;border:0!important;border-radius:0!important;
-  box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+  background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;
+  border:1px solid rgba(218,228,238,.18)!important;border-radius:15px!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07)!important;
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   z-index:1205!important;transform:none!important;
 }
 #customRegionMenu.open{display:flex!important;flex-direction:column!important}
@@ -2994,12 +3006,12 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055);
 }
 #customRegionMenu:after{
-  content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:43px;height:38px;
-  background:linear-gradient(to bottom,transparent,rgba(19,24,31,.92));
+  content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;
+  background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96));
 }
 #customRegionWheelList{
   position:relative;z-index:0;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
-  padding:91px 12px!important;box-sizing:border-box;scroll-padding-block:91px;
+  padding:89px 12px!important;box-sizing:border-box;scroll-padding-block:89px;
   scroll-snap-type:y mandatory;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
   touch-action:pan-y;scroll-behavior:smooth;scrollbar-width:none;
 }
@@ -3023,10 +3035,11 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 #customRegionWheelList .region-wheel-item .region-item-check{font-size:12px!important;color:#e8c778!important;margin-right:6px!important;opacity:0}
 #customRegionWheelList .region-wheel-item.wheel-focus .region-item-check{opacity:1}
 @media(max-width:720px){
- #customRegionMenu{height:218px!important;max-height:218px!important;border-radius:16px!important}
+ #customRegionMenu{height:218px!important;max-height:218px!important;border-radius:15px!important}
  #customRegionWheelList{padding:88px 10px!important;scroll-padding-block:88px}
  #customRegionWheelList .region-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
  #customRegionMenu:before{height:40px}
+ #customRegionMenu:after{background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
  #customRegionWheelList .region-item-title{font-size:11px!important}
  #customRegionWheelList .region-wheel-item.wheel-focus .region-item-title{font-size:12.5px!important}
 }
