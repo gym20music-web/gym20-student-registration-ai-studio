@@ -1023,6 +1023,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
                 <div class="music-title"><span id="musicTitleText">✈️ کانال موزیک GYM20MUSIC 🎧</span></div>
                 <div class="music-mini-player" aria-hidden="true">
                   
+                  <div class="music-mini-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
                   <div class="music-mini-track"><span class="music-mini-progress"></span><span class="music-mini-knob"></span></div>
                   <div class="music-mini-controls"><span>↻</span><span>◁</span><span class="music-mini-pause">Ⅱ</span><span>▷</span><span>⇆</span></div>
                 </div>
@@ -2931,9 +2932,31 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 .music-avatar-wrap{position:relative;width:58px;height:58px;flex:0 0 58px;display:inline-flex;align-items:center;justify-content:center;isolation:isolate}
 .music-avatar-wrap .music-avatar{position:relative;z-index:2;width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
 .music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none}
-.music-avatar-ring i{position:absolute;left:calc(50% - .75px);top:calc(50% - 3px);display:block;width:1.5px;height:5px;border-radius:2px;background:linear-gradient(180deg,#f7f9fc 0%,#b9c5d2 55%,#718194 100%);box-shadow:0 0 3px rgba(205,220,235,.32);opacity:.94;transform-origin:50% 3px;transform:rotate(var(--angle)) translateY(-25px);will-change:height;transition:height 140ms cubic-bezier(.22,.61,.36,1)}
+.music-avatar-ring i{position:absolute;left:calc(50% - .75px);top:50%;display:block;width:1.5px;height:5px;border-radius:2px;background:linear-gradient(180deg,#f7f9fc 0%,#b9c5d2 55%,#718194 100%);box-shadow:0 0 3px rgba(205,220,235,.32);opacity:.94;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-22px) scaleY(-1);will-change:height;transition:height 140ms cubic-bezier(.22,.61,.36,1)}
 @media(prefers-reduced-motion:reduce){.music-avatar-ring i{transition:none!important}}
 </style>
+
+
+<script>
+/* Smooth simulated spectrum on the miniature seek bar; visual only. */
+(function(){
+  const bars=Array.from(document.querySelectorAll('#musicCardLink .music-mini-eq i'));
+  if(!bars.length)return;
+  const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduceMotion)return;
+  let anchors=Array.from({length:11},()=>.12+Math.random()*.88);
+  const tick=()=>{
+    if(document.hidden)return;
+    anchors=anchors.map(v=>Math.max(.06,Math.min(1,v+(Math.random()-.5)*.62)));
+    bars.forEach((bar,i)=>{
+      const p=i/(bars.length-1)*(anchors.length-1),a=Math.floor(p),t=p-a;
+      const sm=t*t*(3-2*t),wave=anchors[a]*(1-sm)+anchors[Math.min(a+1,anchors.length-1)]*sm;
+      bar.style.height=(2+8*Math.max(.05,Math.min(1,wave+(Math.random()-.5)*.22))).toFixed(1)+'px';
+    });
+  };
+  tick();window.setInterval(tick,120);
+})();
+</script>
 
 
 <script>
