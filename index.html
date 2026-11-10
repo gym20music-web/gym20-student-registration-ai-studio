@@ -4527,6 +4527,16 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  #ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{font-size:11px!important}
  #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{font-size:12.5px!important}
 }
+/* Keep the focused row visually active even while the mouse hovers or presses it. */
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:hover,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:active,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:focus,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:focus-visible{
+ opacity:1!important;transform:scale(1.025)!important;filter:none!important;
+ background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;
+ border-color:transparent!important;box-shadow:none!important;
+}
 /* Desktop uses a moving frame on the focused row, never a second fixed frame. */
 @media(min-width:721px){
  #ruleWheelMenu:before{display:none!important}
