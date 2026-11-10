@@ -3523,6 +3523,51 @@ html[data-theme="light"] :is(.section-header,.hero-subtitle,.price-details,.dyna
 }
 html[data-theme="light"] .bank-card{background:linear-gradient(145deg,#fff,#edf1f5)!important;color:#263545!important}
 html[data-theme="light"] .send-receipt-btn{background:#eef2f6!important;color:#344253!important;border-color:#d5dde6!important}
+
+/* Final contrast correction: tuition amounts must remain prominent in light mode. */
+html[data-theme="light"] body .price-box,
+body[data-theme="light"] .price-box{
+  background:#fff!important;
+  border:1px solid #d9c28c!important;
+}
+html[data-theme="light"] body .price-box #finalPrice,
+body[data-theme="light"] .price-box #finalPrice,
+html[data-theme="light"] body .total-price,
+body[data-theme="light"] .total-price{
+  color:#76500d!important;
+  -webkit-text-fill-color:#76500d!important;
+  text-shadow:none!important;
+  opacity:1!important;
+  font-weight:900!important;
+}
+html[data-theme="light"] body .price-box #priceBreakdown,
+body[data-theme="light"] .price-box #priceBreakdown,
+html[data-theme="light"] body .price-details,
+body[data-theme="light"] .price-details{
+  color:#536171!important;
+  -webkit-text-fill-color:#536171!important;
+  opacity:1!important;
+}
+html[data-theme="light"] body .price-box #txt_tuitionLabel,
+body[data-theme="light"] .price-box #txt_tuitionLabel{
+  color:#344253!important;
+  -webkit-text-fill-color:#344253!important;
+  font-weight:700!important;
+}
+html[data-theme="light"] body .price-currency-tag,
+body[data-theme="light"] .price-currency-tag{
+  color:#795814!important;
+  -webkit-text-fill-color:#795814!important;
+  font-weight:800!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace .price-input-wrapper input,
+body[data-theme="light"] #adminModal .admin-workspace .price-input-wrapper input{
+  color:#202b38!important;
+  -webkit-text-fill-color:#202b38!important;
+  background:#fff!important;
+  opacity:1!important;
+}
+
 </style>
 
 </body>
