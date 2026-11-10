@@ -4064,6 +4064,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 <style id="gym20RuleWheelV1">
 #rulesTab .admin-input-group:has(#ruleSelector){position:relative!important;overflow:visible!important;z-index:40!important}
 #rulesTab .gym20-rule-wrap{position:relative!important;width:100%;direction:rtl;z-index:41}
+#rulesTab #ruleSelector[hidden]{display:none!important;width:0!important;height:0!important;padding:0!important;margin:0!important;border:0!important}
 #rulesTab .gym20-rule-trigger{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-height:38px!important;padding:7px 10px!important;border:1px solid var(--border)!important;border-radius:var(--radius-sm)!important;background:var(--surface-card)!important;color:var(--text-primary)!important;font:inherit!important;font-size:11px!important;text-align:right!important;cursor:pointer!important;touch-action:manipulation!important}
 #rulesTab .gym20-rule-trigger.open{border-color:#d6b35a!important;box-shadow:0 0 10px rgba(214,179,90,.12)!important}
 #rulesTab .gym20-rule-trigger .value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -4092,8 +4093,10 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
 /* gym20RuleWheelV1: mirror the site's centered, touch-scroll region wheel. */
 (function(){
  const native=document.getElementById('ruleSelector');if(!native||native.dataset.ruleWheelReady==='1')return;
- native.dataset.ruleWheelReady='1';native.tabIndex=-1;native.setAttribute('aria-hidden','true');
- native.style.cssText='position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important;';
+ native.dataset.ruleWheelReady='1';native.tabIndex=-1;native.setAttribute('aria-hidden','true');native.hidden=true;
+ native.style.setProperty('display','none','important');native.style.setProperty('visibility','hidden','important');
+ native.style.setProperty('position','absolute','important');native.style.setProperty('width','1px','important');native.style.setProperty('height','1px','important');
+ native.style.setProperty('opacity','0','important');native.style.setProperty('pointer-events','none','important');native.style.setProperty('clip-path','inset(50%)','important');
  const wrap=document.createElement('div');wrap.className='gym20-rule-wrap';
  const trigger=document.createElement('button');trigger.type='button';trigger.className='gym20-rule-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
  trigger.innerHTML='<span class="value"></span><span class="arrow">⌄</span>';
@@ -4104,10 +4107,10 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
  function options(){return Array.from(native.options)}
  function render(){
    wheel.replaceChildren();const opts=options();
-   [0,1,2].forEach(copy=>opts.forEach(o=>{
-     const b=document.createElement('button');b.type='button';b.className='gym20-rule-item';b.dataset.ruleValue=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.textContent=o.textContent;
+   opts.forEach(o=>{
+     const b=document.createElement('button');b.type='button';b.className='gym20-rule-item';b.dataset.ruleValue=o.value;b.setAttribute('role','option');b.textContent=o.textContent;
      const check=document.createElement('span');check.className='gym20-rule-check';check.textContent='✓';b.appendChild(check);wheel.appendChild(b);
-   }));
+   });
    sync();if(menu.classList.contains('open'))center(native.value,false);
  }
  function sync(){
@@ -4121,7 +4124,7 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
    items.forEach(x=>x.classList.toggle('wheel-focus',x===best));return best;
  }
  function center(id,smooth){
-   const item=Array.from(wheel.querySelectorAll('.gym20-rule-item')).find(x=>x.dataset.ruleValue===id&&x.dataset.copy==='1')||wheel.querySelector('.gym20-rule-item');
+   const item=Array.from(wheel.querySelectorAll('.gym20-rule-item')).find(x=>x.dataset.ruleValue===id)||wheel.querySelector('.gym20-rule-item');
    if(!item)return;wheel.scrollTo({top:item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2,behavior:smooth?'smooth':'auto'});requestAnimationFrame(focusItem);
  }
  function choose(id){if(!id)return;native.value=id;native.dispatchEvent(new Event('change',{bubbles:true}));sync();close();}
