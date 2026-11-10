@@ -64,7 +64,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .region-item-check{font-size:.72rem;color:var(--neon-blue);font-weight:900;margin-right:6px;opacity:0;}
 .custom-dropdown-item.selected .region-item-check{opacity:1;}
 @media(max-width:600px){
-  .custom-dropdown-menu{position:fixed;top:auto!important;right:10px!important;left:10px!important;bottom:max(10px,env(safe-area-inset-bottom));width:auto;max-height:min(62dvh,520px);padding:10px 9px calc(12px + env(safe-area-inset-bottom));border-radius:18px 18px 14px 14px;border:1px solid rgba(0,243,255,.42);background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.72),0 0 22px rgba(0,243,255,.10);z-index:9999;scroll-snap-type:y proximity;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;animation:regionSheetIn .24s cubic-bezier(.2,.8,.2,1)}
+  .custom-dropdown-menu{position:fixed;top:auto!important;right:10px!important;left:10px!important;bottom:max(10px,env(safe-area-inset-bottom));width:auto;max-height:min(62dvh,520px);padding:10px 9px calc(12px + env(safe-area-inset-bottom));border-radius:18px 18px 14px 14px;border:1px solid rgba(0,243,255,.42);background:var(--surface);box-shadow:0 18px 55px rgba(0,0,0,.72),0 0 22px rgba(0,243,255,.10);z-index:9999;scroll-snap-type:none;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;animation:regionSheetIn .24s cubic-bezier(.2,.8,.2,1)}
   .custom-dropdown-menu.open:before{content:"";display:block;position:sticky;top:-10px;width:38px;height:4px;margin:0 auto 9px;border-radius:8px;background:rgba(255,255,255,.3);z-index:2}
   .custom-dropdown-item{min-height:50px;padding:9px 12px;border-radius:10px;margin-bottom:4px}
   .custom-dropdown-item:active{transform:scale(.985);background:rgba(0,243,255,.09)}
@@ -1736,49 +1736,90 @@ function centerAdminRegionWheel(id){
     requestAnimationFrame(updateAdminRegionWheelFocus);
 }
 function bindAdminRegionWheel(w){
-    if(w._gym20AdminRegionBound)return;w._gym20AdminRegionBound=true;
-    w._gym20AdminRegionPointerDown=false;w._gym20AdminRegionGestureMoved=false;w._gym20AdminRegionDragged=false;w._gym20AdminRegionLastScrollTop=w.scrollTop;
+    if(w._gym20AdminRegionBound)return;
+    w._gym20AdminRegionBound=true;
+    w._gym20AdminRegionPointerDown=false;
+    w._gym20AdminRegionGestureMoved=false;
+    w._gym20AdminRegionDragged=false;
+    w._gym20AdminRegionMouseDrag=false;
+    w._gym20AdminRegionFrame=0;
+    w._gym20AdminRegionLastScrollTop=w.scrollTop;
+
+    const scheduleSettle=()=>{
+        clearTimeout(w._gym20AdminRegionSettleTimer);
+        if(!w._gym20AdminRegionGestureMoved||w._gym20AdminRegionPointerDown)return;
+        w._gym20AdminRegionSettleTimer=setTimeout(()=>{
+            if(w._gym20AdminRegionPointerDown||!w._gym20AdminRegionGestureMoved)return;
+            const best=updateAdminRegionWheelFocus();
+            if(best){
+                const id=best.dataset.regionId;
+                w._gym20AdminRegionGestureMoved=false;
+                switchAdminRegion(id);
+            }
+        },420);
+    };
+
     w.addEventListener('pointerdown',e=>{
-        w._gym20AdminRegionPointerDown=true;w._gym20AdminRegionDragged=false;w._gym20AdminRegionGestureMoved=false;
-        w._gym20AdminRegionStartX=e.clientX;w._gym20AdminRegionStartY=e.clientY;w._gym20AdminRegionStartScrollTop=w.scrollTop;
-        if(e.pointerType==='mouse'&&e.button===0){w._gym20AdminRegionMouseDrag=true;w.style.cursor='grabbing';try{w.setPointerCapture(e.pointerId);}catch(_){}}
+        w._gym20AdminRegionPointerDown=true;
+        w._gym20AdminRegionDragged=false;
+        w._gym20AdminRegionGestureMoved=false;
+        w._gym20AdminRegionStartX=e.clientX;
+        w._gym20AdminRegionStartY=e.clientY;
+        w._gym20AdminRegionStartScrollTop=w.scrollTop;
+        if(e.pointerType==='mouse'&&e.button===0){
+            w._gym20AdminRegionMouseDrag=true;
+            w.style.cursor='grabbing';
+            try{w.setPointerCapture(e.pointerId);}catch(_){}
+        }
         clearTimeout(w._gym20AdminRegionSettleTimer);
     },{passive:true});
+
     w.addEventListener('pointermove',e=>{
         if(!w._gym20AdminRegionPointerDown)return;
-        const dx=Math.abs(e.clientX-w._gym20AdminRegionStartX),dy=Math.abs(e.clientY-w._gym20AdminRegionStartY);
+        const dx=Math.abs(e.clientX-w._gym20AdminRegionStartX);
+        const dy=Math.abs(e.clientY-w._gym20AdminRegionStartY);
         if(dx>7||dy>7)w._gym20AdminRegionDragged=true;
         if(dy>7&&dy>dx*1.15)w._gym20AdminRegionGestureMoved=true;
-        if(w._gym20AdminRegionMouseDrag&&e.buttons===1&&dy>2){w._gym20AdminRegionGestureMoved=true;w.scrollTop=w._gym20AdminRegionStartScrollTop-(e.clientY-w._gym20AdminRegionStartY);e.preventDefault();}
+        if(w._gym20AdminRegionMouseDrag&&e.buttons===1&&dy>2){
+            w._gym20AdminRegionGestureMoved=true;
+            w.scrollTop=w._gym20AdminRegionStartScrollTop-(e.clientY-w._gym20AdminRegionStartY);
+            e.preventDefault();
+        }
     },{passive:false});
+
     const pointerEnd=()=>{
         if(!w._gym20AdminRegionPointerDown)return;
-        w._gym20AdminRegionPointerDown=false;w._gym20AdminRegionStartX=null;w._gym20AdminRegionStartY=null;w._gym20AdminRegionMouseDrag=false;w.style.cursor='';
-        if(w._gym20AdminRegionGestureMoved)settleAdminRegionWheel(w);
+        w._gym20AdminRegionPointerDown=false;
+        w._gym20AdminRegionStartX=null;
+        w._gym20AdminRegionStartY=null;
+        w._gym20AdminRegionMouseDrag=false;
+        w.style.cursor='';
+        if(w._gym20AdminRegionGestureMoved)scheduleSettle();
     };
     w.addEventListener('pointerup',pointerEnd,{passive:true});
     w.addEventListener('pointercancel',pointerEnd,{passive:true});
-    w.addEventListener('wheel',()=>{w._gym20AdminRegionGestureMoved=true;settleAdminRegionWheel(w);},{passive:true});
+
+    w.addEventListener('wheel',()=>{
+        w._gym20AdminRegionGestureMoved=true;
+        scheduleSettle();
+    },{passive:true});
+
     w.addEventListener('scroll',()=>{
-        const now=w.scrollTop,delta=Math.abs(now-w._gym20AdminRegionLastScrollTop);
+        const now=w.scrollTop;
+        if(Math.abs(now-w._gym20AdminRegionLastScrollTop)>1&&w._gym20AdminRegionPointerDown){
+            w._gym20AdminRegionGestureMoved=true;
+        }
         w._gym20AdminRegionLastScrollTop=now;
-        if(delta>2&&w._gym20AdminRegionPointerDown)w._gym20AdminRegionGestureMoved=true;
-        if(!w._gym20AdminRegionFrame)w._gym20AdminRegionFrame=requestAnimationFrame(()=>{
-            w._gym20AdminRegionFrame=0;
-            updateAdminRegionWheelFocus();
-        });
-        clearTimeout(w._gym20AdminRegionRecycleTimer);
-        w._gym20AdminRegionRecycleTimer=setTimeout(()=>{
-            if(w._gym20AdminRegionPointerDown)return;
-            const cycle=adminRegionCycleSize(w);
-            if(cycle){
-                const y=w.scrollTop;
-                if(y<cycle*.35)w.scrollTop=y+cycle;
-                else if(y>cycle*1.65)w.scrollTop=y-cycle;
-            }
-            requestAnimationFrame(updateAdminRegionWheelFocus);
-        },260);
-        if(w._gym20AdminRegionGestureMoved&&!w._gym20AdminRegionPointerDown)settleAdminRegionWheel(w);
+
+        if(!w._gym20AdminRegionFrame){
+            w._gym20AdminRegionFrame=requestAnimationFrame(()=>{
+                w._gym20AdminRegionFrame=0;
+                /* Recycle during motion, not hundreds of milliseconds after it stops. */
+                recycleAdminRegionWheel(w);
+                updateAdminRegionWheelFocus();
+            });
+        }
+        if(w._gym20AdminRegionGestureMoved&&!w._gym20AdminRegionPointerDown)scheduleSettle();
     },{passive:true});
 }
 function toggleAdminRegionWheel(e){
