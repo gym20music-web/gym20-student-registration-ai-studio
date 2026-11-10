@@ -1316,9 +1316,12 @@ html[data-theme="light"] #adminRegionWheelList .admin-region-wheel-item.wheel-fo
                     <div class="admin-input-group"><label>شهریه کودکان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                 </div>
-                <div style="display:grid;grid-template-columns:minmax(0,1fr) 34px;grid-template-rows:auto 34px;column-gap:7px;row-gap:3px;align-items:stretch;margin-top:3px;">
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) 34px;grid-template-rows:auto 34px;column-gap:5px;row-gap:3px;align-items:stretch;margin-top:3px;width:100%;box-sizing:border-box;">
                     <div class="admin-input-group" style="grid-column:1;grid-row:1;margin:0;min-width:0;"><label style="display:block;margin:0;">هزینه هر سبک اضافه:</label></div>
-                    <div class="price-input-wrapper" style="grid-column:1;grid-row:2;min-width:0;width:100%;height:34px;box-sizing:border-box;"><input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();" style="height:34px;min-height:34px;box-sizing:border-box;"><span class="price-currency-tag">تومان</span></div>
+                    <div class="price-input-wrapper" style="grid-column:1;grid-row:2;min-width:0;width:100%;max-width:100%;height:34px;box-sizing:border-box;position:relative;display:block;">
+                        <input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();" style="display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;height:34px!important;min-height:34px!important;margin:0!important;padding-left:42px!important;padding-right:7px!important;box-sizing:border-box!important;direction:ltr;text-align:right;">
+                        <span class="price-currency-tag" style="position:absolute;left:7px;top:50%;transform:translateY(-50%);z-index:2;white-space:nowrap;">تومان</span>
+                    </div>
                     <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="grid-column:2;grid-row:2;width:34px;height:34px;min-width:34px;max-width:34px;padding:0;margin:0;align-self:stretch;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;box-sizing:border-box;">🗑️</button>
                 </div>
             </div>
