@@ -4153,7 +4153,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  }
  function centerValue(value){
   const w=wheel();if(!w)return;
-  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='1');
+  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='4');
   if(!item)return;
   const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;
   w.scrollTop=top;
@@ -4189,7 +4189,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   const options=Array.from(select.options);menu.innerHTML='';
   const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');
   w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(options.length);
-  [0,1,2].forEach(copy=>options.forEach(option=>{
+  Array.from({length:9},(_,copy)=>copy).forEach(copy=>options.forEach(option=>{
    const button=document.createElement('button');button.type='button';button.className='rule-wheel-item';
    button.dataset.value=option.value;button.dataset.copy=String(copy);
    button.setAttribute('role','option');button.setAttribute('aria-selected',String(option.value===select.value));
@@ -4205,8 +4205,12 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function recycle(w){
   const cycle=cycleSize(w);if(!cycle)return;
   const y=w.scrollTop;
-  if(y<cycle*.35)w.scrollTop=y+cycle;
-  else if(y>cycle*1.65)w.scrollTop=y-cycle;
+  /* Keep the visible rows identical while relocating the scroll position
+     into the wide middle buffer. Nine copies prevent reaching a hard edge
+     during ordinary long swipes on either touch or desktop. */
+  const lower=cycle*3,upper=cycle*6;
+  if(y<lower)w.scrollTop=y+Math.ceil((lower-y)/cycle)*cycle;
+  else if(y>upper)w.scrollTop=y-Math.ceil((y-upper)/cycle)*cycle;
  }
  function bind(w){
   if(w._gym20RuleBound)return;w._gym20RuleBound=true;
