@@ -4238,6 +4238,45 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   color:#687586!important;
 }
 
+
+/* FINAL MOBILE OVERRIDE — wins over all legacy wheel media rules */
+#ruleWheelMenu #ruleWheelList{
+ height:100%!important;padding:62px 6px!important;scroll-padding-block:62px!important;
+ scroll-snap-type:y mandatory!important;scroll-behavior:smooth!important;
+ -webkit-overflow-scrolling:touch!important;overscroll-behavior-y:contain!important;
+}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:hover,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:active,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus-visible,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
+ height:31px!important;min-height:31px!important;flex:0 0 31px!important;
+ border:0!important;outline:0!important;box-shadow:none!important;
+ background:transparent!important;border-radius:0!important;transform:none!important;filter:none!important;
+}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:before,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:after{display:none!important;content:none!important}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{
+ display:inline!important;border:0!important;outline:0!important;box-shadow:none!important;
+ background:transparent!important;border-radius:0!important;font-size:10px!important;
+}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{
+ color:#f0d18a!important;font-size:11px!important;font-weight:750!important;text-shadow:none!important;
+}
+@media(max-width:720px){
+ #ruleWheelMenu{
+  height:160px!important;max-height:min(160px,calc(100dvh - 18px))!important;
+  padding:4px!important;border-radius:11px!important;
+ }
+ #ruleWheelMenu:before{height:33px!important;left:7px!important;right:7px!important}
+ #ruleWheelMenu #ruleWheelList{padding:64px 6px!important;scroll-padding-block:64px!important}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{height:31px!important;min-height:31px!important;flex-basis:31px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}
+}
+
 </style>
 
 
@@ -4258,7 +4297,8 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
  function updateFocus(){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const center=w.getBoundingClientRect().top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best)pendingValue=best.dataset.value;return best;}
  function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
- function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));updateLabel();}
+ let wheelCommitInProgress=false;
+ function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;wheelCommitInProgress=true;select.dispatchEvent(new Event('change',{bubbles:true}));wheelCommitInProgress=false;updateLabel();}
  function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');['top','left','right','bottom','width','max-height'].forEach(p=>menu.style.removeProperty(p));}
  function build(){const opts=[...select.options];menu.innerHTML='';const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(opts.length);[0,1,2].forEach(copy=>opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='rule-wheel-item';b.dataset.value=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===select.value));b.innerHTML='<span>'+o.textContent.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span>';w.appendChild(b);}));menu.appendChild(w);bind(w);}
  function bind(w){if(w.dataset.bound==='1')return;w.dataset.bound='1';let pointer=false,moved=false,startY=0,settleTimer=0,frame=0;
@@ -4278,7 +4318,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();open();}else if(e.key==='Escape')close();});
  document.addEventListener('click',e=>{if(!wrap.contains(e.target)&&!menu.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
- select.addEventListener('change',()=>{updateLabel();if(menu.classList.contains('open')){const w=wheel();if(w){w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===select.value)));centerValue(select.value,false);}}});
+ select.addEventListener('change',()=>{updateLabel();if(menu.classList.contains('open')){const w=wheel();if(w){w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===select.value)));if(!wheelCommitInProgress)centerValue(select.value,true);}}});
  updateLabel();
 })();
 </script>
