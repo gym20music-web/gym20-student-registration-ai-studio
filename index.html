@@ -4101,7 +4101,19 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
 (function(){
  const native=document.getElementById('ruleSelector')||window.gym20RuleSelector;
  if(!native)return;
- if(window.gym20RuleWheelV2Ready){document.querySelectorAll('#rulesTab .gym20-rule-wrap').forEach((el,i)=>{if(i>0)el.remove();});return;}
+ const dedupe=()=>{
+  const wraps=Array.from(document.querySelectorAll('#rulesTab .gym20-rule-wrap'));
+  wraps.slice(1).forEach(el=>el.remove());
+  const menus=Array.from(document.querySelectorAll('#rulesTab #gym20RuleWheelMenu'));
+  menus.slice(1).forEach(el=>el.remove());
+  document.querySelectorAll('#rulesTab select#ruleSelector').forEach(el=>{
+   el.hidden=true;el.setAttribute('aria-hidden','true');el.style.setProperty('display','none','important');
+   if(el!==native)el.remove();
+  });
+  const triggers=Array.from(document.querySelectorAll('#rulesTab .gym20-rule-trigger'));
+  triggers.slice(1).forEach(el=>el.remove());
+ };
+ if(window.gym20RuleWheelV2Ready){dedupe();return;}
  window.gym20RuleWheelV2Ready=true;
  window.gym20RuleSelector=native;
  const host=native.parentElement||document.querySelector('#rulesTab .admin-input-group');
@@ -4184,6 +4196,7 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
  document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
  render();sync();
+ dedupe();
 })();</script>
 
 </body>
