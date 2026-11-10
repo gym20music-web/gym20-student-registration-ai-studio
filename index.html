@@ -917,12 +917,12 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 #ruleWheelMenu.open{display:flex!important;flex-direction:column!important}
 #ruleWheelMenu:before{display:none!important;content:none!important}
 #ruleWheelMenu:after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
-#ruleWheelMenu #ruleWheelList{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;height:100%;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:none;scroll-behavior:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+#ruleWheelMenu #ruleWheelList{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;height:100%;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:y proximity;scroll-behavior:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
 #ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none}
-#ruleWheelMenu #ruleWheelList>.rule-wheel-item{position:relative;z-index:0;display:flex;flex:0 0 40px;align-items:center;justify-content:space-between;width:100%;height:40px;min-height:40px;max-height:40px;margin:0;padding:5px 13px;box-sizing:border-box;border:1px solid transparent;border-radius:11px;outline:0;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer;scroll-snap-align:none;scroll-snap-stop:normal;opacity:.43;transform:none;filter:none;transition:opacity .16s ease,background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item{position:relative;z-index:0;display:flex;flex:0 0 40px;align-items:center;justify-content:space-between;width:100%;height:40px;min-height:40px;max-height:40px;margin:0;padding:5px 13px;box-sizing:border-box;border:1px solid transparent;border-radius:11px;outline:0;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer;scroll-snap-align:center;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
 #ruleWheelMenu #ruleWheelList>.rule-wheel-item:before,#ruleWheelMenu #ruleWheelList>.rule-wheel-item:after{content:none!important;display:none!important}
 #ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{display:block;width:100%;max-width:100%;margin:0;padding:0;border:0;outline:0;background:transparent;color:#d9dfe6;font-size:12px;font-weight:650;line-height:1.4;text-align:right;direction:rtl;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:none;filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10));border-color:transparent;box-shadow:none;color:#f0d18a}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10));border-color:transparent;box-shadow:none;color:#f0d18a}
 #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{color:#f0d18a;font-size:12px;font-weight:850;text-shadow:0 0 10px rgba(214,179,90,.16)}
 /* Desktop: outline is attached to the focused row and moves with it. No stationary center frame. */
 @media(min-width:721px){
@@ -4143,24 +4143,17 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function updateLabel(){const option=select.options[select.selectedIndex];label.textContent=option?option.textContent:'انتخاب قانون';}
  function updateFocus(){
   const w=wheel();if(!w)return null;
-  const items=w.children;if(!items.length)return null;
-  /* Rows have a fixed 40px pitch. Resolve the centered row mathematically
-     instead of measuring every duplicate on each animation frame. */
-  const first=items[0],pitch=40;
-  const firstCenter=first.offsetTop+first.offsetHeight/2;
-  const target=w.scrollTop+w.clientHeight/2;
-  const index=Math.max(0,Math.min(items.length-1,Math.round((target-firstCenter)/pitch)));
-  const best=items[index];
-  if(w._gym20RuleFocused!==best){
-   if(w._gym20RuleFocused)w._gym20RuleFocused.classList.remove('wheel-focus');
-   best.classList.add('wheel-focus');w._gym20RuleFocused=best;
-  }
-  pendingValue=best.dataset.value;
+  const items=Array.from(w.querySelectorAll('.rule-wheel-item'));if(!items.length)return null;
+  const center=w.getBoundingClientRect().top+w.clientHeight/2;
+  let best=null,bestDistance=Infinity;
+  for(const item of items){const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<bestDistance){best=item;bestDistance=d;}}
+  items.forEach(item=>item.classList.toggle('wheel-focus',item===best));
+  if(best)pendingValue=best.dataset.value;
   return best;
  }
  function centerValue(value){
   const w=wheel();if(!w)return;
-  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='50');
+  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='1');
   if(!item)return;
   const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;
   w.scrollTop=top;
@@ -4196,7 +4189,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   const options=Array.from(select.options);menu.innerHTML='';
   const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');
   w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(options.length);
-  Array.from({length:101},(_,copy)=>copy).forEach(copy=>options.forEach(option=>{
+  [0,1,2].forEach(copy=>options.forEach(option=>{
    const button=document.createElement('button');button.type='button';button.className='rule-wheel-item';
    button.dataset.value=option.value;button.dataset.copy=String(copy);
    button.setAttribute('role','option');button.setAttribute('aria-selected',String(option.value===select.value));
@@ -4208,6 +4201,12 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   const items=w.querySelectorAll('.rule-wheel-item'),count=Number(w.dataset.optionCount)||Math.floor(items.length/3);
   if(!count||items.length<count*3)return 0;
   return items[count].offsetTop-items[0].offsetTop;
+ }
+ function recycle(w){
+  const cycle=cycleSize(w);if(!cycle)return;
+  const y=w.scrollTop;
+  if(y<cycle*.35)w.scrollTop=y+cycle;
+  else if(y>cycle*1.65)w.scrollTop=y-cycle;
  }
 
  function bind(w){
@@ -4257,7 +4256,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
    w._gym20RuleLastScrollTop=now;
    if(delta>2&&w._gym20RulePointerDown)w._gym20RuleGestureMoved=true;
    if(!w._gym20RuleFrame)w._gym20RuleFrame=requestAnimationFrame(()=>{
-    w._gym20RuleFrame=0;updateFocus();
+    w._gym20RuleFrame=0;recycle(w);updateFocus();
    });
    if(w._gym20RuleGestureMoved&&!w._gym20RulePointerDown)settle();
   },{passive:true});
