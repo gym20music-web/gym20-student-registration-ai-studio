@@ -4164,13 +4164,13 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
   wheel._pointerDown=false;wheel._moved=false;clearTimeout(wheel._settleTimer);
   requestAnimationFrame(centerSelected);
  });
- wheel.addEventListener('pointerdown',e=>{wheel._pointerDown=true;wheel._moved=false;wheel._startX=e.clientX;wheel._startY=e.clientY;clearTimeout(wheel._settleTimer);},{passive:true});
- wheel.addEventListener('pointermove',e=>{if(wheel._pointerDown&&(Math.abs(e.clientX-wheel._startX)>7||Math.abs(e.clientY-wheel._startY)>7))wheel._moved=true;},{passive:true});
+ wheel.addEventListener('pointerdown',e=>{wheel._pointerDown=true;wheel._moved=false;wheel._dragged=false;wheel._startX=e.clientX;wheel._startY=e.clientY;clearTimeout(wheel._settleTimer);},{passive:true});
+ wheel.addEventListener('pointermove',e=>{if(wheel._pointerDown&&(Math.abs(e.clientX-wheel._startX)>7||Math.abs(e.clientY-wheel._startY)>7)){wheel._moved=true;wheel._dragged=true;}},{passive:true});
  const pointerEnd=()=>{if(!wheel._pointerDown)return;wheel._pointerDown=false;if(wheel._moved)settle();};
  wheel.addEventListener('pointerup',pointerEnd,{passive:true});wheel.addEventListener('pointercancel',pointerEnd,{passive:true});
  wheel.addEventListener('wheel',()=>{wheel._moved=true;settle();},{passive:true});
  wheel.addEventListener('scroll',()=>{if(wheel._pointerDown)wheel._moved=true;recycle();focusItem();if(wheel._moved&&!wheel._pointerDown)settle();},{passive:true});
- wheel.addEventListener('click',e=>{const item=e.target.closest('.gym20-rule-item');if(item){e.preventDefault();choose(item.dataset.ruleValue);}});
+ wheel.addEventListener('click',e=>{if(wheel._dragged){e.preventDefault();e.stopPropagation();wheel._dragged=false;return;}const item=e.target.closest('.gym20-rule-item');if(item){e.preventDefault();choose(item.dataset.ruleValue);}});
  document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
  render();sync();
