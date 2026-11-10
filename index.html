@@ -943,7 +943,7 @@ html[data-theme="light"] #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-fo
 </style>
 <style id="admin-region-wheel-style">
 #adminRegionWheelDropdown{position:relative!important;width:100%;overflow:visible!important;margin-bottom:6px}
-#adminRegionNewButton{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;min-height:32px;margin:5px 0 8px;padding:5px 10px;border:1px dashed rgba(214,179,90,.55);border-radius:9px;background:rgba(214,179,90,.07);color:#e3c477;font:inherit;font-size:11px;font-weight:750;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .18s ease,border-color .18s ease}
+#adminRegionNewButton{display:flex;align-items:center;justify-content:center;gap:6px;width:auto;min-width:94px;height:36px;min-height:36px;margin:0;padding:5px 10px;border:1px dashed rgba(214,179,90,.55);border-radius:9px;background:rgba(214,179,90,.07);color:#e3c477;font:inherit;font-size:11px;font-weight:750;white-space:nowrap;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:background .18s ease,border-color .18s ease}
 #adminRegionNewButton:active{background:rgba(214,179,90,.15);border-color:rgba(214,179,90,.85)}
 html[data-theme="light"] #adminRegionNewButton{color:#795814;background:rgba(214,179,90,.08);border-color:rgba(160,125,45,.45)}
 #adminRegionWheelTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:36px;min-height:36px;padding:5px 10px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:11px;font-weight:750;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
@@ -1303,13 +1303,15 @@ html[data-theme="light"] #adminRegionWheelList .admin-region-wheel-item.wheel-fo
 
         <div class="admin-panel-tab" id="regionsTab">
             <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
-            <div id="adminRegionWheelDropdown" class="admin-region-wheel-dropdown">
-                <button type="button" id="adminRegionWheelTrigger" aria-expanded="false" onclick="toggleAdminRegionWheel(event)">
-                    <span id="adminRegionWheelSelectedText">📍 انتخاب منطقه</span><span class="admin-region-wheel-arrow">⌄</span>
-                </button>
-                <div id="adminRegionWheelMenu" aria-label="انتخاب منطقه برای مدیریت"></div>
+            <div id="adminRegionToolbar" style="display:grid;grid-template-columns:minmax(0,1fr) auto;direction:rtl;align-items:center;gap:6px;width:100%;margin-bottom:6px;box-sizing:border-box;">
+                <div id="adminRegionWheelDropdown" class="admin-region-wheel-dropdown" style="min-width:0;width:100%;margin:0;">
+                    <button type="button" id="adminRegionWheelTrigger" aria-expanded="false" onclick="toggleAdminRegionWheel(event)" style="justify-content:flex-start;">
+                        <span id="adminRegionWheelSelectedText">📍 انتخاب منطقه</span>
+                    </button>
+                    <div id="adminRegionWheelMenu" aria-label="انتخاب منطقه برای مدیریت"></div>
+                </div>
+                <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')" style="width:auto;min-width:94px;height:36px;min-height:36px;margin:0;padding:5px 10px;white-space:nowrap;">منطقه جدید</button>
             </div>
-            <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')">＋ تعریف منطقه جدید</button>
             <div class="admin-region-box" id="adminRegionEditCard">
                 <div class="admin-input-group"><label>نام و محله‌های منطقه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
