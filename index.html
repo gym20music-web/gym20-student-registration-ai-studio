@@ -4226,14 +4226,22 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
    if(e.pointerType==='mouse'&&e.button!==0)return;
    w._gym20RulePointerDown=true;w._gym20RuleDragged=false;w._gym20RuleGestureMoved=false;
    w._gym20RuleStartX=e.clientX;w._gym20RuleStartY=e.clientY;
+   w._gym20RuleStartScrollTop=w.scrollTop;w._gym20RulePointerType=e.pointerType;
    clearTimeout(w._gym20RuleSettleTimer);
   },{passive:true});
   w.addEventListener('pointermove',e=>{
    if(!w._gym20RulePointerDown)return;
    const dx=Math.abs(e.clientX-w._gym20RuleStartX),dy=Math.abs(e.clientY-w._gym20RuleStartY);
    if(dx>7||dy>7)w._gym20RuleDragged=true;
-   if(dy>7&&dy>dx*1.15)w._gym20RuleGestureMoved=true;
-  },{passive:true});
+   if(dy>7&&dy>dx*1.15){
+    w._gym20RuleGestureMoved=true;
+    /* Desktop has no native grab-to-scroll gesture; map the pointer delta directly to scrollTop. */
+    if(w._gym20RulePointerType==='mouse'){
+     if(!w._gym20RuleMouseCaptured&&w.setPointerCapture){try{w.setPointerCapture(e.pointerId);w._gym20RuleMouseCaptured=true;}catch(_){}}
+     e.preventDefault();w.scrollTop=w._gym20RuleStartScrollTop-(e.clientY-w._gym20RuleStartY);
+    }
+   }
+  },{passive:false});
   const pointerEnd=()=>{
    if(!w._gym20RulePointerDown)return;
    w._gym20RulePointerDown=false;w._gym20RuleStartX=null;w._gym20RuleStartY=null;
