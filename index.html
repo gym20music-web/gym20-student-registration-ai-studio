@@ -1316,9 +1316,9 @@ html[data-theme="light"] #adminRegionWheelList .admin-region-wheel-item.wheel-fo
                     <div class="admin-input-group"><label>شهریه کودکان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                 </div>
-                <div style="display:flex;align-items:flex-end;gap:7px;margin-top:3px;">
-                    <div class="admin-input-group" style="flex:1;min-width:0;margin:0;"><label>هزینه هر سبک اضافه:</label><div class="price-input-wrapper"><input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
-                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="width:29px;height:29px;min-width:29px;padding:0;margin-bottom:1px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;flex-shrink:0;">🗑️</button>
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) 34px;align-items:end;column-gap:7px;margin-top:3px;">
+                    <div class="admin-input-group" style="min-width:0;margin:0;"><label>هزینه هر سبک اضافه:</label><div class="price-input-wrapper"><input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();" style="height:34px;box-sizing:border-box;"><span class="price-currency-tag">تومان</span></div></div>
+                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="width:34px;height:34px;min-width:34px;padding:0;margin:0;align-self:end;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;box-sizing:border-box;">🗑️</button>
                 </div>
             </div>
             <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
