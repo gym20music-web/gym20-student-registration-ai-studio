@@ -3152,7 +3152,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
     },{passive:true});
     wheel.addEventListener('pointermove',e=>{
       if(!wheel._gym20PointerDown)return;
-      if(Math.abs(e.clientX-wheel._gym20StartX)>7||Math.abs(e.clientY-wheel._gym20StartY)>7)wheel._gym20Dragged=true;
+      const dx=Math.abs(e.clientX-wheel._gym20StartX),dy=Math.abs(e.clientY-wheel._gym20StartY);if(dx>7||dy>7)wheel._gym20Dragged=true;if(dy>7&&dy>dx*1.15)wheel._gym20GestureMoved=true;
     },{passive:true});
     const pointerEnd=()=>{
       if(!wheel._gym20PointerDown)return;
@@ -3256,7 +3256,7 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 }
 #customRegionWheelList{
   position:relative;z-index:0;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;
-  padding:14px 10px 88px!important;box-sizing:border-box;scroll-padding-block:14px 88px;
+  padding:89px 10px!important;box-sizing:border-box;scroll-padding-block:89px;
   scroll-snap-type:y proximity;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;
   touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none;
 }
@@ -4319,7 +4319,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  let pendingValue=select.value;
  const wheel=()=>menu.querySelector('#ruleWheelList');
  function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
- function updateFocus(keepMovingRow=false){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const wr=w.getBoundingClientRect();if(keepMovingRow){const current=items.find(it=>it.classList.contains('wheel-focus'));if(current)return current;}const center=wr.top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best){pendingValue=best.dataset.value;const r=best.getBoundingClientRect(),mr=menu.getBoundingClientRect();menu.style.setProperty('--rule-focus-top',(r.top+r.height/2-mr.top)+'px');}return best;}
+ function updateFocus(keepMovingRow=false){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const wr=w.getBoundingClientRect();const center=wr.top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best){pendingValue=best.dataset.value;const r=best.getBoundingClientRect(),mr=menu.getBoundingClientRect();menu.style.setProperty('--rule-focus-top',(r.top+r.height/2-mr.top)+'px');}return best;}
  function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
  let wheelCommitInProgress=false;
  function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;wheelCommitInProgress=true;select.dispatchEvent(new Event('change',{bubbles:true}));wheelCommitInProgress=false;updateLabel();}
