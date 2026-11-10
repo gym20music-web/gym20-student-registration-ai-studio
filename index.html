@@ -1928,9 +1928,9 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261108-session-date-order-v88')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261110-light-students-v89')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261108-notification-status-v15'))
-      .then(()=>loadGym20Module('./student-exercises.js?v=20261106-exercises-v2'))
+      .then(()=>loadGym20Module('./student-exercises.js?v=20261110-light-exercises-v3'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
   return gym20AdminModulesPromise;
@@ -3949,6 +3949,110 @@ html:not([data-theme="light"]) #adminModal .admin-workspace :is(
   .admin-input-group>div:not(.price-input-wrapper)
 ){
   color:#aeb8c5!important;
+}
+
+
+
+/* GYM20 light theme: student management + student exercises admin tabs */
+html[data-theme="light"] #adminModal #studentTermsTab,
+html[data-theme="light"] #adminModal #exercisesTab{
+  color:#263545!important;background:#f3f5f8!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-card,.st-student-card,.st-create-compact,.st-term-card,.st-public-link,#stPushCard),
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExercisesTab{
+  background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;
+  box-shadow:0 3px 12px rgba(30,43,58,.045)!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-title,.st-muted,.st-field label,.st-section-title,.st-student-card label,.st-term-picker-field label),
+html[data-theme="light"] #adminModal #studentTermsTab :is(p,span,strong,b,small,div),
+html[data-theme="light"] #adminModal #exercisesTab :is(div,span,p,strong,b,small,label){
+  color:#344253;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-muted,.st-hint,.st-help,#stStudentLoadStatus,#stPublicLinkStatus),
+html[data-theme="light"] #adminModal #exercisesTab :is(#gym20ExerciseFeedback,.gym20-ex-meta){
+  color:#687586!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(input:not([type=checkbox]):not([type=radio]),textarea,select,.st-custom-select-trigger,.st-student-trigger,.st-time-input,.st-date-input),
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseInput{
+  background:#fff!important;color:#202b38!important;border:1px solid #cfd8e2!important;
+  box-shadow:inset 0 1px 2px rgba(28,42,58,.035)!important;
+  color-scheme:light!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(input,textarea)::placeholder,
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseInput::placeholder{
+  color:#8793a1!important;opacity:1!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-custom-select-menu,.st-student-menu,.st-jcal),
+html[data-theme="light"] .st-jcal{
+  background:#fff!important;color:#263545!important;border:1px solid #d5bd83!important;
+  box-shadow:0 12px 28px rgba(25,39,55,.14)!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-custom-option,.st-student-option,.st-jcal-day),
+html[data-theme="light"] .st-jcal :is(button,b,span){
+  background:#fff!important;color:#344253!important;border-color:#e1e6ec!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab :is(.st-custom-option.selected,.st-student-option.selected,.st-jcal-day.selected),
+html[data-theme="light"] .st-jcal .st-jcal-day.selected{
+  background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-session-card{
+  background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;
+  box-shadow:0 2px 8px rgba(30,43,58,.04)!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-session-card :is(strong,span,b,label,small,div){
+  color:#344253!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-session-card.live{
+  background:linear-gradient(110deg,#fff8df,#fff)!important;border-color:#d6a72d!important;
+  box-shadow:inset 3px 0 0 #eab308!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-session-card.live .st-session-state.live{
+  background:#f7e8b6!important;color:#765617!important;border-color:#d6a72d!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-session-fields :is(input,select,.st-custom-select-trigger){
+  background:#fff!important;color:#202b38!important;border-color:#cfd8e2!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-table,
+html[data-theme="light"] #adminModal #studentTermsTab .st-table tbody,
+html[data-theme="light"] #adminModal #studentTermsTab .st-table tr{
+  background:#fff!important;color:#344253!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-table th{
+  background:#edf1f5!important;color:#344253!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-table td{
+  color:#344253!important;border-color:#e2e7ed!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-table tr:nth-child(even){
+  background:#f7f9fb!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-btn:not(.primary):not(.danger),
+html[data-theme="light"] #adminModal #exercisesTab button:not(#gym20ExerciseAdd){
+  background:#f1f4f7!important;color:#344253!important;border-color:#d5dde6!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-btn.primary,
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseAdd{
+  background:linear-gradient(135deg,#e0c16e,#bd9140)!important;color:#211a0d!important;border-color:#c49a42!important;
+}
+html[data-theme="light"] #adminModal #studentTermsTab .st-btn.danger,
+html[data-theme="light"] #adminModal #exercisesTab .gym20-ex-admin-row button{
+  background:#fff0f0!important;color:#a92332!important;border-color:#edc4c8!important;
+}
+html[data-theme="light"] #adminModal #exercisesTab .gym20-ex-admin-row{
+  background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;
+  box-shadow:0 2px 8px rgba(30,43,58,.035)!important;
+}
+html[data-theme="light"] #adminModal #exercisesTab .gym20-ex-admin-row :is(span,small){
+  color:#344253!important;
+}
+html[data-theme="light"] #adminModal #exercisesTab .gym20-ex-admin-row small[style*="86efac"]{
+  color:#16834c!important;
+}
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseStudent{
+  color:#795814!important;
+}
+html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
+  color:#687586!important;
 }
 
 </style>
