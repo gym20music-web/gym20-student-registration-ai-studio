@@ -2749,7 +2749,7 @@ resumeGym20AdminSession();
     sync(wrap);
   }
   function enhance(select){
-    if(select.closest('#studentTermsTab')||select.closest('.st-custom-select')||select.multiple||select.dataset.bottomDropdown==='1')return;
+    if(select.id==='ruleSelector'||select.closest('#studentTermsTab')||select.closest('.st-custom-select')||select.multiple||select.dataset.bottomDropdown==='1')return;
     if(select.closest('.admin-dropdown'))return;
     select.dataset.bottomDropdown='1';
     const wrap=document.createElement('div');wrap.className='admin-dropdown';
