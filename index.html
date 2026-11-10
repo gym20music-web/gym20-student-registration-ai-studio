@@ -4339,7 +4339,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
      w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x===best)));
     }
     gesture=false;dragged=false;
-   },520);
+   },760);
   }
   w.addEventListener('pointerdown',e=>{
    pointer=true;gesture=false;dragged=false;startX=e.clientX;startY=e.clientY;
@@ -4363,16 +4363,6 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
    });
    if(gesture&&!pointer)settle();
   },{passive:true});
-  w.addEventListener('scrollend',()=>{
-   if(pointer||!gesture)return;
-   clearTimeout(settleTimer);
-   const best=updateFocus();
-   if(best){
-    commit(best.dataset.value);
-    w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x===best)));
-   }
-   gesture=false;dragged=false;
-  },{passive:true});
   w.addEventListener('click',e=>{
    const item=e.target.closest('.rule-wheel-item');if(!item)return;
    if(dragged){dragged=false;return;}
@@ -4392,5 +4382,78 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  updateLabel();
 })();
 </script>
+
+<style id="rule-wheel-final-polish">
+/* Rules wheel: match the region wheel's natural motion and centered gold selector. */
+#ruleWheelMenu{
+ height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important;
+ padding:0!important;border-radius:15px!important;overflow:hidden!important;
+ background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;
+ border:1px solid rgba(218,228,238,.18)!important;
+ box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+#ruleWheelMenu:before{
+ left:9px!important;right:9px!important;height:42px!important;
+ border-top:1px solid rgba(222,190,116,.45)!important;
+ border-bottom:1px solid rgba(222,190,116,.45)!important;
+ border-radius:11px!important;
+ background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035))!important;
+ box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055)!important;
+}
+#ruleWheelMenu:after{
+ display:block!important;content:""!important;left:0!important;right:0!important;bottom:0!important;height:30px!important;
+ background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))!important;
+}
+#ruleWheelMenu #ruleWheelList{
+ height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
+ padding:89px 10px!important;box-sizing:border-box!important;scroll-padding-block:89px!important;
+ scroll-snap-type:y proximity!important;scroll-behavior:auto!important;
+ overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
+ touch-action:pan-y!important;scrollbar-width:none!important;
+}
+#ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none!important}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:hover,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:active,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus-visible,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;
+ direction:rtl!important;text-align:right!important;width:100%!important;
+ height:40px!important;min-height:40px!important;flex:0 0 40px!important;
+ margin:0!important;padding:0 13px!important;box-sizing:border-box!important;
+ border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important;
+ background:transparent!important;transform:none!important;filter:none!important;
+ scroll-snap-align:center!important;scroll-snap-stop:normal!important;
+ opacity:.48!important;transition:opacity .22s ease,color .22s ease!important;
+}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:before,
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:after{display:none!important;content:none!important}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{
+ display:block!important;width:100%!important;max-width:100%!important;
+ margin:0!important;padding:0!important;text-align:right!important;direction:rtl!important;
+ border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+ color:#d9dfe6!important;font-size:12px!important;font-weight:600!important;line-height:1.4!important;
+}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{opacity:1!important}
+#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{
+ color:#f0d18a!important;font-size:13px!important;font-weight:850!important;
+ text-shadow:0 0 12px rgba(214,179,90,.19)!important;
+}
+#ruleWheelTrigger,#ruleWheelSelectedText{direction:rtl!important;text-align:right!important}
+#ruleWheelTrigger>span:first-child{direction:rtl!important;text-align:right!important}
+@media(max-width:720px){
+ #ruleWheelMenu{height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important}
+ #ruleWheelMenu #ruleWheelList{padding:89px 9px!important;scroll-padding-block:89px!important}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{font-size:11.5px!important}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{font-size:12.5px!important}
+}
+@media(prefers-reduced-motion:reduce){
+ #ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{transition:none!important}
+}
+</style>
 </body>
 </html>
