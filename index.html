@@ -4457,7 +4457,19 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  #ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}
  #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{transition:none!important}
 }
-@media(min-width:721px){#ruleWheelMenu:before{top:var(--rule-focus-top,50%)!important;transition:top .045s linear!important;}}
+/* Desktop: the gold frame belongs to the focused row, so it travels with the scroll. */
+@media(min-width:721px){
+ #ruleWheelMenu:before{display:none!important;}
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{
+  border:1px solid transparent!important;border-radius:10px!important;
+  transition:opacity .16s ease,color .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important;
+ }
+ #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
+  border:1px solid rgba(222,190,116,.62)!important;border-radius:10px!important;
+  background:linear-gradient(90deg,rgba(214,179,90,.045),rgba(214,179,90,.15),rgba(214,179,90,.045))!important;
+  box-shadow:inset 0 0 15px rgba(214,179,90,.045),0 0 13px rgba(214,179,90,.06)!important;
+ }
+}
 
 </style>
 </body>
