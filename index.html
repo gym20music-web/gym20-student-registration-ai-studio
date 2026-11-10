@@ -3271,6 +3271,15 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
   background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;
   border-color:transparent!important;box-shadow:none!important;
 }
+/* Prevent global selected-option styling from duplicating the fixed gold center guide. */
+#customRegionWheelList .region-wheel-item.selected,
+#customRegionWheelList .region-wheel-item.selected:hover,
+#customRegionWheelList .region-wheel-item.selected:focus,
+#customRegionWheelList .region-wheel-item.selected:focus-visible{
+  border:1px solid transparent!important;outline:0!important;box-shadow:none!important;
+}
+#customRegionWheelList .region-wheel-item.selected:not(.wheel-focus){background:transparent!important;}
+
 #customRegionWheelList .region-item-title{font-size:12px!important;line-height:1.35!important;font-weight:650!important;color:#d9dfe6!important}
 #customRegionWheelList .region-item-sub{font-size:9px!important;line-height:1.2!important;color:#929eaa!important}
 #customRegionWheelList .region-wheel-item.wheel-focus .region-item-title{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}
