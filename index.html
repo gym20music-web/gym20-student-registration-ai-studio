@@ -1664,7 +1664,7 @@ document.getElementById('copyCardBtn').onclick=()=>{
     }
 };
 
-const themeBtnEl=document.getElementById('themeBtn');if(themeBtnEl){themeBtnEl.addEventListener('click',()=>{const isLight=document.body.getAttribute('data-theme')==='light';if(isLight){document.body.removeAttribute('data-theme');themeBtnEl.textContent='🌙';}else{document.body.setAttribute('data-theme','light');themeBtnEl.textContent='☀️';}});}
+const themeBtnEl=document.getElementById('themeBtn');if(themeBtnEl){const applyGym20Theme=(light)=>{[document.documentElement,document.body,document.getElementById('adminModal')].filter(Boolean).forEach(el=>{if(light)el.setAttribute('data-theme','light');else el.removeAttribute('data-theme');});themeBtnEl.textContent=light?'☀️':'🌙';};themeBtnEl.addEventListener('click',()=>applyGym20Theme(document.body.getAttribute('data-theme')!=='light'));}
 function switchAdminTab(tId){
   if(tId==='requestsTab'&&!gym20OwnerAuthorized){alert('برای مشاهده درخواست‌ها ابتدا با حساب مدیر وارد شوید.');return;}
   document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));
@@ -3442,6 +3442,87 @@ body[data-theme="light"] #adminModal .admin-workspace tr:nth-child(even){backgro
 body[data-theme="light"] #adminModal .admin-workspace td{color:#344253!important;border-color:#e2e7ed!important}
 body[data-theme="light"] #adminModal .admin-tab-btn{color:#526071!important}
 body[data-theme="light"] #adminModal .admin-tab-btn.active{background:#fff!important;color:#795814!important;border-color:#e5d4a8!important}
+
+/* Final deterministic light-mode layer — shared by public page, dropdowns and admin tabs */
+html[data-theme="light"],html[data-theme="light"] body{
+ --bg:#f3f5f8!important;--surface:#fff!important;--surface-card:#f8fafc!important;
+ --text-primary:#202b38!important;--text-secondary:#647181!important;--border:#dce3eb!important;
+ --neon-blue:#9b7427!important;--neon-purple:#b58a35!important;
+}
+html[data-theme="light"] body{background:#f3f5f8!important;color:#202b38!important}
+html[data-theme="light"] #customRegionMenu,
+html[data-theme="light"] #customRegionMenu.custom-dropdown-menu{
+ background:#fff!important;color:#263545!important;border:1px solid #d5bd83!important;
+ box-shadow:0 12px 28px rgba(25,39,55,.14)!important;
+}
+html[data-theme="light"] #customRegionMenu :is(.custom-dropdown-item,.region-item,.region-item-text,span,strong,small){
+ color:#344253!important;
+}
+html[data-theme="light"] #customRegionMenu .custom-dropdown-item.selected{
+ background:#f8f1df!important;color:#795814!important;border-color:#d8bd7c!important;
+}
+html[data-theme="light"] #customRegionTrigger{background:#fff!important;color:#263545!important;border-color:#cfd8e2!important}
+html[data-theme="light"] #adminModal,
+html[data-theme="light"] #adminModal .admin-content,
+html[data-theme="light"] #adminModal .admin-layout,
+html[data-theme="light"] #adminModal .admin-header,
+html[data-theme="light"] #adminModal .admin-sidebar,
+html[data-theme="light"] #adminModal .admin-workspace,
+html[data-theme="light"] #adminModal .admin-panel-tab{
+ background:#f3f5f8!important;color:#263545!important;
+}
+html[data-theme="light"] #adminModal .admin-content{border:1px solid #d8e0e8!important}
+html[data-theme="light"] #adminModal .admin-sidebar{background:#e9edf2!important;border-color:#d8e0e8!important}
+html[data-theme="light"] #adminModal .admin-header{background:#fff!important;border-bottom:1px solid #dce3eb!important}
+html[data-theme="light"] #adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card,.st-session-card,.st-session-fields,.request-card,.request-detail-panel,.request-summary,.requests-table-wrap,.requests-toolbar,.promo-settings-shell,.promo-settings-head,.sub-tab-group,.sub-text-panel,.admin-panel-tab>section,.theme-card-option,.admin-style-row,.request-row,.student-row,.admin-grid-2,.admin-grid-3){
+ background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;box-shadow:0 3px 12px rgba(30,43,58,.045)!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(p,span,strong,b,label,small,h1,h2,h3,h4,th,td,.admin-section-subhead,.admin-input-group label,.admin-dropdown-label){
+ color:#344253!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.hint,.muted,.description,.help-text,small){color:#687586!important}
+html[data-theme="light"] #adminModal .admin-workspace :is(input:not([type=checkbox]):not([type=radio]):not([type=color]),textarea,select,.admin-select,.custom-dropdown-trigger,.admin-dropdown-trigger,.st-custom-select-trigger,.st-student-trigger){
+ background:#fff!important;color:#202b38!important;border:1px solid #cfd8e2!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.admin-dropdown-menu,.admin-select-menu,.custom-dropdown-menu,.dropdown-menu,.st-custom-select-menu){
+ background:#fff!important;color:#263545!important;border:1px solid #d5bd83!important;box-shadow:0 12px 28px rgba(25,39,55,.14)!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.admin-dropdown-option,.custom-dropdown-item,.st-custom-option,.st-student-option){
+ background:#fff!important;color:#344253!important;border-color:#e5e9ef!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.admin-dropdown-option:hover,.custom-dropdown-item:hover,.st-custom-option:hover,.st-student-option:hover){
+ background:#f1f4f7!important;color:#202b38!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.admin-dropdown-option.selected,.custom-dropdown-item.selected,.st-custom-option.selected,.st-student-option.selected){
+ background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace select option{background:#fff!important;color:#263545!important}
+html[data-theme="light"] #adminModal .admin-workspace button:not(.primary):not(.save):not(.btn-primary):not(.danger):not(.admin-tab-btn){
+ background:#f1f4f7!important;color:#344253!important;border-color:#d5dde6!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace button.primary,
+html[data-theme="light"] #adminModal .admin-workspace button.save,
+html[data-theme="light"] #adminModal .admin-workspace .btn-primary,
+html[data-theme="light"] #adminModal .admin-workspace #autoCommitBtn{
+ background:linear-gradient(135deg,#e0c16e,#bd9140)!important;color:#211a0d!important;border-color:#c49a42!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace button.danger{background:#fff0f0!important;color:#a92332!important;border-color:#edc4c8!important}
+html[data-theme="light"] #adminModal .admin-workspace table,
+html[data-theme="light"] #adminModal .admin-workspace tbody,
+html[data-theme="light"] #adminModal .admin-workspace tr{background:#fff!important;color:#344253!important}
+html[data-theme="light"] #adminModal .admin-workspace th{background:#edf1f5!important;color:#344253!important}
+html[data-theme="light"] #adminModal .admin-workspace td{color:#344253!important;border-color:#e2e7ed!important}
+html[data-theme="light"] #adminModal .admin-tab-btn{color:#526071!important;background:transparent!important}
+html[data-theme="light"] #adminModal .admin-tab-btn.active{background:#fff!important;color:#795814!important;border-color:#e5d4a8!important}
+html[data-theme="light"] #adminModal .admin-header .circle-btn{background:#fff!important;color:#344253!important;border-color:#dce3eb!important}
+html[data-theme="light"] :is(.hero-banner,.section-card,.bank-card,.music-channel-card,.price-box,.dynamic-rules-box,.accordion-item,.promo-card){
+ background:#fff!important;color:#263545!important;border-color:#dce3eb!important;box-shadow:0 4px 16px rgba(28,43,60,.055)!important;
+}
+html[data-theme="light"] :is(.section-header,.hero-subtitle,.price-details,.dynamic-rule-text,.accordion-header,.accordion-content,.rule-agreement,.social-btn,.music-title,.music-handle){
+ color:#344253!important;
+}
+html[data-theme="light"] .bank-card{background:linear-gradient(145deg,#fff,#edf1f5)!important;color:#263545!important}
+html[data-theme="light"] .send-receipt-btn{background:#eef2f6!important;color:#344253!important;border-color:#d5dde6!important}
 </style>
 
 </body>
