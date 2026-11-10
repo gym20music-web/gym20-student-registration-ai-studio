@@ -933,6 +933,38 @@ html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(2
 html[data-theme="light"] #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(243,246,249,.97))}
 html[data-theme="light"] #ruleWheelList .rule-wheel-item{color:#526071}
 html[data-theme="light"] #ruleWheelList .rule-wheel-item.wheel-focus{color:#795814}
+
+/* Final alignment: keep the rules wheel physically attached to its trigger. */
+#ruleWheelMenu{
+ position:fixed!important;top:0;right:auto;bottom:auto!important;left:0;width:280px;
+ height:222px!important;max-height:min(222px,calc(100dvh - 24px))!important;
+ z-index:999999!important;transform:none!important;
+}
+#ruleWheelMenu:before{
+ content:"";position:absolute;z-index:3;pointer-events:none;left:9px;right:9px;top:50%;height:42px;
+ transform:translateY(-50%);border:0;border-top:1px solid rgba(222,190,116,.55);
+ border-bottom:1px solid rgba(222,190,116,.55);border-radius:11px;
+ background:linear-gradient(90deg,rgba(214,179,90,.025),rgba(214,179,90,.12),rgba(214,179,90,.025));
+ box-shadow:inset 0 0 16px rgba(214,179,90,.035),0 0 14px rgba(214,179,90,.045);
+}
+#ruleWheelList .rule-wheel-item,
+#ruleWheelList .rule-wheel-item.wheel-focus{
+ border:0!important;border-color:transparent!important;border-radius:0!important;
+ background:transparent!important;box-shadow:none!important;outline:0!important;
+}
+#ruleWheelList .rule-wheel-item{opacity:.43;transform:scale(.96);filter:blur(.2px)}
+#ruleWheelList .rule-wheel-item.wheel-focus{opacity:1;transform:scale(1);filter:none;color:#f0d18a!important}
+#ruleWheelList .rule-wheel-item .rule-wheel-check{display:none!important}
+#ruleWheelList .rule-wheel-item>span:first-child{font-size:12px!important;font-weight:650!important;color:#d9dfe6!important}
+#ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}
+@media(max-width:720px){
+ #ruleWheelMenu{height:218px!important;max-height:min(218px,calc(100dvh - 24px))!important;border-radius:15px!important}
+ #ruleWheelMenu:before{height:40px}
+ #ruleWheelList .rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
+ #ruleWheelList .rule-wheel-item>span:first-child{font-size:11px!important}
+ #ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:12.5px!important}
+}
+
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -4125,7 +4157,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function recycle(w){const size=cycleSize(w);if(!size)return;const y=w.scrollTop;if(y<size*.35)w.scrollTop=y+size;else if(y>size*1.65)w.scrollTop=y-size;}
  function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
  function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));updateLabel();}
- function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');}
+ function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');menu.style.top='';menu.style.left='';menu.style.width='';menu.style.maxHeight='';}
  function build(){const opts=[...select.options];menu.innerHTML='';const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(opts.length);[0,1,2].forEach(copy=>opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='rule-wheel-item';b.dataset.value=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===select.value));b.innerHTML='<span>'+o.textContent.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span><span class="rule-wheel-check">✓</span>';w.appendChild(b);}));menu.appendChild(w);bind(w);}
  function bind(w){if(w.dataset.bound==='1')return;w.dataset.bound='1';let pointer=false,moved=false,dragged=false,startY=0,last=w.scrollTop,timer=0,frame=0;
   w.addEventListener('pointerdown',e=>{pointer=true;moved=false;dragged=false;startY=e.clientY;clearTimeout(timer)},{passive:true});
@@ -4136,8 +4168,8 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   w.addEventListener('scroll',()=>{const now=w.scrollTop;if(pointer&&Math.abs(now-last)>2)moved=true;last=now;if(!frame)frame=requestAnimationFrame(()=>{frame=0;recycle(w);updateFocus()});if(moved&&!pointer)settle()},{passive:true});
   w.addEventListener('click',e=>{const item=e.target.closest('.rule-wheel-item');if(!item)return;if(dragged){e.preventDefault();e.stopPropagation();dragged=false;return;}commit(item.dataset.value);close();});
  }
- function open(){if(menu.classList.contains('open')){close();return;}build();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;requestAnimationFrame(()=>centerValue(select.value,false));}
- trigger.addEventListener('click',open);
+ function positionMenu(){const r=trigger.getBoundingClientRect();const gap=6;const top=Math.min(r.bottom+gap,Math.max(8,window.innerHeight-226));menu.style.top=top+'px';menu.style.left=Math.max(8,Math.min(r.left,window.innerWidth-r.width-8))+'px';menu.style.width=Math.min(r.width,window.innerWidth-16)+'px';menu.style.maxHeight=Math.max(140,window.innerHeight-top-12)+'px';}\n function open(){if(menu.classList.contains('open')){close();return;}build();positionMenu();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;requestAnimationFrame(()=>centerValue(select.value,false));}
+ window.addEventListener('resize',()=>{if(menu.classList.contains('open'))positionMenu();},{passive:true});\n document.addEventListener('scroll',()=>{if(menu.classList.contains('open'))positionMenu();},true);\n trigger.addEventListener('click',open);
  trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();open();}else if(e.key==='Escape')close();});
  document.addEventListener('click',e=>{if(!wrap.contains(e.target)&&!menu.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
