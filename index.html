@@ -1676,10 +1676,7 @@ function renderAdminRegionsNav(){
             item.setAttribute('aria-selected',String(reg.id===adminActiveRegionId));
             const title=document.createElement('span');
             title.textContent=reg.number+' ـ '+reg.name;
-            const check=document.createElement('span');
-            check.className='admin-region-wheel-check';
-            check.textContent='✓';
-            item.append(title,check);
+            item.append(title);
             wheel.appendChild(item);
         }));
         menu.appendChild(wheel);
