@@ -1311,16 +1311,15 @@ html[data-theme="light"] #adminRegionWheelList .admin-region-wheel-item.wheel-fo
             </div>
             <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')">＋ تعریف منطقه جدید</button>
             <div class="admin-region-box" id="adminRegionEditCard">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
-                    <span style="font-size:.65rem;color:var(--neon-blue);font-weight:bold;">تنظیمات منطقه انتخابی:</span>
-                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="width:27px;height:27px;min-width:27px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;">🗑️</button>
-                </div>
                 <div class="admin-input-group"><label>نام و محله‌های منطقه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
                     <div class="admin-input-group"><label>شهریه کودکان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                 </div>
-                <div class="admin-input-group" style="margin-top:3px;"><label>هزینه هر سبک اضافه:</label><div class="price-input-wrapper"><input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
+                <div style="display:flex;align-items:flex-end;gap:7px;margin-top:3px;">
+                    <div class="admin-input-group" style="flex:1;min-width:0;margin:0;"><label>هزینه هر سبک اضافه:</label><div class="price-input-wrapper"><input type="text" id="activeRegionExtraInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
+                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="width:29px;height:29px;min-width:29px;padding:0;margin-bottom:1px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;flex-shrink:0;">🗑️</button>
+                </div>
             </div>
             <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
                 <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف منطقه جدید:</div>
