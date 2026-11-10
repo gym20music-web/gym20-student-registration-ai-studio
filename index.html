@@ -1764,8 +1764,20 @@ function bindAdminRegionWheel(w){
         w._gym20AdminRegionLastScrollTop=now;
         if(delta>2&&w._gym20AdminRegionPointerDown)w._gym20AdminRegionGestureMoved=true;
         if(!w._gym20AdminRegionFrame)w._gym20AdminRegionFrame=requestAnimationFrame(()=>{
-            w._gym20AdminRegionFrame=0;recycleAdminRegionWheel(w);updateAdminRegionWheelFocus();
+            w._gym20AdminRegionFrame=0;
+            updateAdminRegionWheelFocus();
         });
+        clearTimeout(w._gym20AdminRegionRecycleTimer);
+        w._gym20AdminRegionRecycleTimer=setTimeout(()=>{
+            if(w._gym20AdminRegionPointerDown)return;
+            const cycle=adminRegionCycleSize(w);
+            if(cycle){
+                const y=w.scrollTop;
+                if(y<cycle*.35)w.scrollTop=y+cycle;
+                else if(y>cycle*1.65)w.scrollTop=y-cycle;
+            }
+            requestAnimationFrame(updateAdminRegionWheelFocus);
+        },260);
         if(w._gym20AdminRegionGestureMoved&&!w._gym20AdminRegionPointerDown)settleAdminRegionWheel(w);
     },{passive:true});
 }
