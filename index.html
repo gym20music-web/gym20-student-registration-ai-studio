@@ -1814,7 +1814,7 @@ function loadActiveRegionDataIntoForm(){
 }
 function onActiveRegionFieldInput(){
     if(adminActiveRegionId==='new')return;const r=appData.regions.find(x=>x.id===adminActiveRegionId);if(!r)return;
-    r.name=document.getElementById('activeRegionNameInput').value.trim();r.kidsBase=parsePureNumber(document.getElementById('activeRegionKidsInput').value);r.adultBase=parsePureNumber(document.getElementById('activeRegionAdultInput').value);r.extraStylePrice=parsePureNumber(document.getElementById('activeRegionExtraInput').value);
+    r.name=document.getElementById('activeRegionNameInput').value.trim();updateAdminRegionWheelLabel();r.kidsBase=parsePureNumber(document.getElementById('activeRegionKidsInput').value);r.adultBase=parsePureNumber(document.getElementById('activeRegionAdultInput').value);r.extraStylePrice=parsePureNumber(document.getElementById('activeRegionExtraInput').value);
     renderCustomRegionDropdown();calculatePrice();
 }
 function deleteActiveRegion(){
