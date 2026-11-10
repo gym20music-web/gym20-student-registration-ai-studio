@@ -1925,3 +1925,118 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
 
 })();
 /* Put calendar session selection directly above the student term selector. */
+
+
+
+/* Final light palette for the dynamically-created student/term workspace.
+   Kept in the module itself so it loads after all legacy dark-mode style injections. */
+(function(){
+  const style=document.createElement('style');
+  style.id='stStudentTermsLightFinal';
+  style.textContent=`
+    html[data-theme="light"] #studentTermsTab{
+      background:#f3f5f8!important;color:#263545!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-card,
+    html[data-theme="light"] #studentTermsTab .st-create-compact,
+    html[data-theme="light"] #studentTermsTab #stSchedule,
+    html[data-theme="light"] #studentTermsTab #stPushCard{
+      background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;
+      box-shadow:0 3px 12px rgba(30,43,58,.045)!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(.st-title,.st-field label,.st-session-head strong,.st-section-title,.st-push-heading){
+      color:#795814!important;-webkit-text-fill-color:#795814!important;text-shadow:none!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(.st-muted,.st-field,.st-session-fields label,.st-compact-field,.st-push-status,.st-template-preview,.st-template-hint){
+      color:#687586!important;-webkit-text-fill-color:#687586!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(p,span,strong,b,small,label,div){
+      text-shadow:none!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(input:not([type=checkbox]):not([type=radio]),textarea,select,.st-custom-select-trigger,.st-student-trigger,.st-time-input,.st-date-input,.st-table-input){
+      background:#fff!important;color:#202b38!important;-webkit-text-fill-color:#202b38!important;
+      border-color:#cfd8e2!important;box-shadow:inset 0 1px 2px rgba(28,42,58,.035)!important;
+      color-scheme:light!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(input,textarea)::placeholder{color:#8793a1!important;-webkit-text-fill-color:#8793a1!important;opacity:1!important}
+    html[data-theme="light"] #studentTermsTab .st-student-trigger,
+    html[data-theme="light"] #studentTermsTab .st-custom-select-trigger{background:#fff!important;color:#263545!important}
+    html[data-theme="light"] #studentTermsTab :is(.st-student-menu,.st-custom-select-menu),
+    html[data-theme="light"] .st-jcal{
+      background:#fff!important;color:#344253!important;border:1px solid #d5bd83!important;
+      box-shadow:0 12px 28px rgba(25,39,55,.14)!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(.st-student-option,.st-custom-option),
+    html[data-theme="light"] .st-jcal :is(button,b,span){
+      background:#fff!important;color:#344253!important;border-color:#e1e6ec!important;
+    }
+    html[data-theme="light"] #studentTermsTab :is(.st-student-option.selected,.st-custom-option.selected),
+    html[data-theme="light"] .st-jcal .st-jcal-day.selected{
+      background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-session-card{
+      background:#fff!important;color:#344253!important;border:1px solid #dce3eb!important;
+      box-shadow:0 2px 8px rgba(30,43,58,.04)!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-session-card :is(strong,span,b,label,small,div){
+      color:#344253!important;-webkit-text-fill-color:#344253!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-session-card.live{
+      background:linear-gradient(110deg,#fff8df,#fff)!important;border-color:#d6a72d!important;
+      box-shadow:inset 3px 0 0 #eab308!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-session-card.live .st-session-state.live{
+      background:#f7e8b6!important;color:#765617!important;-webkit-text-fill-color:#765617!important;border-color:#d6a72d!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-session-card.past{background:#fff5f5!important;border-color:#e6b6bc!important}
+    html[data-theme="light"] #studentTermsTab .st-session-card.next{background:#f1fbf5!important;border-color:#b7dfc5!important}
+    html[data-theme="light"] #studentTermsTab .st-session-card.future{background:#f2f7ff!important;border-color:#c4d7f4!important}
+    html[data-theme="light"] #studentTermsTab .st-session-state.past{background:#fee2e2!important;color:#991b1b!important;-webkit-text-fill-color:#991b1b!important}
+    html[data-theme="light"] #studentTermsTab .st-session-state.next{background:#dcfce7!important;color:#166534!important;-webkit-text-fill-color:#166534!important}
+    html[data-theme="light"] #studentTermsTab .st-session-state.future{background:#dbeafe!important;color:#1d4ed8!important;-webkit-text-fill-color:#1d4ed8!important}
+    html[data-theme="light"] #studentTermsTab .st-session-fields-modern>.st-session-weekday{background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important}
+    html[data-theme="light"] #studentTermsTab .st-table,
+    html[data-theme="light"] #studentTermsTab .st-table tbody,
+    html[data-theme="light"] #studentTermsTab .st-table tr{background:#fff!important;color:#344253!important}
+    html[data-theme="light"] #studentTermsTab .st-table th{background:#edf1f5!important;color:#344253!important}
+    html[data-theme="light"] #studentTermsTab .st-table td{color:#344253!important;border-color:#e2e7ed!important}
+    html[data-theme="light"] #studentTermsTab .st-table tr:nth-child(even){background:#f7f9fb!important}
+    html[data-theme="light"] #studentTermsTab .st-schedule-table th{background:#edf1f5!important;color:#344253!important}
+    html[data-theme="light"] #studentTermsTab .st-schedule-table td{color:#344253!important;border-color:#e2e7ed!important}
+    html[data-theme="light"] #studentTermsTab .st-schedule-row.live td{background:#fff4c9!important;color:#765617!important}
+    html[data-theme="light"] #studentTermsTab .st-btn:not(.primary):not(.danger){background:#f1f4f7!important;color:#344253!important;border-color:#d5dde6!important}
+    html[data-theme="light"] #studentTermsTab .st-btn.primary{background:linear-gradient(135deg,#e0c16e,#bd9140)!important;color:#211a0d!important;border-color:#c49a42!important}
+    html[data-theme="light"] #studentTermsTab .st-btn.danger{background:#fff0f0!important;color:#a92332!important;border-color:#edc4c8!important}
+    html[data-theme="light"] #studentTermsTab .st-version{background:#fff!important;color:#344253!important;border-color:#dce3eb!important}
+    html[data-theme="light"] #studentTermsTab .st-time-picker{
+      background:linear-gradient(145deg,#fff,#f1f4f7)!important;color:#263545!important;border-color:#d5bd83!important;
+      box-shadow:0 18px 48px rgba(25,39,55,.2)!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-time-picker :is(header,footer,small,label,span,button){color:#344253!important}
+    html[data-theme="light"] #studentTermsTab .st-time-picker-preview strong{color:#795814!important}
+    html[data-theme="light"] #studentTermsTab .st-time-wheel{background:linear-gradient(180deg,#edf1f5,#fff 48%,#edf1f5)!important;border-color:#dce3eb!important}
+    html[data-theme="light"] #studentTermsTab .st-time-wheel-item{color:#8793a1!important}
+    html[data-theme="light"] #studentTermsTab .st-time-wheel-item.selected{color:#795814!important;text-shadow:none!important}
+    html[data-theme="light"] #studentTermsTab .st-time-wheel-indicator{border-color:#d6b35a!important;background:rgba(214,179,90,.12)!important}
+    html[data-theme="light"] #studentTermsTab .st-time-picker>footer button{background:#f1f4f7!important;border-color:#d5dde6!important}
+    html[data-theme="light"] #studentTermsTab .st-time-picker>footer .st-time-picker-apply{background:linear-gradient(135deg,#e0c16e,#bd9140)!important;color:#211a0d!important}
+    html[data-theme="light"] #studentTermsTab .st-template-dialog{
+      background:#fff!important;color:#263545!important;border-color:#d5bd83!important;
+      box-shadow:0 18px 48px rgba(25,39,55,.2)!important;
+    }
+    html[data-theme="light"] #studentTermsTab .st-template-dialog :is(b,small,label,p,div){color:#344253!important}
+    html[data-theme="light"] #studentTermsTab #stTemplateModalText{background:#fff!important;color:#202b38!important;border-color:#cfd8e2!important}
+    html[data-theme="light"] #studentTermsTab .st-hour-scroll-wrap{background:#edf1f5!important;box-shadow:inset 0 1px 2px rgba(28,42,58,.08)!important}
+    html[data-theme="light"] #studentTermsTab .st-hour-option{color:#687586!important}
+    html[data-theme="light"] #studentTermsTab .st-hour-option.is-selected{color:#795814!important;text-shadow:none!important}
+    html[data-theme="light"] #studentTermsTab .st-push-dot.active{background:#16a34a!important}
+    html[data-theme="light"] #studentTermsTab .st-push-dot.inactive{background:#dc2626!important}
+    html[data-theme="light"] #studentTermsTab .st-feedback{color:#687586!important}
+    html[data-theme="light"] .st-jcal .st-jcal-grid>span{background:transparent!important;color:#795814!important}
+    html[data-theme="light"] .st-jcal .st-jcal-day{background:#fff!important;color:#344253!important;border-color:#e1e6ec!important}
+    html[data-theme="light"] .st-jcal .st-jcal-day.selected{background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important}
+    html[data-theme="light"] .st-jcal .st-jcal-day.term-boundary,
+    html[data-theme="light"] .st-jcal .st-jcal-day.term-boundary.selected{background:#168a45!important;color:#fff!important;border-color:#22c55e!important}
+  `;
+  document.head.appendChild(style);
+})();
