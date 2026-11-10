@@ -899,6 +899,9 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 .promo-close-btn{top:8px!important;left:8px!important;width:25px!important;height:25px!important;font-size:.68rem!important}
 @media(max-width:380px){.promo-card{width:min(100%,300px)!important;padding:12px 11px 10px!important}.promo-img{width:60px!important;height:60px!important}.promo-channel-description{padding:9px 10px!important;font-size:9.5px!important}}
 @media(max-height:650px){.promo-card{max-height:calc(100dvh - 14px);padding-top:10px!important;padding-bottom:9px!important}.promo-img{width:54px!important;height:54px!important;margin-bottom:5px!important}.promo-channel-description{margin:6px 0 8px!important;padding:8px 9px!important}.promo-text{margin-bottom:5px!important}}
+
+/* Chrome desktop only: remove the stationary region-wheel frame; keep Edge and mobile unchanged. */
+@media(min-width:721px){html.gym20-chrome-desktop #customRegionMenu:before{display:none!important;content:none!important;}}
 </style>
 
 <style>
@@ -4478,5 +4481,9 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 }
 
 </style>
+
+<script>
+(()=>{const ua=navigator.userAgent||'';if(/Chrome\//.test(ua)&&!/Edg\//.test(ua)&&!/OPR\//.test(ua)){document.documentElement.classList.add('gym20-chrome-desktop');}})();
+</script>
 </body>
 </html>
