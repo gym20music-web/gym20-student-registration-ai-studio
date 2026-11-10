@@ -1665,7 +1665,7 @@ document.getElementById('copyCardBtn').onclick=()=>{
     }
 };
 
-themeBtn.onclick=()=>{const l=document.body.getAttribute('data-theme')==='light';if(l){document.body.removeAttribute('data-theme');themeBtn.innerText='🌙';}else{document.body.setAttribute('data-theme','light');themeBtn.innerText='☀️';}};
+const themeBtnEl=document.getElementById('themeBtn');if(themeBtnEl){themeBtnEl.addEventListener('click',()=>{const isLight=document.body.getAttribute('data-theme')==='light';if(isLight){document.body.removeAttribute('data-theme');themeBtnEl.textContent='🌙';}else{document.body.setAttribute('data-theme','light');themeBtnEl.textContent='☀️';}});}
 function switchAdminTab(tId){
   if(tId==='requestsTab'&&!gym20OwnerAuthorized){alert('برای مشاهده درخواست‌ها ابتدا با حساب مدیر وارد شوید.');return;}
   document.querySelectorAll('.admin-panel-tab').forEach(t=>t.classList.remove('active'));
@@ -3133,6 +3133,56 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 .music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none;overflow:visible}
 .music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height;transition:opacity 160ms ease}
 @media(prefers-reduced-motion:reduce){.music-avatar-ring i{transition:none!important}}
+
+/* GYM20 day/night switch: explicit light palette after the graphite overrides. */
+body[data-theme="light"]{
+ background:#f3f4f6!important;
+ color:#18212b!important;
+}
+body[data-theme="light"] .hero-banner,
+body[data-theme="light"] .section-card,
+body[data-theme="light"] .bank-card,
+body[data-theme="light"] .music-channel-card,
+body[data-theme="light"] .price-box,
+body[data-theme="light"] .dynamic-rules-box,
+body[data-theme="light"] .accordion-item,
+body[data-theme="light"] .admin-content,
+body[data-theme="light"] .custom-dropdown-menu{
+ background:linear-gradient(145deg,#ffffff,#eef1f5)!important;
+ color:#18212b!important;
+ border:1px solid rgba(31,45,61,.13)!important;
+ box-shadow:0 6px 18px rgba(31,45,61,.08)!important;
+}
+body[data-theme="light"] .section-header,
+body[data-theme="light"] .hero-subtitle,
+body[data-theme="light"] .section-card,
+body[data-theme="light"] .admin-content,
+body[data-theme="light"] .custom-dropdown-item,
+body[data-theme="light"] label{
+ color:#263442!important;
+}
+body[data-theme="light"] input:not([type=checkbox]):not([type=radio]),
+body[data-theme="light"] textarea,
+body[data-theme="light"] select,
+body[data-theme="light"] .custom-dropdown-trigger{
+ color:#18212b!important;
+ background:#fff!important;
+ border:1px solid rgba(31,45,61,.18)!important;
+ box-shadow:inset 0 1px 2px rgba(31,45,61,.04)!important;
+}
+body[data-theme="light"] input::placeholder,
+body[data-theme="light"] textarea::placeholder{color:#788491!important}
+body[data-theme="light"] .circle-btn{
+ color:#263442!important;
+ background:#fff!important;
+ border-color:rgba(31,45,61,.16)!important;
+}
+body[data-theme="light"] .hero-title{
+ background:linear-gradient(90deg,#0879b9,#7250bd)!important;
+ -webkit-background-clip:text!important;
+ -webkit-text-fill-color:transparent!important;
+}
+
 </style>
 <script>
 /* Smooth simulated spectrum on the miniature seek bar; visual only. */
