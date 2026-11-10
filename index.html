@@ -1670,7 +1670,7 @@ function renderAdminRegionsNav(){
             item.setAttribute('role','option');
             item.setAttribute('aria-selected',String(reg.id===adminActiveRegionId));
             const title=document.createElement('span');
-            title.textContent=reg.number+'  '+reg.name;
+            title.textContent=reg.number+' ـ '+reg.name;
             const check=document.createElement('span');
             check.className='admin-region-wheel-check';
             check.textContent='✓';
@@ -1688,7 +1688,7 @@ function updateAdminRegionWheelLabel(){
     if(!label)return;
     const active=appData.regions&&appData.regions.find(r=>String(r.id)===String(adminActiveRegionId));
     const activeIndex=active?(appData.regions||[]).findIndex(r=>String(r.id)===String(adminActiveRegionId)):-1;
-    const activeNumber=activeIndex>=0?String(activeIndex+1).replace(/\\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])+'  ':'';
+    const activeNumber=activeIndex>=0?String(activeIndex+1).replace(/\\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])+' ـ ':'';
     label.textContent=adminActiveRegionId==='new'?'تعریف منطقه جدید':active?activeNumber+(active.name||'منطقه بدون نام'):'انتخاب منطقه';
 }
 function switchAdminRegion(id){
