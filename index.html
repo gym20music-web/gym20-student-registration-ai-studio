@@ -918,7 +918,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 #ruleWheelList::-webkit-scrollbar{display:none}
 #ruleWheelList .rule-wheel-item{position:relative;z-index:0;display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%;height:42px!important;min-height:42px!important;flex:0 0 42px!important;margin:0!important;padding:5px 13px!important;border:1px solid transparent!important;border-radius:11px!important;box-sizing:border-box!important;scroll-snap-align:center;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease!important;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer}
 #ruleWheelList .rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;border-color:rgba(225,194,125,.52)!important;box-shadow:0 5px 18px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.07)!important;color:#f0d18a}
-#ruleWheelList .rule-wheel-item .rule-wheel-check{font-size:12px;color:#e8c778;margin-right:6px;opacity:0}
+#ruleWheelList .rule-wheel-item>span:first-child{font-size:12px!important;line-height:1.35!important;font-weight:650!important;color:#d9dfe6!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n#ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}\n#ruleWheelList .rule-wheel-item .rule-wheel-check{font-size:12px;color:#e8c778;margin-right:6px;opacity:0}
 #ruleWheelList .rule-wheel-item.wheel-focus .rule-wheel-check{opacity:1}
 @media(max-width:720px){
  #ruleWheelMenu{position:fixed!important;top:auto!important;right:10px!important;left:10px!important;bottom:max(10px,env(safe-area-inset-bottom))!important;width:auto!important;height:218px!important;max-height:218px!important;border-radius:15px!important;z-index:99999!important}
@@ -926,7 +926,7 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
  #ruleWheelList .rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
  #ruleWheelMenu:before{height:40px}
  #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
- #ruleWheelList .rule-wheel-item{font-size:11px!important}
+ #ruleWheelList .rule-wheel-item>span:first-child{font-size:11px!important}\n #ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:12.5px!important}
 }
 @media(prefers-reduced-motion:reduce){#ruleWheelList .rule-wheel-item{transition:none!important}#ruleWheelList{scroll-behavior:auto!important}}
 html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(255,255,255,.99),rgba(243,246,249,.99))!important;border-color:#d5bd83!important;box-shadow:0 16px 34px rgba(25,39,55,.16)!important}
@@ -4127,14 +4127,14 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));updateLabel();}
  function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');}
  function build(){const opts=[...select.options];menu.innerHTML='';const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(opts.length);[0,1,2].forEach(copy=>opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='rule-wheel-item';b.dataset.value=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===select.value));b.innerHTML='<span>'+o.textContent.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span><span class="rule-wheel-check">✓</span>';w.appendChild(b);}));menu.appendChild(w);bind(w);}
- function bind(w){if(w.dataset.bound==='1')return;w.dataset.bound='1';let pointer=false,moved=false,startY=0,last=w.scrollTop,timer=0,frame=0;
-  w.addEventListener('pointerdown',e=>{pointer=true;moved=false;startY=e.clientY;clearTimeout(timer)},{passive:true});
+ function bind(w){if(w.dataset.bound==='1')return;w.dataset.bound='1';let pointer=false,moved=false,dragged=false,startY=0,last=w.scrollTop,timer=0,frame=0;
+  w.addEventListener('pointerdown',e=>{pointer=true;moved=false;dragged=false;startY=e.clientY;clearTimeout(timer)},{passive:true});
   const end=()=>{pointer=false;if(moved)settle()};w.addEventListener('pointerup',end,{passive:true});w.addEventListener('pointercancel',end,{passive:true});
   function settle(){clearTimeout(timer);timer=setTimeout(()=>{if(pointer||!moved)return;const best=updateFocus();if(best){commit(best.dataset.value);w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===best.dataset.value)));moved=false;}},650);}
-  w.addEventListener('pointermove',e=>{if(pointer&&Math.abs(e.clientY-startY)>7)moved=true},{passive:true});
+  w.addEventListener('pointermove',e=>{if(pointer&&Math.abs(e.clientY-startY)>7){moved=true;dragged=true;}},{passive:true});
   w.addEventListener('wheel',()=>{moved=true;settle()},{passive:true});
   w.addEventListener('scroll',()=>{const now=w.scrollTop;if(pointer&&Math.abs(now-last)>2)moved=true;last=now;if(!frame)frame=requestAnimationFrame(()=>{frame=0;recycle(w);updateFocus()});if(moved&&!pointer)settle()},{passive:true});
-  w.addEventListener('click',e=>{const item=e.target.closest('.rule-wheel-item');if(!item)return;commit(item.dataset.value);close();});
+  w.addEventListener('click',e=>{const item=e.target.closest('.rule-wheel-item');if(!item)return;if(dragged){e.preventDefault();e.stopPropagation();dragged=false;return;}commit(item.dataset.value);close();});
  }
  function open(){if(menu.classList.contains('open')){close();return;}build();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;requestAnimationFrame(()=>centerValue(select.value,false));}
  trigger.addEventListener('click',open);
