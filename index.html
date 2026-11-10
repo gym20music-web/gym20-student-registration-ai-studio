@@ -4305,6 +4305,8 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 (function(){
  const select=document.getElementById('ruleSelector'),wrap=document.getElementById('ruleWheelDropdown'),trigger=document.getElementById('ruleWheelTrigger'),menu=document.getElementById('ruleWheelMenu'),label=document.getElementById('ruleWheelSelectedText');
  if(!select||!wrap||!trigger||!menu||wrap.dataset.wheelReady==='1')return;wrap.dataset.wheelReady='1';
+ /* The menu is positioned with viewport coordinates; keep it under body to avoid tab/ancestor offset errors. */
+ document.body.appendChild(menu);
  let pendingValue=select.value;
  const wheel=()=>menu.querySelector('#ruleWheelList');
  function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
@@ -4386,6 +4388,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 <style id="rule-wheel-final-polish">
 /* Rules wheel: match the region wheel's natural motion and centered gold selector. */
 #ruleWheelMenu{
+ position:fixed!important;
  height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important;
  padding:0!important;border-radius:15px!important;overflow:hidden!important;
  background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;
