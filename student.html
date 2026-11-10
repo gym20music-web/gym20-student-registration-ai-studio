@@ -402,3 +402,34 @@ select,.term-select-trigger{background:#fff!important;color:#263545!important;bo
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261107-gym20-fullscreen-trophy-v6"></script>
 
 </body></html>
+<style id="gym20-public-light-final-v2">
+/* Force the published student schedule and every session tile into the light palette. */
+html,html body,html body main{background:#f2f4f7!important;color:#263545!important;color-scheme:light!important}
+html body main>header,html body main>.card,html body main>section.card{
+ background:#fff!important;color:#263545!important;border:1px solid #dce3eb!important;
+ box-shadow:0 4px 16px rgba(30,43,58,.055)!important;
+}
+html body #termPanel,html body #exercisePanel,html body #schedule,
+html body #schedule .session-list,html body #schedule .session-card{
+ background:#fff!important;color:#263545!important;
+}
+html body #schedule .session-card{
+ border:1px solid #dce3eb!important;border-radius:11px!important;
+ box-shadow:0 2px 8px rgba(30,43,58,.045)!important;
+}
+html body #schedule .session-card :is(.session-fact,.session-fact i,.session-fact b,.session-inline,.session-bottom){
+ color:#344253!important;
+}
+html body #schedule .session-card .session-fact i{color:#788596!important}
+html body #schedule .session-card .session-fact b{color:#263545!important}
+html body #schedule .session-card.time-past{background:#fff4f4!important;border-color:#e8b9bf!important}
+html body #schedule .session-card.time-next{background:#f0fbf4!important;border-color:#b8dfc5!important}
+html body #schedule .session-card.time-live{background:#fff8e4!important;border-color:#e2c36d!important}
+html body #schedule .session-card.time-future{background:#f1f7ff!important;border-color:#c5d9f2!important}
+html body #schedule .session-card .status.time-past{background:#fee2e2!important;color:#991b1b!important}
+html body #schedule .session-card .status.time-next{background:#dcfce7!important;color:#166534!important}
+html body #schedule .session-card .status.time-live{background:#f7e8b6!important;color:#765617!important}
+html body #schedule .session-card .status.time-future{background:#dbeafe!important;color:#1d4ed8!important}
+html body #exercisePanel .exercise-row{background:#fff!important;color:#263545!important;border-color:#dce3eb!important}
+html body #exercisePanel .exercise-title{color:#263545!important}
+</style>
