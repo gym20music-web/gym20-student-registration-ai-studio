@@ -953,7 +953,7 @@ html[data-theme="light"] #adminRegionNewButton{color:#795814;background:rgba(214
 #adminRegionWheelTrigger.open .admin-region-wheel-arrow{transform:rotate(180deg)}
 #adminRegionWheelMenu{position:absolute!important;display:none;top:calc(100% + 6px);right:0;left:0;width:100%;height:218px;max-height:min(218px,calc(100dvh - 24px));padding:0;overflow:hidden;box-sizing:border-box;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99));border:1px solid rgba(218,228,238,.18);border-radius:15px;box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:1205}
 #adminRegionWheelMenu.open{display:flex!important;flex-direction:column!important}
-#adminRegionWheelMenu:before{content:"";position:absolute;z-index:2;pointer-events:none;left:9px;right:9px;top:50%;height:40px;transform:translateY(-50%);border-top:1px solid rgba(222,190,116,.45);border-bottom:1px solid rgba(222,190,116,.45);border-radius:11px;background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035))}
+#adminRegionWheelMenu:before{display:none!important;content:none!important}
 #adminRegionWheelMenu:after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
 #adminRegionWheelList{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:none;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none}
 #adminRegionWheelList::-webkit-scrollbar{display:none}
@@ -1718,19 +1718,6 @@ function recycleAdminRegionWheel(w){
     if(y<cycle*.35)w.scrollTop=y+cycle;
     else if(y>cycle*1.65)w.scrollTop=y-cycle;
 }
-function settleAdminRegionWheel(w){
-    clearTimeout(w._gym20AdminRegionSettleTimer);
-    if(!w._gym20AdminRegionGestureMoved||w._gym20AdminRegionPointerDown)return;
-    w._gym20AdminRegionSettleTimer=setTimeout(()=>{
-        if(w._gym20AdminRegionPointerDown||!w._gym20AdminRegionGestureMoved)return;
-        const best=updateAdminRegionWheelFocus();
-        if(best){
-            const id=best.dataset.regionId;
-            w._gym20AdminRegionGestureMoved=false;
-            switchAdminRegion(id);
-        }
-    },760);
-}
 function centerAdminRegionWheel(id){
     const w=adminRegionWheel();if(!w)return;
     const item=Array.from(w.querySelectorAll('.admin-region-wheel-item')).find(x=>x.dataset.regionId===String(id)&&x.dataset.regionCopy==='1')||Array.from(w.querySelectorAll('.admin-region-wheel-item')).find(x=>x.dataset.regionId===String(id));
@@ -1745,11 +1732,9 @@ function bindAdminRegionWheel(w){
     w._gym20AdminRegionPointerDown=false;
     w._gym20AdminRegionGestureMoved=false;
     w._gym20AdminRegionDragged=false;
-    w._gym20AdminRegionMouseDrag=false;
-    w._gym20AdminRegionFrame=0;
     w._gym20AdminRegionLastScrollTop=w.scrollTop;
 
-    const scheduleSettle=()=>{
+    const settle=()=>{
         clearTimeout(w._gym20AdminRegionSettleTimer);
         if(!w._gym20AdminRegionGestureMoved||w._gym20AdminRegionPointerDown)return;
         w._gym20AdminRegionSettleTimer=setTimeout(()=>{
@@ -1760,7 +1745,7 @@ function bindAdminRegionWheel(w){
                 w._gym20AdminRegionGestureMoved=false;
                 switchAdminRegion(id);
             }
-        },420);
+        },760);
     };
 
     w.addEventListener('pointerdown',e=>{
@@ -1769,12 +1754,6 @@ function bindAdminRegionWheel(w){
         w._gym20AdminRegionGestureMoved=false;
         w._gym20AdminRegionStartX=e.clientX;
         w._gym20AdminRegionStartY=e.clientY;
-        w._gym20AdminRegionStartScrollTop=w.scrollTop;
-        if(e.pointerType==='mouse'&&e.button===0){
-            w._gym20AdminRegionMouseDrag=true;
-            w.style.cursor='grabbing';
-            try{w.setPointerCapture(e.pointerId);}catch(_){}
-        }
         clearTimeout(w._gym20AdminRegionSettleTimer);
     },{passive:true});
 
@@ -1784,46 +1763,35 @@ function bindAdminRegionWheel(w){
         const dy=Math.abs(e.clientY-w._gym20AdminRegionStartY);
         if(dx>7||dy>7)w._gym20AdminRegionDragged=true;
         if(dy>7&&dy>dx*1.15)w._gym20AdminRegionGestureMoved=true;
-        if(w._gym20AdminRegionMouseDrag&&e.buttons===1&&dy>2){
-            w._gym20AdminRegionGestureMoved=true;
-            w.scrollTop=w._gym20AdminRegionStartScrollTop-(e.clientY-w._gym20AdminRegionStartY);
-            e.preventDefault();
-        }
-    },{passive:false});
+    },{passive:true});
 
     const pointerEnd=()=>{
         if(!w._gym20AdminRegionPointerDown)return;
         w._gym20AdminRegionPointerDown=false;
         w._gym20AdminRegionStartX=null;
         w._gym20AdminRegionStartY=null;
-        w._gym20AdminRegionMouseDrag=false;
-        w.style.cursor='';
-        if(w._gym20AdminRegionGestureMoved)scheduleSettle();
+        if(w._gym20AdminRegionGestureMoved)settle();
     };
     w.addEventListener('pointerup',pointerEnd,{passive:true});
     w.addEventListener('pointercancel',pointerEnd,{passive:true});
 
     w.addEventListener('wheel',()=>{
         w._gym20AdminRegionGestureMoved=true;
-        scheduleSettle();
+        settle();
     },{passive:true});
 
     w.addEventListener('scroll',()=>{
-        const now=w.scrollTop;
-        if(Math.abs(now-w._gym20AdminRegionLastScrollTop)>1&&w._gym20AdminRegionPointerDown){
-            w._gym20AdminRegionGestureMoved=true;
-        }
+        const now=w.scrollTop,delta=Math.abs(now-w._gym20AdminRegionLastScrollTop);
         w._gym20AdminRegionLastScrollTop=now;
-
+        if(delta>2&&w._gym20AdminRegionPointerDown)w._gym20AdminRegionGestureMoved=true;
         if(!w._gym20AdminRegionFrame){
             w._gym20AdminRegionFrame=requestAnimationFrame(()=>{
                 w._gym20AdminRegionFrame=0;
-                /* Recycle during motion, not hundreds of milliseconds after it stops. */
                 recycleAdminRegionWheel(w);
                 updateAdminRegionWheelFocus();
             });
         }
-        if(w._gym20AdminRegionGestureMoved&&!w._gym20AdminRegionPointerDown)scheduleSettle();
+        if(w._gym20AdminRegionGestureMoved&&!w._gym20AdminRegionPointerDown)settle();
     },{passive:true});
 }
 function toggleAdminRegionWheel(e){
