@@ -1313,7 +1313,7 @@ html[data-theme="light"] #adminRegionWheelList .admin-region-wheel-item.wheel-fo
             <div class="admin-region-box" id="adminRegionEditCard">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
                     <span style="font-size:.65rem;color:var(--neon-blue);font-weight:bold;">تنظیمات منطقه انتخابی:</span>
-                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" style="width:auto;padding:2px 6px;font-size:.62rem;">🗑️ حذف</button>
+                    <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="width:27px;height:27px;min-width:27px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:14px;line-height:1;">🗑️</button>
                 </div>
                 <div class="admin-input-group"><label>نام و محله‌های منطقه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
@@ -1656,7 +1656,7 @@ function renderAdminRegionsNav(){
     const menu=document.getElementById('adminRegionWheelMenu');
     if(menu){
         menu.innerHTML='';
-        const options=appData.regions.map(r=>({id:String(r.id),name:r.name||'منطقه بدون نام'}));
+        const options=appData.regions.map((r,index)=>({id:String(r.id),name:r.name||'منطقه بدون نام',number:String(index+1).replace(/\\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])}));
         const wheel=document.createElement('div');
         wheel.id='adminRegionWheelList';
         wheel.setAttribute('role','listbox');
@@ -1670,7 +1670,7 @@ function renderAdminRegionsNav(){
             item.setAttribute('role','option');
             item.setAttribute('aria-selected',String(reg.id===adminActiveRegionId));
             const title=document.createElement('span');
-            title.textContent=reg.id==='new'?'➕ منطقه جدید':'📍 '+reg.name;
+            title.textContent=reg.number+'  '+reg.name;
             const check=document.createElement('span');
             check.className='admin-region-wheel-check';
             check.textContent='✓';
@@ -1687,7 +1687,9 @@ function updateAdminRegionWheelLabel(){
     const label=document.getElementById('adminRegionWheelSelectedText');
     if(!label)return;
     const active=appData.regions&&appData.regions.find(r=>String(r.id)===String(adminActiveRegionId));
-    label.textContent=adminActiveRegionId==='new'?'➕ تعریف منطقه جدید':active?'📍 '+(active.name||'منطقه بدون نام'):'📍 انتخاب منطقه';
+    const activeIndex=active?(appData.regions||[]).findIndex(r=>String(r.id)===String(adminActiveRegionId)):-1;
+    const activeNumber=activeIndex>=0?String(activeIndex+1).replace(/\\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d])+'  ':'';
+    label.textContent=adminActiveRegionId==='new'?'تعریف منطقه جدید':active?activeNumber+(active.name||'منطقه بدون نام'):'انتخاب منطقه';
 }
 function switchAdminRegion(id){
     adminActiveRegionId=id;
