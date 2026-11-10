@@ -3332,6 +3332,49 @@ body[data-theme="light"] #adminModal .admin-workspace :is(.admin-card-section,.a
 body[data-theme="light"] #adminModal .admin-workspace :is(.custom-dropdown-menu,.admin-select-menu,.dropdown-menu){background:#fff!important;color:#263545!important;border:1px solid var(--adm-light-border)!important;box-shadow:0 12px 30px rgba(25,39,55,.14)!important}
 body[data-theme="light"] #adminModal .admin-workspace .custom-dropdown-item:hover{background:#eef2f6!important}
 body[data-theme="light"] #adminModal .admin-header .circle-btn{background:#fff!important;color:#344253!important;border:1px solid var(--adm-light-border)!important}
+
+/* GYM20 light theme refinement: eliminate remaining dark controls and improve contrast */
+body[data-theme="light"] #adminModal .admin-workspace select option,
+body[data-theme="light"] #adminModal .admin-workspace optgroup{
+ background:#fff!important;color:#263545!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.admin-dropdown-trigger,.admin-dropdown-menu,.admin-dropdown-option,.st-custom-select-trigger,.st-custom-select-menu,.st-custom-option,.st-student-trigger,.st-student-option){
+ background:#fff!important;color:#263545!important;border-color:#d8dfe7!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.st-session-card,.st-session-fields,.request-card,.requests-toolbar,.admin-grid-2,.admin-grid-3,.admin-dropdown-option,.admin-select-menu){
+ background:#f7f9fb!important;color:#263545!important;border-color:#dce2e9!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.st-session-card,.request-card,.st-session-fields) :is(span,p,strong,b,label,small,div){
+ color:#344253!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.st-custom-option.selected,.admin-dropdown-option.selected){
+ background:#f8f0dc!important;color:#765617!important;border-color:#dfc37e!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace button:not(.admin-tab-btn):not(.primary):not(.save):not(.danger):hover:not(:disabled){
+ background:#e9edf2!important;color:#202b38!important;border-color:#c8d1dc!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.admin-section-subhead,.admin-input-group label,.admin-dropdown-option,.st-custom-option,.st-student-option){
+ color:#344253!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card,.request-detail-panel,.request-summary,.requests-table-wrap,.promo-settings-shell,.promo-settings-head,.sub-tab-group,.sub-text-panel,.admin-panel-tab>section,.st-session-card,.request-card){
+ background-color:#fff!important;color:#263545!important;border-color:#dce2e9!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card,.request-detail-panel,.request-summary,.requests-table-wrap,.promo-settings-shell,.promo-settings-head,.sub-tab-group,.sub-text-panel,.admin-panel-tab>section,.st-session-card,.request-card) :is(p,span,strong,b,label,small,h2,h3,h4,div){
+ color:#344253;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.st-card,.request-detail-panel,.request-summary,.requests-table-wrap,.promo-settings-shell,.promo-settings-head,.sub-tab-group,.sub-text-panel,.admin-panel-tab>section,.st-session-card,.request-card) :is(.hint,.muted,small){
+ color:#687586!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace :is(input,textarea,select,.admin-select,.custom-dropdown-trigger,.admin-dropdown-trigger,.st-custom-select-trigger,.st-student-trigger){
+ background-color:#fff!important;color:#202b38!important;border-color:#cfd7e0!important;
+}
+body[data-theme="light"] #adminModal .admin-workspace input[type="checkbox"],
+body[data-theme="light"] #adminModal .admin-workspace input[type="radio"]{accent-color:#a77d27!important}
+body[data-theme="light"] #adminModal .admin-workspace table tr,
+body[data-theme="light"] #adminModal .admin-workspace table tbody{background:#fff!important;color:#344253!important}
+body[data-theme="light"] #adminModal .admin-workspace table tr:nth-child(even){background:#f6f8fa!important}
+body[data-theme="light"] #adminModal .admin-workspace .danger,
+body[data-theme="light"] #adminModal .admin-workspace button.danger{background:#fff0f0!important;color:#a92332!important;border-color:#edc4c8!important}
 </style>
 
 </body>
