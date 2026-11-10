@@ -1740,7 +1740,8 @@ function bindAdminRegionWheel(w){
     w._gym20AdminRegionPointerDown=false;w._gym20AdminRegionGestureMoved=false;w._gym20AdminRegionDragged=false;w._gym20AdminRegionLastScrollTop=w.scrollTop;
     w.addEventListener('pointerdown',e=>{
         w._gym20AdminRegionPointerDown=true;w._gym20AdminRegionDragged=false;w._gym20AdminRegionGestureMoved=false;
-        w._gym20AdminRegionStartX=e.clientX;w._gym20AdminRegionStartY=e.clientY;
+        w._gym20AdminRegionStartX=e.clientX;w._gym20AdminRegionStartY=e.clientY;w._gym20AdminRegionStartScrollTop=w.scrollTop;
+        if(e.pointerType==='mouse'&&e.button===0){w._gym20AdminRegionMouseDrag=true;w.style.cursor='grabbing';try{w.setPointerCapture(e.pointerId);}catch(_){}}
         clearTimeout(w._gym20AdminRegionSettleTimer);
     },{passive:true});
     w.addEventListener('pointermove',e=>{
@@ -1748,10 +1749,11 @@ function bindAdminRegionWheel(w){
         const dx=Math.abs(e.clientX-w._gym20AdminRegionStartX),dy=Math.abs(e.clientY-w._gym20AdminRegionStartY);
         if(dx>7||dy>7)w._gym20AdminRegionDragged=true;
         if(dy>7&&dy>dx*1.15)w._gym20AdminRegionGestureMoved=true;
-    },{passive:true});
+        if(w._gym20AdminRegionMouseDrag&&e.buttons===1&&dy>2){w._gym20AdminRegionGestureMoved=true;w.scrollTop=w._gym20AdminRegionStartScrollTop-(e.clientY-w._gym20AdminRegionStartY);e.preventDefault();}
+    },{passive:false});
     const pointerEnd=()=>{
         if(!w._gym20AdminRegionPointerDown)return;
-        w._gym20AdminRegionPointerDown=false;w._gym20AdminRegionStartX=null;w._gym20AdminRegionStartY=null;
+        w._gym20AdminRegionPointerDown=false;w._gym20AdminRegionStartX=null;w._gym20AdminRegionStartY=null;w._gym20AdminRegionMouseDrag=false;w.style.cursor='';
         if(w._gym20AdminRegionGestureMoved)settleAdminRegionWheel(w);
     };
     w.addEventListener('pointerup',pointerEnd,{passive:true});
