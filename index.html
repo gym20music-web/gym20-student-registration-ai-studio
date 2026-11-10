@@ -1858,7 +1858,7 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
   }
 });
 
-function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea');if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=document.getElementById('ruleSelector').value;t.value=appData.rules[currentEditingRuleKey]||'';}
+function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea'),s=window.gym20RuleSelector||document.getElementById('ruleSelector');if(!t||!s)return;if(!appData.rules)appData.rules={};if(currentEditingRuleKey)appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=s.value;t.value=appData.rules[currentEditingRuleKey]||'';}
 
 const adminBtn=document.getElementById('adminBtn');
 const adminModal=document.getElementById('adminModal');
@@ -2081,7 +2081,7 @@ async function testSendTelegramNotification() {
 
 function loadAdminForm(){
     selectTheme(appData.theme||'stealth');
-    currentEditingRuleKey=document.getElementById('ruleSelector').value;safeSetValue('activeRuleTextarea',(appData.rules&&appData.rules[currentEditingRuleKey])||'');
+    currentEditingRuleKey=(window.gym20RuleSelector||document.getElementById('ruleSelector')).value;safeSetValue('activeRuleTextarea',(appData.rules&&appData.rules[currentEditingRuleKey])||'');
     if(appData.multipliers){safeSetValue('editOnlineFactor',appData.multipliers.online||0.8);safeSetValue('editSemiFactor',appData.multipliers.semi||1.4);safeSetValue('editPrivateFactor',appData.multipliers.private||2.0);safeSetValue('editVipFactor',appData.multipliers.vip||3.0);}
     if(appData.sessionRates){safeSetValue('editRate8',appData.sessionRates["8"]||1.0);safeSetValue('editRate10',appData.sessionRates["10"]||1.25);safeSetValue('editRate12',appData.sessionRates["12"]||1.5);}
     const bO=appData.buttons||{};
@@ -4090,59 +4090,91 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
 @media(prefers-reduced-motion:reduce){#gym20RuleWheelList .gym20-rule-item{transition:none!important}}
 </style>
 <script>
-/* gym20RuleWheelV1: mirror the site's centered, touch-scroll region wheel. */
+/* GYM20 Rule Wheel v2 — one visible control, original select retained off-DOM as state. */
 (function(){
- const native=document.getElementById('ruleSelector');if(!native||native.dataset.ruleWheelReady==='1')return;
- native.dataset.ruleWheelReady='1';native.tabIndex=-1;native.setAttribute('aria-hidden','true');native.hidden=true;
- native.style.setProperty('display','none','important');native.style.setProperty('visibility','hidden','important');
- native.style.setProperty('position','absolute','important');native.style.setProperty('width','1px','important');native.style.setProperty('height','1px','important');
- native.style.setProperty('opacity','0','important');native.style.setProperty('pointer-events','none','important');native.style.setProperty('clip-path','inset(50%)','important');
+ const native=document.getElementById('ruleSelector');
+ if(!native||window.gym20RuleWheelV2Ready)return;
+ window.gym20RuleWheelV2Ready=true;
+ window.gym20RuleSelector=native;
+ const host=native.parentElement;
  const wrap=document.createElement('div');wrap.className='gym20-rule-wrap';
  const trigger=document.createElement('button');trigger.type='button';trigger.className='gym20-rule-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
  trigger.innerHTML='<span class="value"></span><span class="arrow">⌄</span>';
- const menu=document.createElement('div');menu.id='gym20RuleWheelMenu';menu.setAttribute('role','listbox');
- const wheel=document.createElement('div');wheel.id='gym20RuleWheelList';
- menu.appendChild(wheel);native.parentNode.insertBefore(wrap,native);wrap.appendChild(trigger);wrap.appendChild(menu);
- const value=trigger.querySelector('.value');let settleTimer=0,gesture=false,pointerDown=false,lastY=0;
- function options(){return Array.from(native.options)}
- function render(){
-   wheel.replaceChildren();const opts=options();
-   opts.forEach(o=>{
-     const b=document.createElement('button');b.type='button';b.className='gym20-rule-item';b.dataset.ruleValue=o.value;b.setAttribute('role','option');b.textContent=o.textContent;
-     const check=document.createElement('span');check.className='gym20-rule-check';check.textContent='✓';b.appendChild(check);wheel.appendChild(b);
-   });
-   sync();if(menu.classList.contains('open'))center(native.value,false);
- }
+ const menu=document.createElement('div');menu.id='gym20RuleWheelMenu';menu.setAttribute('role','presentation');
+ const wheel=document.createElement('div');wheel.id='gym20RuleWheelList';wheel.setAttribute('role','listbox');wheel.setAttribute('aria-label','انتخاب قانون برای ویرایش');
+ menu.appendChild(wheel);wrap.append(trigger,menu);
+ native.remove();
+ host.appendChild(wrap);
+ const value=trigger.querySelector('.value');
+ const opts=()=>Array.from(native.options);
  function sync(){
-   const o=native.options[native.selectedIndex];value.textContent=o?o.textContent:'انتخاب قانون…';
-   wheel.querySelectorAll('.gym20-rule-item').forEach(b=>{const active=b.dataset.ruleValue===native.value;b.classList.toggle('selected',active);b.setAttribute('aria-selected',String(active));});
+  const selected=native.options[native.selectedIndex];
+  value.textContent=selected?selected.textContent:'انتخاب قانون…';
+  wheel.querySelectorAll('.gym20-rule-item').forEach(el=>el.setAttribute('aria-selected',String(el.dataset.ruleValue===native.value)));
+ }
+ function render(){
+  wheel.replaceChildren();
+  const list=opts();
+  [0,1,2].forEach(copy=>list.forEach(o=>{
+   const item=document.createElement('button');item.type='button';item.className='gym20-rule-item';item.dataset.ruleValue=o.value;item.dataset.copy=String(copy);item.setAttribute('role','option');item.textContent=o.textContent;
+   const check=document.createElement('span');check.className='gym20-rule-check';check.textContent='✓';item.appendChild(check);wheel.appendChild(item);
+  }));
+  wheel.dataset.ruleCount=String(list.length);sync();
  }
  function focusItem(){
-   const items=Array.from(wheel.querySelectorAll('.gym20-rule-item'));if(!items.length)return null;
-   const centerY=wheel.getBoundingClientRect().top+wheel.clientHeight/2;let best=null,d=Infinity;
-   items.forEach(x=>{const r=x.getBoundingClientRect(),n=Math.abs(r.top+r.height/2-centerY);if(n<d){d=n;best=x}});
-   items.forEach(x=>x.classList.toggle('wheel-focus',x===best));return best;
+  const items=Array.from(wheel.querySelectorAll('.gym20-rule-item'));if(!items.length)return null;
+  const center=wheel.getBoundingClientRect().top+wheel.clientHeight/2;let best=null,distance=Infinity;
+  items.forEach(item=>{const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<distance){best=item;distance=d;}});
+  items.forEach(item=>item.classList.toggle('wheel-focus',item===best));return best;
  }
- function center(id,smooth){
-   const item=Array.from(wheel.querySelectorAll('.gym20-rule-item')).find(x=>x.dataset.ruleValue===id)||wheel.querySelector('.gym20-rule-item');
-   if(!item)return;wheel.scrollTo({top:item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2,behavior:smooth?'smooth':'auto'});requestAnimationFrame(focusItem);
+ function cycleSize(){
+  const items=wheel.querySelectorAll('.gym20-rule-item'),count=Number(wheel.dataset.ruleCount)||0;
+  return count&&items.length>=count*3?items[count].offsetTop-items[0].offsetTop:0;
  }
- function choose(id){if(!id)return;native.value=id;native.dispatchEvent(new Event('change',{bubbles:true}));sync();close();}
- function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');gesture=false;pointerDown=false;clearTimeout(settleTimer);}
- function settle(){clearTimeout(settleTimer);if(!gesture||pointerDown)return;settleTimer=setTimeout(()=>{const best=focusItem();if(best)choose(best.dataset.ruleValue);gesture=false;},760);}
- trigger.addEventListener('click',()=>{const open=!menu.classList.contains('open');if(open){menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');gesture=false;pointerDown=false;requestAnimationFrame(()=>center(native.value,false));}else close();});
- wheel.addEventListener('pointerdown',()=>{pointerDown=true;gesture=false;clearTimeout(settleTimer);},{passive:true});
- const end=()=>{pointerDown=false;if(gesture)settle()};wheel.addEventListener('pointerup',end,{passive:true});wheel.addEventListener('pointercancel',end,{passive:true});
- wheel.addEventListener('scroll',()=>{if(pointerDown)gesture=true;requestAnimationFrame(focusItem);if(gesture&&!pointerDown)settle();},{passive:true});
- wheel.addEventListener('wheel',()=>{gesture=true;settle()},{passive:true});
- wheel.addEventListener('click',e=>{const b=e.target.closest('.gym20-rule-item');if(b)choose(b.dataset.ruleValue)});
- document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target))close()});
- document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
- native.addEventListener('change',sync);
- new MutationObserver(render).observe(native,{childList:true,subtree:true,characterData:true});
- render();
-})();
-</script>
+ function recycle(){
+  const cycle=cycleSize();if(!cycle)return;
+  if(wheel.scrollTop<cycle*.35)wheel.scrollTop+=cycle;
+  else if(wheel.scrollTop>cycle*1.65)wheel.scrollTop-=cycle;
+ }
+ function centerSelected(){
+  const item=Array.from(wheel.querySelectorAll('.gym20-rule-item')).find(x=>x.dataset.ruleValue===native.value&&x.dataset.copy==='1');
+  if(!item)return;
+  wheel.scrollTop=item.offsetTop-(wheel.clientHeight-item.offsetHeight)/2;
+  requestAnimationFrame(focusItem);
+ }
+ function close(){
+  menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');
+  wheel._pointerDown=false;wheel._moved=false;clearTimeout(wheel._settleTimer);
+ }
+ function choose(id){
+  if(!id)return;
+  native.value=id;
+  if(typeof window.onRuleSelectorChange==='function')window.onRuleSelectorChange();
+  sync();close();
+ }
+ function settle(){
+  clearTimeout(wheel._settleTimer);
+  if(!wheel._moved||wheel._pointerDown)return;
+  wheel._settleTimer=setTimeout(()=>{if(wheel._pointerDown||!wheel._moved)return;const item=focusItem();wheel._moved=false;if(item)choose(item.dataset.ruleValue);},760);
+ }
+ trigger.addEventListener('click',()=>{
+  const open=!menu.classList.contains('open');
+  if(!open){close();return;}
+  menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');
+  wheel._pointerDown=false;wheel._moved=false;clearTimeout(wheel._settleTimer);
+  requestAnimationFrame(centerSelected);
+ });
+ wheel.addEventListener('pointerdown',e=>{wheel._pointerDown=true;wheel._moved=false;wheel._startX=e.clientX;wheel._startY=e.clientY;clearTimeout(wheel._settleTimer);},{passive:true});
+ wheel.addEventListener('pointermove',e=>{if(wheel._pointerDown&&(Math.abs(e.clientX-wheel._startX)>7||Math.abs(e.clientY-wheel._startY)>7))wheel._moved=true;},{passive:true});
+ const pointerEnd=()=>{if(!wheel._pointerDown)return;wheel._pointerDown=false;if(wheel._moved)settle();};
+ wheel.addEventListener('pointerup',pointerEnd,{passive:true});wheel.addEventListener('pointercancel',pointerEnd,{passive:true});
+ wheel.addEventListener('wheel',()=>{wheel._moved=true;settle();},{passive:true});
+ wheel.addEventListener('scroll',()=>{if(wheel._pointerDown)wheel._moved=true;recycle();focusItem();if(wheel._moved&&!wheel._pointerDown)settle();},{passive:true});
+ wheel.addEventListener('click',e=>{const item=e.target.closest('.gym20-rule-item');if(item){e.preventDefault();choose(item.dataset.ruleValue);}});
+ document.addEventListener('pointerdown',e=>{if(!wrap.contains(e.target))close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+ render();sync();
+})();</script>
 
 </body>
 </html>
