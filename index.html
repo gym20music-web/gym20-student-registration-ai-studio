@@ -1858,7 +1858,8 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
   }
 });
 
-function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea'),s=window.gym20RuleSelector||document.getElementById('ruleSelector');if(!t||!s)return;if(!appData.rules)appData.rules={};if(currentEditingRuleKey)appData.rules[currentEditingRuleKey]=t.value;currentEditingRuleKey=s.value;t.value=appData.rules[currentEditingRuleKey]||'';}
+function normalizeRuleText(value){return String(value==null?'':value).replace(/\\r\\n/g,'\n').replace(/\\n/g,'\n').replace(/\\r/g,'\n');}
+function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea'),s=window.gym20RuleSelector||document.getElementById('ruleSelector');if(!t||!s)return;if(!appData.rules)appData.rules={};if(currentEditingRuleKey)appData.rules[currentEditingRuleKey]=normalizeRuleText(t.value);currentEditingRuleKey=s.value;t.value=normalizeRuleText(appData.rules[currentEditingRuleKey]||'');}
 
 const adminBtn=document.getElementById('adminBtn');
 const adminModal=document.getElementById('adminModal');
@@ -2081,7 +2082,7 @@ async function testSendTelegramNotification() {
 
 function loadAdminForm(){
     selectTheme(appData.theme||'stealth');
-    currentEditingRuleKey=(window.gym20RuleSelector||document.getElementById('ruleSelector')).value;safeSetValue('activeRuleTextarea',(appData.rules&&appData.rules[currentEditingRuleKey])||'');
+    currentEditingRuleKey=(window.gym20RuleSelector||document.getElementById('ruleSelector')).value;safeSetValue('activeRuleTextarea',normalizeRuleText((appData.rules&&appData.rules[currentEditingRuleKey])||''));
     if(appData.multipliers){safeSetValue('editOnlineFactor',appData.multipliers.online||0.8);safeSetValue('editSemiFactor',appData.multipliers.semi||1.4);safeSetValue('editPrivateFactor',appData.multipliers.private||2.0);safeSetValue('editVipFactor',appData.multipliers.vip||3.0);}
     if(appData.sessionRates){safeSetValue('editRate8',appData.sessionRates["8"]||1.0);safeSetValue('editRate10',appData.sessionRates["10"]||1.25);safeSetValue('editRate12',appData.sessionRates["12"]||1.5);}
     const bO=appData.buttons||{};
@@ -2112,7 +2113,7 @@ function loadAdminForm(){
 }
 
 function collectFormData(){
-    appData.theme=selectedThemeKey||'stealth';if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=document.getElementById('activeRuleTextarea').value;
+    appData.theme=selectedThemeKey||'stealth';if(!appData.rules)appData.rules={};appData.rules[currentEditingRuleKey]=normalizeRuleText(document.getElementById('activeRuleTextarea').value);
     appData.multipliers={normal:1.0,online:Number(document.getElementById('editOnlineFactor').value)||0.8,semi:Number(document.getElementById('editSemiFactor').value)||1.4,private:Number(document.getElementById('editPrivateFactor').value)||2.0,vip:Number(document.getElementById('editVipFactor').value)||3.0};
     appData.sessionRates={"8":Number(document.getElementById('editRate8').value)||1.0,"10":Number(document.getElementById('editRate10').value)||1.25,"12":Number(document.getElementById('editRate12').value)||1.5};
     const getVal=id=>(document.getElementById(id)?document.getElementById(id).value.trim():'');
@@ -4064,7 +4065,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 <style id="gym20RuleWheelV1">
 #rulesTab .admin-input-group:has(.gym20-rule-wrap){position:relative!important;overflow:visible!important;z-index:40!important}
 #rulesTab .gym20-rule-wrap{position:relative!important;width:100%;direction:rtl;z-index:41}
-#rulesTab #ruleSelector[hidden]{display:none!important;width:0!important;height:0!important;padding:0!important;margin:0!important;border:0!important}
+#rulesTab #ruleSelector{display:none!important;visibility:hidden!important;width:0!important;height:0!important;padding:0!important;margin:0!important;border:0!important;position:absolute!important;pointer-events:none!important}
 #rulesTab .gym20-rule-trigger{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;min-height:38px!important;padding:7px 10px!important;border:1px solid var(--border)!important;border-radius:var(--radius-sm)!important;background:var(--surface-card)!important;color:var(--text-primary)!important;font:inherit!important;font-size:11px!important;text-align:right!important;cursor:pointer!important;touch-action:manipulation!important}
 #rulesTab .gym20-rule-trigger.open{border-color:#d6b35a!important;box-shadow:0 0 10px rgba(214,179,90,.12)!important}
 #rulesTab .gym20-rule-trigger .value{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -4092,18 +4093,21 @@ html[data-theme="light"] #gym20RuleWheelList .gym20-rule-item.wheel-focus{color:
 <script>
 /* GYM20 Rule Wheel v2 — one visible control, original select retained off-DOM as state. */
 (function(){
- const native=document.getElementById('ruleSelector');
- if(!native||window.gym20RuleWheelV2Ready)return;
+ const native=document.getElementById('ruleSelector')||window.gym20RuleSelector;
+ if(!native)return;
+ if(window.gym20RuleWheelV2Ready){document.querySelectorAll('#rulesTab .gym20-rule-wrap').forEach((el,i)=>{if(i>0)el.remove();});return;}
  window.gym20RuleWheelV2Ready=true;
  window.gym20RuleSelector=native;
- const host=native.parentElement;
- const wrap=document.createElement('div');wrap.className='gym20-rule-wrap';
+ const host=native.parentElement||document.querySelector('#rulesTab .admin-input-group');
+ if(!host)return;
+ document.querySelectorAll('#rulesTab .gym20-rule-wrap,#rulesTab #gym20RuleWheelMenu').forEach(el=>el.remove());
+ const wrap=document.createElement('div');wrap.id='gym20RuleWrap';wrap.className='gym20-rule-wrap';
  const trigger=document.createElement('button');trigger.type='button';trigger.className='gym20-rule-trigger';trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
  trigger.innerHTML='<span class="value"></span><span class="arrow">⌄</span>';
  const menu=document.createElement('div');menu.id='gym20RuleWheelMenu';menu.setAttribute('role','presentation');
  const wheel=document.createElement('div');wheel.id='gym20RuleWheelList';wheel.setAttribute('role','listbox');wheel.setAttribute('aria-label','انتخاب قانون برای ویرایش');
  menu.appendChild(wheel);wrap.append(trigger,menu);
- native.remove();
+ native.hidden=true;native.setAttribute('aria-hidden','true');native.style.setProperty('display','none','important');native.remove();
  host.appendChild(wrap);
  const value=trigger.querySelector('.value');
  const opts=()=>Array.from(native.options);
