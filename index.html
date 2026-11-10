@@ -904,174 +904,42 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 @media(min-width:721px){html.gym20-chrome-desktop #customRegionMenu:before{display:none!important;content:none!important;}}
 </style>
 
-<style>
-/* Rules tab selector: same centered wheel physics and presentation as the region picker. */
+<style id="rule-wheel-clean">
+/* GYM20 rules wheel — isolated styles, matching the region wheel geometry. */
 #ruleWheelDropdown{position:relative!important;width:100%;overflow:visible!important}
 #ruleWheelDropdown .rule-wheel-native{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important}
-#ruleWheelTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:38px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:11px;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-#ruleWheelTrigger.open{border-color:#d6b35a;box-shadow:0 0 10px rgba(214,179,90,.13)}
+#ruleWheelTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:34px;min-height:34px;padding:4px 9px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:10.5px;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#ruleWheelTrigger.open{border-color:rgba(214,179,90,.58);box-shadow:0 0 10px rgba(214,179,90,.13)}
 #ruleWheelTrigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #ruleWheelTrigger .rule-wheel-arrow{color:#d6b35a;flex:none;transition:transform .2s ease}
 #ruleWheelTrigger.open .rule-wheel-arrow{transform:rotate(180deg)}
-#ruleWheelMenu{position:absolute!important;top:calc(100% + 6px)!important;right:0!important;left:0!important;bottom:auto!important;width:100%!important;height:222px!important;max-height:222px!important;padding:0!important;display:none;overflow:hidden!important;box-sizing:border-box!important;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;border:1px solid rgba(218,228,238,.18)!important;border-radius:15px!important;box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:12050!important;transform:none!important}
+#ruleWheelMenu{position:fixed!important;display:none;top:0;left:0;right:auto;bottom:auto;width:280px;height:218px;max-height:min(218px,calc(100dvh - 18px));padding:0;overflow:hidden;box-sizing:border-box;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99));border:1px solid rgba(218,228,238,.18);border-radius:15px;box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:999999;transform:none!important}
 #ruleWheelMenu.open{display:flex!important;flex-direction:column!important}
-#ruleWheelMenu:before{content:"";position:absolute;z-index:2;pointer-events:none;left:9px;right:9px;top:50%;height:42px;transform:translateY(-50%);border-top:1px solid rgba(222,190,116,.45);border-bottom:1px solid rgba(222,190,116,.45);border-radius:11px;background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035));box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055)}
+#ruleWheelMenu:before{display:none!important;content:none!important}
 #ruleWheelMenu:after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
-#ruleWheelList{position:relative;z-index:0;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:16px 12px 89px!important;box-sizing:border-box;scroll-padding-block:16px 89px;scroll-snap-type:y proximity;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none}
-#ruleWheelList::-webkit-scrollbar{display:none}
-#ruleWheelList .rule-wheel-item{position:relative;z-index:0;display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%;height:42px!important;min-height:42px!important;flex:0 0 42px!important;margin:0!important;padding:5px 13px!important;border:1px solid transparent!important;border-radius:11px!important;box-sizing:border-box!important;scroll-snap-align:center;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease!important;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer}
-#ruleWheelList .rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;border-color:rgba(225,194,125,.52)!important;box-shadow:0 5px 18px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.07)!important;color:#f0d18a}
-#ruleWheelList .rule-wheel-item>span:first-child{font-size:12px!important;line-height:1.35!important;font-weight:650!important;color:#d9dfe6!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n#ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}
-
-
-
-/* Smooth wheel motion and typography-only options */
-#ruleWheelMenu #ruleWheelList{
- height:100%!important;overflow-y:auto!important;overflow-x:hidden!important;
- padding:63px 7px!important;box-sizing:border-box!important;
- scroll-padding-block:63px!important;scroll-snap-type:y mandatory!important;
- scroll-behavior:smooth!important;overscroll-behavior:contain!important;
- -webkit-overflow-scrolling:touch!important;touch-action:pan-y!important;
- scrollbar-width:none!important;
-}
-#ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none!important}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:hover,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:active,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus-visible,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
- display:flex!important;align-items:center!important;justify-content:center!important;
- height:32px!important;min-height:32px!important;flex:0 0 32px!important;
- margin:0!important;padding:0 8px!important;box-sizing:border-box!important;
- border:0!important;border-width:0!important;border-style:none!important;border-color:transparent!important;
- outline:0!important;outline-offset:0!important;box-shadow:none!important;
- border-radius:0!important;background:transparent!important;
- scroll-snap-align:center!important;scroll-snap-stop:normal!important;
- transform:none!important;filter:none!important;text-decoration:none!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:before,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:after{display:none!important;content:none!important}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{
- display:inline!important;max-width:100%!important;padding:0!important;margin:0!important;
- border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;
- border-radius:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
- font-size:10.5px!important;font-weight:500!important;color:#b9c2ce!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{
- color:#f0d18a!important;font-size:11.5px!important;font-weight:750!important;text-shadow:none!important;
+#ruleWheelMenu #ruleWheelList{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;height:100%;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:y proximity;scroll-behavior:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+#ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item{position:relative;z-index:0;display:flex;flex:0 0 40px;align-items:center;justify-content:space-between;width:100%;height:40px;min-height:40px;max-height:40px;margin:0;padding:5px 13px;box-sizing:border-box;border:1px solid transparent;border-radius:11px;outline:0;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer;scroll-snap-align:center;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease,border-color .2s ease,box-shadow .2s ease}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item:before,#ruleWheelMenu #ruleWheelList>.rule-wheel-item:after{content:none!important;display:none!important}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{display:block;width:100%;max-width:100%;margin:0;padding:0;border:0;outline:0;background:transparent;color:#d9dfe6;font-size:12px;font-weight:650;line-height:1.4;text-align:right;direction:rtl;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10));border-color:transparent;box-shadow:none;color:#f0d18a}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{color:#f0d18a;font-size:13px;font-weight:850;text-shadow:0 0 12px rgba(214,179,90,.19)}
+/* Desktop: outline is attached to the focused row and moves with it. No stationary center frame. */
+@media(min-width:721px){
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item{transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease,border-color .2s ease,box-shadow .2s ease}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{border-color:rgba(222,190,116,.62);box-shadow:inset 0 0 15px rgba(214,179,90,.045),0 0 13px rgba(214,179,90,.06)}
 }
 @media(max-width:720px){
- #ruleWheelMenu #ruleWheelList{padding:64px 6px!important;scroll-padding-block:64px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{height:31px!important;min-height:31px!important;flex-basis:31px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{font-size:10px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{font-size:11px!important}
+ #ruleWheelMenu{width:auto;height:218px;max-height:min(218px,calc(100dvh - 18px));border-radius:15px}
+ #ruleWheelMenu #ruleWheelList{padding:89px 9px;scroll-padding-block:89px}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{font-size:11px}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{font-size:12.5px}
 }
-
-/* Minimal compact rules wheel */
-#ruleWheelTrigger{
- min-height:34px!important;height:34px!important;padding:4px 9px!important;
- border-radius:9px!important;font-size:10.5px!important;gap:6px!important;
- background:rgba(25,32,43,.88)!important;border-color:rgba(255,255,255,.10)!important;
-}
-#ruleWheelTrigger.open{border-color:rgba(214,179,90,.58)!important;box-shadow:0 0 0 1px rgba(214,179,90,.08)!important}
-#ruleWheelMenu{
- height:166px!important;max-height:min(166px,calc(100dvh - 20px))!important;
- padding:5px!important;border-radius:12px!important;
- background:rgba(20,27,37,.985)!important;
- border:1px solid rgba(255,255,255,.10)!important;
- box-shadow:0 10px 26px rgba(0,0,0,.28)!important;
- backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important;
-}
-#ruleWheelList{
- padding:0 7px!important;scroll-padding-block:0!important;
-}
-#ruleWheelList .rule-wheel-item{
- height:32px!important;min-height:32px!important;flex-basis:32px!important;
- padding:3px 8px!important;font-size:10.5px!important;
-}
-#ruleWheelMenu:before{
- left:7px!important;right:7px!important;height:34px!important;
- border-top-color:rgba(214,179,90,.48)!important;
- border-bottom-color:rgba(214,179,90,.48)!important;
- border-radius:8px!important;box-shadow:none!important;
- background:rgba(214,179,90,.055)!important;
-}
-#ruleWheelMenu:after{display:none!important;content:none!important}
-#ruleWheelList .rule-wheel-item>span:first-child{font-size:10.5px!important;font-weight:550!important}
-#ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:11.5px!important;font-weight:750!important;text-shadow:none!important}
-@media(max-width:720px){
- #ruleWheelTrigger{min-height:33px!important;height:33px!important;font-size:10px!important}
- #ruleWheelMenu{height:160px!important;max-height:min(160px,calc(100dvh - 18px))!important;padding:4px!important;border-radius:11px!important}
- #ruleWheelList .rule-wheel-item{height:31px!important;min-height:31px!important;flex-basis:31px!important}
- #ruleWheelMenu:before{height:33px!important}
- #ruleWheelList .rule-wheel-item>span:first-child{font-size:10px!important}
- #ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:11px!important}
-}
-
-/* Hard reset item outlines: the center selector is the only framed element. */
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:hover,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:active,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:focus,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:focus-visible,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item.wheel-focus{
- border:0!important;border-width:0!important;border-style:none!important;border-color:transparent!important;
- outline:0!important;outline-offset:0!important;box-shadow:none!important;
- background:transparent!important;border-radius:0!important;
-}
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:before,
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item:after{content:none!important;display:none!important}
-#ruleWheelMenu #ruleWheelList button.rule-wheel-item.wheel-focus{
- color:#f0d18a!important;opacity:1!important;transform:scale(1)!important;filter:none!important;
-}
-\n#ruleWheelList .rule-wheel-item .rule-wheel-check{font-size:12px;color:#e8c778;margin-right:6px;opacity:0}
-#ruleWheelList .rule-wheel-item.wheel-focus .rule-wheel-check{opacity:1}
-@media(max-width:720px){
- #ruleWheelMenu{position:fixed!important;top:auto!important;right:10px!important;left:10px!important;bottom:max(10px,env(safe-area-inset-bottom))!important;width:auto!important;height:218px!important;max-height:218px!important;border-radius:15px!important;z-index:99999!important}
- #ruleWheelList{padding:14px 10px 88px!important;scroll-padding-block:14px 88px}
- #ruleWheelList .rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
- #ruleWheelMenu:before{height:40px}
- #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
- #ruleWheelList .rule-wheel-item>span:first-child{font-size:11px!important}\n #ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:12.5px!important}
-}
-@media(prefers-reduced-motion:reduce){#ruleWheelList .rule-wheel-item{transition:none!important}#ruleWheelList{scroll-behavior:auto!important}}
-html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(255,255,255,.99),rgba(243,246,249,.99))!important;border-color:#d5bd83!important;box-shadow:0 16px 34px rgba(25,39,55,.16)!important}
+html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(255,255,255,.99),rgba(243,246,249,.99));border-color:rgba(120,130,145,.25);box-shadow:0 16px 34px rgba(25,39,55,.16)}
 html[data-theme="light"] #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(243,246,249,.97))}
-html[data-theme="light"] #ruleWheelList .rule-wheel-item{color:#526071}
-html[data-theme="light"] #ruleWheelList .rule-wheel-item.wheel-focus{color:#795814}
-
-/* Final alignment: keep the rules wheel physically attached to its trigger. */
-#ruleWheelMenu{
- position:fixed!important;top:0;right:auto;bottom:auto!important;left:0;width:280px;
- height:222px!important;max-height:min(222px,calc(100dvh - 24px))!important;
- z-index:999999!important;transform:none!important;
-}
-#ruleWheelMenu:before{
- content:"";position:absolute;z-index:3;pointer-events:none;left:9px;right:9px;top:50%;height:42px;
- transform:translateY(-50%);border:0;border-top:1px solid rgba(222,190,116,.55);
- border-bottom:1px solid rgba(222,190,116,.55);border-radius:11px;
- background:linear-gradient(90deg,rgba(214,179,90,.025),rgba(214,179,90,.12),rgba(214,179,90,.025));
- box-shadow:inset 0 0 16px rgba(214,179,90,.035),0 0 14px rgba(214,179,90,.045);
-}
-#ruleWheelList .rule-wheel-item,
-#ruleWheelList .rule-wheel-item.wheel-focus{
- border:0!important;border-color:transparent!important;border-radius:0!important;
- background:transparent!important;box-shadow:none!important;outline:0!important;
-}
-#ruleWheelList .rule-wheel-item{opacity:.43;transform:scale(.96);filter:blur(.2px)}
-#ruleWheelList .rule-wheel-item.wheel-focus{opacity:1;transform:scale(1);filter:none;color:#f0d18a!important}
-#ruleWheelList .rule-wheel-item .rule-wheel-check{display:none!important}
-#ruleWheelList .rule-wheel-item>span:first-child{font-size:12px!important;font-weight:650!important;color:#d9dfe6!important}
-#ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:13px!important;font-weight:850!important;color:#f0d18a!important;text-shadow:0 0 12px rgba(214,179,90,.19)}
-@media(max-width:720px){
- #ruleWheelMenu{height:218px!important;max-height:min(218px,calc(100dvh - 24px))!important;border-radius:15px!important}
- #ruleWheelMenu:before{height:40px}
- #ruleWheelList .rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
- #ruleWheelList .rule-wheel-item>span:first-child{font-size:11px!important}
- #ruleWheelList .rule-wheel-item.wheel-focus>span:first-child{font-size:12.5px!important}
-}
-
+html[data-theme="light"] #ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{color:#526071}
+html[data-theme="light"] #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{color:#795814}
+@media(prefers-reduced-motion:reduce){#ruleWheelMenu #ruleWheelList>.rule-wheel-item{transition:none!important}#ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}}
 </style>
 </head>
 <body data-color-theme="stealth">
@@ -4310,21 +4178,76 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 
 
 <script>
-/* Dedicated rules wheel: mirrors the region wheel without creating a second selector. */
+/* Dedicated rules wheel: same gesture/centering/cycle model as the GYM20 region wheel. */
 (function(){
- const select=document.getElementById('ruleSelector'),wrap=document.getElementById('ruleWheelDropdown'),trigger=document.getElementById('ruleWheelTrigger'),menu=document.getElementById('ruleWheelMenu'),label=document.getElementById('ruleWheelSelectedText');
- if(!select||!wrap||!trigger||!menu||wrap.dataset.wheelReady==='1')return;wrap.dataset.wheelReady='1';
- /* The menu is positioned with viewport coordinates; keep it under body to avoid tab/ancestor offset errors. */
+ const select=document.getElementById('ruleSelector');
+ const wrap=document.getElementById('ruleWheelDropdown');
+ const trigger=document.getElementById('ruleWheelTrigger');
+ const menu=document.getElementById('ruleWheelMenu');
+ const label=document.getElementById('ruleWheelSelectedText');
+ if(!select||!wrap||!trigger||!menu||!label||wrap.dataset.wheelReady==='1')return;
+ wrap.dataset.wheelReady='1';
  document.body.appendChild(menu);
  let pendingValue=select.value;
- const wheel=()=>menu.querySelector('#ruleWheelList');
- function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
- function updateFocus(keepMovingRow=false){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const wr=w.getBoundingClientRect();const center=wr.top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best){pendingValue=best.dataset.value;const r=best.getBoundingClientRect(),mr=menu.getBoundingClientRect();menu.style.setProperty('--rule-focus-top',(r.top+r.height/2-mr.top)+'px');}return best;}
- function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
  let wheelCommitInProgress=false;
- function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;wheelCommitInProgress=true;select.dispatchEvent(new Event('change',{bubbles:true}));wheelCommitInProgress=false;updateLabel();}
- function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');['top','left','right','bottom','width','max-height'].forEach(p=>menu.style.removeProperty(p));}
- function build(){const opts=[...select.options];menu.innerHTML='';const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(opts.length);[0,1,2].forEach(copy=>opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='rule-wheel-item';b.dataset.value=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===select.value));b.innerHTML='<span>'+o.textContent.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span>';w.appendChild(b);}));menu.appendChild(w);bind(w);}
+ const wheel=()=>menu.querySelector('#ruleWheelList');
+ function updateLabel(){const option=select.options[select.selectedIndex];label.textContent=option?option.textContent:'انتخاب قانون';}
+ function updateFocus(){
+  const w=wheel();if(!w)return null;
+  const items=Array.from(w.querySelectorAll('.rule-wheel-item'));if(!items.length)return null;
+  const rect=w.getBoundingClientRect(),center=rect.top+w.clientHeight/2;
+  let best=null,min=Infinity;
+  items.forEach(item=>{const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<min){min=d;best=item;}});
+  items.forEach(item=>item.classList.toggle('wheel-focus',item===best));
+  if(best)pendingValue=best.dataset.value;
+  return best;
+ }
+ function centerValue(value){
+  const w=wheel();if(!w)return;
+  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='1');
+  if(!item)return;
+  const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;
+  w.scrollTop=top;
+  requestAnimationFrame(updateFocus);
+ }
+ function commit(value){
+  if(!value||!Array.from(select.options).some(o=>o.value===value))return;
+  select.value=value;wheelCommitInProgress=true;
+  select.dispatchEvent(new Event('change',{bubbles:true}));
+  wheelCommitInProgress=false;updateLabel();
+  const w=wheel();if(w)w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===value)));
+ }
+ function close(){
+  const w=wheel();if(w){clearTimeout(w._gym20RuleSettleTimer);w._gym20RuleGestureMoved=false;w._gym20RulePointerDown=false;}
+  menu.classList.remove('open');trigger.classList.remove('open');
+  trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');
+  document.body.classList.remove('rule-sheet-open');
+  ['top','left','right','bottom','width','max-height'].forEach(p=>menu.style.removeProperty(p));
+ }
+ function positionMenu(){
+  const r=trigger.getBoundingClientRect(),gap=6;
+  const width=Math.min(r.width,window.innerWidth-16);
+  const left=Math.max(8,Math.min(r.left,window.innerWidth-width-8));
+  const top=Math.max(8,Math.min(r.bottom+gap,window.innerHeight-218-8));
+  menu.style.setProperty('top',top+'px','important');
+  menu.style.setProperty('left',left+'px','important');
+  menu.style.setProperty('right','auto','important');
+  menu.style.setProperty('bottom','auto','important');
+  menu.style.setProperty('width',width+'px','important');
+  menu.style.setProperty('max-height',Math.min(218,window.innerHeight-16)+'px','important');
+ }
+ function build(){
+  const options=Array.from(select.options);menu.innerHTML='';
+  const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');
+  w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(options.length);
+  [0,1,2].forEach(copy=>options.forEach(option=>{
+   const button=document.createElement('button');button.type='button';button.className='rule-wheel-item';
+   button.dataset.value=option.value;button.dataset.copy=String(copy);
+   button.setAttribute('role','option');button.setAttribute('aria-selected',String(option.value===select.value));
+   const span=document.createElement('span');span.textContent=option.textContent;button.appendChild(span);w.appendChild(button);
+  }));
+  menu.appendChild(w);bind(w);
+ }
  function cycleSize(w){
   const items=w.querySelectorAll('.rule-wheel-item'),count=Number(w.dataset.optionCount)||Math.floor(items.length/3);
   if(!count||items.length<count*3)return 0;
@@ -4338,47 +4261,46 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  }
  function bind(w){
   if(w._gym20RuleBound)return;w._gym20RuleBound=true;
-  w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;w._gym20LastScrollTop=w.scrollTop;
+  w._gym20RulePointerDown=false;w._gym20RuleGestureMoved=false;w._gym20RuleDragged=false;
+  w._gym20RuleLastScrollTop=w.scrollTop;
   function settle(){
-   clearTimeout(w._gym20SettleTimer);
-   if(!w._gym20GestureMoved||w._gym20PointerDown)return;
-   w._gym20SettleTimer=setTimeout(()=>{
-    if(w._gym20PointerDown||!w._gym20GestureMoved)return;
+   clearTimeout(w._gym20RuleSettleTimer);
+   if(!w._gym20RuleGestureMoved||w._gym20RulePointerDown)return;
+   w._gym20RuleSettleTimer=setTimeout(()=>{
+    if(w._gym20RulePointerDown||!w._gym20RuleGestureMoved)return;
     const best=updateFocus();
-    if(best){
-     commit(best.dataset.value);
-     w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x===best)));
-    }
-    w._gym20GestureMoved=false;w._gym20Dragged=false;
+    if(best)commit(best.dataset.value);
+    w._gym20RuleGestureMoved=false;w._gym20RuleDragged=false;
    },760);
   }
-  w._gym20Settle=settle;
   w.addEventListener('pointerdown',e=>{
-   w._gym20PointerDown=true;w._gym20Dragged=false;w._gym20GestureMoved=false;
-   w._gym20StartX=e.clientX;w._gym20StartY=e.clientY;
-   clearTimeout(w._gym20SettleTimer);
+   if(e.pointerType==='mouse'&&e.button!==0)return;
+   w._gym20RulePointerDown=true;w._gym20RuleDragged=false;w._gym20RuleGestureMoved=false;
+   w._gym20RuleStartX=e.clientX;w._gym20RuleStartY=e.clientY;
+   clearTimeout(w._gym20RuleSettleTimer);
   },{passive:true});
   w.addEventListener('pointermove',e=>{
-   if(!w._gym20PointerDown)return;
-   const dx=Math.abs(e.clientX-w._gym20StartX),dy=Math.abs(e.clientY-w._gym20StartY);
-   if(dx>7||dy>7)w._gym20Dragged=true;
-   if(dy>7&&dy>dx*1.15)w._gym20GestureMoved=true;
+   if(!w._gym20RulePointerDown)return;
+   const dx=Math.abs(e.clientX-w._gym20RuleStartX),dy=Math.abs(e.clientY-w._gym20RuleStartY);
+   if(dx>7||dy>7)w._gym20RuleDragged=true;
+   if(dy>7&&dy>dx*1.15)w._gym20RuleGestureMoved=true;
   },{passive:true});
   const pointerEnd=()=>{
-   if(!w._gym20PointerDown)return;
-   w._gym20PointerDown=false;w._gym20StartX=null;w._gym20StartY=null;
-   if(w._gym20GestureMoved)settle();
+   if(!w._gym20RulePointerDown)return;
+   w._gym20RulePointerDown=false;w._gym20RuleStartX=null;w._gym20RuleStartY=null;
+   if(w._gym20RuleGestureMoved)settle();
   };
   w.addEventListener('pointerup',pointerEnd,{passive:true});
   w.addEventListener('pointercancel',pointerEnd,{passive:true});
-  w.addEventListener('wheel',()=>{w._gym20GestureMoved=true;settle();},{passive:true});
+  w.addEventListener('wheel',()=>{w._gym20RuleGestureMoved=true;settle();},{passive:true});
   w.addEventListener('scroll',()=>{
-   const now=w.scrollTop,delta=Math.abs(now-w._gym20LastScrollTop);w._gym20LastScrollTop=now;
-   if(delta>2&&w._gym20PointerDown)w._gym20GestureMoved=true;
-   if(!w._gym20Frame)w._gym20Frame=requestAnimationFrame(()=>{
-    w._gym20Frame=0;recycle(w);updateFocus();
+   const now=w.scrollTop,delta=Math.abs(now-w._gym20RuleLastScrollTop);
+   w._gym20RuleLastScrollTop=now;
+   if(delta>2&&w._gym20RulePointerDown)w._gym20RuleGestureMoved=true;
+   if(!w._gym20RuleFrame)w._gym20RuleFrame=requestAnimationFrame(()=>{
+    w._gym20RuleFrame=0;recycle(w);updateFocus();
    });
-   if(w._gym20GestureMoved&&!w._gym20PointerDown)settle();
+   if(w._gym20RuleGestureMoved&&!w._gym20RulePointerDown)settle();
   },{passive:true});
  }
  document.addEventListener('click',e=>{
@@ -4386,167 +4308,36 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   if(!item||!menu.contains(item))return;
   e.preventDefault();e.stopPropagation();
   const w=wheel();if(!w)return;
-  if(w._gym20Dragged){w._gym20Dragged=false;w._gym20GestureMoved=true;return;}
-  clearTimeout(w._gym20SettleTimer);w._gym20GestureMoved=false;
+  if(w._gym20RuleDragged){w._gym20RuleDragged=false;w._gym20RuleGestureMoved=true;return;}
+  clearTimeout(w._gym20RuleSettleTimer);w._gym20RuleGestureMoved=false;
   commit(item.dataset.value);close();
  },true);
- function positionMenu(){const r=trigger.getBoundingClientRect();const gap=6;const top=Math.max(8,r.bottom+gap);const left=Math.max(8,Math.min(r.left,window.innerWidth-r.width-8));const width=Math.min(r.width,window.innerWidth-16);const maxHeight=Math.min(218,Math.max(100,window.innerHeight-top-12));menu.style.setProperty('top',top+'px','important');menu.style.setProperty('left',left+'px','important');menu.style.setProperty('right','auto','important');menu.style.setProperty('bottom','auto','important');menu.style.setProperty('width',width+'px','important');menu.style.setProperty('max-height',maxHeight+'px','important');}
- function open(){if(menu.classList.contains('open')){close();return;}build();positionMenu();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;const w=wheel();if(w){clearTimeout(w._gym20SettleTimer);w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;w._gym20LastScrollTop=w.scrollTop;}requestAnimationFrame(()=>{centerValue(select.value,false);if(w){w._gym20LastScrollTop=w.scrollTop;w._gym20GestureMoved=false;}});}
+ function open(){
+  if(menu.classList.contains('open')){close();return;}
+  build();positionMenu();menu.classList.add('open');trigger.classList.add('open');
+  trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');
+  document.body.classList.add('rule-sheet-open');pendingValue=select.value;
+  const w=wheel();if(w){clearTimeout(w._gym20RuleSettleTimer);w._gym20RulePointerDown=false;w._gym20RuleGestureMoved=false;w._gym20RuleDragged=false;}
+  requestAnimationFrame(()=>{centerValue(select.value);if(w){w._gym20RuleLastScrollTop=w.scrollTop;w._gym20RuleGestureMoved=false;}});
+ }
  window.addEventListener('resize',()=>{if(menu.classList.contains('open'))positionMenu();},{passive:true});
  document.addEventListener('scroll',()=>{if(menu.classList.contains('open'))positionMenu();},true);
  trigger.addEventListener('click',open);
  trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();open();}else if(e.key==='Escape')close();});
  document.addEventListener('click',e=>{if(!wrap.contains(e.target)&&!menu.contains(e.target))close();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
- select.addEventListener('change',()=>{updateLabel();if(menu.classList.contains('open')){const w=wheel();if(w){w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===select.value)));if(!wheelCommitInProgress)centerValue(select.value,true);}}});
+ select.addEventListener('change',()=>{
+  updateLabel();
+  if(menu.classList.contains('open')){
+   const w=wheel();if(w)w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===select.value)));
+   if(!wheelCommitInProgress)centerValue(select.value);
+  }
+ });
  updateLabel();
 })();
 </script>
 
-<style id="rule-wheel-final-polish">
-/* Rules wheel: match the region wheel's natural motion and centered gold selector. */
-#ruleWheelMenu{
- position:fixed!important;
- height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important;
- padding:0!important;border-radius:15px!important;overflow:hidden!important;
- background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;
- border:1px solid rgba(218,228,238,.18)!important;
- box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07)!important;
-}
-#ruleWheelMenu:before{
- left:9px!important;right:9px!important;height:42px!important;
- border-top:1px solid rgba(222,190,116,.45)!important;
- border-bottom:1px solid rgba(222,190,116,.45)!important;
- border-radius:11px!important;
- background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035))!important;
- box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055)!important;
-}
-#ruleWheelMenu:after{
- display:block!important;content:""!important;left:0!important;right:0!important;bottom:0!important;height:30px!important;
- background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))!important;
-}
-#ruleWheelMenu #ruleWheelList{
- height:100%!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;
- padding:89px 10px!important;box-sizing:border-box!important;scroll-padding-block:89px!important;
- scroll-snap-type:y proximity!important;scroll-behavior:auto!important;
- overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
- touch-action:pan-y!important;scrollbar-width:none!important;
-}
-#ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none!important}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:hover,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:active,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus-visible,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
- display:flex!important;align-items:center!important;justify-content:flex-end!important;
- direction:rtl!important;text-align:right!important;width:100%!important;
- height:40px!important;min-height:40px!important;flex:0 0 40px!important;
- margin:0!important;padding:0 13px!important;box-sizing:border-box!important;
- border:0!important;outline:0!important;box-shadow:none!important;border-radius:0!important;
- background:transparent!important;transform:none!important;filter:none!important;
- scroll-snap-align:center!important;scroll-snap-stop:normal!important;
- opacity:.48!important;transition:opacity .22s ease,color .22s ease!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:before,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:after{display:none!important;content:none!important}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{
- display:block!important;width:100%!important;max-width:100%!important;
- margin:0!important;padding:0!important;text-align:right!important;direction:rtl!important;
- border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;
- white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
- color:#d9dfe6!important;font-size:12px!important;font-weight:600!important;line-height:1.4!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{opacity:1!important}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{
- color:#f0d18a!important;font-size:13px!important;font-weight:850!important;
- text-shadow:0 0 12px rgba(214,179,90,.19)!important;
-}
-#ruleWheelTrigger,#ruleWheelSelectedText{direction:rtl!important;text-align:right!important}
-#ruleWheelTrigger>span:first-child{direction:rtl!important;text-align:right!important}
-@media(max-width:720px){
- #ruleWheelMenu{height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important}
- #ruleWheelMenu #ruleWheelList{padding:89px 9px!important;scroll-padding-block:89px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{font-size:11.5px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{font-size:12.5px!important}
-}
-@media(prefers-reduced-motion:reduce){
- #ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{transition:none!important}
-}
-/* Desktop: the gold frame belongs to the focused row, so it travels with the scroll. */
-@media(min-width:721px){
- #ruleWheelMenu:before{display:none!important;}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{
-  border:1px solid transparent!important;border-radius:10px!important;
-  transition:opacity .16s ease,color .16s ease,border-color .16s ease,background .16s ease,box-shadow .16s ease!important;
- }
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
-  border:1px solid rgba(222,190,116,.62)!important;border-radius:10px!important;
-  background:linear-gradient(90deg,rgba(214,179,90,.045),rgba(214,179,90,.15),rgba(214,179,90,.045))!important;
-  box-shadow:inset 0 0 15px rgba(214,179,90,.045),0 0 13px rgba(214,179,90,.06)!important;
- }
-}
 
-
-/* Exact geometry and motion parity with the region wheel; scoped to the admin rules selector. */
-#ruleWheelMenu{height:218px!important;max-height:min(218px,calc(100dvh - 18px))!important;overflow:hidden!important}
-#ruleWheelMenu:before{height:40px!important}
-#ruleWheelMenu #ruleWheelList{
- padding:89px 10px!important;scroll-padding-block:89px!important;
- scroll-snap-type:y proximity!important;scroll-behavior:auto!important;
- overscroll-behavior-y:contain!important;-webkit-overflow-scrolling:touch!important;
- touch-action:pan-y!important;scrollbar-width:none!important;box-sizing:border-box!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:hover,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:active,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item:focus-visible{
- height:40px!important;min-height:40px!important;flex:0 0 40px!important;
- padding:5px 13px!important;border:1px solid transparent!important;border-radius:11px!important;
- opacity:.43!important;transform:scale(.91)!important;filter:blur(.25px)!important;
- transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease!important;
- scroll-snap-align:center!important;scroll-snap-stop:normal!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
- opacity:1!important;transform:scale(1.025)!important;filter:none!important;
- background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;
- border-color:transparent!important;box-shadow:none!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{
- font-size:12px!important;font-weight:650!important;color:#d9dfe6!important;
-}
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{
- font-size:13px!important;font-weight:850!important;color:#f0d18a!important;
- text-shadow:0 0 12px rgba(214,179,90,.19)!important;
-}
-@media(max-width:720px){
- #ruleWheelMenu:before{height:40px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item>span{font-size:11px!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus>span{font-size:12.5px!important}
-}
-/* Keep the focused row visually active even while the mouse hovers or presses it. */
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:hover,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:active,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:focus,
-#ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus:focus-visible{
- opacity:1!important;transform:scale(1.025)!important;filter:none!important;
- background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;
- border-color:transparent!important;box-shadow:none!important;
-}
-/* Desktop uses a moving frame on the focused row, never a second fixed frame. */
-@media(min-width:721px){
- #ruleWheelMenu:before{display:none!important}
- #ruleWheelMenu #ruleWheelList>button.rule-wheel-item.wheel-focus{
-  border:1px solid rgba(222,190,116,.62)!important;border-radius:10px!important;
-  background:linear-gradient(90deg,rgba(214,179,90,.045),rgba(214,179,90,.15),rgba(214,179,90,.045))!important;
-  box-shadow:inset 0 0 15px rgba(214,179,90,.045),0 0 13px rgba(214,179,90,.06)!important;
- }
-}
-</style>
 
 <script>
 (()=>{const ua=navigator.userAgent||'';const isChromeDesktop=/Chrome\//.test(ua)&&!/Edg\w*\//.test(ua)&&!/OPR\//.test(ua)&&!(/Android|iPhone|iPad/i.test(ua));if(isChromeDesktop){document.documentElement.classList.add('gym20-chrome-desktop');const style=document.createElement('style');style.id='gym20-chrome-region-frame-fix';style.textContent='@media(min-width:721px){#customRegionMenu::before{display:none!important;content:none!important;}}';(document.head||document.documentElement).appendChild(style);}})();
