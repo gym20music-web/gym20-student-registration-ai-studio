@@ -4143,17 +4143,24 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  function updateLabel(){const option=select.options[select.selectedIndex];label.textContent=option?option.textContent:'انتخاب قانون';}
  function updateFocus(){
   const w=wheel();if(!w)return null;
-  const items=Array.from(w.querySelectorAll('.rule-wheel-item'));if(!items.length)return null;
-  const rect=w.getBoundingClientRect(),center=rect.top+w.clientHeight/2;
-  let best=null,min=Infinity;
-  items.forEach(item=>{const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<min){min=d;best=item;}});
-  items.forEach(item=>item.classList.toggle('wheel-focus',item===best));
-  if(best)pendingValue=best.dataset.value;
+  const items=w.children;if(!items.length)return null;
+  /* Rows have a fixed 40px pitch. Resolve the centered row mathematically
+     instead of measuring every duplicate on each animation frame. */
+  const first=items[0],pitch=40;
+  const firstCenter=first.offsetTop+first.offsetHeight/2;
+  const target=w.scrollTop+w.clientHeight/2;
+  const index=Math.max(0,Math.min(items.length-1,Math.round((target-firstCenter)/pitch)));
+  const best=items[index];
+  if(w._gym20RuleFocused!==best){
+   if(w._gym20RuleFocused)w._gym20RuleFocused.classList.remove('wheel-focus');
+   best.classList.add('wheel-focus');w._gym20RuleFocused=best;
+  }
+  pendingValue=best.dataset.value;
   return best;
  }
  function centerValue(value){
   const w=wheel();if(!w)return;
-  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='4');
+  const item=Array.from(w.querySelectorAll('.rule-wheel-item')).find(x=>x.dataset.value===value&&x.dataset.copy==='50');
   if(!item)return;
   const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;
   w.scrollTop=top;
@@ -4189,7 +4196,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   const options=Array.from(select.options);menu.innerHTML='';
   const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');
   w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(options.length);
-  Array.from({length:9},(_,copy)=>copy).forEach(copy=>options.forEach(option=>{
+  Array.from({length:101},(_,copy)=>copy).forEach(copy=>options.forEach(option=>{
    const button=document.createElement('button');button.type='button';button.className='rule-wheel-item';
    button.dataset.value=option.value;button.dataset.copy=String(copy);
    button.setAttribute('role','option');button.setAttribute('aria-selected',String(option.value===select.value));
@@ -4202,16 +4209,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   if(!count||items.length<count*3)return 0;
   return items[count].offsetTop-items[0].offsetTop;
  }
- function recycle(w){
-  const cycle=cycleSize(w);if(!cycle)return;
-  const y=w.scrollTop;
-  /* Keep the visible rows identical while relocating the scroll position
-     into the wide middle buffer. Nine copies prevent reaching a hard edge
-     during ordinary long swipes on either touch or desktop. */
-  const lower=cycle*3,upper=cycle*6;
-  if(y<lower)w.scrollTop=y+Math.ceil((lower-y)/cycle)*cycle;
-  else if(y>upper)w.scrollTop=y-Math.ceil((y-upper)/cycle)*cycle;
- }
+
  function bind(w){
   if(w._gym20RuleBound)return;w._gym20RuleBound=true;
   w._gym20RulePointerDown=false;w._gym20RuleGestureMoved=false;w._gym20RuleDragged=false;
@@ -4221,8 +4219,6 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
    if(!w._gym20RuleGestureMoved||w._gym20RulePointerDown)return;
    w._gym20RuleSettleTimer=setTimeout(()=>{
     if(w._gym20RulePointerDown||!w._gym20RuleGestureMoved)return;
-    /* Recycle only after motion has settled; never rewrite scrollTop mid-gesture. */
-    recycle(w);
     const best=updateFocus();
     if(best)commit(best.dataset.value);
     w._gym20RuleGestureMoved=false;w._gym20RuleDragged=false;
