@@ -900,6 +900,40 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
 @media(max-width:380px){.promo-card{width:min(100%,300px)!important;padding:12px 11px 10px!important}.promo-img{width:60px!important;height:60px!important}.promo-channel-description{padding:9px 10px!important;font-size:9.5px!important}}
 @media(max-height:650px){.promo-card{max-height:calc(100dvh - 14px);padding-top:10px!important;padding-bottom:9px!important}.promo-img{width:54px!important;height:54px!important;margin-bottom:5px!important}.promo-channel-description{margin:6px 0 8px!important;padding:8px 9px!important}.promo-text{margin-bottom:5px!important}}
 </style>
+
+<style>
+/* Rules tab selector: same centered wheel physics and presentation as the region picker. */
+#ruleWheelDropdown{position:relative!important;width:100%;overflow:visible!important}
+#ruleWheelDropdown .rule-wheel-native{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important}
+#ruleWheelTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:38px;padding:6px 10px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:11px;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#ruleWheelTrigger.open{border-color:#d6b35a;box-shadow:0 0 10px rgba(214,179,90,.13)}
+#ruleWheelTrigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ruleWheelTrigger .rule-wheel-arrow{color:#d6b35a;flex:none;transition:transform .2s ease}
+#ruleWheelTrigger.open .rule-wheel-arrow{transform:rotate(180deg)}
+#ruleWheelMenu{position:absolute!important;top:calc(100% + 6px)!important;right:0!important;left:0!important;bottom:auto!important;width:100%!important;height:222px!important;max-height:222px!important;padding:0!important;display:none;overflow:hidden!important;box-sizing:border-box!important;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99))!important;border:1px solid rgba(218,228,238,.18)!important;border-radius:15px!important;box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07)!important;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:12050!important;transform:none!important}
+#ruleWheelMenu.open{display:flex!important;flex-direction:column!important}
+#ruleWheelMenu:before{content:"";position:absolute;z-index:2;pointer-events:none;left:9px;right:9px;top:50%;height:42px;transform:translateY(-50%);border-top:1px solid rgba(222,190,116,.45);border-bottom:1px solid rgba(222,190,116,.45);border-radius:11px;background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035));box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055)}
+#ruleWheelMenu:after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
+#ruleWheelList{position:relative;z-index:0;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:16px 12px 89px!important;box-sizing:border-box;scroll-padding-block:16px 89px;scroll-snap-type:y proximity;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none}
+#ruleWheelList::-webkit-scrollbar{display:none}
+#ruleWheelList .rule-wheel-item{position:relative;z-index:0;display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%;height:42px!important;min-height:42px!important;flex:0 0 42px!important;margin:0!important;padding:5px 13px!important;border:1px solid transparent!important;border-radius:11px!important;box-sizing:border-box!important;scroll-snap-align:center;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease!important;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer}
+#ruleWheelList .rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10))!important;border-color:rgba(225,194,125,.52)!important;box-shadow:0 5px 18px rgba(0,0,0,.24),inset 0 1px rgba(255,255,255,.07)!important;color:#f0d18a}
+#ruleWheelList .rule-wheel-item .rule-wheel-check{font-size:12px;color:#e8c778;margin-right:6px;opacity:0}
+#ruleWheelList .rule-wheel-item.wheel-focus .rule-wheel-check{opacity:1}
+@media(max-width:720px){
+ #ruleWheelMenu{position:fixed!important;top:auto!important;right:10px!important;left:10px!important;bottom:max(10px,env(safe-area-inset-bottom))!important;width:auto!important;height:218px!important;max-height:218px!important;border-radius:15px!important;z-index:99999!important}
+ #ruleWheelList{padding:14px 10px 88px!important;scroll-padding-block:14px 88px}
+ #ruleWheelList .rule-wheel-item{height:40px!important;min-height:40px!important;flex-basis:40px!important}
+ #ruleWheelMenu:before{height:40px}
+ #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
+ #ruleWheelList .rule-wheel-item{font-size:11px!important}
+}
+@media(prefers-reduced-motion:reduce){#ruleWheelList .rule-wheel-item{transition:none!important}#ruleWheelList{scroll-behavior:auto!important}}
+html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(255,255,255,.99),rgba(243,246,249,.99))!important;border-color:#d5bd83!important;box-shadow:0 16px 34px rgba(25,39,55,.16)!important}
+html[data-theme="light"] #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(243,246,249,.97))}
+html[data-theme="light"] #ruleWheelList .rule-wheel-item{color:#526071}
+html[data-theme="light"] #ruleWheelList .rule-wheel-item.wheel-focus{color:#795814}
+</style>
 </head>
 <body data-color-theme="stealth">
 <div class="container">
@@ -1315,17 +1349,23 @@ body{background-color:var(--bg);color:var(--text-primary);min-height:100vh;displ
         <div class="admin-panel-tab" id="rulesTab">
             <div class="admin-input-group">
                 <label style="color:var(--neon-purple);">انتخاب قانون برای ویرایش:</label>
-                <select id="ruleSelector" class="admin-select" onchange="onRuleSelectorChange()">
-                    <option value="online">🌐 شرایط کلاس آنلاین</option>
-                    <option value="vip">👑 شرایط کلاس VIP</option>
-                    <option value="normal">شرایط کلاس عمومی</option>
-                    <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
-                    <option value="private">شرایط کلاس خصوصی</option>
-                    <option value="s8">ترم ۸ جلسه</option>
-                    <option value="s10">ترم ۱۰ جلسه</option>
-                    <option value="s12">ترم ۱۲ جلسه</option>
-                    <option value="general">قوانین عمومی</option>
-                </select>
+                <div id="ruleWheelDropdown" class="rule-wheel-dropdown">
+                    <select id="ruleSelector" class="admin-select rule-wheel-native" onchange="onRuleSelectorChange()" aria-hidden="true" tabindex="-1">
+                        <option value="online">🌐 شرایط کلاس آنلاین</option>
+                        <option value="vip">👑 شرایط کلاس VIP</option>
+                        <option value="normal">شرایط کلاس عمومی</option>
+                        <option value="semi">شرایط کلاس نیمه‌خصوصی</option>
+                        <option value="private">شرایط کلاس خصوصی</option>
+                        <option value="s8">ترم ۸ جلسه</option>
+                        <option value="s10">ترم ۱۰ جلسه</option>
+                        <option value="s12">ترم ۱۲ جلسه</option>
+                        <option value="general">قوانین عمومی</option>
+                    </select>
+                    <button type="button" id="ruleWheelTrigger" class="rule-wheel-trigger" aria-haspopup="listbox" aria-expanded="false">
+                        <span id="ruleWheelSelectedText">🌐 شرایط کلاس آنلاین</span><span class="rule-wheel-arrow">⌄</span>
+                    </button>
+                    <div id="ruleWheelMenu" class="rule-wheel-menu" aria-hidden="true"></div>
+                </div>
             </div>
             <div class="admin-input-group"><textarea rows="5" id="activeRuleTextarea"></textarea></div>
         </div>
@@ -4071,5 +4111,39 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 
 
 
+
+<script>
+/* Dedicated rules wheel: mirrors the region wheel without creating a second selector. */
+(function(){
+ const select=document.getElementById('ruleSelector'),wrap=document.getElementById('ruleWheelDropdown'),trigger=document.getElementById('ruleWheelTrigger'),menu=document.getElementById('ruleWheelMenu'),label=document.getElementById('ruleWheelSelectedText');
+ if(!select||!wrap||!trigger||!menu||wrap.dataset.wheelReady==='1')return;wrap.dataset.wheelReady='1';
+ let pendingValue=select.value;
+ const wheel=()=>menu.querySelector('#ruleWheelList');
+ function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
+ function updateFocus(){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const center=w.getBoundingClientRect().top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best)pendingValue=best.dataset.value;return best;}
+ function cycleSize(w){const items=w.querySelectorAll('.rule-wheel-item'),n=Number(w.dataset.optionCount)||0;return n&&items.length>=n*3?items[n].offsetTop-items[0].offsetTop:0;}
+ function recycle(w){const size=cycleSize(w);if(!size)return;const y=w.scrollTop;if(y<size*.35)w.scrollTop=y+size;else if(y>size*1.65)w.scrollTop=y-size;}
+ function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
+ function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;select.dispatchEvent(new Event('change',{bubbles:true}));updateLabel();}
+ function close(){menu.classList.remove('open');trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');menu.setAttribute('aria-hidden','true');document.body.classList.remove('rule-sheet-open');}
+ function build(){const opts=[...select.options];menu.innerHTML='';const w=document.createElement('div');w.id='ruleWheelList';w.setAttribute('role','listbox');w.setAttribute('aria-label','انتخاب قانون برای ویرایش');w.dataset.optionCount=String(opts.length);[0,1,2].forEach(copy=>opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='rule-wheel-item';b.dataset.value=o.value;b.dataset.copy=String(copy);b.setAttribute('role','option');b.setAttribute('aria-selected',String(o.value===select.value));b.innerHTML='<span>'+o.textContent.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</span><span class="rule-wheel-check">✓</span>';w.appendChild(b);}));menu.appendChild(w);bind(w);}
+ function bind(w){if(w.dataset.bound==='1')return;w.dataset.bound='1';let pointer=false,moved=false,startY=0,last=w.scrollTop,timer=0,frame=0;
+  w.addEventListener('pointerdown',e=>{pointer=true;moved=false;startY=e.clientY;clearTimeout(timer)},{passive:true});
+  const end=()=>{pointer=false;if(moved)settle()};w.addEventListener('pointerup',end,{passive:true});w.addEventListener('pointercancel',end,{passive:true});
+  function settle(){clearTimeout(timer);timer=setTimeout(()=>{if(pointer||!moved)return;const best=updateFocus();if(best){commit(best.dataset.value);w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===best.dataset.value)));moved=false;}},650);}
+  w.addEventListener('pointermove',e=>{if(pointer&&Math.abs(e.clientY-startY)>7)moved=true},{passive:true});
+  w.addEventListener('wheel',()=>{moved=true;settle()},{passive:true});
+  w.addEventListener('scroll',()=>{const now=w.scrollTop;if(pointer&&Math.abs(now-last)>2)moved=true;last=now;if(!frame)frame=requestAnimationFrame(()=>{frame=0;recycle(w);updateFocus()});if(moved&&!pointer)settle()},{passive:true});
+  w.addEventListener('click',e=>{const item=e.target.closest('.rule-wheel-item');if(!item)return;commit(item.dataset.value);close();});
+ }
+ function open(){if(menu.classList.contains('open')){close();return;}build();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;requestAnimationFrame(()=>centerValue(select.value,false));}
+ trigger.addEventListener('click',open);
+ trigger.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();open();}else if(e.key==='Escape')close();});
+ document.addEventListener('click',e=>{if(!wrap.contains(e.target)&&!menu.contains(e.target))close();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+ select.addEventListener('change',()=>{updateLabel();if(menu.classList.contains('open')){const w=wheel();if(w){w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x.dataset.value===select.value)));centerValue(select.value,false);}}});
+ updateLabel();
+})();
+</script>
 </body>
 </html>
