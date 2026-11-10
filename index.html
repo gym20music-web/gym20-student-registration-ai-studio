@@ -3568,6 +3568,77 @@ body[data-theme="light"] #adminModal .admin-workspace .price-input-wrapper input
   opacity:1!important;
 }
 
+
+/* GYM20 tuition visibility fix — final authority for the amount and its supporting labels */
+html body .price-box{
+  background:linear-gradient(145deg,#303944 0%,#202832 100%)!important;
+  border:1px solid rgba(238,196,94,.62)!important;
+}
+html body .price-box #finalPrice,
+html body .price-box .total-price,
+html body #finalPrice.total-price{
+  display:block!important;
+  color:#ffdc78!important;
+  -webkit-text-fill-color:#ffdc78!important;
+  opacity:1!important;
+  visibility:visible!important;
+  text-shadow:0 1px 0 rgba(0,0,0,.35)!important;
+  font-size:clamp(1.25rem,5vw,1.55rem)!important;
+  font-weight:900!important;
+  line-height:1.55!important;
+  letter-spacing:0!important;
+}
+html body .price-box #priceBreakdown,
+html body .price-box .price-details{
+  color:#e1e7ee!important;
+  -webkit-text-fill-color:#e1e7ee!important;
+  opacity:1!important;
+  font-weight:600!important;
+}
+html body .price-box #txt_tuitionLabel{
+  color:#f4f6f8!important;
+  -webkit-text-fill-color:#f4f6f8!important;
+  opacity:1!important;
+  font-weight:800!important;
+}
+html body .price-input-wrapper .price-currency-tag{
+  color:#f3cc70!important;
+  -webkit-text-fill-color:#f3cc70!important;
+  opacity:1!important;
+}
+html[data-theme="light"] body .price-box,
+body[data-theme="light"] .price-box{
+  background:linear-gradient(145deg,#ffffff 0%,#f5f7fa 100%)!important;
+  border:1px solid #c9a85c!important;
+}
+html[data-theme="light"] body .price-box #finalPrice,
+html[data-theme="light"] body .price-box .total-price,
+html[data-theme="light"] body #finalPrice.total-price,
+body[data-theme="light"] .price-box #finalPrice,
+body[data-theme="light"] .price-box .total-price,
+body[data-theme="light"] #finalPrice.total-price{
+  color:#684400!important;
+  -webkit-text-fill-color:#684400!important;
+  text-shadow:none!important;
+}
+html[data-theme="light"] body .price-box #priceBreakdown,
+html[data-theme="light"] body .price-box .price-details,
+body[data-theme="light"] .price-box #priceBreakdown,
+body[data-theme="light"] .price-box .price-details{
+  color:#39485a!important;
+  -webkit-text-fill-color:#39485a!important;
+}
+html[data-theme="light"] body .price-box #txt_tuitionLabel,
+body[data-theme="light"] .price-box #txt_tuitionLabel{
+  color:#263545!important;
+  -webkit-text-fill-color:#263545!important;
+}
+html[data-theme="light"] body .price-input-wrapper .price-currency-tag,
+body[data-theme="light"] .price-input-wrapper .price-currency-tag{
+  color:#795814!important;
+  -webkit-text-fill-color:#795814!important;
+}
+
 </style>
 
 </body>
