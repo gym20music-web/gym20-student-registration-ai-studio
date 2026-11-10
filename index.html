@@ -4337,56 +4337,61 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   else if(y>cycle*1.65)w.scrollTop=y-cycle;
  }
  function bind(w){
-  if(w.dataset.bound==='1')return;w.dataset.bound='1';
-  let pointer=false,gesture=false,dragged=false,startX=0,startY=0,settleTimer=0,frame=0,lastTop=w.scrollTop;
+  if(w._gym20RuleBound)return;w._gym20RuleBound=true;
+  w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;w._gym20LastScrollTop=w.scrollTop;
   function settle(){
-   clearTimeout(settleTimer);
-   if(!gesture||pointer)return;
-   settleTimer=setTimeout(()=>{
-    if(pointer||!gesture)return;
+   clearTimeout(w._gym20SettleTimer);
+   if(!w._gym20GestureMoved||w._gym20PointerDown)return;
+   w._gym20SettleTimer=setTimeout(()=>{
+    if(w._gym20PointerDown||!w._gym20GestureMoved)return;
     const best=updateFocus();
     if(best){
      commit(best.dataset.value);
      w.querySelectorAll('.rule-wheel-item').forEach(x=>x.setAttribute('aria-selected',String(x===best)));
     }
-    gesture=false;dragged=false;
+    w._gym20GestureMoved=false;w._gym20Dragged=false;
    },760);
   }
+  w._gym20Settle=settle;
   w.addEventListener('pointerdown',e=>{
-   pointer=true;gesture=false;dragged=false;startX=e.clientX;startY=e.clientY;
-   clearTimeout(settleTimer);
+   w._gym20PointerDown=true;w._gym20Dragged=false;w._gym20GestureMoved=false;
+   w._gym20StartX=e.clientX;w._gym20StartY=e.clientY;
+   clearTimeout(w._gym20SettleTimer);
   },{passive:true});
   w.addEventListener('pointermove',e=>{
-   if(!pointer)return;
-   const dx=Math.abs(e.clientX-startX),dy=Math.abs(e.clientY-startY);
-   if(dx>7||dy>7)dragged=true;
-   if(dy>7&&dy>dx*1.15)gesture=true;
+   if(!w._gym20PointerDown)return;
+   const dx=Math.abs(e.clientX-w._gym20StartX),dy=Math.abs(e.clientY-w._gym20StartY);
+   if(dx>7||dy>7)w._gym20Dragged=true;
+   if(dy>7&&dy>dx*1.15)w._gym20GestureMoved=true;
   },{passive:true});
   const pointerEnd=()=>{
-   if(!pointer)return;
-   pointer=false;
-   if(gesture)settle();
+   if(!w._gym20PointerDown)return;
+   w._gym20PointerDown=false;w._gym20StartX=null;w._gym20StartY=null;
+   if(w._gym20GestureMoved)settle();
   };
   w.addEventListener('pointerup',pointerEnd,{passive:true});
   w.addEventListener('pointercancel',pointerEnd,{passive:true});
-  w.addEventListener('wheel',()=>{gesture=true;settle();},{passive:true});
+  w.addEventListener('wheel',()=>{w._gym20GestureMoved=true;settle();},{passive:true});
   w.addEventListener('scroll',()=>{
-   const now=w.scrollTop,delta=Math.abs(now-lastTop);lastTop=now;
-   if(delta>2&&pointer)gesture=true;
-   if(!frame)frame=requestAnimationFrame(()=>{
-    frame=0;recycle(w);updateFocus(gesture||pointer);
+   const now=w.scrollTop,delta=Math.abs(now-w._gym20LastScrollTop);w._gym20LastScrollTop=now;
+   if(delta>2&&w._gym20PointerDown)w._gym20GestureMoved=true;
+   if(!w._gym20Frame)w._gym20Frame=requestAnimationFrame(()=>{
+    w._gym20Frame=0;recycle(w);updateFocus();
    });
-   if(gesture&&!pointer)settle();
+   if(w._gym20GestureMoved&&!w._gym20PointerDown)settle();
   },{passive:true});
-  w.addEventListener('click',e=>{
-   const item=e.target.closest('.rule-wheel-item');if(!item)return;
-   if(dragged){dragged=false;return;}
-   clearTimeout(settleTimer);gesture=false;
-   commit(item.dataset.value);close();
-  });
  }
+ document.addEventListener('click',e=>{
+  const item=e.target&&e.target.closest?e.target.closest('.rule-wheel-item'):null;
+  if(!item||!menu.contains(item))return;
+  e.preventDefault();e.stopPropagation();
+  const w=wheel();if(!w)return;
+  if(w._gym20Dragged){w._gym20Dragged=false;w._gym20GestureMoved=true;return;}
+  clearTimeout(w._gym20SettleTimer);w._gym20GestureMoved=false;
+  commit(item.dataset.value);close();
+ },true);
  function positionMenu(){const r=trigger.getBoundingClientRect();const gap=6;const top=Math.max(8,r.bottom+gap);const left=Math.max(8,Math.min(r.left,window.innerWidth-r.width-8));const width=Math.min(r.width,window.innerWidth-16);const maxHeight=Math.max(100,window.innerHeight-top-12);menu.style.setProperty('top',top+'px','important');menu.style.setProperty('left',left+'px','important');menu.style.setProperty('right','auto','important');menu.style.setProperty('bottom','auto','important');menu.style.setProperty('width',width+'px','important');menu.style.setProperty('max-height',maxHeight+'px','important');}
- function open(){if(menu.classList.contains('open')){close();return;}build();positionMenu();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;requestAnimationFrame(()=>centerValue(select.value,false));}
+ function open(){if(menu.classList.contains('open')){close();return;}build();positionMenu();menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');document.body.classList.add('rule-sheet-open');pendingValue=select.value;const w=wheel();if(w){clearTimeout(w._gym20SettleTimer);w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;w._gym20LastScrollTop=w.scrollTop;}requestAnimationFrame(()=>{centerValue(select.value,false);if(w){w._gym20LastScrollTop=w.scrollTop;w._gym20GestureMoved=false;}});}
  window.addEventListener('resize',()=>{if(menu.classList.contains('open'))positionMenu();},{passive:true});
  document.addEventListener('scroll',()=>{if(menu.classList.contains('open'))positionMenu();},true);
  trigger.addEventListener('click',open);
