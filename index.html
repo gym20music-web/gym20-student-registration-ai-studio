@@ -4483,7 +4483,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 </style>
 
 <script>
-(()=>{const ua=navigator.userAgent||'';if(/Chrome\//.test(ua)&&!/Edg\//.test(ua)&&!/OPR\//.test(ua)){document.documentElement.classList.add('gym20-chrome-desktop');}})();
+(()=>{const ua=navigator.userAgent||'';const isChromeDesktop=/Chrome\//.test(ua)&&!/Edg\w*\//.test(ua)&&!/OPR\//.test(ua)&&!(/Android|iPhone|iPad/i.test(ua));if(isChromeDesktop){document.documentElement.classList.add('gym20-chrome-desktop');const style=document.createElement('style');style.id='gym20-chrome-region-frame-fix';style.textContent='@media(min-width:721px){#customRegionMenu::before{display:none!important;content:none!important;}}';(document.head||document.documentElement).appendChild(style);}})();
 </script>
 </body>
 </html>
