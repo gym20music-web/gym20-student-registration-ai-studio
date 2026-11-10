@@ -3639,6 +3639,189 @@ body[data-theme="light"] .price-input-wrapper .price-currency-tag{
   -webkit-text-fill-color:#795814!important;
 }
 
+
+/* ADMIN PANEL LIGHT THEME AUDIT — consistent contrast across every tab and nested panel */
+html[data-theme="light"] #adminModal,
+html[data-theme="light"] #adminModal .admin-content,
+html[data-theme="light"] #adminModal .admin-layout,
+html[data-theme="light"] #adminModal .admin-header,
+html[data-theme="light"] #adminModal .admin-sidebar,
+html[data-theme="light"] #adminModal .admin-workspace,
+html[data-theme="light"] #adminModal .admin-panel-tab,
+html[data-theme="light"] #adminModal .sub-text-panel,
+html[data-theme="light"] #adminModal .admin-tabs{
+  --neon-green:#18794e!important;
+  --neon-blue:#8a651d!important;
+  --neon-purple:#8b641d!important;
+  --text-primary:#202b38!important;
+  --text-secondary:#5d6978!important;
+  --surface:#ffffff!important;
+  --surface-card:#f5f7fa!important;
+  --border:#d9e0e8!important;
+  background-color:#f3f5f8!important;
+  color:#263545!important;
+}
+html[data-theme="light"] #adminModal .admin-header{
+  background:#fff!important;border-bottom:1px solid #dce3eb!important;
+}
+html[data-theme="light"] #adminModal .admin-sidebar{
+  background:#e9edf2!important;border-color:#d7dfe8!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace{
+  background:#f3f5f8!important;
+}
+html[data-theme="light"] #adminModal .admin-tab-btn{
+  background:transparent!important;color:#465466!important;border-color:transparent!important;
+}
+html[data-theme="light"] #adminModal .admin-tab-btn:hover{
+  background:#fff!important;color:#202b38!important;border-color:#dce3eb!important;
+}
+html[data-theme="light"] #adminModal .admin-tab-btn.active{
+  background:#fff!important;color:#765414!important;border-color:#dfcfaa!important;
+  box-shadow:inset -3px 0 0 #b58a35,0 2px 8px rgba(28,43,60,.06)!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-card-section,.admin-region-box,.st-card,.st-session-card,.st-session-fields,
+  .request-card,.request-detail-panel,.request-summary,.requests-table-wrap,.requests-toolbar,
+  .promo-settings-shell,.promo-settings-head,.promo-toggle-stack,.promo-channel-preview,
+  .sub-tab-group,.sub-text-panel,.admin-panel-tab>section,.theme-card-option,
+  .admin-style-row,.request-row,.student-row,.admin-grid-2,.admin-grid-3,
+  #adminClassStylesChips
+){
+  background:#fff!important;color:#263545!important;border-color:#dce3eb!important;
+  box-shadow:0 3px 12px rgba(30,43,58,.045)!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-section-subhead,.admin-input-group label,.promo-settings-head h3,
+  .promo-toggle-copy strong,.admin-dropdown-label,.theme-card-option,
+  .sub-tab-btn,.sub-text-panel p,.sub-text-panel div,.admin-region-box>div>span,
+  .admin-workspace h1,.admin-workspace h2,.admin-workspace h3,.admin-workspace h4,
+  .admin-workspace p,.admin-workspace small,.admin-workspace label,
+  .admin-workspace strong,.admin-workspace b,.admin-workspace td,
+  .admin-workspace th,.admin-workspace li
+):not(.request-status):not(.request-feedback):not(.promo-channel-status):not(.registration-status){
+  color:#344253!important;
+  -webkit-text-fill-color:#344253!important;
+  text-shadow:none!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(.hint,.muted,.description,.help-text,.promo-field-hint,.promo-toggle-copy small){
+  color:#687586!important;-webkit-text-fill-color:#687586!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  input:not([type=checkbox]):not([type=radio]):not([type=color]):not([type=hidden]),
+  textarea,select,.admin-select,[contenteditable=true],
+  .admin-dropdown-trigger,.st-custom-select-trigger,.st-student-trigger
+){
+  background:#fff!important;color:#202b38!important;-webkit-text-fill-color:#202b38!important;
+  border-color:#cbd5df!important;box-shadow:none!important;caret-color:#765414!important;
+  color-scheme:light!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(input,textarea,select)::placeholder{
+  color:#8793a1!important;-webkit-text-fill-color:#8793a1!important;opacity:1!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace select option,
+html[data-theme="light"] #adminModal .admin-workspace select optgroup{
+  background:#fff!important;color:#263545!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-dropdown-menu,.admin-select-menu,.dropdown-menu,.st-custom-select-menu
+){
+  background:#fff!important;color:#263545!important;border:1px solid #d5bd83!important;
+  box-shadow:0 12px 28px rgba(25,39,55,.14)!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-dropdown-option,.st-custom-option,.st-student-option
+){
+  background:#fff!important;color:#344253!important;border-color:#e5e9ef!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-dropdown-option:hover,.st-custom-option:hover,.st-student-option:hover
+){
+  background:#f1f4f7!important;color:#202b38!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-dropdown-option.selected,.st-custom-option.selected,.st-student-option.selected
+){
+  background:#f8f1df!important;color:#795814!important;border-color:#dfc37e!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace .sub-tab-btn{
+  background:#f1f4f7!important;color:#465466!important;border:1px solid #dce3eb!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace .sub-tab-btn.active{
+  background:#fff!important;color:#765414!important;border-color:#d8bd7c!important;
+  box-shadow:inset 0 -2px 0 #b58a35!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace button:not(.danger):not(.request-action-btn):not(.admin-tab-btn){
+  background:#eef2f6!important;color:#344253!important;border-color:#d5dde6!important;
+  -webkit-text-fill-color:#344253!important;text-shadow:none!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace button.primary,
+html[data-theme="light"] #adminModal .admin-workspace button.save,
+html[data-theme="light"] #adminModal .admin-workspace .btn-primary,
+html[data-theme="light"] #adminModal .admin-workspace #autoCommitBtn,
+html[data-theme="light"] #adminModal .admin-workspace .pill-btn.active{
+  background:linear-gradient(135deg,#e0c16e,#bd9140)!important;color:#211a0d!important;
+  -webkit-text-fill-color:#211a0d!important;border-color:#c49a42!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace button.danger,
+html[data-theme="light"] #adminModal .admin-workspace .danger{
+  background:#fff0f0!important;color:#a92332!important;-webkit-text-fill-color:#a92332!important;
+  border-color:#edc4c8!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace table,
+html[data-theme="light"] #adminModal .admin-workspace tbody,
+html[data-theme="light"] #adminModal .admin-workspace tr{
+  background:#fff!important;color:#344253!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace th{
+  background:#edf1f5!important;color:#344253!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace td{
+  color:#344253!important;border-color:#e2e7ed!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace .request-status.pending{color:#8a5b00!important;background:#fff4d6!important}
+html[data-theme="light"] #adminModal .admin-workspace .request-status.approved{color:#146c43!important;background:#e6f6ed!important}
+html[data-theme="light"] #adminModal .admin-workspace .request-status.rejected{color:#a92332!important;background:#fff0f0!important}
+html[data-theme="light"] #adminModal .admin-workspace .request-status.converted{color:#185a9d!important;background:#eaf3ff!important}
+html[data-theme="light"] #adminModal .admin-workspace .request-feedback{color:#526071!important}
+html[data-theme="light"] #adminModal .admin-workspace .promo-channel-status{background:#f5f7fa!important;color:#536171!important}
+html[data-theme="light"] #adminModal .admin-workspace .promo-channel-status.success{background:#e8f7ef!important;color:#146c43!important}
+html[data-theme="light"] #adminModal .admin-workspace .promo-channel-status.error{background:#fff0f0!important;color:#a92332!important}
+html[data-theme="light"] #adminModal .admin-workspace #promoTab .promo-fetch-btn{
+  background:#f8f1df!important;color:#765414!important;border-color:#dfcfaa!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace #tgTestResultBox,
+html[data-theme="light"] #adminModal .admin-workspace #adminModulesStatus{
+  color:#765414!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace [style*="background:#"],
+html[data-theme="light"] #adminModal .admin-workspace [style*="background: #"]{
+  background-color:#fff!important;
+}
+html[data-theme="light"] #adminModal .admin-workspace :is(
+  .admin-input-group,.admin-card-section,.admin-region-box,.promo-settings-shell,
+  .promo-toggle-stack,.promo-channel-preview,.request-summary,.requests-toolbar,
+  .request-detail-panel,.requests-table-wrap,.sub-tab-group,.sub-text-panel
+){
+  color:#344253!important;
+}
+@media(max-width:720px){
+  html[data-theme="light"] #adminModal .admin-sidebar{background:#e9edf2!important}
+  html[data-theme="light"] #adminModal .admin-tab-btn{font-size:10px!important}
+  html[data-theme="light"] #adminModal .admin-workspace{background:#f3f5f8!important}
+}
+
+/* Dark-mode admin contrast: consistent readable secondary text and tab states */
+html:not([data-theme="light"]) #adminModal .admin-workspace :is(.hint,.muted,.description,.help-text){
+  color:#aeb8c5!important;
+}
+html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn{
+  color:#d5dce5!important;
+}
+html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
+  color:#f2d48b!important;
+}
+
 </style>
 
 </body>
