@@ -4310,7 +4310,7 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  let pendingValue=select.value;
  const wheel=()=>menu.querySelector('#ruleWheelList');
  function updateLabel(){const o=select.options[select.selectedIndex];label.textContent=o?o.textContent:'انتخاب قانون';}
- function updateFocus(){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const center=w.getBoundingClientRect().top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best)pendingValue=best.dataset.value;return best;}
+ function updateFocus(){const w=wheel();if(!w)return null;const items=[...w.querySelectorAll('.rule-wheel-item')];const wr=w.getBoundingClientRect(),center=wr.top+w.clientHeight/2;let best=null,dist=Infinity;items.forEach(it=>{const r=it.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<dist){best=it;dist=d;}});items.forEach(it=>it.classList.toggle('wheel-focus',it===best));if(best){pendingValue=best.dataset.value;const r=best.getBoundingClientRect(),mr=menu.getBoundingClientRect();menu.style.setProperty('--rule-focus-top',(r.top+r.height/2-mr.top)+'px');}return best;}
  function centerValue(value,smooth){const w=wheel();if(!w)return;const item=[...w.querySelectorAll('.rule-wheel-item')].find(x=>x.dataset.value===value&&x.dataset.copy==='1');if(!item)return;const top=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;if(smooth)w.scrollTo({top,behavior:'smooth'});else w.scrollTop=top;requestAnimationFrame(updateFocus);}
  let wheelCommitInProgress=false;
  function commit(value){if(!value||!Array.from(select.options).some(o=>o.value===value))return;select.value=value;wheelCommitInProgress=true;select.dispatchEvent(new Event('change',{bubbles:true}));wheelCommitInProgress=false;updateLabel();}
@@ -4457,6 +4457,8 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
  #ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}
  #ruleWheelMenu #ruleWheelList>button.rule-wheel-item{transition:none!important}
 }
+@media(min-width:721px){#ruleWheelMenu:before{top:var(--rule-focus-top,50%)!important;transition:top .045s linear!important;}}
+
 </style>
 </body>
 </html>
