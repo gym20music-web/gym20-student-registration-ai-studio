@@ -1858,7 +1858,7 @@ document.getElementById('requestsTableContainer').addEventListener('change',e=>{
   }
 });
 
-function normalizeRuleText(value){return String(value==null?'':value).replace(/\\r\\n/g,'\n').replace(/\\n/g,'\n').replace(/\\r/g,'\n');}
+function normalizeRuleText(value){return String(value==null?'':value).replace(/\r\n?/g,'\n').replace(/\\+r\\+n/g,'\n').replace(/\\+n/g,'\n').replace(/\\+r/g,'\n');}
 function onRuleSelectorChange(){const t=document.getElementById('activeRuleTextarea'),s=window.gym20RuleSelector||document.getElementById('ruleSelector');if(!t||!s)return;if(!appData.rules)appData.rules={};if(currentEditingRuleKey)appData.rules[currentEditingRuleKey]=normalizeRuleText(t.value);currentEditingRuleKey=s.value;t.value=normalizeRuleText(appData.rules[currentEditingRuleKey]||'');}
 
 const adminBtn=document.getElementById('adminBtn');
@@ -2170,8 +2170,10 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
                 body: JSON.stringify({ p_config: appData, p_pin: '1234' })
             });
             if (dbRpcRes.ok) {
-                dbSynced = true;
-            } else {
+                const rpcResult = await dbRpcRes.json().catch(() => false);
+                dbSynced = rpcResult === true;
+            }
+            if (!dbSynced) {
                 // تلاش پشتیبان: آپدیت مستقیم ردیف تنظیمات در جدول site_settings
                 const dbPatchRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/site_settings?key=eq.public_site_config', {
                     method: 'PATCH',
@@ -2180,26 +2182,29 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
                         'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
                         'Content-Type': 'application/json',
                         'Content-Profile': 'gym20',
-                        'Accept-Profile': 'gym20'
+                        'Accept-Profile': 'gym20',
+                        'Prefer': 'return=representation'
                     },
                     body: JSON.stringify({ value: appData })
                 });
-                if (dbPatchRes.ok) dbSynced = true;
+                if (dbPatchRes.ok) {
+                    const patchedRows = await dbPatchRes.json().catch(() => []);
+                    dbSynced = Array.isArray(patchedRows) && patchedRows.length > 0;
+                }
             }
         } catch(e) {
             console.warn('Supabase DB save error:', e);
         }
 
-        adminModal.style.display='none';
         if(dbSynced){
-            alert('✅ تنظیمات در دیتابیس آنلاین ذخیره شد و برای همه کاربران اعمال می‌شود.');
+            adminModal.style.display='none';
+            alert('✅ تنظیمات در دیتابیس آنلاین ذخیره و تأیید شد؛ برای همه کاربران اعمال می‌شود.');
         } else {
-            alert('⚠️ اتصال دیتابیس برقرار نشد؛ تنظیمات فقط روی همین مرورگر ذخیره شد.');
+            alert('⚠️ ذخیره آنلاین تأیید نشد. تغییرات فعلاً فقط در همین مرورگر هستند؛ پنل باز می‌ماند تا دوباره تلاش کنید.');
         }
     }catch(err){
         console.error(err);
-        adminModal.style.display='none';
-        alert('✅ تغییرات روی مرورگر شما ذخیره و اعمال شد!');
+        alert('❌ ذخیره تنظیمات کامل نشد: ' + String(err.message || err) + '؛ پنل باز می‌ماند.');
     }finally{
         btn.innerText=oldText;btn.disabled=false;
     }
@@ -2616,6 +2621,7 @@ function normalizeGym20SiteConfig(data){
   if(!Array.isArray(appData.regions))appData.regions=[];
   if(!Array.isArray(appData.styles))appData.styles=[];
   if(!appData.rules)appData.rules={};
+  Object.keys(appData.rules).forEach(key=>{appData.rules[key]=normalizeRuleText(appData.rules[key]);});
   if(!appData.rules.online)appData.rules.online="• برگزاری کلاس‌ها به‌صورت زنده (Live) با ارتباط تصویری دوطرفه.\n• نظارت مستقیم مربی بر اجرای صحیح تکنیک‌ها.";
   if(!appData.classTypesConfig)appData.classTypesConfig={normal:{enabled:true,statusText:"",allowedStyles:[]},semi:{enabled:true,statusText:"",allowedStyles:[]},private:{enabled:true,statusText:"",allowedStyles:[]},vip:{enabled:true,statusText:"",allowedStyles:[]},online:{enabled:true,statusText:"",allowedStyles:[]}};
   if(!appData.promoPopup)appData.promoPopup={enabled:true,title:"✨ گالری اکسسوری و استایل میوکس",text:"خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های ورزشی با تخفیف ویژه همراهان آکادمی GYM20!",code:"MEOX20",link:"https://t.me/MEOWX_ACCS",img:"",btnText:"ورود به کانال و مشاهده محصولات 🛍️"};
