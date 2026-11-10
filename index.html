@@ -1928,7 +1928,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261110-light-students-v89')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261110-light-students-v90')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261108-notification-status-v15'))
       .then(()=>loadGym20Module('./student-exercises.js?v=20261110-light-exercises-v3'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
@@ -4056,6 +4056,88 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 }
 
 </style>
+
+
+<script>
+/* Scrollable rule picker, matching the region selector interaction while keeping the native select as the data source. */
+(function(){
+  const native=document.getElementById('ruleSelector');
+  if(!native||native.dataset.scrollPickerReady)return;
+  native.dataset.scrollPickerReady='1';
+  const host=native.parentElement;
+  if(!host)return;
+  const wrap=document.createElement('div');
+  wrap.className='gym20-rule-picker';
+  wrap.innerHTML='<button type="button" class="gym20-rule-trigger" aria-haspopup="listbox" aria-expanded="false"><span class="gym20-rule-value"></span><span class="gym20-rule-arrow">⌄</span></button><div class="gym20-rule-menu" role="listbox" hidden></div>';
+  native.insertAdjacentElement('beforebegin',wrap);
+  native.classList.add('gym20-rule-native');
+  const trigger=wrap.querySelector('.gym20-rule-trigger');
+  const value=wrap.querySelector('.gym20-rule-value');
+  const menu=wrap.querySelector('.gym20-rule-menu');
+  const sync=()=>{
+    const selected=native.options[native.selectedIndex];
+    value.textContent=selected?selected.textContent:'انتخاب قانون…';
+    menu.querySelectorAll('[data-rule-value]').forEach(b=>{
+      const active=b.dataset.ruleValue===native.value;
+      b.classList.toggle('selected',active);
+      b.setAttribute('aria-selected',String(active));
+    });
+  };
+  const render=()=>{
+    menu.replaceChildren();
+    Array.from(native.options).forEach(option=>{
+      const item=document.createElement('button');
+      item.type='button';item.className='gym20-rule-option';item.dataset.ruleValue=option.value;
+      item.setAttribute('role','option');item.textContent=option.textContent;
+      item.addEventListener('click',()=>{
+        native.value=option.value;
+        native.dispatchEvent(new Event('change',{bubbles:true}));
+        sync();menu.hidden=true;trigger.setAttribute('aria-expanded','false');
+      });
+      menu.appendChild(item);
+    });
+    sync();
+  };
+  trigger.addEventListener('click',()=>{
+    const opening=menu.hidden;
+    menu.hidden=!opening;trigger.setAttribute('aria-expanded',String(opening));
+    if(opening){
+      const active=menu.querySelector('.selected');
+      if(active)active.scrollIntoView({block:'nearest'});
+    }
+  });
+  native.addEventListener('change',sync);
+  document.addEventListener('click',e=>{
+    if(!wrap.contains(e.target)){menu.hidden=true;trigger.setAttribute('aria-expanded','false');}
+  });
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'&&!menu.hidden){menu.hidden=true;trigger.setAttribute('aria-expanded','false');trigger.focus();}
+  });
+  render();
+  const css=document.createElement('style');
+  css.id='gym20RulePickerCss';
+  css.textContent=`
+    #rulesTab .gym20-rule-picker{position:relative;width:100%;direction:rtl}
+    #rulesTab .gym20-rule-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important}
+    #rulesTab .gym20-rule-trigger{display:flex;align-items:center;justify-content:space-between;gap:9px;width:100%;min-height:38px;padding:7px 10px;border:1px solid rgba(214,179,90,.55);border-radius:9px;background:#151e2b;color:#f2ead8;font:inherit;font-size:11px;text-align:right;cursor:pointer}
+    #rulesTab .gym20-rule-value{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #rulesTab .gym20-rule-arrow{flex:0 0 auto;color:#d6b35a;font-size:17px;line-height:1}
+    #rulesTab .gym20-rule-menu{position:absolute;z-index:2147483000;top:calc(100% + 5px);right:0;left:0;max-height:min(250px,48vh);overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:#c5a35b transparent;padding:5px;border:1px solid rgba(214,179,90,.62);border-radius:10px;background:#151e2b;color:#f2ead8;box-shadow:0 12px 28px rgba(0,0,0,.28)}
+    #rulesTab .gym20-rule-menu[hidden]{display:none!important}
+    #rulesTab .gym20-rule-menu::-webkit-scrollbar{width:5px}
+    #rulesTab .gym20-rule-menu::-webkit-scrollbar-thumb{background:#c5a35b;border-radius:8px}
+    #rulesTab .gym20-rule-option{display:block;width:100%;min-height:36px;padding:8px 10px;border:0;border-bottom:1px solid rgba(255,255,255,.08);border-radius:6px;background:transparent;color:inherit;font:inherit;font-size:11px;text-align:right;cursor:pointer}
+    #rulesTab .gym20-rule-option:last-child{border-bottom:0}
+    #rulesTab .gym20-rule-option.selected{background:rgba(214,179,90,.18);color:#f0d58e;font-weight:800}
+    #rulesTab .gym20-rule-option:focus-visible,#rulesTab .gym20-rule-trigger:focus-visible{outline:2px solid #d6b35a;outline-offset:2px}
+    html[data-theme="light"] #rulesTab .gym20-rule-trigger{background:#fff!important;color:#263545!important;border-color:#d4bd85!important;box-shadow:0 2px 8px rgba(30,43,58,.05)}
+    html[data-theme="light"] #rulesTab .gym20-rule-menu{background:#fff!important;color:#344253!important;border-color:#d4bd85!important;box-shadow:0 12px 28px rgba(25,39,55,.15)}
+    html[data-theme="light"] #rulesTab .gym20-rule-option{color:#344253!important;border-bottom-color:#e5e9ee!important}
+    html[data-theme="light"] #rulesTab .gym20-rule-option.selected{background:#f8f1df!important;color:#795814!important}
+  `;
+  document.head.appendChild(css);
+})();
+</script>
 
 </body>
 </html>
