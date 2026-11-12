@@ -30,14 +30,22 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .push-test.visible{display:inline-flex}
 .term-select-wrap{position:relative;width:100%;margin-top:4px}
 .term-select-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;inset:auto!important}
-.term-select-trigger{width:100%;height:34px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 10px;border:1px solid #8f7139;border-radius:8px;background:linear-gradient(180deg,#202a39,#141b27);color:#f6e7bd;font:600 11px Vazirmatn,sans-serif;text-align:right;cursor:pointer}
-.term-select-trigger:focus-visible,.term-option:focus-visible,.view-btn:focus-visible{outline:2px solid #e8c46b;outline-offset:2px}
-.term-select-arrow{color:#e8c46b;font-size:15px}
-.term-select-menu{position:absolute;z-index:30;top:calc(100% + 5px);right:0;left:0;max-height:220px;overflow:auto;padding:4px;border:1px solid #8f7139;border-radius:9px;background:#121a26;box-shadow:0 12px 28px #000b}
+.term-select-trigger{width:100%;height:34px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:5px 10px;border:1px solid rgba(214,179,90,.28);border-radius:9px;background:linear-gradient(180deg,#202a39,#141b27);color:#f1e8d4;font:600 11px Vazirmatn,sans-serif;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.term-select-trigger:focus-visible,.view-btn:focus-visible{outline:2px solid rgba(232,196,107,.65);outline-offset:2px}
+.term-select-arrow{color:#d9c28b;font-size:15px;transition:transform .2s ease}
+.term-select-trigger[aria-expanded="true"] .term-select-arrow{transform:rotate(180deg)}
+.term-select-menu{position:absolute;z-index:50;top:calc(100% + 6px);right:0;left:0;width:100%;height:218px;max-height:min(218px,calc(100dvh - 24px));display:flex;overflow:hidden;padding:0;box-sizing:border-box;border:1px solid rgba(218,228,238,.16);border-radius:15px;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99));box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .term-select-menu[hidden]{display:none!important}
-.term-option{display:block;width:100%;min-height:32px;padding:6px 9px;border:0;border-bottom:1px solid #ffffff12;border-radius:6px;background:transparent;color:#e7eaf0;text-align:right;font:500 10px Vazirmatn,sans-serif;cursor:pointer}
-.term-option:last-child{border-bottom:0}
-.term-option[aria-selected="true"]{background:#3a301d;color:#f6d889}
+.term-wheel-list{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:none;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scroll-behavior:auto;scrollbar-width:none}
+.term-wheel-list::-webkit-scrollbar{display:none}
+.term-wheel-item{position:relative;z-index:0;display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:40px;min-height:40px;flex:0 0 40px;margin:0;padding:5px 8px;border:1px solid transparent;border-radius:11px;box-sizing:border-box;opacity:.43;transform:scale(.91);filter:blur(.2px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease;cursor:pointer;color:#d9dfe6;font-size:12px;font-weight:650}
+.term-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.08),rgba(214,179,90,.16),rgba(214,179,90,.08));border-color:transparent}
+.term-wheel-label{display:block;flex:1 1 auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.term-wheel-check{flex:0 0 auto;opacity:0;color:#e8c778;font-size:12px;margin-right:5px}
+.term-wheel-item.wheel-focus .term-wheel-check{opacity:1}
+.term-wheel-item[aria-selected="true"]:not(.wheel-focus){background:transparent}
+@media(max-width:520px){.term-select-trigger{height:32px;font-size:10px}.term-wheel-list{padding:89px 9px}.term-wheel-item{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.term-wheel-item{transition:none!important}.term-wheel-list{scroll-behavior:auto!important}}
 .view-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0 5px}
 .view-heading strong{font-size:11px;color:#e8c46b}
 .view-heading small{font-size:9px;color:#8995a6}
@@ -371,7 +379,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261112-global-next-session-v8"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261112-region-wheel-term-picker-v9"></script>
 
 </body></html>
 
