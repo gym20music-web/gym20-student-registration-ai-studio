@@ -216,17 +216,27 @@
         return "اشتراک قبلی اعلان در مرورگر ناسازگار یا ناقص است. مجوز اعلان سایت را از تنظیمات مرورگر بررسی کن و دوباره تلاش کن.";
       if(/retriev.*push subscription|push subscription/i.test(raw))
         return "مرورگر Zen نتوانست اشتراک اعلان ذخیره‌شده را بخواند. مرورگر را به‌روز کن، مجوز اعلان gym20.ir را بررسی کن و دوباره فعال‌سازی را بزن.";
+      if(/مهلت|timeout|timed out/i.test(raw))
+        return "آماده‌سازی اعلان بیش از حد طول کشید. اتصال اینترنت را بررسی کن و روی «تلاش دوباره» بزن.";
       if(/network|fetch|load failed|failed to fetch/i.test(raw))
         return "ارتباط با سرور اعلان برقرار نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.";
       return "فعال‌سازی اعلان انجام نشد. مرورگر را به‌روز کن و مجوز اعلان سایت gym20.ir را بررسی کن.";
     };
+    const withTimeout=(promise,ms,message)=>new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(new Error(message)),ms);
+      Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});
+    });
     const ensureReady=async()=>{
-      let current=await navigator.serviceWorker.getRegistration("/");
-      if(!current)current=await navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"});
+      let current=await withTimeout(navigator.serviceWorker.getRegistration("/"),7000,"مهلت بررسی سرویس‌ورکر تمام شد.");
+      if(!current)current=await withTimeout(
+        navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"}),
+        9000,"ثبت سرویس‌ورکر بیش از حد طول کشید."
+      );
       registration=current;
-      try{await registration.update();}catch(_){}
-      const ready=await navigator.serviceWorker.ready;
-      registration=await navigator.serviceWorker.getRegistration("/")||ready;
+      // Do not await registration.update() during page startup: on slow networks it
+      // can remain pending and leave the button stuck in its loading state.
+      const ready=await withTimeout(navigator.serviceWorker.ready,9000,"سرویس‌ورکر در زمان مجاز آماده نشد.");
+      registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"بررسی وضعیت سرویس‌ورکر ناموفق بود.")||ready;
       if(!registration||!registration.pushManager)throw new Error("PushManager unavailable");
       return registration;
     };
@@ -280,7 +290,7 @@
     });
 
     try{
-      const {data,error}=await api.rpc("get_student_push_public_config");
+      const {data,error}=await withTimeout(api.rpc("get_student_push_public_config"),9000,"مهلت دریافت تنظیمات اعلان تمام شد.");
       if(error)throw error;
       const config=Array.isArray(data)?data[0]:data;
       if(!config?.enabled||!config?.public_key){
