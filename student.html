@@ -447,17 +447,19 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 }
 
 
-/* Soft premium glass surface for the public term picker */
+/* Softer translucent glass surface — public student term picker only */
 .term-select-menu{
-  border:1px solid rgba(225,232,242,.075) !important;
+  border:1px solid rgba(225,232,242,.045) !important;
   border-radius:15px !important;
-  background:linear-gradient(145deg,rgba(48,52,59,.88),rgba(27,30,36,.91)) !important;
-  -webkit-backdrop-filter:blur(18px) saturate(135%);
-  backdrop-filter:blur(18px) saturate(135%);
+  background:
+    linear-gradient(145deg,rgba(61,66,74,.76),rgba(29,32,39,.80)) !important;
+  -webkit-backdrop-filter:blur(26px) saturate(155%);
+  backdrop-filter:blur(26px) saturate(155%);
   box-shadow:
-    0 14px 34px rgba(0,0,0,.38),
-    0 4px 12px rgba(0,0,0,.2),
-    inset 0 1px 0 rgba(255,255,255,.065) !important;
+    0 20px 48px rgba(0,0,0,.42),
+    0 6px 18px rgba(0,0,0,.20),
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.12) !important;
   overflow:hidden;
 }
 
