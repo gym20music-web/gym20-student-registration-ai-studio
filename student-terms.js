@@ -78,7 +78,7 @@
     });
   }
   function refreshTermWheel(select){
-    const wrap=select?.closest('.st-term-wheel'),menu=wrap?.querySelector('.st-term-wheel-menu');
+    const wrap=select?.closest('.st-term-wheel'),menu=wrap?._termWheelMenu||wrap?.querySelector('.st-term-wheel-menu');
     if(!wrap||!menu)return;
     menu.innerHTML='';
     const options=Array.from(select.options),wheel=document.createElement('div');
@@ -120,7 +120,7 @@
     requestAnimationFrame(()=>updateTermWheelFocus(w));
   }
   function positionTermWheel(wrap){
-    const trigger=wrap?.querySelector('.st-custom-select-trigger'),menu=wrap?.querySelector('.st-term-wheel-menu');
+    const trigger=wrap?.querySelector('.st-custom-select-trigger'),menu=wrap?._termWheelMenu||wrap?.querySelector('.st-term-wheel-menu');
     if(!trigger||!menu||!menu.classList.contains('open'))return;
     const r=trigger.getBoundingClientRect(),gap=6,pad=8;
     const height=Math.max(112,Math.min(218,window.innerHeight-pad*2));
@@ -135,7 +135,7 @@
     menu.style.setProperty('height',height+'px','important');menu.style.setProperty('max-height',height+'px','important');
   }
   function closeTermWheel(wrap){
-    const menu=wrap?.querySelector('.st-term-wheel-menu'),trigger=wrap?.querySelector('.st-custom-select-trigger');
+    const menu=wrap?._termWheelMenu||wrap?.querySelector('.st-term-wheel-menu'),trigger=wrap?.querySelector('.st-custom-select-trigger');
     const w=menu?.querySelector('.st-term-wheel-list');if(w){clearTimeout(w._gym20SettleTimer);w._gym20PointerDown=false;w._gym20GestureMoved=false;}
     menu?.classList.remove('open');trigger?.classList.remove('open');trigger?.setAttribute('aria-expanded','false');
     if(menu){menu.setAttribute('aria-hidden','true');['top','left','right','bottom','width','height','max-height'].forEach(p=>menu.style.removeProperty(p));}
@@ -195,7 +195,7 @@
     trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
     trigger.innerHTML='<span class="st-custom-value"></span><span class="st-custom-arrow">⌄</span>';
     const menu=document.createElement('div');menu.className='st-term-wheel-menu';menu.setAttribute('aria-hidden','true');
-    wrap.append(trigger,menu);refreshTermWheel(select);
+    wrap.append(trigger,menu);wrap._termWheelMenu=menu;menu._termWheelWrap=wrap;document.body.appendChild(menu);\n    if(!document.getElementById('stTermWheelStyle')){const style=document.createElement('style');style.id='stTermWheelStyle';style.textContent=`\n      #studentTermsTab .st-term-wheel{position:relative!important;min-width:0!important;width:100%!important;overflow:visible!important}\n      #studentTermsTab .st-term-wheel .st-custom-select-native{position:absolute!important;inset:0!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important}\n      #studentTermsTab .st-term-wheel .st-custom-select-trigger{box-sizing:border-box!important;width:100%!important;min-width:0!important;overflow:hidden!important;touch-action:manipulation!important;-webkit-tap-highlight-color:transparent!important}\n      .st-term-wheel-menu{display:none;box-sizing:border-box;z-index:2147483000;padding:0;overflow:hidden;direction:rtl;border:1px solid rgba(225,232,242,.10);border-radius:15px;background:linear-gradient(145deg,rgba(55,63,74,.97),rgba(27,32,41,.98));-webkit-backdrop-filter:blur(22px) saturate(145%);backdrop-filter:blur(22px) saturate(145%);box-shadow:0 18px 42px rgba(0,0,0,.40),0 4px 12px rgba(0,0,0,.18),inset 0 1px 0 rgba(255,255,255,.055);}\n      .st-term-wheel-menu.open{display:flex!important;flex-direction:column!important}\n      .st-term-wheel-menu:after{content:\"\";position:absolute;z-index:2;left:0;right:0;bottom:0;height:22px;pointer-events:none;background:linear-gradient(to bottom,transparent,rgba(27,32,41,.82))}\n      .st-term-wheel-list{position:relative;z-index:1;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;width:100%;overflow-x:hidden;overflow-y:auto;box-sizing:border-box;padding:89px 9px;scroll-padding-block:89px;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}\n      .st-term-wheel-list::-webkit-scrollbar{display:none}\n      .st-term-wheel-item{box-sizing:border-box;display:flex;align-items:center;justify-content:center;flex:0 0 40px;width:100%;height:40px;min-height:40px;margin:0;padding:5px 8px;border:1px solid transparent;border-radius:10px;background:transparent;color:#dce2e9;font:650 12px Vazirmatn,Arial,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;opacity:.46;transform:scale(.94);filter:blur(.2px);transition:opacity .18s ease,transform .18s ease,background .18s ease,filter .18s ease;cursor:pointer;touch-action:pan-y}\n      .st-term-wheel-item.wheel-focus{opacity:1;transform:scale(1.015);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.08),rgba(214,179,90,.16),rgba(214,179,90,.08));color:#f0d18a;font-weight:850}\n      html[data-theme=\"light\"] .st-term-wheel-menu{background:linear-gradient(145deg,rgba(255,255,255,.99),rgba(242,246,249,.99));border-color:rgba(120,130,145,.24);box-shadow:0 18px 42px rgba(25,39,55,.18),inset 0 1px 0 rgba(255,255,255,.8)}\n      html[data-theme=\"light\"] .st-term-wheel-menu:after{background:linear-gradient(to bottom,transparent,rgba(242,246,249,.9))}\n      html[data-theme=\"light\"] .st-term-wheel-item{color:#647184}\n      html[data-theme=\"light\"] .st-term-wheel-item.wheel-focus{color:#795814}\n      @media(prefers-reduced-motion:reduce){.st-term-wheel-item{transition:none!important}}\n    `;document.head.appendChild(style);}\n    refreshTermWheel(select);
     trigger.addEventListener('click',e=>{
       e.preventDefault();e.stopPropagation();
       const opening=!menu.classList.contains('open');
@@ -220,7 +220,7 @@
     if(!document.documentElement.dataset.stTermWheelGlobalBound){
       document.documentElement.dataset.stTermWheelGlobalBound='1';
       document.addEventListener('pointerdown',e=>{
-        document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>{const w=m.closest('.st-term-wheel');if(w&&!w.contains(e.target))closeTermWheel(w);});
+        document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>{const w=m._termWheelWrap;if(w&&!w.contains(e.target)&&!m.contains(e.target))closeTermWheel(w);});
       },true);
       document.addEventListener('keydown',e=>{
         if(e.key==='Escape')document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
