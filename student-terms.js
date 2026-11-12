@@ -1296,14 +1296,14 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const termSelect=$('stTerm');if(termSelect){termSelect.value='';const wrap=termSelect.closest('.st-custom-select');if(wrap)syncCustomSelect(wrap);}
         $('stDeleteTerm').disabled=true;$('stSchedule').classList.add('st-hide');$('stManualCalendar').hidden=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';
         $('stDraftTable').innerHTML='';$('stManualCount').textContent='';
-        say('ترم جدید و '+fa(payload.length)+' جلسه با موفقیت ثبت و منتشر شد. جلسات ذخیره‌شده از نمای ثبت خارج شدند؛ بازه ترم دی را وارد کن و جلسات جدید را انتخاب کن.');
+        say('ثبت شد');
         return;
       }
       if(!S.draftId)throw Error('برای این ترم پیش‌نویس قابل ثبت وجود ندارد.');
       say('در حال ذخیره و انتشار برنامه…');await persistDraft();
       const {error}=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(error)throw error;
-      const termId=S.termId;await loadStudent(S.studentId);$('stTerm').value=termId;await loadTerm(termId);say('برنامه با موفقیت منتشر شد.');
-    }catch(e){say(e.message||'ثبت نهایی ناموفق بود.',true);}
+      const termId=S.termId;await loadStudent(S.studentId);$('stTerm').value=termId;await loadTerm(termId);say('ثبت شد');
+    }catch(e){say(e.message||'ثبت نشد',true);}
   }
   async function loadAttendance(){
     const box=$('stAttendance');if(!S.publishedId){box.textContent='برای این ترم هنوز برنامه‌ای منتشر نشده است.';return;}
