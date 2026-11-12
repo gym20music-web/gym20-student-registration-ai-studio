@@ -1028,6 +1028,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(!Array.isArray(selectedDates)||!selectedDates.length)throw Error('حداقل یک تاریخ جلسه انتخاب کن.');
       if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
       if(new Set(selectedDates).size!==selectedDates.length)throw Error('تاریخ تکراری انتخاب شده است.');
+      const currentPublishedId=S.term?.published_version_id||null,occupiedDates=new Set(S.allPublishedSessions.filter(x=>x.schedule_version_id!==currentPublishedId).map(x=>localDate(x.starts_at)));
+      if(selectedDates.some(d=>occupiedDates.has(d)))throw Error('برای بعضی از تاریخ‌ها در ترم دیگری جلسه ثبت شده است؛ تاریخ‌های تکراری را انتخاب نکن.');
       if(selectedDates.some(d=>d<startDate||d>endDate))throw Error('همه تاریخ‌ها باید داخل بازه شروع و پایان ترم باشند.');
       S.termId='';S.term=null;S.draftId='';S.publishedId=null;S.publishedReadOnly=false;S.manualDates=selectedDates.slice().sort();
       const termSelect=$('stTerm');if(termSelect){termSelect.value='';const wrap=termSelect.closest('.st-custom-select');if(wrap)syncCustomSelect(wrap);}
@@ -1233,7 +1235,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
         const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
         const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
-        let jy=startJ[0],jm=startJ[1];const chosen=new Set(),existingDates=new Set(addingToExisting?S.rows.map(r=>localDate(r.starts_at)):[]);
+        let jy=startJ[0],jm=startJ[1];const chosen=new Set(),currentPublishedId=S.term?.published_version_id||null,otherPublishedDates=S.allPublishedSessions.filter(x=>x.schedule_version_id!==currentPublishedId).map(x=>localDate(x.starts_at)),existingDates=new Set((addingToExisting?S.rows.map(r=>localDate(r.starts_at)):[]).concat(otherPublishedDates));
         if(rangeChanged)say('بازه تاریخ با ترم انتخاب‌شده متفاوت است؛ جلسات جدید به‌صورت یک ترم جداگانه ساخته می‌شوند.');
         const minKey=startDate,maxKey=endDate;
         const draw=()=>{
@@ -1289,9 +1291,12 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const payload=collectDraftPayload();
         const saved=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(saved.error)throw saved.error;
         const pub=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(pub.error)throw pub.error;
-        const newTermId=S.termId;
-        await loadStudent(S.studentId);$('stTerm').value=newTermId;await loadTerm(newTermId);
-        say('ترم جدید و '+fa(payload.length)+' جلسه با موفقیت ثبت و منتشر شد.');
+        await loadStudent(S.studentId);
+        S.termId='';S.term=null;S.draftId='';S.rows=[];S.manualDates=[];S.publishedId=null;S.publishedReadOnly=false;
+        const termSelect=$('stTerm');if(termSelect){termSelect.value='';const wrap=termSelect.closest('.st-custom-select');if(wrap)syncCustomSelect(wrap);}
+        $('stDeleteTerm').disabled=true;$('stSchedule').classList.add('st-hide');$('stManualCalendar').hidden=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';
+        $('stDraftTable').innerHTML='';$('stManualCount').textContent='';
+        say('ترم جدید و '+fa(payload.length)+' جلسه با موفقیت ثبت و منتشر شد. جلسات ذخیره‌شده از نمای ثبت خارج شدند؛ بازه ترم دی را وارد کن و جلسات جدید را انتخاب کن.');
         return;
       }
       if(!S.draftId)throw Error('برای این ترم پیش‌نویس قابل ثبت وجود ندارد.');
