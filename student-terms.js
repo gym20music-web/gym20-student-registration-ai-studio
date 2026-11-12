@@ -123,11 +123,12 @@
     const trigger=wrap?.querySelector('.st-custom-select-trigger'),menu=wrap?._termWheelMenu||wrap?.querySelector('.st-term-wheel-menu');
     if(!trigger||!menu||!menu.classList.contains('open'))return;
     const r=trigger.getBoundingClientRect(),gap=6,pad=8;
-    const height=Math.max(112,Math.min(218,window.innerHeight-pad*2));
+    const below=Math.max(0,window.innerHeight-r.bottom-gap-pad),above=Math.max(0,r.top-gap-pad);
+    const placeBelow=below>=above,available=placeBelow?below:above;
+    const height=Math.max(112,Math.min(218,window.innerHeight-pad*2,available));
     const width=Math.max(1,Math.min(r.width,window.innerWidth-pad*2));
     const left=Math.max(pad,Math.min(r.right-width,window.innerWidth-width-pad));
-    const below=window.innerHeight-r.bottom-gap-pad,above=r.top-gap-pad;
-    const top=below>=Math.min(height,160)||below>=above?r.bottom+gap:r.top-gap-height;
+    const top=placeBelow?r.bottom+gap:r.top-gap-height;
     menu.style.setProperty('position','fixed','important');
     menu.style.setProperty('top',Math.max(pad,Math.min(top,window.innerHeight-height-pad))+'px','important');
     menu.style.setProperty('left',left+'px','important');menu.style.setProperty('right','auto','important');
