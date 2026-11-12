@@ -92,7 +92,7 @@
     }));
     menu.appendChild(wheel);bindTermWheel(wheel);syncTermWheel(wrap);
   }
-  function termWheelList(){return document.querySelector('#studentTermsTab .st-term-wheel-menu.open .st-term-wheel-list');}
+  function termWheelList(){return document.querySelector('.st-term-wheel-menu.open .st-term-wheel-list');}
   function updateTermWheelFocus(w){
     w=w||termWheelList();if(!w)return null;
     const items=Array.from(w.querySelectorAll('.st-term-wheel-item'));if(!items.length)return null;
@@ -199,7 +199,7 @@
     trigger.addEventListener('click',e=>{
       e.preventDefault();e.stopPropagation();
       const opening=!menu.classList.contains('open');
-      document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
+      document.querySelectorAll('.st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
       if(!opening)return;
       refreshTermWheel(select);menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');
       positionTermWheel(wrap);
@@ -220,12 +220,12 @@
     if(!document.documentElement.dataset.stTermWheelGlobalBound){
       document.documentElement.dataset.stTermWheelGlobalBound='1';
       document.addEventListener('pointerdown',e=>{
-        document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>{const w=m._termWheelWrap;if(w&&!w.contains(e.target)&&!m.contains(e.target))closeTermWheel(w);});
+        document.querySelectorAll('.st-term-wheel-menu.open').forEach(m=>{const w=m._termWheelWrap;if(w&&!w.contains(e.target)&&!m.contains(e.target))closeTermWheel(w);});
       },true);
       document.addEventListener('keydown',e=>{
-        if(e.key==='Escape')document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
+        if(e.key==='Escape')document.querySelectorAll('.st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
       });
-      const reposition=()=>document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>positionTermWheel(m.closest('.st-term-wheel')));
+      const reposition=()=>document.querySelectorAll('.st-term-wheel-menu.open').forEach(m=>positionTermWheel(m.closest('.st-term-wheel')));
       window.addEventListener('resize',reposition,{passive:true});
       document.addEventListener('scroll',reposition,true);
     }
