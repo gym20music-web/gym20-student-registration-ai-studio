@@ -247,7 +247,8 @@
         // here: doing so can disrupt other tabs and valid subscriptions on this device.
         try{
           registration=await navigator.serviceWorker.getRegistration("/")||registration;
-          try{await registration.update();}catch(_){}
+          // Avoid waiting indefinitely for a background service-worker update.
+          try{await withTimeout(registration.update(),5000,"مهلت به‌روزرسانی سرویس‌ورکر تمام شد.");}catch(_){}
           await navigator.serviceWorker.ready;
           registration=await navigator.serviceWorker.getRegistration("/")||registration;
           return await registration.pushManager.getSubscription();
