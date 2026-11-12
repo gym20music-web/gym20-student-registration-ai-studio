@@ -1,5 +1,5 @@
 (() => {
-  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,publishedReadOnly:false,sessions:[],termEnrollmentIds:[],reminderDraft:{},pushTemplatesLoaded:false};
+  const TAB='studentTermsTab', S={students:[],enrollments:[],terms:[],allPublishedSessions:[],studentId:'',termId:'',term:null,draftId:'',rows:[],manualDates:[],publishedId:null,publishedReadOnly:false,sessions:[],termEnrollmentIds:[],reminderDraft:{},pushTemplatesLoaded:false};
   const $=id=>document.getElementById(id);
   const esc=v=>String(v==null?'':v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const fa=v=>Number(v||0).toLocaleString('fa-IR');
@@ -943,16 +943,16 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadStudentPushCount(studentId){
-    const status=$('stPushStatusControls');if(!status)return;
-    status.textContent='در حال بررسی تعداد دستگاه‌ها…';status.dataset.active='0';
+    const status=$('stPushActiveCount');if(!status)return;
+    status.textContent='…';status.classList.remove('is-active','is-inactive');
     try{
       const {data,error}=await gym20AdminClient.functions.invoke('student-push-admin',{body:{action:'count',student_id:studentId}});
       if(error)throw error;if(!data?.ok)throw Error(data?.error||'دریافت تعداد دستگاه‌ها ناموفق بود.');
       if(S.studentId!==studentId)return;
       const count=Math.max(0,Number(data.active_count)||0);
-      status.textContent=count>0?'اعلان فعال · '+fa(count)+' دستگاه':'اعلان غیرفعال · ۰ دستگاه';
-      status.dataset.active=count>0?'1':'0';
-    }catch(e){if(S.studentId===studentId){status.textContent='وضعیت دستگاه‌های اعلان دریافت نشد';status.dataset.active='0';}}
+      status.textContent=fa(count)+' اعلان فعال';
+      status.classList.toggle('is-active',count>0);status.classList.toggle('is-inactive',count===0);
+    }catch(e){if(S.studentId===studentId){status.textContent='';status.classList.remove('is-active','is-inactive');}}
   }
 
   async function sendTestPush(){
@@ -976,13 +976,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadStudent(id){
-    S.studentId=id;if($('stPushStatusControls')){$('stPushStatusControls').textContent=id?'در حال بررسی تعداد دستگاه‌ها…':'';$('stPushStatusControls').dataset.active='0';}if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard){reminderCard.hidden=false;reminderCard.classList.toggle('st-needs-student',!id);}if(!id)return;
+    S.studentId=id;if($('stPushActiveCount')){$('stPushActiveCount').textContent=id?'…':'';$('stPushActiveCount').classList.remove('is-active','is-inactive');}if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard){reminderCard.hidden=false;reminderCard.classList.toggle('st-needs-student',!id);}if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
         db().from('student_terms').select('id,term_name,start_date,end_date,total_sessions,duration_minutes,default_venue,schedule_mode,status,published_version_id,created_at').eq('student_id',id).order('created_at',{ascending:false})
       ]);
-      if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];const activeCounts=S.enrollments.filter(e=>e.status==='active').map(e=>Number(e.total_sessions)||0).filter(n=>n>0);if(activeCounts.length)
+      if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];const publishedVersionIds=Array.from(new Set(S.terms.map(t=>t.published_version_id).filter(Boolean)));S.allPublishedSessions=[];if(publishedVersionIds.length){const allPublished=await db().from('class_sessions').select('id,session_number,starts_at,ends_at,schedule_version_id').in('schedule_version_id',publishedVersionIds).order('starts_at');if(allPublished.error)throw allPublished.error;S.allPublishedSessions=allPublished.data||[];}const activeCounts=S.enrollments.filter(e=>e.status==='active').map(e=>Number(e.total_sessions)||0).filter(n=>n>0);if(activeCounts.length)
       $('stSummary').innerHTML='<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
       loadStudentPublicLink();loadStudentPushCount(id);
       $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\s*/,''))+'</option>').join('');
@@ -1119,9 +1119,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     if(!Number.isFinite(start)||!Number.isFinite(end)||end<=start)return {label:'زمان نامشخص',cls:'future'};
     if(start<=now&&now<end)return {label:'در حال برگزاری',cls:'live'};
     if(end<=now)return {label:'جلسه گذشته',cls:'past'};
-    const hasLiveSession=S.rows.some(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a<=now&&now<b;});
-    const next=hasLiveSession?null:(S.rows.filter(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a>now&&b>now;}).sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at))[0]||null);
-    if(next&&Number(next.session_number)===Number(r.session_number))return {label:'جلسه آینده',cls:'next'};
+    // Determine the single next session across every published term for this student,
+    // not only inside the term currently open in the editor.
+    const otherPublished=S.allPublishedSessions.filter(x=>x.schedule_version_id!==S.term?.published_version_id);
+    const timeline=otherPublished.concat(S.rows);
+    const hasLiveSession=timeline.some(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a<=now&&now<b;});
+    const next=hasLiveSession?null:(timeline.filter(x=>{const a=Date.parse(x?.starts_at||''),b=Date.parse(x?.ends_at||'');return Number.isFinite(a)&&Number.isFinite(b)&&a>now&&b>now;}).sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at))[0]||null);
+    if(next&&(next===r||(next.id&&r.id&&next.id===r.id)))return {label:'جلسه آینده',cls:'next'};
     return {label:'جلسه برگزار نشده',cls:'future'};
   }
   function refreshDraftSessionStates(){
