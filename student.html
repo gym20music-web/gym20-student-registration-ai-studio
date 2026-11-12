@@ -407,6 +407,45 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   .term-wheel-label{max-width:calc(100vw - 70px)}
 }
 
+
+/* Public student term picker: size to the longest option, not the parent */
+.term-select-wrap{position:relative}
+.term-select-menu{
+  display:block;
+  left:50%;
+  right:auto;
+  width:max-content;
+  min-width:120px;
+  max-width:min(270px,calc(100vw - 24px));
+  transform:translateX(-50%);
+}
+.term-wheel-list{
+  display:flex;
+  align-items:stretch;
+  flex:0 0 auto;
+  width:max-content;
+  min-width:120px;
+  max-width:100%;
+  padding-left:10px;
+  padding-right:10px;
+}
+.term-wheel-item{
+  flex:0 0 40px;
+  width:max-content;
+  min-width:100%;
+  max-width:100%;
+}
+.term-wheel-label{
+  flex:0 1 auto;
+  width:max-content;
+  max-width:210px;
+  min-width:0;
+}
+@media(max-width:520px){
+  .term-wheel-list{padding-left:9px;padding-right:9px}
+  .term-wheel-label{max-width:calc(100vw - 70px)}
+}
+
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
