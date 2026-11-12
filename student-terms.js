@@ -934,12 +934,25 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       const {data,error}=await gym20AdminClient.functions.invoke('student-push-admin',{body:{student_id:S.studentId,message}});
       if(error)throw error;
       if(!data?.ok)throw Error(data?.error||'ارسال اعلان انجام نشد.');
-      const result='اعلان با موفقیت به '+fa(data.sent)+' گوشی ارسال شد.';
+      const result='اعلان با موفقیت به '+fa(data.sent)+' دستگاه ارسال شد.';
       if(feedback)feedback.textContent=result;
       $('stCustomPushText').value='';
       say(result);
     }catch(e){const msg=e.message||'ارسال اعلان ناموفق بود.';if(feedback)feedback.textContent=msg;say(msg,true);}
     finally{button.disabled=false;button.textContent=original;}
+  }
+
+  async function loadStudentPushCount(studentId){
+    const status=$('stPushStatusControls');if(!status)return;
+    status.textContent='در حال بررسی تعداد دستگاه‌ها…';status.dataset.active='0';
+    try{
+      const {data,error}=await gym20AdminClient.functions.invoke('student-push-admin',{body:{action:'count',student_id:studentId}});
+      if(error)throw error;if(!data?.ok)throw Error(data?.error||'دریافت تعداد دستگاه‌ها ناموفق بود.');
+      if(S.studentId!==studentId)return;
+      const count=Math.max(0,Number(data.active_count)||0);
+      status.textContent=count>0?'اعلان فعال · '+fa(count)+' دستگاه':'اعلان غیرفعال · ۰ دستگاه';
+      status.dataset.active=count>0?'1':'0';
+    }catch(e){if(S.studentId===studentId){status.textContent='وضعیت دستگاه‌های اعلان دریافت نشد';status.dataset.active='0';}}
   }
 
   async function sendTestPush(){
@@ -963,7 +976,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadStudent(id){
-    S.studentId=id;if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard){reminderCard.hidden=false;reminderCard.classList.toggle('st-needs-student',!id);}if(!id)return;
+    S.studentId=id;if($('stPushStatusControls')){$('stPushStatusControls').textContent=id?'در حال بررسی تعداد دستگاه‌ها…':'';$('stPushStatusControls').dataset.active='0';}if($('stStudentSelected'))$('stStudentSelected').dataset.studentId=id||'';S.termId='';S.term=null;S.terms=[];S.enrollments=[];S.rows=[];S.manualDates=[];S.draftId='';S.publishedId=null;S.publishedReadOnly=false;$('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';$('stManualCalendar').hidden=false;$('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stMain').classList.toggle('st-hide',!id);$('stSchedule').classList.add('st-hide');const reminderCard=$('stPushCard');if(reminderCard){reminderCard.hidden=false;reminderCard.classList.toggle('st-needs-student',!id);}if(!id)return;
     try{say('در حال دریافت پرونده هنرجو…');const student=S.students.find(x=>x.id===id);
       const [er,tr]=await Promise.all([
         db().from('enrollments').select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)').eq('student_id',id).order('created_at'),
@@ -971,7 +984,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       ]);
       if(er.error)throw er.error;if(tr.error)throw tr.error;S.enrollments=er.data||[];S.terms=tr.data||[];const activeCounts=S.enrollments.filter(e=>e.status==='active').map(e=>Number(e.total_sessions)||0).filter(n=>n>0);if(activeCounts.length)
       $('stSummary').innerHTML='<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
-      loadStudentPublicLink();
+      loadStudentPublicLink();loadStudentPushCount(id);
       $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\s*/,''))+'</option>').join('');
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
@@ -1017,6 +1030,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(new Set(selectedDates).size!==selectedDates.length)throw Error('تاریخ تکراری انتخاب شده است.');
       if(selectedDates.some(d=>d<startDate||d>endDate))throw Error('همه تاریخ‌ها باید داخل بازه شروع و پایان ترم باشند.');
       S.termId='';S.term=null;S.draftId='';S.publishedId=null;S.publishedReadOnly=false;S.manualDates=selectedDates.slice().sort();
+      const termSelect=$('stTerm');if(termSelect){termSelect.value='';const wrap=termSelect.closest('.st-custom-select');if(wrap)syncCustomSelect(wrap);}
       const mins=60;
       S.rows=S.manualDates.map((d,i)=>{const startAt=localISO(d,'18:00');return {enrollment_ids:ids,session_number:i+1,starts_at:startAt,ends_at:new Date(new Date(startAt).getTime()+mins*60000).toISOString(),venue:null,coach_name:'هانیه',notes:null};});
       $('stManualCount').textContent=fa(S.rows.length)+' جلسه انتخاب شده';
@@ -1206,14 +1220,17 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   function initManualMultiCalendar(root){
     const openCalendar=trigger=>{
       trigger.addEventListener('click',()=>{
-        const addingToExisting=Boolean(S.termId);
         const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
+        const storedStart=String(S.term?.start_date||'').slice(0,10),storedEnd=String(S.term?.end_date||'').slice(0,10);
+        const addingToExisting=Boolean(S.termId&&startDate===storedStart&&endDate===storedEnd);
+        const rangeChanged=Boolean(S.termId&&!addingToExisting);
         if(!startDate||!endDate||endDate<startDate){say('ابتدا تاریخ شروع و پایان ترم را درست انتخاب کن.',true);return;}
         if(addingToExisting&&!S.draftId){say('این ترم منتشرشده است و در این بخش فقط نمایش داده می‌شود.',true);return;}
         document.querySelectorAll('.st-jcal').forEach(x=>x.remove());
         const pop=document.createElement('div');pop.className='st-jcal';document.body.appendChild(pop);
         const startJ=enDigits(jalaliInput(startDate)).split('/').map(Number),endJ=enDigits(jalaliInput(endDate)).split('/').map(Number);
-        let jy=startJ[0],jm=startJ[1];const chosen=new Set(),existingDates=new Set(S.rows.map(r=>localDate(r.starts_at)));
+        let jy=startJ[0],jm=startJ[1];const chosen=new Set(),existingDates=new Set(addingToExisting?S.rows.map(r=>localDate(r.starts_at)):[]);
+        if(rangeChanged)say('بازه تاریخ با ترم انتخاب‌شده متفاوت است؛ جلسات جدید به‌صورت یک ترم جداگانه ساخته می‌شوند.');
         const minKey=startDate,maxKey=endDate;
         const draw=()=>{
           const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7,monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
