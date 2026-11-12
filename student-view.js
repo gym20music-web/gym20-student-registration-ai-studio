@@ -97,6 +97,9 @@
     };
     const render=()=>{
       const options=Array.from(select.options);
+      const signature=options.map(option=>option.value+'\\u0000'+option.textContent).join('\\u0001');
+      if(wheel.dataset.termSignature===signature){sync();return;}
+      wheel.dataset.termSignature=signature;
       wheel.dataset.termCount=String(options.length);
       wheel.innerHTML='';
       [0,1,2].forEach(copy=>options.forEach(option=>{
