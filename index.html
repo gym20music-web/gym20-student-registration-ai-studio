@@ -2181,7 +2181,7 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261112-finalize-hide-next-term-v93')
+    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261112-compact-publish-status-v94')
       .then(()=>loadGym20Module('./student-push-admin.js?v=20261112-active-count-v16'))
       .then(()=>loadGym20Module('./student-exercises.js?v=20261110-light-exercises-v3'))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
@@ -2706,7 +2706,7 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
     const renderTerms=data=>{
         const terms=Array.isArray(data.terms)?data.terms:[];
         const termHtml=terms.length?terms.map(term=>{
-            const sessions=Array.isArray(term.sessions)?term.sessions:[];
+            const sessions=(Array.isArray(term.sessions)?term.sessions:[]).slice().sort((a,b)=>Date.parse(a.starts_at||'')-Date.parse(b.starts_at||'')||Number(a.session_number||0)-Number(b.session_number||0));
             const styles=Array.isArray(term.styles)?term.styles.join('، '):'';
             return '<section style="margin:12px 0;padding:12px;border:1px solid rgba(232,196,107,.28);border-radius:12px;background:rgba(255,255,255,.025)">'+
                 '<div style="font-weight:800;color:#f0cf7a;font-size:15px">'+esc(term.term_name||'برنامه کلاس‌ها')+'</div>'+
@@ -2719,7 +2719,7 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
                     const time=start?faTime(s.starts_at)+(s.ends_at?' تا '+faTime(s.ends_at):''):'—';
                     const state=sessionState(s);
                     return '<div class="gym20-student-session '+state.cls+'" style="display:grid;grid-template-columns:42px minmax(0,1fr);gap:8px;align-items:center;padding:9px;border-radius:9px;border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.035)">'+
-                        '<div style="text-align:center;color:#f0cf7a;font-weight:800">جلسه '+esc(s.session_number||i+1)+'</div>'+
+                        '<div style="text-align:center;color:#f0cf7a;font-weight:800">جلسه '+esc(i+1)+'</div>'+
                         '<div style="min-width:0;font-size:11px;line-height:1.9;color:#e5e7eb">'+
                         '<div>'+esc(day)+' · '+esc(date)+' · '+esc(time)+'</div>'+
                         '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;color:#aab2c1"><span>مربی: '+esc(s.coach_name||'—')+'</span><span class="gym20-student-session-status '+state.cls+'">'+state.label+'</span>'+(s.attendance?'<span>حضور: '+esc(s.attendance)+'</span>':'')+'</div>'+
