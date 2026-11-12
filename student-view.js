@@ -241,17 +241,16 @@
       return registration;
     };
     const readSubscription=async()=>{
-      try{return await registration.pushManager.getSubscription();}
+      try{return await withTimeout(registration.pushManager.getSubscription(),7000,"مهلت خواندن اشتراک اعلان تمام شد.");}
       catch(firstError){
         // Retry once against the current root-scope service worker. Never unregister
         // here: doing so can disrupt other tabs and valid subscriptions on this device.
         try{
-          registration=await navigator.serviceWorker.getRegistration("/")||registration;
-          // Avoid waiting indefinitely for a background service-worker update.
+          registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;
           try{await withTimeout(registration.update(),5000,"مهلت به‌روزرسانی سرویس‌ورکر تمام شد.");}catch(_){}
-          await navigator.serviceWorker.ready;
-          registration=await navigator.serviceWorker.getRegistration("/")||registration;
-          return await registration.pushManager.getSubscription();
+          await withTimeout(navigator.serviceWorker.ready,7000,"سرویس‌ورکر برای خواندن اشتراک آماده نشد.");
+          registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;
+          return await withTimeout(registration.pushManager.getSubscription(),7000,"مهلت خواندن اشتراک اعلان تمام شد.");
         }catch(_){throw firstError;}
       }
     };
