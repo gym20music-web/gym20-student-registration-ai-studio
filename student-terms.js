@@ -157,7 +157,7 @@
         if(w._gym20PointerDown||!w._gym20GestureMoved)return;
         const best=updateTermWheelFocus(w);w._gym20GestureMoved=false;w._gym20Dragged=false;
         if(best)commitTermWheel(w.closest('.st-term-wheel-menu')?._termWheelWrap,best.dataset.value);
-      },220);
+      },760);
     };
     w.addEventListener('pointerdown',e=>{
       if(e.pointerType==='mouse'&&e.button!==0)return;
