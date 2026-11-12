@@ -66,10 +66,174 @@
       setTimeout(()=>document.addEventListener('pointerdown',close),0);
     }));
   }
-  function syncCustomSelect(wrap){const select=wrap?.querySelector('select'),value=wrap?.querySelector('.st-custom-value'),menu=wrap?.querySelector('.st-custom-select-menu');if(!select||!value||!menu)return;const opt=select.options[select.selectedIndex];value.textContent=opt?opt.textContent:'انتخاب کنید…';menu.querySelectorAll('[data-option-index]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.optionIndex)===select.selectedIndex));}
-  function refreshCustomSelect(select){const wrap=select?.closest('.st-custom-select');if(!wrap)return;const menu=wrap.querySelector('.st-custom-select-menu');menu.innerHTML=Array.from(select.options).map((o,i)=>'<button type="button" class="st-custom-option '+(i===select.selectedIndex?'selected':'')+'" data-option-index="'+i+'" '+(o.disabled?'disabled':'')+'>'+esc(o.textContent)+'</button>').join('');syncCustomSelect(wrap);}
-  function enhanceSelect(select){if(!select||select.multiple||select.dataset.customized==='1')return;select.dataset.customized='1';const wrap=document.createElement('div');wrap.className='st-custom-select';select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('st-custom-select-native');select.removeAttribute('required');const trigger=document.createElement('button');trigger.type='button';trigger.className='st-custom-select-trigger';trigger.innerHTML='<span class="st-custom-value"></span><span class="st-custom-arrow">⌄</span>';const menu=document.createElement('div');menu.className='st-custom-select-menu';menu.hidden=true;wrap.append(trigger,menu);trigger.addEventListener('click',()=>{const opening=menu.hidden;document.querySelectorAll('#studentTermsTab .st-custom-select-menu').forEach(m=>{m.hidden=true;m.parentElement.classList.remove('open');});menu.hidden=!opening;wrap.classList.toggle('open',opening);trigger.setAttribute('aria-expanded',String(opening));});menu.addEventListener('click',e=>{const b=e.target.closest('[data-option-index]');if(!b)return;select.selectedIndex=Number(b.dataset.optionIndex);select.dispatchEvent(new Event('change',{bubbles:true}));menu.hidden=true;wrap.classList.remove('open');trigger.setAttribute('aria-expanded','false');syncCustomSelect(wrap);});select.addEventListener('change',()=>refreshCustomSelect(select));refreshCustomSelect(select);}
-  function enhanceAllSelects(root){(root||document).querySelectorAll('#studentTermsTab select:not([multiple])').forEach(enhanceSelect);}
+  /* Term selector wheel: mirrors the region picker (3-copy loop, centered focus, touch + mouse). */
+  function syncTermWheel(wrap){
+    const select=wrap?.querySelector('#stTerm'),label=wrap?.querySelector('.st-custom-value'),menu=wrap?.querySelector('.st-term-wheel-menu');
+    if(!select||!label)return;
+    const option=select.options[select.selectedIndex];label.textContent=option?option.textContent:'انتخاب ترم…';
+    if(menu)menu.querySelectorAll('.st-term-wheel-item').forEach(item=>{
+      const selected=item.dataset.value===select.value;
+      item.setAttribute('aria-selected',String(selected));
+      item.classList.toggle('selected',selected);
+    });
+  }
+  function refreshTermWheel(select){
+    const wrap=select?.closest('.st-term-wheel'),menu=wrap?.querySelector('.st-term-wheel-menu');
+    if(!wrap||!menu)return;
+    menu.innerHTML='';
+    const options=Array.from(select.options),wheel=document.createElement('div');
+    wheel.className='st-term-wheel-list';wheel.setAttribute('role','listbox');wheel.setAttribute('aria-label','انتخاب ترم هنرجو');
+    wheel.dataset.optionCount=String(options.length);
+    [0,1,2].forEach(copy=>options.forEach(option=>{
+      const item=document.createElement('button');item.type='button';item.className='st-term-wheel-item';
+      item.dataset.value=option.value;item.dataset.copy=String(copy);
+      item.setAttribute('role','option');item.setAttribute('aria-selected',String(option.value===select.value));
+      item.textContent=option.textContent;wheel.appendChild(item);
+    }));
+    menu.appendChild(wheel);bindTermWheel(wheel);syncTermWheel(wrap);
+  }
+  function termWheelList(){return document.querySelector('#studentTermsTab .st-term-wheel-menu.open .st-term-wheel-list');}
+  function updateTermWheelFocus(w){
+    w=w||termWheelList();if(!w)return null;
+    const items=Array.from(w.querySelectorAll('.st-term-wheel-item'));if(!items.length)return null;
+    const center=w.getBoundingClientRect().top+w.clientHeight/2;
+    let best=null,distance=Infinity;
+    items.forEach(item=>{const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<distance){best=item;distance=d;}});
+    items.forEach(item=>item.classList.toggle('wheel-focus',item===best));
+    if(best)w._gym20PendingTermValue=best.dataset.value;
+    return best;
+  }
+  function termWheelCycleSize(w){
+    const count=Number(w.dataset.optionCount)||Math.floor(w.children.length/3);
+    return count>0&&w.children.length>=count*3?w.children[count].offsetTop-w.children[0].offsetTop:0;
+  }
+  function recycleTermWheel(w){
+    const cycle=termWheelCycleSize(w);if(!cycle)return;
+    if(w.scrollTop<cycle*.35)w.scrollTop+=cycle;
+    else if(w.scrollTop>cycle*1.65)w.scrollTop-=cycle;
+  }
+  function centerTermWheel(value){
+    const w=termWheelList();if(!w)return;
+    const item=Array.from(w.querySelectorAll('.st-term-wheel-item')).find(x=>x.dataset.value===String(value)&&x.dataset.copy==='1');
+    if(!item)return;
+    w.scrollTop=item.offsetTop-(w.clientHeight-item.offsetHeight)/2;
+    requestAnimationFrame(()=>updateTermWheelFocus(w));
+  }
+  function positionTermWheel(wrap){
+    const trigger=wrap?.querySelector('.st-custom-select-trigger'),menu=wrap?.querySelector('.st-term-wheel-menu');
+    if(!trigger||!menu||!menu.classList.contains('open'))return;
+    const r=trigger.getBoundingClientRect(),gap=6,pad=8;
+    const height=Math.max(112,Math.min(218,window.innerHeight-pad*2));
+    const width=Math.max(1,Math.min(r.width,window.innerWidth-pad*2));
+    const left=Math.max(pad,Math.min(r.right-width,window.innerWidth-width-pad));
+    const below=window.innerHeight-r.bottom-gap-pad,above=r.top-gap-pad;
+    const top=below>=Math.min(height,160)||below>=above?r.bottom+gap:r.top-gap-height;
+    menu.style.setProperty('position','fixed','important');
+    menu.style.setProperty('top',Math.max(pad,Math.min(top,window.innerHeight-height-pad))+'px','important');
+    menu.style.setProperty('left',left+'px','important');menu.style.setProperty('right','auto','important');
+    menu.style.setProperty('bottom','auto','important');menu.style.setProperty('width',width+'px','important');
+    menu.style.setProperty('height',height+'px','important');menu.style.setProperty('max-height',height+'px','important');
+  }
+  function closeTermWheel(wrap){
+    const menu=wrap?.querySelector('.st-term-wheel-menu'),trigger=wrap?.querySelector('.st-custom-select-trigger');
+    const w=menu?.querySelector('.st-term-wheel-list');if(w){clearTimeout(w._gym20SettleTimer);w._gym20PointerDown=false;w._gym20GestureMoved=false;}
+    menu?.classList.remove('open');trigger?.classList.remove('open');trigger?.setAttribute('aria-expanded','false');
+    if(menu){menu.setAttribute('aria-hidden','true');['top','left','right','bottom','width','height','max-height'].forEach(p=>menu.style.removeProperty(p));}
+  }
+  function commitTermWheel(wrap,value){
+    const select=wrap?.querySelector('#stTerm');if(!select||!Array.from(select.options).some(o=>o.value===value))return;
+    select.value=value;wrap._termWheelCommitting=true;
+    select.dispatchEvent(new Event('change',{bubbles:true}));
+    wrap._termWheelCommitting=false;syncTermWheel(wrap);closeTermWheel(wrap);
+  }
+  function bindTermWheel(w){
+    if(w._gym20TermBound)return;w._gym20TermBound=true;
+    w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;w._gym20LastScrollTop=w.scrollTop;
+    const settle=()=>{
+      clearTimeout(w._gym20SettleTimer);
+      if(!w._gym20GestureMoved||w._gym20PointerDown)return;
+      w._gym20SettleTimer=setTimeout(()=>{
+        if(w._gym20PointerDown||!w._gym20GestureMoved)return;
+        const best=updateTermWheelFocus(w);w._gym20GestureMoved=false;w._gym20Dragged=false;
+        if(best)commitTermWheel(w.closest('.st-term-wheel'),best.dataset.value);
+      },220);
+    };
+    w.addEventListener('pointerdown',e=>{
+      if(e.pointerType==='mouse'&&e.button!==0)return;
+      w._gym20PointerDown=true;w._gym20Dragged=false;w._gym20GestureMoved=false;
+      w._gym20StartX=e.clientX;w._gym20StartY=e.clientY;w._gym20StartScrollTop=w.scrollTop;w._gym20PointerType=e.pointerType;
+      clearTimeout(w._gym20SettleTimer);
+    },{passive:true});
+    w.addEventListener('pointermove',e=>{
+      if(!w._gym20PointerDown)return;
+      const dx=Math.abs(e.clientX-w._gym20StartX),dy=Math.abs(e.clientY-w._gym20StartY);
+      if(dx>7||dy>7)w._gym20Dragged=true;
+      if(dy>7&&dy>dx*1.15){
+        w._gym20GestureMoved=true;
+        if(w._gym20PointerType==='mouse'){
+          if(!w._gym20MouseCaptured&&w.setPointerCapture){try{w.setPointerCapture(e.pointerId);w._gym20MouseCaptured=true;}catch(_){}}
+          e.preventDefault();w.scrollTop=w._gym20StartScrollTop-(e.clientY-w._gym20StartY);
+        }
+      }
+    },{passive:false});
+    const end=()=>{if(!w._gym20PointerDown)return;w._gym20PointerDown=false;w._gym20StartX=null;w._gym20StartY=null;if(w._gym20GestureMoved)settle();};
+    w.addEventListener('pointerup',end,{passive:true});w.addEventListener('pointercancel',end,{passive:true});
+    w.addEventListener('wheel',()=>{w._gym20GestureMoved=true;settle();},{passive:true});
+    w.addEventListener('scroll',()=>{
+      const now=w.scrollTop,delta=Math.abs(now-w._gym20LastScrollTop);w._gym20LastScrollTop=now;
+      if(delta>2&&w._gym20PointerDown)w._gym20GestureMoved=true;
+      if(!w._gym20Frame)w._gym20Frame=requestAnimationFrame(()=>{w._gym20Frame=0;recycleTermWheel(w);updateTermWheelFocus(w);});
+      if(w._gym20GestureMoved&&!w._gym20PointerDown)settle();
+    },{passive:true});
+  }
+  function enhanceTermWheel(select){
+    if(!select||select.dataset.termWheelReady==='1')return;
+    select.dataset.termWheelReady='1';
+    const wrap=document.createElement('div');wrap.className='st-custom-select st-term-wheel';
+    select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('st-custom-select-native');
+    const trigger=document.createElement('button');trigger.type='button';trigger.className='st-custom-select-trigger';
+    trigger.setAttribute('aria-haspopup','listbox');trigger.setAttribute('aria-expanded','false');
+    trigger.innerHTML='<span class="st-custom-value"></span><span class="st-custom-arrow">⌄</span>';
+    const menu=document.createElement('div');menu.className='st-term-wheel-menu';menu.setAttribute('aria-hidden','true');
+    wrap.append(trigger,menu);refreshTermWheel(select);
+    trigger.addEventListener('click',e=>{
+      e.preventDefault();e.stopPropagation();
+      const opening=!menu.classList.contains('open');
+      document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
+      if(!opening)return;
+      refreshTermWheel(select);menu.classList.add('open');trigger.classList.add('open');trigger.setAttribute('aria-expanded','true');menu.setAttribute('aria-hidden','false');
+      positionTermWheel(wrap);
+      const w=menu.querySelector('.st-term-wheel-list');if(w){w._gym20PointerDown=false;w._gym20GestureMoved=false;w._gym20Dragged=false;clearTimeout(w._gym20SettleTimer);}
+      requestAnimationFrame(()=>{centerTermWheel(select.value);if(w)w._gym20LastScrollTop=w.scrollTop;});
+    });
+    menu.addEventListener('click',e=>{
+      const item=e.target.closest('.st-term-wheel-item');if(!item||!menu.contains(item))return;
+      e.preventDefault();e.stopPropagation();const w=menu.querySelector('.st-term-wheel-list');
+      if(w?._gym20Dragged){w._gym20Dragged=false;w._gym20GestureMoved=true;return;}
+      if(w){clearTimeout(w._gym20SettleTimer);w._gym20GestureMoved=false;}
+      commitTermWheel(wrap,item.dataset.value);
+    });
+    select.addEventListener('change',()=>{
+      syncTermWheel(wrap);
+      if(menu.classList.contains('open')&&!wrap._termWheelCommitting)centerTermWheel(select.value);
+    });
+    if(!document.documentElement.dataset.stTermWheelGlobalBound){
+      document.documentElement.dataset.stTermWheelGlobalBound='1';
+      document.addEventListener('pointerdown',e=>{
+        document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>{const w=m.closest('.st-term-wheel');if(w&&!w.contains(e.target))closeTermWheel(w);});
+      },true);
+      document.addEventListener('keydown',e=>{
+        if(e.key==='Escape')document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>closeTermWheel(m.closest('.st-term-wheel')));
+      });
+      const reposition=()=>document.querySelectorAll('#studentTermsTab .st-term-wheel-menu.open').forEach(m=>positionTermWheel(m.closest('.st-term-wheel')));
+      window.addEventListener('resize',reposition,{passive:true});
+      document.addEventListener('scroll',reposition,true);
+    }
+  }
+  function syncCustomSelect(wrap){if(wrap?.classList.contains('st-term-wheel')){syncTermWheel(wrap);return;}const select=wrap?.querySelector('select'),value=wrap?.querySelector('.st-custom-value'),menu=wrap?.querySelector('.st-custom-select-menu');if(!select||!value||!menu)return;const opt=select.options[select.selectedIndex];value.textContent=opt?opt.textContent:'انتخاب کنید…';menu.querySelectorAll('[data-option-index]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.optionIndex)===select.selectedIndex));}
+  function refreshCustomSelect(select){if(select?.id==='stTerm'){refreshTermWheel(select);return;}const wrap=select?.closest('.st-custom-select');if(!wrap)return;const menu=wrap.querySelector('.st-custom-select-menu');menu.innerHTML=Array.from(select.options).map((o,i)=>'<button type="button" class="st-custom-option '+(i===select.selectedIndex?'selected':'')+'" data-option-index="'+i+'" '+(o.disabled?'disabled':'')+'>'+esc(o.textContent)+'</button>').join('');syncCustomSelect(wrap);}
+  function enhanceSelect(select){if(!select||select.id==='stTerm'||select.multiple||select.dataset.customized==='1')return;select.dataset.customized='1';const wrap=document.createElement('div');wrap.className='st-custom-select';select.parentNode.insertBefore(wrap,select);wrap.appendChild(select);select.classList.add('st-custom-select-native');select.removeAttribute('required');const trigger=document.createElement('button');trigger.type='button';trigger.className='st-custom-select-trigger';trigger.innerHTML='<span class="st-custom-value"></span><span class="st-custom-arrow">⌄</span>';const menu=document.createElement('div');menu.className='st-custom-select-menu';menu.hidden=true;wrap.append(trigger,menu);trigger.addEventListener('click',()=>{const opening=menu.hidden;document.querySelectorAll('#studentTermsTab .st-custom-select-menu').forEach(m=>{m.hidden=true;m.parentElement.classList.remove('open');});menu.hidden=!opening;wrap.classList.toggle('open',opening);trigger.setAttribute('aria-expanded',String(opening));});menu.addEventListener('click',e=>{const b=e.target.closest('[data-option-index]');if(!b)return;select.selectedIndex=Number(b.dataset.optionIndex);select.dispatchEvent(new Event('change',{bubbles:true}));menu.hidden=true;wrap.classList.remove('open');trigger.setAttribute('aria-expanded','false');syncCustomSelect(wrap);});select.addEventListener('change',()=>refreshCustomSelect(select));refreshCustomSelect(select);}
+  function enhanceAllSelects(root){const scope=root||document;enhanceTermWheel(scope.querySelector?.('#stTerm')||document.getElementById('stTerm'));scope.querySelectorAll('#studentTermsTab select:not([multiple]):not(#stTerm)').forEach(enhanceSelect);}
   function mount(){
     if($(TAB))return;
     const nav=document.querySelector('.admin-tabs'),work=document.querySelector('.admin-workspace');
