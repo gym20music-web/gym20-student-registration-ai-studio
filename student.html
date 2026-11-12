@@ -463,6 +463,32 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   overflow:hidden;
 }
 
+
+/* GYM20 term wheel scroll fix: keep the wheel viewport constrained inside its menu. */
+.term-select-menu:not([hidden]){
+  display:flex!important;
+  flex-direction:column!important;
+  box-sizing:border-box!important;
+  left:0!important;right:0!important;top:calc(100% + 6px)!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:218px!important;max-height:min(218px,calc(100dvh - 24px))!important;
+  transform:none!important;overflow:hidden!important;
+}
+.term-wheel-list{
+  display:flex!important;flex:1 1 0!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:100%!important;min-height:0!important;max-height:100%!important;
+  overflow-x:hidden!important;overflow-y:scroll!important;
+  padding:89px 10px!important;box-sizing:border-box!important;
+  touch-action:pan-y!important;-webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;scroll-behavior:auto!important;
+}
+.term-wheel-item{
+  flex:0 0 40px!important;width:100%!important;
+  min-width:0!important;max-width:100%!important;
+}
+@media(max-width:520px){.term-wheel-list{padding:89px 9px!important}}
+
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
