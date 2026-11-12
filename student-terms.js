@@ -32,6 +32,11 @@
   const localTime=v=>{const p=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:TEHRAN_TZ,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(new Date(v)).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return p.hour+':'+p.minute;};
   const enNum=v=>Number(v||0).toLocaleString('en-US');
   const rowMinutes=r=>Math.max(1,Math.round((new Date(r.ends_at)-new Date(r.starts_at))/60000));
+  // Keep visible session numbers contiguous and chronological in the editable draft.
+  function normalizeDraftSessionNumbers(){
+    S.rows.sort((a,b)=>Date.parse(a.starts_at)-Date.parse(b.starts_at)||Number(a.session_number)-Number(b.session_number));
+    S.rows.forEach((row,index)=>{row.session_number=index+1;});
+  }
   const plus7=(d,n)=>{const x=new Date(d+'T12:00:00');x.setDate(x.getDate()+7*n);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');};
   const classNames={normal:'عمومی',semi:'نیمه‌خصوصی',private:'خصوصی',vip:'VIP',online:'آنلاین'};
   const attNames={pending:'در انتظار',present:'حاضر',absent:'غایب',excused:'غیبت موجه',makeup:'جلسه جبرانی',cancelled:'لغوشده'};
@@ -1086,7 +1091,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadDraftRows(){
-    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,course_id,enrollment_id,session_number,starts_at,ends_at,venue,coach_name,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}
+    if(!S.draftId)return;const {data,error}=await db().from('class_sessions').select('id,course_id,enrollment_id,session_number,starts_at,ends_at,venue,coach_name,notes,courses(name)').eq('schedule_version_id',S.draftId).order('starts_at');if(error)throw error;S.rows=(data||[]).map(x=>({...x,enrollment_ids:x.enrollment_id?[x.enrollment_id]:[]}));if(S.rows.length){const rr=await db().from('class_session_styles').select('session_id,enrollment_id').in('session_id',S.rows.map(x=>x.id));if(rr.error)throw rr.error;rr.data.forEach(z=>{const row=S.rows.find(x=>x.id===z.session_id);if(row)row.enrollment_ids.push(z.enrollment_id);});}normalizeDraftSessionNumbers();
   }
   async function renderBuilder(){
     const {data:links,error}=await db().from('term_enrollments').select('enrollment_id').eq('term_id',S.termId);if(error)throw error;
@@ -1161,8 +1166,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     bindJalaliDates($('stDraftTable'));
     initTermCalendars($('stDraftTable'));
     enhanceAllSelects($('stDraftTable'));
-    $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);drawDraft();}));
-    const syncSessionEditor=e=>{const input=e.target;if(!input?.matches?.('[data-date],[data-time]'))return;const n=Number(input.dataset.date||input.dataset.time),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;const dateInput=$('stDraftTable').querySelector('[data-date="'+n+'"]'),timeInput=$('stDraftTable').querySelector('[data-time="'+n+'"]');timeInput.value=enDigits(timeInput.value||'');const dateParts=enDigits(dateInput?.value||'').trim().split('/'),timeParts=(timeInput?.value||'').split(':');if(!dateInput||!timeInput||dateParts.length!==3||dateParts.some((v,i)=>v.length!==(i===0?4:2)||!/^\d+$/.test(v))||timeParts.length<2||timeParts[0].length!==2||timeParts[1].length!==2)return;try{const date=gregorianInput(dateInput.value),start=localISO(date,timeInput.value),mins=rowMinutes(row);row.starts_at=start;row.ends_at=new Date(new Date(start).getTime()+mins*60000).toISOString();const card=input.closest('.st-session-card'),weekday=card?.querySelector('.st-session-weekday');if(weekday)weekday.textContent=weekdayFa(date);if(e.type==='change'&&input.matches('[data-date]')){S.rows.sort((a,b)=>localDate(a.starts_at).localeCompare(localDate(b.starts_at))||Date.parse(a.starts_at)-Date.parse(b.starts_at)||Number(a.session_number)-Number(b.session_number));S.rows.forEach((session,index)=>{session.session_number=index+1;});drawDraft();return;}refreshDraftSessionStates();}catch(err){if(e.type!=='input')say(err.message||'ثبت زمان جلسه ناموفق بود.',true);}};
+    $('stDraftTable').querySelectorAll('[data-del]').forEach(b=>b.addEventListener('click',()=>{const r=sorted[Number(b.dataset.del)];S.rows=S.rows.filter(x=>x!==r);normalizeDraftSessionNumbers();drawDraft();}));
+    const syncSessionEditor=e=>{const input=e.target;if(!input?.matches?.('[data-date],[data-time]'))return;const n=Number(input.dataset.date||input.dataset.time),row=S.rows.find(x=>Number(x.session_number)===n);if(!row)return;const dateInput=$('stDraftTable').querySelector('[data-date="'+n+'"]'),timeInput=$('stDraftTable').querySelector('[data-time="'+n+'"]');timeInput.value=enDigits(timeInput.value||'');const dateParts=enDigits(dateInput?.value||'').trim().split('/'),timeParts=(timeInput?.value||'').split(':');if(!dateInput||!timeInput||dateParts.length!==3||dateParts.some((v,i)=>v.length!==(i===0?4:2)||!/^\d+$/.test(v))||timeParts.length<2||timeParts[0].length!==2||timeParts[1].length!==2)return;try{const date=gregorianInput(dateInput.value),start=localISO(date,timeInput.value),mins=rowMinutes(row);row.starts_at=start;row.ends_at=new Date(new Date(start).getTime()+mins*60000).toISOString();const card=input.closest('.st-session-card'),weekday=card?.querySelector('.st-session-weekday');if(weekday)weekday.textContent=weekdayFa(date);if(e.type==='change'&&input.matches('[data-date]')){normalizeDraftSessionNumbers();drawDraft();return;}refreshDraftSessionStates();}catch(err){if(e.type!=='input')say(err.message||'ثبت زمان جلسه ناموفق بود.',true);}};
     const editorRoot=$('stDraftTable');if(!editorRoot.dataset.sessionEditorBound){editorRoot.dataset.sessionEditorBound='1';editorRoot.addEventListener('input',syncSessionEditor);editorRoot.addEventListener('change',syncSessionEditor);editorRoot.addEventListener('blur',syncSessionEditor,true);
       // Delegated time-picker trigger: reliably works for every session card, including dynamically redrawn rows.
       editorRoot.addEventListener('click',e=>{const input=e.target.closest('[data-time]');if(!input||!editorRoot.contains(input))return;e.preventDefault();e.stopPropagation();openSessionTimePicker(input);});
@@ -1220,9 +1225,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
             if(!chosen.size)return;const dates=Array.from(chosen).sort();pop.remove();
             if(!addingToExisting){stageNewTerm(dates);return;}
             const ids=S.termEnrollmentIds.length?S.termEnrollmentIds:S.enrollments.filter(e=>e.status==='active').map(e=>e.id),mins=Number(S.term?.duration_minutes)||60;
-            let n=S.rows.reduce((m,r)=>Math.max(m,Number(r.session_number)||0),0);
-            dates.forEach(d=>{const starts=localISO(d,'18:00');S.rows.push({enrollment_ids:ids,session_number:++n,starts_at:starts,ends_at:new Date(new Date(starts).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null});});
-            drawDraft();say(fa(dates.length)+' جلسه به ترم موجود اضافه شد؛ ساعت و مربی هر جلسه را تنظیم کن و ثبت نهایی را بزن.');
+            dates.forEach(d=>{const starts=localISO(d,'18:00');S.rows.push({enrollment_ids:ids,session_number:S.rows.length+1,starts_at:starts,ends_at:new Date(new Date(starts).getTime()+mins*60000).toISOString(),venue:null,coach_name:null,notes:null});});
+            normalizeDraftSessionNumbers();drawDraft();say(fa(dates.length)+' جلسه به ترم موجود اضافه شد؛ ساعت و مربی هر جلسه را تنظیم کن و ثبت نهایی را بزن.');
           };
         };
         const rect=trigger.getBoundingClientRect();pop.style.left=Math.max(8,Math.min(innerWidth-268,rect.left+rect.width/2-126))+'px';pop.style.top=Math.max(8,Math.min(innerHeight-390,rect.bottom+5))+'px';draw();
