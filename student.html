@@ -469,10 +469,10 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   display:flex!important;
   flex-direction:column!important;
   box-sizing:border-box!important;
-  left:0!important;right:0!important;top:calc(100% + 6px)!important;
-  width:100%!important;min-width:0!important;max-width:100%!important;
+  left:50%!important;right:auto!important;top:calc(100% + 6px)!important;
+  width:max-content!important;min-width:120px!important;max-width:min(270px,calc(100vw - 24px))!important;
   height:218px!important;max-height:min(218px,calc(100dvh - 24px))!important;
-  transform:none!important;overflow:hidden!important;
+  transform:translateX(-50%)!important;overflow:hidden!important;
 }
 .term-wheel-list{
   display:flex!important;flex:1 1 0!important;
