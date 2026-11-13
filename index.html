@@ -2960,7 +2960,9 @@ async function loadDataAndInit(){
   gym20FetchWithTimeout('./data.json',{cache:'default'},5000).then(async response=>{
     if(!response.ok)throw new Error('data.json HTTP '+response.status);
     const data=await response.json();
-    acceptConfig(data);
+    // data.json is only a last-resort bootstrap fallback. Never let it replace
+    // a valid cached or live Supabase configuration (it may be older).
+    if(!initialRendered)acceptConfig(data);
   }).catch(error=>console.warn('GYM20 local config load failed:',error));
 }
 loadDataAndInit().then(()=>{
