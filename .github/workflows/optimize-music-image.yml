@@ -61,3 +61,5 @@ jobs:
           git add music.webp index.html
           git commit -m "Optimize GYM20 music avatar as WebP"
           git push
+
+# Trigger optimization workflow
