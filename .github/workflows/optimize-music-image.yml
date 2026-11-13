@@ -1,0 +1,63 @@
+name: Optimize GYM20 music image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/optimize-music-image.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Convert image to optimized WebP and update references
+        run: |
+          python -m pip install --quiet Pillow
+          python - <<'PY'
+          from PIL import Image
+          from io import BytesIO
+          from pathlib import Path
+
+          source = Path("music.jpg")
+          image = Image.open(source).convert("RGB")
+          image.thumbnail((900, 900), Image.Resampling.LANCZOS)
+
+          output = BytesIO()
+          chosen_quality = None
+          for quality in range(86, 69, -2):
+              output = BytesIO()
+              image.save(output, format="WEBP", quality=quality, method=6)
+              if output.tell() <= 180 * 1024:
+                  chosen_quality = quality
+                  break
+          if chosen_quality is None:
+              raise SystemExit("Could not reach the 180 KB target without lowering quality below 70")
+
+          Path("music.webp").write_bytes(output.getvalue())
+
+          html_path = Path("index.html")
+          html = html_path.read_text(encoding="utf-8")
+          html = html.replace("./music.jpg?v=20261109", "./music.webp?v=20261113")
+          html = html.replace('avatar:"music.jpg"', 'avatar:"music.webp"')
+          if "./music.webp?v=20261113" not in html or 'avatar:"music.webp"' not in html:
+              raise SystemExit("Expected music image references were not all updated")
+          html_path.write_text(html, encoding="utf-8")
+
+          print(f"Original: {source.stat().st_size} bytes")
+          print(f"WebP: {Path('music.webp').stat().st_size} bytes")
+          print(f"Dimensions: {image.width}x{image.height}; quality: {chosen_quality}")
+          PY
+      - name: Commit optimized image and references
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add music.webp index.html
+          git commit -m "Optimize GYM20 music avatar as WebP"
+          git push
