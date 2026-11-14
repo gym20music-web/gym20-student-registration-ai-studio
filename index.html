@@ -23,7 +23,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='515767bff3b9b61d6132acba84310b3fc8485eb6';
+ const assetVersion='595c37c2214d7954a8cd5d63ed8dfe80ab01e618';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -175,7 +175,7 @@
                   <div class="music-mini-controls"><span>↻</span><span>◁</span><span class="music-mini-pause">Ⅱ</span><span>▷</span><span>⇆</span></div>
                 </div>
             </div>
-            <button class="music-join-btn" type="button" id="btn_musicJoin">عضویت 🎵</button>
+            <span class="music-join-btn" id="btn_musicJoin" aria-hidden="true">عضویت 🎵</span>
         </a>
     </div>
 </div>
