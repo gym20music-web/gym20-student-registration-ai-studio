@@ -257,3 +257,30 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   outline-offset:3px!important;
 }
 #musicCardLink .music-avatar{border-color:#d9b96e!important}
+
+/* Music card: the card is the only interactive surface; prevent nested/native focus flashes. */
+#musicCardLink,
+#musicCardLink:link,
+#musicCardLink:visited,
+#musicCardLink:hover,
+#musicCardLink:active,
+#musicCardLink:focus{
+  -webkit-tap-highlight-color:transparent!important;
+  border-color:rgba(224,190,112,.23)!important;
+}
+#musicCardLink :focus,
+#musicCardLink :focus-visible{
+  outline:none!important;
+  box-shadow:none!important;
+}
+#musicCardLink:focus-visible{
+  outline:2px solid rgba(217,185,110,.78)!important;
+  outline-offset:3px!important;
+}
+#musicCardLink .music-join-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
