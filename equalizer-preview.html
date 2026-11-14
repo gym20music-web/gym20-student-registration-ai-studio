@@ -14,7 +14,16 @@ function draw(now){const v=V[sel],t=(now-start)/1000;for(const {e,a,i} of bars){
 if(v[3]==='random'){let w=(Math.sin(t*1.7+i*.41)+Math.sin(t*.83+i*.13)+2)/4;h=2+w*6;o=.72+w*.2}
 if(v[3]==='organic'){let w=(Math.sin(t*1.4+i*.7)+1)/2;h=2.2+w*2.7;o=.58+w*.22}
 if(v[3]==='asym'){let w=(Math.sin(t*1.4+a*2)+Math.sin(t*2-a*3)+2)/4;h=2.1+L*.8+R*(1+w*4.2);o=.68+w*.2}
-if(['dense','nov9','left1','left2'].includes(v[3])){let b=(Math.sin(t*1.35+a*1.8)+1)/2,r=(Math.sin(t*2.05-a*3.1)+1)/2,q=(Math.sin(t*3+a*5.2)+1)/2,w=b*.42+r*.36+q*.22,lw=.1+((Math.sin(t*1.35+a*2.7)+1)/2)*.13,lp=Math.pow(Math.max(0,Math.sin(t*.9+a*3.7)),12);if(v[3]==='left1')lw=.16+((Math.sin(t*1.25+a*2.1)+1)/2)*.16;if(v[3]==='dense')lp=0;h=2.1+R*(1.4+w*5.2)+L*(.75+lw*2+lp*(v[3]==='left1'?3.5:3.1));o=.6+(R*w+L*(lw*.55+lp*.3))*.28}
+if(['dense','left1','left2','nov9'].includes(v[3])){
+ const b=(Math.sin(t*1.35+a*1.8)+1)/2,r=(Math.sin(t*2.05-a*3.1)+1)/2,q=(Math.sin(t*3+a*5.2)+1)/2;
+ const rightWave=b*.42+r*.36+q*.22;
+ let leftWave=.12,leftPeak=0;
+ if(v[3]==='left1'){leftWave=.28+((Math.sin(t*1.25+a*2.1)+1)/2)*.35;leftPeak=Math.pow(Math.max(0,Math.sin(t*.9+a*3.7)),9)*1.8}
+ if(v[3]==='left2'){leftWave=.08+((Math.sin(t*1.05+a*1.7)+1)/2)*.08;leftPeak=0}
+ if(v[3]==='nov9'){leftWave=.10;leftPeak=Math.pow(Math.max(0,Math.sin(t*.72+a*4.6)),18)*4.8}
+ h=2.1+R*(1.4+rightWave*5.2)+L*(.65+leftWave*2+leftPeak);
+ o=.58+(R*rightWave+L*(leftWave*.45+leftPeak*.08))*.3;
+}
 e.style.height=h.toFixed(1)+'px';e.style.opacity=o.toFixed(2)}raf=requestAnimationFrame(draw)}
 V.forEach((v,i)=>{let b=document.createElement('button');b.textContent=v[0];b.onclick=()=>choose(i);buttons.append(b)});choose(0);
 </script></html>
