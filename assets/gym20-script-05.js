@@ -25,14 +25,14 @@
       const leftTravel=Math.sin(t*1.18+angle*2.25);
       const leftDrift=Math.sin(t*1.72-angle*1.35);
       const leftFine=Math.sin(t*2.15+angle*3.1);
-      const rightHeight=4.35+rightBreath*.28;
-      const leftHeight=3.05
-        +(leftTravel+1)*1.22
-        +(leftDrift+1)*.38
-        +leftFine*.16;
+      const rightHeight=5.0+rightBreath*.22;
+      const leftHeight=4.1
+        +(leftTravel+1)*1.85
+        +(leftDrift+1)*.58
+        +leftFine*.22;
       const height=right*rightHeight+left*leftHeight;
-      const activity=right*(.5+rightBreath*.08)
-        +left*(.56+((leftTravel+1)/2)*.34+((leftDrift+1)/2)*.10);
+      const activity=right*(.52+rightBreath*.05)
+        +left*(.58+((leftTravel+1)/2)*.30+((leftDrift+1)/2)*.12);
       el.style.height=height.toFixed(2)+'px';
       el.style.opacity=(.68+activity*.16).toFixed(2);
     });
