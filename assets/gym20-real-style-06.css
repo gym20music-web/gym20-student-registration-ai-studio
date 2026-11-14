@@ -2,7 +2,7 @@
 /* Premium natural spectrum: smooth staggered movement, no flashing/on-off effect; visual only. */
 .music-mini-player{width:100%;height:31px;margin-top:3px;display:flex;flex-direction:column;justify-content:space-between;gap:3px;direction:ltr;overflow:hidden}
 .music-mini-eq{position:relative;align-self:center;width:88%;height:10px;min-height:10px;display:flex;align-items:center;justify-content:space-between;gap:2px;padding:0 2px;box-sizing:border-box;pointer-events:none}
-.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#fbfcff 0%,#d0d9e4 30%,#8797a9 68%,#4b5969 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:none;transform-origin:center;opacity:.96;will-change:height;transition:height 135ms cubic-bezier(.22,.61,.36,1)}
+.music-mini-eq i{display:block;flex:1;min-width:1px;max-width:3px;height:5px;border-radius:3px;background:linear-gradient(180deg,#fbfcff 0%,#d0d9e4 30%,#8797a9 68%,#4b5969 100%);box-shadow:0 1px 1px rgba(0,0,0,.72),0 0 3px rgba(190,210,230,.2);transform:none;transform-origin:center;opacity:.96;will-change:height;transition:height 135ms cubic-bezier(.22,.61,.36,1)}.music-mini-eq i{animation:musicMiniSpectrum 1.15s ease-in-out infinite;animation-delay:0ms}.music-mini-eq i:nth-child(7n){animation-delay:-540ms}.music-mini-eq i:nth-child(7n + 1){animation-delay:-180ms}.music-mini-eq i:nth-child(7n + 2){animation-delay:-450ms}.music-mini-eq i:nth-child(7n + 3){animation-delay:-90ms}.music-mini-eq i:nth-child(7n + 4){animation-delay:-360ms}.music-mini-eq i:nth-child(7n + 5){animation-delay:0ms}.music-mini-eq i:nth-child(7n + 6){animation-delay:-270ms}
 
 
 .music-mini-eq i:nth-child(7n){max-width:3.5px;background:linear-gradient(180deg,#fff 0%,#d7dfe8 40%,#8797a8 100%)}
@@ -14,13 +14,13 @@
 .music-mini-controls span{display:inline-flex;align-items:center;justify-content:center;width:20%;height:10px;text-shadow:0 1px 2px rgba(0,0,0,.85),0 0 4px rgba(205,220,235,.2)}
 .music-mini-controls .music-mini-pause{font-size:11px;color:#f2f6fa;text-shadow:0 0 5px rgba(220,230,240,.45),0 1px 2px #000}
 @keyframes musicMiniSpectrum{0%,100%{transform:scaleY(.32)}16%{transform:scaleY(.78)}34%{transform:scaleY(1.08)}53%{transform:scaleY(.46)}72%{transform:scaleY(.9)}88%{transform:scaleY(.58)}}
-@media(prefers-reduced-motion:reduce){.music-mini-eq i{animation:none;transform:scaleY(.62)}}
+@media(prefers-reduced-motion:reduce){.music-mini-eq i,.music-avatar-ring i{animation:none!important}}
 
 /* Fine circular spectrum surrounding the music channel artwork. */
 .music-avatar-wrap{position:relative;width:70px;height:70px;flex:0 0 70px;display:inline-flex;align-items:center;justify-content:center;isolation:isolate;overflow:visible}
 .music-avatar-wrap .music-avatar{position:relative;z-index:2;width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
 .music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none;overflow:visible}
-.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height;transition:opacity 160ms ease}
+.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height;transition:opacity 160ms ease}.music-avatar-ring i{animation:musicAvatarSpectrum 1.25s ease-in-out infinite alternate;animation-delay:0ms}.music-avatar-ring i:nth-child(7n){animation-delay:-570ms}.music-avatar-ring i:nth-child(7n + 1){animation-delay:-190ms}.music-avatar-ring i:nth-child(7n + 2){animation-delay:-475ms}.music-avatar-ring i:nth-child(7n + 3){animation-delay:-95ms}.music-avatar-ring i:nth-child(7n + 4){animation-delay:-380ms}.music-avatar-ring i:nth-child(7n + 5){animation-delay:0ms}.music-avatar-ring i:nth-child(7n + 6){animation-delay:-285ms}@keyframes musicAvatarSpectrum{0%{height:2px;opacity:.48}100%{height:5px;opacity:.9}}
 @media(prefers-reduced-motion:reduce){.music-avatar-ring i{transition:none!important}}
 
 /* GYM20 day/night switch: explicit light palette after the graphite overrides. */
