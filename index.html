@@ -23,7 +23,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='65482eead679039e6993e98f2589c7017f4257a1';
+ const assetVersion='1fc76b1750b205da615cd970187a1b7680fcd484';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -62,7 +62,7 @@
     </div>
     <div id="regionDependentContent">
         <div class="section-card">
-            <div class="section-header" id="txt_stylesSection">🥋 ۱. نوع کلاس، سبک‌ها و جلسات</div>
+            <div class="section-header" id="txt_stylesSection">🥋 ۱. انتخاب رده سنی، نوع کلاس و سبک‌ها</div>
             <div class="pill-group" id="ageGroup">
                 <button class="pill-btn active" data-val="adult" id="pill_adult">بزرگسالان</button>
                 <button class="pill-btn" data-val="kids" id="pill_kids">کودکان</button>
@@ -83,7 +83,7 @@
                     <button class="pill-btn" data-val="10">۱۰ جلسه</button>
                     <button class="pill-btn" data-val="12">۱۲ جلسه</button>
                 </div>
-                <div id="txt_stylesChoiceLabel" style="font-size:.66rem;color:var(--text-secondary);margin:6px 0 3px;">سبک‌های مجاز این کلاس:</div>
+                <div id="txt_stylesChoiceLabel" style="font-size:.66rem;color:var(--text-secondary);margin:6px 0 3px;">سبک‌های مورد نظر را انتخاب کنید:</div>
                 <div class="styles-grid" id="stylesList"></div>
                 <div class="price-box">
                     <div class="price-details" id="priceBreakdown">۱ سبک انتخاب شده (بزرگسال - عمومی - ۸ جلسه)</div>
@@ -102,7 +102,7 @@
                             <input id="regFullName" name="full_name" autocomplete="name" maxlength="120" placeholder="نام هنرجو" required>
                         </div>
                         <div class="reg-field">
-                            <label for="regPhone" id="txt_phoneLabel">شماره موبایل *</label>
+                            <label for="regPhone" id="txt_phoneLabel">📞 تماس تلفنی</label>
                             <input id="regPhone" name="phone" type="tel" inputmode="tel" autocomplete="tel" maxlength="20" placeholder="۰۹..." dir="ltr" required>
                         </div>
                         <div class="reg-field">
@@ -118,7 +118,7 @@
                 </form>
             </div>
             <div class="section-card">
-                <div class="section-header" id="txt_rulesSection">📌 ۲. شرایط برگزاری و قوانین دوره</div>
+                <div class="section-header" id="txt_rulesSection">📌 ۲. شرایط برگزاری و قوانین اختصاصی دوره</div>
                 <div class="dynamic-rules-box" id="dynamicRulesBox">
                     <span class="dynamic-rule-badge" id="activeRuleBadge">شرایط کلاس عمومی - ترم ۸ جلسه</span>
                     <div id="txt_classRulesLabel" style="font-weight:700;font-size:.68rem;color:var(--neon-purple);margin-bottom:2px;">شرایط نوع کلاس:</div>
