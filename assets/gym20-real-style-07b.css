@@ -318,3 +318,61 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   outline:0!important;
   box-shadow:none!important;
 }
+
+
+/* Stable focus/press styling for the region selector and top navigation.
+   Avoid browser-restored focus rings and transient white native highlights on reload. */
+#customRegionTrigger,
+#customRegionTrigger:hover,
+#customRegionTrigger:active,
+#customRegionTrigger:focus,
+#customRegionTrigger:focus-visible,
+#themeBtn,
+#themeBtn:hover,
+#themeBtn:active,
+#themeBtn:focus,
+#themeBtn:focus-visible,
+#adminBtn,
+#adminBtn:hover,
+#adminBtn:active,
+#adminBtn:focus,
+#adminBtn:focus-visible{
+  -webkit-tap-highlight-color:transparent!important;
+  outline:0!important;
+  color:var(--text-primary)!important;
+  border-color:rgba(224,190,112,.23)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.045),0 4px 12px rgba(0,0,0,.16)!important;
+}
+#customRegionTrigger{
+  background:linear-gradient(145deg,#20262e,#2b323b)!important;
+  transition:none!important;
+}
+#customRegionTrigger:hover,
+#customRegionTrigger:active,
+#customRegionTrigger:focus,
+#customRegionTrigger:focus-visible{
+  background:linear-gradient(145deg,#20262e,#2b323b)!important;
+  transform:none!important;
+}
+#themeBtn,#adminBtn{
+  background:linear-gradient(145deg,#303741,#242a32)!important;
+  transition:none!important;
+}
+#themeBtn:hover,#themeBtn:active,#themeBtn:focus,#themeBtn:focus-visible,
+#adminBtn:hover,#adminBtn:active,#adminBtn:focus,#adminBtn:focus-visible{
+  background:linear-gradient(145deg,#303741,#242a32)!important;
+  transform:none!important;
+  filter:none!important;
+}
+html[data-theme="light"] #customRegionTrigger,
+html[data-theme="light"] #customRegionTrigger:hover,
+html[data-theme="light"] #customRegionTrigger:active,
+html[data-theme="light"] #customRegionTrigger:focus,
+html[data-theme="light"] #customRegionTrigger:focus-visible,
+body[data-theme="light"] #themeBtn,
+body[data-theme="light"] #adminBtn{
+  background:#fff!important;
+  color:#263442!important;
+  border-color:rgba(31,45,61,.16)!important;
+  box-shadow:0 2px 8px rgba(31,45,61,.07)!important;
+}
