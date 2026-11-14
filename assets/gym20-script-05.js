@@ -1,4 +1,4 @@
-/* GYM20 circular spectrum — 32 fine radial bars, gentle left/right asymmetry; no ring rotation. */
+/* GYM20 circular spectrum — restore fuller original wave with 32 fine radial bars. */
 (function(){
   const ring=document.querySelector('#musicCardLink .music-avatar-ring');
   if(!ring)return;
@@ -16,26 +16,30 @@
   function draw(ms){
     const t=ms/1000;
     bars.forEach(({el,angle})=>{
-      /* 0° is top; positive sine is the right half. */
+      /* 0° points up; positive sine is the right half of the ring. */
       const side=Math.sin(angle);
       const right=Math.max(0,side), left=Math.max(0,-side);
-      const slow=(Math.sin(t*1.05+angle*1.7)+1)/2;
-      const soft=(Math.sin(t*1.55-angle*2.1)+1)/2;
-      const fine=(Math.sin(t*2.0+angle*3.0)+1)/2;
-      const rightWave=.52*slow+.31*soft+.17*fine;
-      const leftWave=.58+((Math.sin(t*1.2+angle*2.4)+1)/2)*.24;
-      const h=2.0+right*(1.0+rightWave*2.4)+left*(.35+leftWave*1.0);
-      const opacity=.58+right*rightWave*.30+left*leftWave*.12;
-      el.style.height=h.toFixed(2)+'px';
-      el.style.opacity=opacity.toFixed(2);
+      const broad=(Math.sin(t*1.35+angle*1.8)+1)/2;
+      const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
+      const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
+      const rightWave=broad*.42+rolling*.36+ripple*.22;
+      /* Keep a visible, delicate ripple on the left instead of nearly bare stubs. */
+      const leftWave=.10+((Math.sin(t*1.35+angle*2.7)+1)/2)*.13;
+      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*.9+angle*3.7)),12);
+      const height=2.1
+        +right*(1.4+rightWave*5.2)
+        +left*(.75+leftWave*2.0+leftPeaks*3.1);
+      const activity=right*rightWave+left*(leftWave*.55+leftPeaks*.3);
+      el.style.height=height.toFixed(1)+'px';
+      el.style.opacity=(.6+activity*.28).toFixed(2);
     });
   }
   draw(0);
   if(reduceMotion)return;
-  let raf=0, paused=false;
-  function animate(now){if(paused||document.hidden)return;draw(now);raf=requestAnimationFrame(animate);}
-  function start(){if(paused||document.hidden)return;cancelAnimationFrame(raf);raf=requestAnimationFrame(animate);}
+  let raf=0;
+  function animate(now){if(document.hidden)return;draw(now);raf=requestAnimationFrame(animate);}
   function stop(){cancelAnimationFrame(raf);}
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
+  function start(){if(!document.hidden){stop();raf=requestAnimationFrame(animate);}}
   start();
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
 })();
