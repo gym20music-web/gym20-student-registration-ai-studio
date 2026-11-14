@@ -14,12 +14,29 @@
 <link rel="preconnect" href="https://iqjujumhoawlugrmjvyj.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="//iqjujumhoawlugrmjvyj.supabase.co">
 <title>آکادمی تخصصی ورزش GYM20🤸</title>
-<link rel="stylesheet" href="./assets/gym20-real-style-01a.css">
-<link rel="stylesheet" href="./assets/gym20-real-style-01b.css">
-<link rel="stylesheet" href="./assets/gym20-real-style-01c.css">
 
-<link rel="stylesheet" href="./assets/gym20-real-style-02.css">
-<link rel="stylesheet" href="./assets/gym20-real-style-03.css"></head>
+
+
+
+
+<script>
+(function(){
+ document.documentElement.classList.add('gym20-raw-loading');
+ const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/perf/split-static-assets-20261114/';
+ const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
+ window.__gym20FetchAsset=async function(path){
+  const response=await fetch(base+path,{cache:'no-store'});
+  if(!response.ok)throw new Error(path+' HTTP '+response.status);
+  return await response.text();
+ };
+ window.__gym20CssReady=Promise.all(cssFiles.map(window.__gym20FetchAsset)).then(texts=>{
+  texts.forEach((text,i)=>{const style=document.createElement('style');style.dataset.gym20Asset=cssFiles[i];style.textContent=text;document.head.appendChild(style);});
+  document.documentElement.classList.remove('gym20-raw-loading');
+ }).catch(error=>{document.documentElement.classList.remove('gym20-raw-loading');console.error('[GYM20] CSS loading failed',error);throw error;});
+})();
+</script>
+<style>html.gym20-raw-loading body{visibility:hidden}</style>
+</head>
 <body data-color-theme="stealth">
 <div class="container">
     <div class="top-nav">
@@ -561,26 +578,13 @@
     </div>
 </div>
 
-<script src="./supabase-auth.js" defer></script>
-<script src="./assets/gym20-script-01.js"></script>
 
-<script src="./assets/gym20-script-02.js"></script>
+
+
+
 
 
 <!-- Independent fallback for the public region dropdown: keeps it usable even if the main app script has an unrelated error. -->
-<link rel="stylesheet" href="./assets/gym20-real-style-04.css">
-<script src="./assets/gym20-script-03.js"></script>
-
-
-<link rel="stylesheet" href="./assets/gym20-real-style-05.css">
-
-
-<link rel="stylesheet" href="./assets/gym20-real-style-06.css">
-<script src="./assets/gym20-script-04.js"></script>
-<script src="./assets/gym20-script-05.js"></script>
-
-<link rel="stylesheet" href="./assets/gym20-real-style-07a.css">
-<link rel="stylesheet" href="./assets/gym20-real-style-07b.css">
 
 
 
@@ -590,10 +594,47 @@
 
 
 
-<script src="./assets/gym20-script-06.js"></script>
 
 
 
-<script src="./assets/gym20-script-07.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+(async function(){
+ const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
+ try{
+  await window.__gym20CssReady;
+  for(const path of files){
+   const source=await window.__gym20FetchAsset(path);
+   const blob=new Blob([source],{type:'text/javascript'});
+   const url=URL.createObjectURL(blob);
+   const script=document.createElement('script');script.src=url;
+   await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=()=>reject(new Error(path+' execution failed'));document.body.appendChild(script);});
+   script.remove();URL.revokeObjectURL(url);
+  }
+  document.documentElement.dataset.gym20Assets='ready';
+  console.info('[GYM20] Raw assets loaded successfully');
+ }catch(error){
+  document.documentElement.dataset.gym20Assets='error';console.error('[GYM20] Asset bootstrap failed',error);
+  const notice=document.createElement('div');
+  notice.style.cssText='position:fixed;z-index:999999;bottom:12px;left:12px;right:12px;padding:12px;background:#351d1d;color:#fff;border:1px solid #b66;border-radius:10px;font:13px Tahoma;direction:rtl';
+  notice.textContent='بارگذاری بخشی از فایل‌های سایت ناموفق بود. اتصال اینترنت را بررسی و صفحه را تازه‌سازی کنید.';
+  document.body.appendChild(notice);
+ }
+})();
+</script>
 </body>
 </html>
