@@ -23,9 +23,10 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
+ const assetVersion='3233795f2056776d3a3d9127a6fbaaffd64664c4';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
-  const response=await fetch(base+path,{cache:'no-store'});
+  const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
   if(!response.ok)throw new Error(path+' HTTP '+response.status);
   return await response.text();
  };
