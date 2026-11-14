@@ -1,66 +1,48 @@
-/* GYM20 circular spectrum — restrained premium motion. */
+/* GYM20 circular spectrum — restored from the Nov 9, 2026 approved version. */
 (function(){
   const ring=document.querySelector('#musicCardLink .music-avatar-ring');
   if(!ring)return;
-
   const reduceMotion=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const total=32;
+  const total=72;
   ring.replaceChildren();
-
   const bars=[];
   for(let i=0;i<total;i++){
+    const bar=document.createElement('i');
     const angle=i*360/total;
-    const el=document.createElement('i');
-    el.style.setProperty('--angle',angle+'deg');
-    ring.appendChild(el);
-    bars.push({
-      el,
-      angle:angle*Math.PI/180,
-      height:4.6
-    });
+    bar.style.setProperty('--angle',angle+'deg');
+    ring.appendChild(bar);
+    bars.push({el:bar,angle:angle*Math.PI/180});
   }
-
-  function draw(ms,blend=1){
-    const t=ms/1000;
-    /* One quiet crest glides along the left semicircle and gently reverses. */
-    const crest=.5+.29*Math.sin(t*.62);
-    bars.forEach(bar=>{
-      const side=Math.sin(bar.angle);
+  function draw(time){
+    const t=time/1000;
+    bars.forEach(({el,angle})=>{
+      /* 0° points up; positive sin() is the right half of the ring. */
+      const side=Math.sin(angle);
       const right=Math.max(0,side);
       const left=Math.max(0,-side);
-      let target;
-
-      if(right){
-        /* The right arc is almost still, with only a barely visible breath. */
-        target=4.65+.10*Math.sin(t*.48+bar.angle*.35);
-      }else{
-        const u=(bar.angle-Math.PI)/Math.PI;
-        const distance=(u-crest)/.205;
-        const peak=Math.exp(-.5*distance*distance);
-        const softRipple=.10*Math.sin(t*.58+u*2.4);
-        target=3.65+2.05*peak+softRipple;
-      }
-
-      bar.height+=(target-bar.height)*blend;
-      bar.el.style.height=bar.height.toFixed(2)+'px';
-      bar.el.style.opacity=right?'.76':(.72+.07*Math.min(1,(target-3.6)/2.1)).toFixed(2);
+      const broad=(Math.sin(t*1.35+angle*1.8)+1)/2;
+      const rolling=(Math.sin(t*2.05-angle*3.1)+1)/2;
+      const ripple=(Math.sin(t*3.0+angle*5.2)+1)/2;
+      const rightWave=broad*.42+rolling*.36+ripple*.22;
+      /* Left side stays shorter, but carries a soft moving ripple. */
+      const leftWave=.10+((Math.sin(t*1.35+angle*2.7)+1)/2)*.13;
+      /* A handful of taller bars travel through the small left-side wave. */
+      const leftPeaks=Math.pow(Math.max(0,Math.sin(t*.9+angle*3.7)),12);
+      const height=2.1
+        +right*(1.4+rightWave*5.2)
+        +left*(.75+leftWave*2.0+leftPeaks*3.1);
+      const activity=right*rightWave+left*(leftWave*.55+leftPeaks*.3);
+      el.style.height=height.toFixed(1)+'px';
+      el.style.opacity=(.6+activity*.28).toFixed(2);
     });
   }
-
   draw(0);
   if(reduceMotion)return;
-
-  let raf=0,last=0;
-  function animate(now){
-    if(document.hidden)return;
-    const delta=last?Math.min(50,now-last):16;
-    last=now;
-    const blend=1-Math.exp(-delta/115);
-    draw(now,blend);
-    raf=requestAnimationFrame(animate);
-  }
-  function stop(){cancelAnimationFrame(raf);last=0;}
-  function start(){if(!document.hidden){stop();raf=requestAnimationFrame(animate);}}
-  start();
-  document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();else start();});
+  let raf=0;
+  function animate(now){draw(now);raf=requestAnimationFrame(animate);}
+  raf=requestAnimationFrame(animate);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.hidden){cancelAnimationFrame(raf);}
+    else{raf=requestAnimationFrame(animate);}
+  });
 })();
