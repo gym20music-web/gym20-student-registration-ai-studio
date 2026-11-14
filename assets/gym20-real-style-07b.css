@@ -239,4 +239,21 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
   color:#687586!important;
 }
 
-
+/* GYM20 music card: deterministic border and accessible focus state.
+   Prevent browser-default focus rings and legacy purple/blue pseudo-state colors. */
+#musicCardLink,
+#musicCardLink:link,
+#musicCardLink:visited,
+#musicCardLink:hover,
+#musicCardLink:active{
+  border:1px solid rgba(224,190,112,.23)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.075),inset 0 -1px 0 rgba(0,0,0,.42),0 8px 20px rgba(0,0,0,.22)!important;
+  -webkit-tap-highlight-color:transparent;
+}
+#musicCardLink:focus{outline:none!important}
+#musicCardLink:focus:not(:focus-visible){outline:none!important}
+#musicCardLink:focus-visible{
+  outline:2px solid rgba(217,185,110,.78)!important;
+  outline-offset:3px!important;
+}
+#musicCardLink .music-avatar{border-color:#d9b96e!important}
