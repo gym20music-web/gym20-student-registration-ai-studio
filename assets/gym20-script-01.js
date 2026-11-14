@@ -396,25 +396,33 @@ document.querySelectorAll('.accordion-header').forEach(h=>{h.onclick=()=>h.paren
 acceptRulesEl.onchange=e=>{paymentSectionEl.style.display=e.target.checked?'block':'none';if(!e.target.checked)document.getElementById('regPaymentConfirmed').checked=false;updateRegistrationSubmitState();if(e.target.checked)paymentSectionEl.scrollIntoView({behavior:'smooth'});};
 
 if(toastEl){
-    const hideCardCopyToast=()=>{toastEl.classList.remove('show');toastEl.setAttribute('aria-hidden','true');};
+    const hideCardCopyToast=()=>{
+        window.clearTimeout(window.__gym20CardToastTimer);
+        toastEl.classList.remove('show');
+        toastEl.hidden=true;
+        toastEl.setAttribute('aria-hidden','true');
+    };
     hideCardCopyToast();
     window.addEventListener('pageshow',hideCardCopyToast);
     window.addEventListener('pagehide',hideCardCopyToast);
 }
-document.getElementById('copyCardBtn').onclick=(event)=>{
+const copyCardButton=document.getElementById('copyCardBtn');
+if(copyCardButton)copyCardButton.onclick=(event)=>{
     if(!event || !event.isTrusted) return;
-    if(appData.card&&appData.card.cleanNumber){
-        safeCopyToClipboard(appData.card.cleanNumber, ()=>{
-            if(!toastEl) return;
-            window.clearTimeout(window.__gym20CardToastTimer);
-            toastEl.classList.add('show');
-            toastEl.setAttribute('aria-hidden','false');
-            window.__gym20CardToastTimer=window.setTimeout(()=>{
-                toastEl.classList.remove('show');
-                toastEl.setAttribute('aria-hidden','true');
-            },2200);
-        });
-    }
+    const cardNumber=appData.card&&appData.card.cleanNumber;
+    if(!cardNumber) return;
+    safeCopyToClipboard(cardNumber, ()=>{
+        if(!toastEl) return;
+        window.clearTimeout(window.__gym20CardToastTimer);
+        toastEl.hidden=false;
+        toastEl.setAttribute('aria-hidden','false');
+        requestAnimationFrame(()=>toastEl.classList.add('show'));
+        window.__gym20CardToastTimer=window.setTimeout(()=>{
+            toastEl.classList.remove('show');
+            toastEl.hidden=true;
+            toastEl.setAttribute('aria-hidden','true');
+        },2200);
+    });
 };
 
 const themeBtnEl=document.getElementById('themeBtn');if(themeBtnEl){const applyGym20Theme=(light)=>{[document.documentElement,document.body,document.getElementById('adminModal')].filter(Boolean).forEach(el=>{if(light)el.setAttribute('data-theme','light');else el.removeAttribute('data-theme');});themeBtnEl.textContent=light?'☀️':'🌙';};themeBtnEl.addEventListener('click',()=>applyGym20Theme(document.body.getAttribute('data-theme')!=='light'));}
