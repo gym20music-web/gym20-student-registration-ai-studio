@@ -20,7 +20,9 @@
 .music-avatar-wrap{position:relative;width:70px;height:70px;flex:0 0 70px;display:inline-flex;align-items:center;justify-content:center;isolation:isolate;overflow:visible}
 .music-avatar-wrap .music-avatar{position:relative;z-index:2;width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
 .music-avatar-ring{position:absolute;inset:0;z-index:1;border-radius:50%;pointer-events:none;overflow:visible}
-.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height,opacity;transition:opacity 160ms ease} light palette after the graphite overrides. */
+.music-avatar-ring i{position:absolute;left:calc(50% - .55px);top:50%;display:block;width:1.1px;height:3px;border-radius:2px;background:linear-gradient(180deg,#f5f7fa 0%,#aeb8c3 100%);box-shadow:none;opacity:.72;transform-origin:50% 0%;transform:rotate(var(--angle)) translateY(-23.5px) scaleY(-1);will-change:height,opacity;transition:opacity 160ms ease}
+
+/* Light palette after the graphite overrides. */
 body[data-theme="light"]{
  background:#f3f4f6!important;
  color:#18212b!important;
