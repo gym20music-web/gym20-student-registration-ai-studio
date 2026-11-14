@@ -395,11 +395,24 @@ setupPills('sessionsCount',v=>{currentSessions=v;calculatePrice();});
 document.querySelectorAll('.accordion-header').forEach(h=>{h.onclick=()=>h.parentElement.classList.toggle('open');});
 acceptRulesEl.onchange=e=>{paymentSectionEl.style.display=e.target.checked?'block':'none';if(!e.target.checked)document.getElementById('regPaymentConfirmed').checked=false;updateRegistrationSubmitState();if(e.target.checked)paymentSectionEl.scrollIntoView({behavior:'smooth'});};
 
-document.getElementById('copyCardBtn').onclick=()=>{
+if(toastEl){
+    const hideCardCopyToast=()=>{toastEl.classList.remove('show');toastEl.setAttribute('aria-hidden','true');};
+    hideCardCopyToast();
+    window.addEventListener('pageshow',hideCardCopyToast);
+    window.addEventListener('pagehide',hideCardCopyToast);
+}
+document.getElementById('copyCardBtn').onclick=(event)=>{
+    if(!event || !event.isTrusted) return;
     if(appData.card&&appData.card.cleanNumber){
         safeCopyToClipboard(appData.card.cleanNumber, ()=>{
+            if(!toastEl) return;
+            window.clearTimeout(window.__gym20CardToastTimer);
             toastEl.classList.add('show');
-            setTimeout(()=>toastEl.classList.remove('show'),2200);
+            toastEl.setAttribute('aria-hidden','false');
+            window.__gym20CardToastTimer=window.setTimeout(()=>{
+                toastEl.classList.remove('show');
+                toastEl.setAttribute('aria-hidden','true');
+            },2200);
         });
     }
 };
