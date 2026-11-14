@@ -1,0 +1,36 @@
+
+/* GYM20 rules wheel — isolated styles, matching the region wheel geometry. */
+#ruleWheelDropdown{position:relative!important;width:100%;overflow:visible!important}
+#ruleWheelDropdown .rule-wheel-native{position:absolute!important;width:1px!important;height:1px!important;min-height:1px!important;opacity:0!important;pointer-events:none!important;clip-path:inset(50%)!important}
+#ruleWheelTrigger{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;height:34px;min-height:34px;padding:4px 9px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card);color:var(--text-primary);font:inherit;font-size:10.5px;text-align:right;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#ruleWheelTrigger.open{border-color:rgba(214,179,90,.58);box-shadow:0 0 10px rgba(214,179,90,.13)}
+#ruleWheelTrigger>span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#ruleWheelTrigger .rule-wheel-arrow{color:#d6b35a;flex:none;transition:transform .2s ease}
+#ruleWheelTrigger.open .rule-wheel-arrow{transform:rotate(180deg)}
+#ruleWheelMenu{position:fixed!important;display:none;top:0;left:0;right:auto;bottom:auto;width:280px;height:218px;max-height:min(218px,calc(100dvh - 18px));padding:0;overflow:hidden;box-sizing:border-box;background:linear-gradient(155deg,rgba(52,61,72,.99),rgba(35,42,51,.99));border:1px solid rgba(218,228,238,.18);border-radius:15px;box-shadow:0 16px 34px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.07);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:999999;transform:none!important}
+#ruleWheelMenu.open{display:flex!important;flex-direction:column!important}
+#ruleWheelMenu:before{display:none!important;content:none!important}
+#ruleWheelMenu:after{content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96))}
+#ruleWheelMenu #ruleWheelList{position:relative;z-index:0;display:flex;flex-direction:column;flex:1 1 auto;height:100%;min-height:0;width:100%;overflow-y:auto;overflow-x:hidden;padding:89px 10px;box-sizing:border-box;scroll-padding-block:89px;scroll-snap-type:y proximity;scroll-behavior:auto;overscroll-behavior-y:contain;-webkit-overflow-scrolling:touch;touch-action:pan-y;scrollbar-width:none}
+#ruleWheelMenu #ruleWheelList::-webkit-scrollbar{display:none}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item{position:relative;z-index:0;display:flex;flex:0 0 40px;align-items:center;justify-content:space-between;width:100%;height:40px;min-height:40px;max-height:40px;margin:0;padding:5px 13px;box-sizing:border-box;border:1px solid transparent;border-radius:11px;outline:0;background:transparent;color:#d9dfe6;text-align:right;font:inherit;cursor:pointer;scroll-snap-align:none;scroll-snap-stop:normal;opacity:.43;transform:scale(.91);filter:blur(.25px);transition:opacity .2s ease,transform .2s ease,background .2s ease,filter .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item:before,#ruleWheelMenu #ruleWheelList>.rule-wheel-item:after{content:none!important;display:none!important}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{display:block;width:100%;max-width:100%;margin:0;padding:0;border:0;outline:0;background:transparent;color:#d9dfe6;font-size:12px;font-weight:650;line-height:1.4;text-align:right;direction:rtl;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{z-index:3;opacity:1;transform:scale(1.025);filter:none;background:linear-gradient(100deg,rgba(214,179,90,.10),rgba(214,179,90,.19),rgba(214,179,90,.10));border-color:transparent;box-shadow:none;color:#f0d18a}
+#ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{color:#f0d18a;font-size:12px;font-weight:850;text-shadow:0 0 10px rgba(214,179,90,.16)}
+/* Desktop: outline is attached to the focused row and moves with it. No stationary center frame. */
+@media(min-width:721px){
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item{transition:opacity .16s ease,background .16s ease,color .16s ease,border-color .16s ease,box-shadow .16s ease}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus{border-color:rgba(222,190,116,.62);box-shadow:inset 0 0 15px rgba(214,179,90,.045),0 0 13px rgba(214,179,90,.06)}
+}
+@media(max-width:720px){
+ #ruleWheelMenu{width:auto;height:218px;max-height:min(218px,calc(100dvh - 18px));border-radius:15px}
+ #ruleWheelMenu #ruleWheelList{padding:89px 9px;scroll-padding-block:89px;scroll-snap-type:none}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{font-size:11px}
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{font-size:11px}
+}
+html[data-theme="light"] #ruleWheelMenu{background:linear-gradient(155deg,rgba(255,255,255,.99),rgba(243,246,249,.99));border-color:rgba(120,130,145,.25);box-shadow:0 16px 34px rgba(25,39,55,.16)}
+html[data-theme="light"] #ruleWheelMenu:after{background:linear-gradient(to bottom,transparent,rgba(243,246,249,.97))}
+html[data-theme="light"] #ruleWheelMenu #ruleWheelList>.rule-wheel-item>span{color:#526071}
+html[data-theme="light"] #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span{color:#795814}
+@media(prefers-reduced-motion:reduce){#ruleWheelMenu #ruleWheelList>.rule-wheel-item{transition:none!important}#ruleWheelMenu #ruleWheelList{scroll-behavior:auto!important}}
