@@ -1,0 +1,102 @@
+
+#customRegionTrigger{width:100%;min-height:38px;text-align:right;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+#customRegionMenu{position:absolute!important;top:calc(100% + 4px)!important;right:0!important;left:0!important;max-height:min(48vh,280px)!important;overflow-y:auto!important;overscroll-behavior:contain;}
+#customRegionMenu.open{display:block!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;}
+
+@media(max-width:720px){
+ #adminModal.admin-modal{position:fixed;inset:0;width:100%;height:100%;height:100dvh;padding:0;align-items:stretch;justify-content:stretch;overflow:hidden}
+ #adminModal .admin-content{width:100%;height:100%;height:100dvh;min-height:0;max-height:none;margin:0;border:0;border-radius:0;overflow:hidden;display:flex;flex-direction:column}
+ #adminModal .admin-layout{flex:1;min-height:0;min-width:0;display:flex;flex-direction:column;overflow:hidden}
+ #adminModal .admin-sidebar{width:100%;min-width:0;max-width:none;flex:0 0 auto;max-height:34dvh;padding:7px 8px!important;gap:6px!important;border-left:0;border-bottom:1px solid var(--border);overflow-y:auto;overflow-x:hidden}
+ #adminModal .admin-sidebar-brand{display:none}
+ #adminModal .admin-tabs{display:flex;flex-direction:row;flex-wrap:nowrap;gap:6px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:2px 1px 7px;scrollbar-width:thin}
+ #adminModal .admin-tab-btn{width:auto;min-width:max-content;min-height:34px!important;flex:0 0 auto;padding:6px 10px!important;font-size:10px!important;white-space:nowrap;text-align:center;border-radius:8px}
+ #adminModal .admin-workspace{flex:1 1 auto;width:100%;min-width:0;min-height:0;max-height:none;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:11px 9px calc(18px + env(safe-area-inset-bottom))!important}
+ #adminModal .admin-workspace>*{max-width:100%}
+ #adminModal .admin-workspace input,#adminModal .admin-workspace select,#adminModal .admin-workspace textarea{max-width:100%;min-width:0}
+ #adminModal .admin-header{flex:0 0 auto;min-height:48px;padding:8px 11px!important}
+ #adminModal #autoCommitBtn{position:sticky;bottom:0;z-index:10}
+}
+@media(max-width:380px){#adminModal .admin-tab-btn{font-size:9px!important;padding:5px 8px!important}#adminModal .admin-sidebar{max-height:31dvh}}
+
+/* GYM20 Graphite Motion — soft, energetic, modern neutral theme */
+:root,[data-color-theme]{
+ --bg:#171a1f!important;
+ --surface:#20252c!important;
+ --surface-card:#292f37!important;
+ --text-primary:#edf0f3!important;
+ --text-secondary:#a5adb7!important;
+ --border:rgba(224,231,239,.105)!important;
+ --neon-blue:#aebbc9!important;
+ --neon-purple:#8998aa!important;
+ --neon-shadow:0 5px 16px rgba(0,0,0,.24)!important;
+ --neon-purple-shadow:0 5px 16px rgba(0,0,0,.2)!important;
+ --btn-active:linear-gradient(145deg,#687583,#46515e)!important;
+ --radius-md:14px!important;
+ --radius-sm:10px!important;
+}
+html{scroll-behavior:smooth}
+body{
+ background:radial-gradient(ellipse at 50% -12%,rgba(147,161,178,.13),transparent 42%),linear-gradient(160deg,#1b2026 0%,#15191e 55%,#191e24 100%)!important;
+ color:var(--text-primary)!important;
+}
+.hero-banner,.section-card,.bank-card,.music-channel-card,.price-box,.dynamic-rules-box,.accordion-item,.admin-content,.custom-dropdown-menu{
+ background:linear-gradient(145deg,rgba(54,62,72,.96),rgba(34,40,48,.98))!important;
+ border:1px solid rgba(220,229,238,.12)!important;
+ border-radius:15px!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.075),inset 0 -1px 0 rgba(0,0,0,.28),0 10px 24px rgba(0,0,0,.22)!important;
+}
+.hero-banner{background:radial-gradient(ellipse at 50% 0%,rgba(183,198,215,.13),transparent 65%),linear-gradient(145deg,#303944,#222831)!important}
+.section-header{color:#e4e9ee!important}
+input:not([type=checkbox]):not([type=radio]),textarea,select,.custom-dropdown-trigger{
+ color:#edf1f5!important;
+ background:linear-gradient(145deg,#20262e,#2b323b)!important;
+ border:1px solid rgba(218,228,238,.13)!important;
+ border-radius:10px!important;
+ box-shadow:inset 0 2px 5px rgba(0,0,0,.2),0 1px 0 rgba(255,255,255,.035)!important;
+ transition:border-color .2s,box-shadow .2s,transform .2s,background .2s!important;
+}
+input:focus,textarea:focus,select:focus,.custom-dropdown-trigger.open{
+ outline:none!important;border-color:rgba(180,197,215,.48)!important;
+ box-shadow:inset 0 1px 3px rgba(0,0,0,.18),0 0 0 3px rgba(166,184,204,.09)!important;
+}
+input::placeholder,textarea::placeholder{color:#8994a1!important;opacity:1}
+button,.btn,.submit-btn,.primary-btn,.admin-tab-btn,.custom-dropdown-option{
+ transition:transform .18s ease,filter .18s ease,box-shadow .18s ease,background .18s ease!important;
+}
+button:not(.promo-close-btn):not(.promo-copy-btn){
+ border-radius:10px;
+}
+button:active,.btn:active{transform:translateY(1px) scale(.985)!important}
+.custom-dropdown-menu{
+ background:linear-gradient(155deg,#343d48,#252c35)!important;
+ border:1px solid rgba(220,230,240,.16)!important;
+ border-radius:13px!important;
+ box-shadow:0 18px 38px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08)!important;
+ backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+}
+.custom-dropdown-trigger:hover,.custom-dropdown-trigger.open{
+ border-color:rgba(185,202,220,.34)!important;
+ box-shadow:0 5px 15px rgba(0,0,0,.2),0 0 0 3px rgba(170,190,210,.06)!important;
+}
+.accordion-item{overflow:hidden!important;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease!important}
+.accordion-item:hover{border-color:rgba(210,222,235,.2)!important;box-shadow:0 12px 25px rgba(0,0,0,.25)!important}
+.accordion-header{background:linear-gradient(100deg,rgba(255,255,255,.035),transparent)!important;color:#e8edf2!important;padding:10px 12px!important}
+.accordion-content{color:#b4bdc7!important;line-height:1.85!important;transition:max-height .34s cubic-bezier(.2,.75,.25,1),padding .3s ease!important}
+.admin-tab-btn{border-radius:10px!important}
+.admin-tab-btn.active{background:linear-gradient(135deg,rgba(158,176,196,.2),rgba(112,130,151,.12))!important;color:#e8eef5!important;border-color:rgba(180,198,218,.22)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 4px 12px rgba(0,0,0,.14)!important}
+hr,.divider{border-color:rgba(220,230,240,.1)!important}
+.badge,.brand-badge{background:linear-gradient(135deg,#424d59,#303943)!important;color:#dce4ec!important;border:1px solid rgba(220,230,240,.13)!important}
+.total-price{color:#e5ebf1!important;text-shadow:0 2px 12px rgba(0,0,0,.22)!important}
+@media(hover:hover){
+ button:hover,.btn:hover{filter:brightness(1.09);transform:translateY(-1px)}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+}
+
+
+/* Promo editor textarea: touch-friendly resize handle */
+#editPromoText{min-height:76px!important;height:76px;resize:vertical!important;overflow:auto!important;touch-action:pan-y!important;padding:10px 12px!important;line-height:1.85!important;cursor:text}
+#editPromoText:focus{min-height:92px!important}
+@media(max-width:600px){#editPromoText{min-height:82px!important;height:82px;resize:vertical!important;font-size:11px!important}#editPromoText:focus{min-height:100px!important}}

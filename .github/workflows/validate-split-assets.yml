@@ -1,0 +1,85 @@
+name: Validate GYM20 split assets
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - '.github/workflows/validate-split-assets.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Check JavaScript syntax
+        run: |
+          set -e
+          for file in assets/*.js; do
+            echo "Checking $file"
+            node --check "$file"
+          done
+
+      - name: Verify Raw loader assets and execution order
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const html = fs.readFileSync('index.html', 'utf8');
+          const css = [
+            'assets/gym20-real-style-01a.css','assets/gym20-real-style-01b.css',
+            'assets/gym20-real-style-01c.css','assets/gym20-real-style-02.css',
+            'assets/gym20-real-style-03.css','assets/gym20-real-style-04.css',
+            'assets/gym20-real-style-05.css','assets/gym20-real-style-06.css',
+            'assets/gym20-real-style-07a.css','assets/gym20-real-style-07b.css'
+          ];
+          const scripts = [
+            'supabase-auth.js','assets/gym20-script-01.js','assets/gym20-script-02.js',
+            'assets/gym20-script-03.js','assets/gym20-script-04.js',
+            'assets/gym20-script-05.js','assets/gym20-script-06.js','assets/gym20-script-07.js'
+          ];
+          const all = [...css, ...scripts];
+          const missing = all.filter(path => !fs.existsSync(path) || !html.includes(path));
+          if (missing.length) {
+            console.error('Missing or unreferenced loader assets:', missing.join(', '));
+            process.exit(1);
+          }
+          const ordered = scripts.map(path => html.indexOf(path));
+          if (ordered.some((position, i) => i && position <= ordered[i - 1])) {
+            console.error('Raw loader script order is incorrect:', ordered);
+            process.exit(1);
+          }
+          if (!html.includes('Access-Control-Allow-Origin') && !html.includes('raw.githubusercontent.com')) {
+            console.error('Raw GitHub loader endpoint not found');
+            process.exit(1);
+          }
+          console.log('Validated ' + css.length + ' CSS assets and ' + scripts.length + ' ordered JavaScript assets.');
+          NODE
+
+      - name: Check CSS brace balance
+        run: |
+          node <<'NODE'
+          const fs = require('node:fs');
+          const files = fs.readdirSync('assets').filter(name => name.endsWith('.css'));
+          for (const file of files) {
+            const css = fs.readFileSync('assets/' + file, 'utf8');
+            let depth = 0;
+            for (const ch of css) {
+              if (ch === '{') depth++;
+              if (ch === '}') depth--;
+              if (depth < 0) throw new Error(file + ': unexpected closing brace');
+            }
+            if (depth !== 0) throw new Error(file + ': unbalanced braces (' + depth + ')');
+          }
+          console.log('CSS brace balance passed for ' + files.length + ' files.');
+          NODE
