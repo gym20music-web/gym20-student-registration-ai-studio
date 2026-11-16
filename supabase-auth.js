@@ -46,13 +46,29 @@ window.GYM20AdminAuth = (() => {
       onStatus('ورود انجام شد؛ در حال بررسی دسترسی مدیر…', false);
     }
 
+    async function signUpWithPassword(email, password) {
+      if (!email?.trim()) throw new Error('ایمیل حساب آزمایشی را وارد کنید.');
+      if (!password || password.length < 6) throw new Error('رمز عبور باید حداقل ۶ کاراکتر باشد.');
+      onStatus('در حال ساخت حساب آزمایشی…', false);
+      const { data, error } = await client.auth.signUp({
+        email: email.trim(),
+        password,
+        options: { data: { full_name: 'GYM20 Preview Owner' } }
+      });
+      if (error) throw error;
+      onStatus(data.session
+        ? 'حساب ساخته شد. کد دعوت یک‌بارمصرف را وارد کنید و ورود را بزنید.'
+        : 'حساب ساخته شد. ایمیل تأیید را باز کنید؛ سپس با همان ایمیل و رمز، همراه کد دعوت وارد شوید.', false);
+      return data;
+    }
+
     async function signOut() {
       if (!client) return;
       const { error } = await client.auth.signOut();
       if (error) throw error;
     }
 
-    return { verifyOwner, signInWithPassword, signOut, getClient: () => client };
+    return { verifyOwner, signInWithPassword, signUpWithPassword, signOut, getClient: () => client };
   }
 
   return { init };
