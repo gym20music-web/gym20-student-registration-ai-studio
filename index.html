@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow,noarchive">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="./data.json" as="fetch" crossorigin>
 <link rel="preload" href="https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/music.webp" as="image" fetchpriority="high">
@@ -11,8 +12,8 @@
 <link rel="preconnect" href="https://t.me" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'"><noscript><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet"></noscript>
-<link rel="preconnect" href="https://iqjujumhoawlugrmjvyj.supabase.co" crossorigin>
-<link rel="dns-prefetch" href="//iqjujumhoawlugrmjvyj.supabase.co">
+<link rel="preconnect" href="https://mlbudkvrzlbmbivcfolo.supabase.co" crossorigin>
+<link rel="dns-prefetch" href="//mlbudkvrzlbmbivcfolo.supabase.co">
 <title>آکادمی تخصصی ورزش GYM20🤸</title>
 
 
@@ -25,25 +26,29 @@
 <script>
 (function(){
  window.__GYM20_PREVIEW__=true;
+ const staging='https://mlbudkvrzlbmbivcfolo.supabase.co';
  const originalFetch=window.fetch.bind(window);
  window.fetch=function(input,init){
   const url=typeof input==='string'?input:(input&&input.url)||'';
   const method=String((init&&init.method)||(input&&input.method)||'GET').toUpperCase();
-  if(url.includes('iqjujumhoawlugrmjvyj.supabase.co')&&method!=='GET'&&method!=='HEAD'){
-   return Promise.resolve(new Response(JSON.stringify({message:'این عملیات در محیط آزمایشی غیرفعال است.'}),{status:403,headers:{'Content-Type':'application/json'}}));
+  if(url.includes('iqjujumhoawlugrmjvyj.supabase.co')){
+   return Promise.resolve(new Response(JSON.stringify({message:'دسترسی به دیتابیس اصلی از محیط آزمایشی مسدود است.'}),{status:403,headers:{'Content-Type':'application/json'}}));
+  }
+  if(!['GET','HEAD','OPTIONS'].includes(method)&&!url.startsWith(staging)){
+   return Promise.resolve(new Response(JSON.stringify({message:'ارسال درخواست به سرویس‌های بیرونی در محیط آزمایشی غیرفعال است.'}),{status:403,headers:{'Content-Type':'application/json'}}));
   }
   return originalFetch(input,init);
  };
  document.addEventListener('DOMContentLoaded',function(){
   const banner=document.createElement('div');
   banner.className='gym20-preview-banner';
-  banner.textContent='محیط آزمایشی GYM20 · ثبت‌نام، ورود مدیریت و اعلان‌ها غیرفعال هستند';
+  banner.textContent='GYM20 · محیط آزمایشی مستقل | اطلاعات ساختگی | ثبت‌نام عمومی و اعلان‌های واقعی غیرفعال';
   document.body.prepend(banner);
-  const admin=document.getElementById('adminBtn');if(admin)admin.style.display='none';
  });
  document.addEventListener('submit',function(event){
+  if(!event.target||event.target.id!=='publicRegistrationForm')return;
   event.preventDefault();event.stopImmediatePropagation();
-  alert('ثبت‌نام در محیط آزمایشی غیرفعال است؛ اطلاعاتی ذخیره نشد.');
+  alert('ثبت‌نام عمومی در محیط آزمایشی غیرفعال است؛ هیچ اطلاعاتی ثبت نشد.');
  },true);
 })();
 </script>
@@ -51,7 +56,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/fix/admin-module-loader-raw-fetch/';
- const assetVersion='gym20-preview-20261117-1';
+ const assetVersion='gym20-preview-20261117-2';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -246,8 +251,14 @@
         <span class="admin-login-lock">🔒</span>
         <input id="adminLoginPassword" type="password" placeholder="رمز عبور" autocomplete="current-password" required minlength="6">
       </div>
+      <label class="admin-login-label" for="adminLoginInvite" style="margin-top:12px;">کد دعوت مدیر آزمایشی (فقط بار اول)</label>
+      <div class="admin-login-input-wrap">
+        <span class="admin-login-lock">🔑</span>
+        <input id="adminLoginInvite" type="text" placeholder="کد دعوت یک‌بارمصرف" autocomplete="off" spellcheck="false">
+      </div>
       <div class="admin-login-error" id="adminLoginError" role="status" aria-live="polite"></div>
       <button type="submit" class="admin-login-submit" id="adminLoginSubmit">ورود به پنل مدیریت <span>←</span></button>
+      <button type="button" class="admin-login-submit" id="adminSignUpBtn" style="margin-top:8px;background:transparent;border:1px solid rgba(214,179,90,.5);color:#e8c46b;">ساخت حساب آزمایشی</button>
     </form>
     <div class="admin-login-foot"><span></span> دسترسی ویژه مدیران GYM20</div>
   </div>
