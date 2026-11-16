@@ -759,46 +759,20 @@ async function ensureGym20AdminAuth(){
   return gym20AdminAuth;
 }
 async function openAdminLogin(){
-  setAdminLoginStatus('');
-  adminLoginEmail.value='';
-  adminLoginModal.classList.add('open');
-  adminLoginModal.setAttribute('aria-hidden','false');
-  setTimeout(()=>adminLoginEmail.focus(),80);
-  try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner().catch(()=>{});}
-  catch(e){setAdminLoginStatus(e.message,true);}
+  setAdminLoginStatus('در حال ورود سریع…');
+  try{
+    const auth=await ensureGym20AdminAuth();
+    await auth.verifyOwner();
+  }catch(e){
+    setAdminLoginStatus(e.message||'ورود به محیط آزمایشی ناموفق بود.',true);
+    adminLoginModal.classList.add('open');
+    adminLoginModal.setAttribute('aria-hidden','false');
+  }
 }
 function closeAdminLogin(){adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');}
 adminBtn.onclick=openAdminLogin;
 document.getElementById('closeAdminLogin').onclick=closeAdminLogin;
-adminLoginForm.addEventListener('submit',async e=>{
-  e.preventDefault();
-  const submit=document.getElementById('adminLoginSubmit');
-  const old=submit.textContent;
-  submit.disabled=true;submit.textContent='در حال بررسی…';
-  try{
-    const auth=await ensureGym20AdminAuth();
-    await auth.signInWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
-    const inviteCode=(document.getElementById('adminLoginInvite')?.value||'').trim();
-    if(inviteCode){
-      const {error:inviteError}=await auth.getClient().rpc('claim_staging_owner',{p_invite_code:inviteCode});
-      if(inviteError)throw inviteError;
-      document.getElementById('adminLoginInvite').value='';
-    }
-    adminLoginPassword.value='';
-    await auth.verifyOwner();
-  }catch(err){setAdminLoginStatus(err.message||'ایمیل یا رمز عبور صحیح نیست.',true);}
-  finally{submit.disabled=false;submit.textContent=old;}
-});
-adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminLogin();});
-document.getElementById('adminSignUpBtn')?.addEventListener('click',async()=>{
-  const btn=document.getElementById('adminSignUpBtn'),old=btn.textContent;
-  btn.disabled=true;btn.textContent='در حال ساخت حساب…';
-  try{
-    const auth=await ensureGym20AdminAuth();
-    await auth.signUpWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
-  }catch(err){setAdminLoginStatus(err.message||'ساخت حساب آزمایشی ناموفق بود.',true);}
-  finally{btn.disabled=false;btn.textContent=old;}
-});
+adminLoginForm.addEventListener('submit',e=>e.preventDefault());
 
 document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{
   try{if(gym20AdminAuth)await gym20AdminAuth.signOut();}
