@@ -1157,7 +1157,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
 
-  function studentShortUrl(code){return 'https://gym20.ir/s/'+encodeURIComponent(code);}
+  function studentShortUrl(code){const base=window.__GYM20_PREVIEW__?window.location.origin:'https://gym20.ir';return base+'/s/'+encodeURIComponent(code);}
   async function renderStudentPublicLink(code){
     const box=$('stPublicLinkBox');if(!box)return;
     if(!code){box.innerHTML='<div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">هنوز لینکی ساخته نشده است.</span></div>';return;}
