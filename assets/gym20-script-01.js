@@ -682,10 +682,33 @@ function loadGym20Module(src){
       return;
     }
     const script=document.createElement('script');
-    script.src=src;script.dataset.gym20LazySrc=src;
-    script.onload=()=>{script.dataset.loaded='1';resolve();};
-    script.onerror=()=>{script.remove();reject(new Error('بارگذاری بخش مدیریتی ناموفق بود: '+src));};
-    document.body.appendChild(script);
+    script.dataset.gym20LazySrc=src;
+    const path=String(src).split('?')[0].replace(/^\.\//,'');
+    const fail=err=>{
+      script.remove();
+      reject(new Error('بارگذاری بخش مدیریتی ناموفق بود: '+src+(err&&err.message?' ('+err.message+')':'')));
+    };
+    if(typeof window.__gym20FetchAsset!=='function'){
+      fail(new Error('سامانه دریافت فایل‌های GYM20 آماده نیست'));
+      return;
+    }
+    window.__gym20FetchAsset(path).then(code=>{
+      if(typeof code!=='string'||!code.trim())throw new Error('فایل خالی دریافت شد');
+      const sourceUrl='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/'+path;
+      const blob=new Blob([code+'\n//# sourceURL='+sourceUrl],{type:'text/javascript'});
+      const objectUrl=URL.createObjectURL(blob);
+      script.onload=()=>{
+        script.dataset.loaded='1';
+        URL.revokeObjectURL(objectUrl);
+        resolve();
+      };
+      script.onerror=()=>{
+        URL.revokeObjectURL(objectUrl);
+        fail(new Error('مرورگر نتوانست اسکریپت دریافت‌شده را اجرا کند'));
+      };
+      script.src=objectUrl;
+      document.body.appendChild(script);
+    }).catch(fail);
   });
 }
 function loadGym20AdminModules(){
