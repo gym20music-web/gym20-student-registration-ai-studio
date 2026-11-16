@@ -19,11 +19,39 @@
 
 
 
+<style>
+.gym20-preview-banner{position:sticky;top:0;z-index:99999;padding:7px 10px;text-align:center;background:#29251b;color:#e8c46b;border-bottom:1px solid #6a5731;font:600 12px Vazirmatn,sans-serif}
+</style>
+<script>
+(function(){
+ window.__GYM20_PREVIEW__=true;
+ const originalFetch=window.fetch.bind(window);
+ window.fetch=function(input,init){
+  const url=typeof input==='string'?input:(input&&input.url)||'';
+  const method=String((init&&init.method)||(input&&input.method)||'GET').toUpperCase();
+  if(url.includes('iqjujumhoawlugrmjvyj.supabase.co')&&method!=='GET'&&method!=='HEAD'){
+   return Promise.resolve(new Response(JSON.stringify({message:'این عملیات در محیط آزمایشی غیرفعال است.'}),{status:403,headers:{'Content-Type':'application/json'}}));
+  }
+  return originalFetch(input,init);
+ };
+ document.addEventListener('DOMContentLoaded',function(){
+  const banner=document.createElement('div');
+  banner.className='gym20-preview-banner';
+  banner.textContent='محیط آزمایشی GYM20 · ثبت‌نام، ورود مدیریت و اعلان‌ها غیرفعال هستند';
+  document.body.prepend(banner);
+  const admin=document.getElementById('adminBtn');if(admin)admin.style.display='none';
+ });
+ document.addEventListener('submit',function(event){
+  event.preventDefault();event.stopImmediatePropagation();
+  alert('ثبت‌نام در محیط آزمایشی غیرفعال است؛ اطلاعاتی ذخیره نشد.');
+ },true);
+})();
+</script>
 <script>
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
- const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='gym20-g-eq-20261114-1';
+ const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/fix/admin-module-loader-raw-fetch/';
+ const assetVersion='gym20-preview-20261117-1';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
