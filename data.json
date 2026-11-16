@@ -109,16 +109,16 @@
     "12": 1.5
   },
   "card": {
-    "bank": "بانک سامان",
-    "number": "6219-8610-2234-5678",
-    "cleanNumber": "6219861022345678",
-    "owner": "به نام: زهرا پروانک شلمزاری",
-    "gatewayLink": "https://zarinp.al/"
+    "bank": "",
+    "number": "",
+    "cleanNumber": "",
+    "owner": "اطلاعات پرداخت در محیط آزمایشی غیرفعال است",
+    "gatewayLink": ""
   },
   "contact": {
-    "phone": "09059293060",
-    "instagram": "https://instagram.com/",
-    "telegram": "https://t.me/uptodate55"
+    "phone": "",
+    "instagram": "",
+    "telegram": ""
   },
   "musicChannel": {
     "name": "کانال موزیک GYM20MUSIC",
@@ -165,12 +165,19 @@
     }
   },
   "promoPopup": {
-    "enabled": true,
+    "enabled": false,
     "title": "✨ گالری اکسسوری و استایل میوکس",
     "text": "خاص‌ترین دستبندها، گردنبندهای استیل و اکسسوری‌های جدید  با تخفیف ویژه همراهان آکادمی GYM20!",
     "code": "MEOX20",
-    "link": "https://t.me/MEOWX_ACCS",
+    "link": "",
     "img": "",
     "btnText": "ورود به کانال و مشاهده محصولات 🛍️"
+  },
+  "telegramConfig": {
+    "enabled": false,
+    "botToken": "",
+    "channelId": "",
+    "adminChatId": "",
+    "extraRecipients": []
   }
 }
