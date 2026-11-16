@@ -1,9 +1,4 @@
-/*
- * GYM20 Supabase admin-auth helper (starter module).
- * This file intentionally contains no credentials.
- * Load after the Supabase JS v2 CDN, then call GYM20AdminAuth.init(...)
- * Use only the project's Publishable key in browser code. Never use service_role/Secret keys here.
- */
+/* GYM20 Preview: one-tap anonymous admin session. Preview project only. */
 window.GYM20AdminAuth = (() => {
   let client = null;
 
@@ -12,54 +7,33 @@ window.GYM20AdminAuth = (() => {
     if (!url || !publishableKey) throw new Error('Supabase URL and Publishable key are required.');
     client = window.supabase.createClient(url, publishableKey, {
       db: { schema: 'gym20' },
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false }
     });
 
     async function verifyOwner() {
-      const { data: { user }, error: userError } = await client.auth.getUser();
-      if (userError || !user) return false;
-      const { data: profile, error } = await client
-        .schema('gym20')
-        .from('profiles')
-        .select('role,is_active')
-        .eq('id', user.id)
-        .maybeSingle();
-
-      if (error || !profile || profile.role !== 'owner' || profile.is_active !== true) {
-        await client.auth.signOut();
-        onStatus('این حساب دسترسی مدیر فعال ندارد؛ تنظیمات جدول profiles و RLS را بررسی کنید.', true);
-        return false;
+      onStatus('در حال ورود سریع به محیط آزمایشی…', false);
+      let { data: { session } } = await client.auth.getSession();
+      if (!session) {
+        const { data, error } = await client.auth.signInAnonymously();
+        if (error) {
+          if (/anonymous|disabled|not enabled/i.test(error.message || '')) {
+            throw new Error('ورود یک‌کلیکی در تنظیمات Auth دیتابیس آزمایشی فعال نیست. باید Anonymous Sign-Ins فعال شود.');
+          }
+          throw error;
+        }
+        session = data.session;
       }
-      onAuthorized({ user, profile });
+      if (!session?.user) throw new Error('نشست آزمایشی ساخته نشد؛ دوباره تلاش کن.');
+      const { error: claimError } = await client.schema('gym20').rpc('claim_preview_owner');
+      if (claimError) throw claimError;
+      const { data: profile, error } = await client.schema('gym20')
+        .from('profiles').select('role,is_active').eq('id', session.user.id).maybeSingle();
+      if (error || !profile || profile.role !== 'owner' || profile.is_active !== true) {
+        throw new Error(error?.message || 'دسترسی مدیر آزمایشی تأیید نشد.');
+      }
+      onAuthorized({ user: session.user, profile });
+      onStatus('', false);
       return true;
-    }
-
-    async function signInWithPassword(email, password) {
-      if (!email?.trim()) throw new Error('ایمیل حساب مدیر را وارد کنید.');
-      if (!password) throw new Error('رمز عبور را وارد کنید.');
-      onStatus('در حال بررسی اطلاعات ورود…', false);
-      const { error } = await client.auth.signInWithPassword({
-        email: email.trim(),
-        password
-      });
-      if (error) throw error;
-      onStatus('ورود انجام شد؛ در حال بررسی دسترسی مدیر…', false);
-    }
-
-    async function signUpWithPassword(email, password) {
-      if (!email?.trim()) throw new Error('ایمیل حساب آزمایشی را وارد کنید.');
-      if (!password || password.length < 6) throw new Error('رمز عبور باید حداقل ۶ کاراکتر باشد.');
-      onStatus('در حال ساخت حساب آزمایشی…', false);
-      const { data, error } = await client.auth.signUp({
-        email: email.trim(),
-        password,
-        options: { data: { full_name: 'GYM20 Preview Owner' } }
-      });
-      if (error) throw error;
-      onStatus(data.session
-        ? 'حساب ساخته شد. کد دعوت یک‌بارمصرف را وارد کنید و ورود را بزنید.'
-        : 'حساب ساخته شد. ایمیل تأیید را باز کنید؛ سپس با همان ایمیل و رمز، همراه کد دعوت وارد شوید.', false);
-      return data;
     }
 
     async function signOut() {
@@ -68,7 +42,7 @@ window.GYM20AdminAuth = (() => {
       if (error) throw error;
     }
 
-    return { verifyOwner, signInWithPassword, signUpWithPassword, signOut, getClient: () => client };
+    return { verifyOwner, signOut, getClient: () => client };
   }
 
   return { init };
