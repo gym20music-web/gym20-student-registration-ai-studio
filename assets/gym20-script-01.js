@@ -778,12 +778,28 @@ adminLoginForm.addEventListener('submit',async e=>{
   try{
     const auth=await ensureGym20AdminAuth();
     await auth.signInWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
+    const inviteCode=(document.getElementById('adminLoginInvite')?.value||'').trim();
+    if(inviteCode){
+      const {error:inviteError}=await auth.getClient().rpc('claim_staging_owner',{p_invite_code:inviteCode});
+      if(inviteError)throw inviteError;
+      document.getElementById('adminLoginInvite').value='';
+    }
     adminLoginPassword.value='';
     await auth.verifyOwner();
   }catch(err){setAdminLoginStatus(err.message||'ایمیل یا رمز عبور صحیح نیست.',true);}
   finally{submit.disabled=false;submit.textContent=old;}
 });
 adminLoginModal.addEventListener('click',e=>{if(e.target===adminLoginModal)closeAdminLogin();});
+document.getElementById('adminSignUpBtn')?.addEventListener('click',async()=>{
+  const btn=document.getElementById('adminSignUpBtn'),old=btn.textContent;
+  btn.disabled=true;btn.textContent='در حال ساخت حساب…';
+  try{
+    const auth=await ensureGym20AdminAuth();
+    await auth.signUpWithPassword(adminLoginEmail.value.trim(),adminLoginPassword.value);
+  }catch(err){setAdminLoginStatus(err.message||'ساخت حساب آزمایشی ناموفق بود.',true);}
+  finally{btn.disabled=false;btn.textContent=old;}
+});
+
 document.getElementById('adminLogoutBtn').addEventListener('click',async()=>{
   try{if(gym20AdminAuth)await gym20AdminAuth.signOut();}
   catch(e){alert(e.message||'خروج ناموفق بود.');return;}
@@ -1186,7 +1202,7 @@ function triggerPromoPopupIfEnabled(){
     }
 }
 
-const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
+const GYM20_SUPABASE_URL = "https://mlbudkvrzlbmbivcfolo.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_VMR9MPnEMh00RxCyalGgfA_A1lKdMnN";
 function resumeGym20AdminSession(){
   // هنگام بازدید عادی هیچ CDN خارجی برای بررسی نشست مدیر بارگذاری نمی‌کنیم.
   // نشست ذخیره‌شده با کلیک مدیر و در همان لحظهٔ نیاز بررسی می‌شود.
