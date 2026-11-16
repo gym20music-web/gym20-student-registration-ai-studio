@@ -56,7 +56,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/fix/admin-module-loader-raw-fetch/';
- const assetVersion='gym20-preview-20261117-2';
+ const assetVersion='gym20-preview-20261117-3';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -70,6 +70,10 @@
 })();
 </script>
 <style>html.gym20-raw-loading body{visibility:hidden}</style>
+<style>
+#adminLoginForm>*:not(#adminLoginError){display:none!important}
+#adminLoginModal .admin-login-foot{display:none!important}
+</style>
 </head>
 <body data-color-theme="stealth">
 <div class="container">
@@ -239,8 +243,8 @@
     <div class="admin-login-mark">G<span>20</span></div>
     <div class="admin-login-kicker">GYM20 ACADEMY · CONTROL CENTER</div>
     <h2 id="adminLoginTitle">ورود مدیر</h2>
-    <p class="admin-login-subtitle">برای ورود به پنل مدیریت، ایمیل حساب و رمز عبور خود را وارد کنید.</p>
-    <form id="adminLoginForm" autocomplete="on">
+    <p class="admin-login-subtitle">ورود خودکار و یک‌کلیکی به پنل مدیریت آزمایشی</p>
+    <form id="adminLoginForm" autocomplete="off" style="margin:0;">
       <label class="admin-login-label" for="adminLoginEmail">ایمیل حساب مدیر</label>
       <div class="admin-login-input-wrap">
         <span class="admin-login-lock">✉</span>
