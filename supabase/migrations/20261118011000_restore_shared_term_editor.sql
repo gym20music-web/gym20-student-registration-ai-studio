@@ -106,7 +106,7 @@ begin
       nullif(btrim(coalesce(v_session_rec.notes,'')),''),nullif(btrim(coalesce(v_session_rec.coach_name,'')),''),'scheduled',(select auth.uid())
     ) returning id into v_session_id;
     insert into gym20.class_session_styles(session_id,enrollment_id)
-    select v_session_id,ids.enrollment_id from unnest(session_row.enrollment_ids) ids(enrollment_id);
+    select v_session_id,ids.enrollment_id from unnest(v_session_rec.enrollment_ids) ids(enrollment_id);
     v_inserted:=v_inserted+1;
   end loop;
   return v_inserted;
