@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111315">
+<title>مدیریت GYM20</title>
+<link rel="icon" type="image/svg+xml" href="./favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./admin-panel.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
+<script defer src="./admin-panel.js"></script>
+</head>
+<body>
+<div id="loginScreen" class="login-screen">
+  <form id="loginForm" class="login-card">
+    <div class="brand-mark">G<span>20</span></div>
+    <div class="eyebrow">GYM20 ACADEMY · CONTROL CENTER</div>
+    <h1>ورود به مدیریت</h1>
+    <p class="muted">با حساب مدیر تأییدشده وارد شوید.</p>
+    <label for="projectUrl">آدرس پروژه Supabase</label>
+    <input id="projectUrl" type="url" value="https://iqjujumhoawlugrmjvyj.supabase.co" dir="ltr" required>
+    <label for="publishableKey">کلید عمومی Publishable</label>
+    <input id="publishableKey" type="password" placeholder="sb_publishable_…" dir="ltr" autocomplete="off" required>
+    <label for="loginEmail">ایمیل مدیر</label>
+    <input id="loginEmail" type="email" autocomplete="username" required>
+    <label for="loginPassword">رمز عبور</label>
+    <input id="loginPassword" type="password" autocomplete="current-password" required>
+    <button class="primary wide" id="loginSubmit">ورود امن</button>
+    <p class="status" id="loginStatus" role="status" aria-live="polite"></p>
+    <small class="muted">کلید Secret یا service_role را اینجا وارد نکنید. اطلاعات ورود در کد ذخیره نمی‌شود.</small>
+  </form>
+</div>
+
+<div id="app" class="app" hidden>
+  <header class="topbar">
+    <div class="brand"><div class="brand-mark small">G<span>20</span></div><div><b>GYM20</b><small>مدیریت آکادمی</small></div></div>
+    <div class="top-actions"><span id="connectionState" class="connection">● متصل</span><button id="logoutBtn" class="ghost">خروج</button></div>
+  </header>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="side-caption">فضای مدیریت</div>
+      <nav id="mainNav">
+        <button class="nav-item active" data-view="overview">▦ <span>نمای کلی</span></button>
+        <button class="nav-item" data-view="students">♙ <span>هنرجویان و ترم‌ها</span></button>
+        <button class="nav-item" data-view="requests">⇥ <span>درخواست‌های ثبت‌نام</span><i id="pendingBadge">—</i></button>
+        <button class="nav-item" data-view="classes">✳ <span>سبک‌ها و کلاس‌ها</span></button>
+        <button class="nav-item" data-view="regions">⌖ <span>مناطق و شهریه</span></button>
+        <button class="nav-item" data-view="rules">≡ <span>قوانین و شرایط</span></button>
+        <button class="nav-item" data-view="site">▤ <span>محتوای سایت</span></button>
+        <button class="nav-item" data-view="payments">◇ <span>پرداخت و ارتباطات</span></button>
+        <button class="nav-item" data-view="notifications">◉ <span>اعلان‌ها</span></button>
+      </nav>
+      <div class="side-foot">نسخه بازسازی‌شده · آزمایشی</div>
+    </aside>
+    <main class="workspace">
+      <div class="page-head"><div><div class="eyebrow">GYM20 / ADMIN</div><h1 id="pageTitle">نمای کلی</h1><p id="pageSubtitle" class="muted">وضعیت کلی آکادمی و دسترسی سریع</p></div><button id="refreshBtn" class="ghost">↻ بروزرسانی</button></div>
+      <div id="globalStatus" class="global-status" role="status" aria-live="polite"></div>
+      <section class="view active" id="view-overview">
+        <div class="stats-grid">
+          <article class="stat-card"><span>درخواست‌های در انتظار</span><strong id="statPending">—</strong><small>نیازمند بررسی مدیر</small></article>
+          <article class="stat-card"><span>مناطق تعریف‌شده</span><strong id="statRegions">—</strong><small>تنظیمات قیمت</small></article>
+          <article class="stat-card"><span>سبک‌های فعال</span><strong id="statStyles">—</strong><small>قابل انتخاب در ثبت‌نام</small></article>
+          <article class="stat-card"><span>وضعیت اتصال</span><strong class="good">آنلاین</strong><small>اتصال نشست مدیر</small></article>
+        </div>
+        <div class="panel"><div class="panel-head"><h2>دسترسی سریع</h2></div><div class="quick-grid"><button data-go="requests">بررسی درخواست‌ها <span>←</span></button><button data-go="students">مدیریت ترم‌ها <span>←</span></button><button data-go="regions">ویرایش شهریه <span>←</span></button><button data-go="site">ویرایش محتوای سایت <span>←</span></button></div></div>
+        <div class="panel"><div class="panel-head"><h2>وضعیت سیستم</h2><span class="tag">امنیت مدیر</span></div><p class="muted" id="systemNote">در حال بررسی دسترسی‌ها…</p></div>
+      </section>
+
+      <section class="view" id="view-students">
+        <div class="panel"><div class="panel-head"><h2>هنرجویان و مدیریت ترم‌ها</h2><span class="tag">در حال بازسازی</span></div><p>این بخش برای فهرست هنرجویان، ساخت ترم، زمان‌بندی جلسات، حضور و غیاب، لینک اختصاصی هنرجو و تمرین‌ها در نظر گرفته شده است.</p><p class="muted">اتصال این بخش به ساختار واقعی دیتابیس باید پس از بازیابی دسترسی Supabase انجام و تست شود؛ فعلاً هیچ داده‌ای تغییر نمی‌کند.</p></div>
+      </section>
+
+      <section class="view" id="view-requests">
+        <div class="panel"><div class="panel-head"><h2>درخواست‌های ثبت‌نام</h2><button class="ghost" id="reloadRequests">↻ دریافت مجدد</button></div><div class="filters"><input id="requestSearch" placeholder="جست‌وجوی نام یا شماره تماس"><select id="requestFilter"><option value="all">همه وضعیت‌ها</option><option value="pending">در انتظار بررسی</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option><option value="converted">تبدیل‌شده</option></select></div><div id="requestsList" class="request-list"><p class="muted">برای دریافت درخواست‌ها، اتصال مدیر لازم است.</p></div></div>
+      </section>
+
+      <section class="view" id="view-classes">
+        <div class="panel"><div class="panel-head"><h2>سبک‌ها و کلاس‌ها</h2><button class="primary" id="saveClasses">ذخیره تغییرات</button></div><div class="field-grid"><div class="field"><label>ضریب عمومی</label><input id="factorNormal" type="number" step=".05"></div><div class="field"><label>ضریب نیمه‌خصوصی</label><input id="factorSemi" type="number" step=".05"></div><div class="field"><label>ضریب خصوصی</label><input id="factorPrivate" type="number" step=".05"></div><div class="field"><label>ضریب VIP</label><input id="factorVip" type="number" step=".05"></div><div class="field"><label>ضریب آنلاین</label><input id="factorOnline" type="number" step=".05"></div><div class="field"><label>ضریب ۸ جلسه</label><input id="rate8" type="number" step=".05"></div><div class="field"><label>ضریب ۱۰ جلسه</label><input id="rate10" type="number" step=".05"></div><div class="field"><label>ضریب ۱۲ جلسه</label><input id="rate12" type="number" step=".05"></div></div><div class="divider"></div><div class="panel-head"><h3>فهرست سبک‌ها</h3><button class="ghost" id="addStyle">＋ سبک جدید</button></div><div id="stylesEditor" class="editable-list"></div></div>
+      </section>
+
+      <section class="view" id="view-regions">
+        <div class="panel"><div class="panel-head"><h2>مناطق و شهریه پایه</h2><button class="ghost" id="addRegion">＋ منطقه جدید</button></div><div id="regionsEditor" class="editable-list"></div><div class="panel-actions"><button class="primary" id="saveRegions">ذخیره مناطق و قیمت‌ها</button></div></div>
+      </section>
+
+      <section class="view" id="view-rules">
+        <div class="panel"><div class="panel-head"><h2>قوانین و شرایط کلاس</h2><button class="primary" id="saveRules">ذخیره قوانین</button></div><div id="rulesEditor" class="rules-grid"></div></div>
+      </section>
+
+      <section class="view" id="view-site">
+        <div class="panel"><div class="panel-head"><h2>محتوای صفحه اصلی</h2><button class="primary" id="saveSite">ذخیره محتوا</button></div><div class="field-grid"><div class="field"><label>نام آکادمی</label><input id="brandTag"></div><div class="field"><label>عنوان بنر</label><input id="bannerTitle"></div><div class="field full"><label>زیرعنوان بنر</label><textarea id="bannerSubtitle" rows="2"></textarea></div></div></div>
+      </section>
+
+      <section class="view" id="view-payments">
+        <div class="panel"><div class="panel-head"><h2>پرداخت و راه‌های ارتباطی</h2><button class="primary" id="savePayments">ذخیره اطلاعات</button></div><div class="field-grid"><div class="field"><label>نام بانک</label><input id="bankName"></div><div class="field"><label>شماره کارت</label><input id="cardNumber" dir="ltr"></div><div class="field"><label>صاحب کارت</label><input id="cardOwner"></div><div class="field"><label>لینک پرداخت</label><input id="gatewayLink" dir="ltr"></div><div class="field"><label>تلفن تماس</label><input id="contactPhone" dir="ltr"></div><div class="field"><label>اینستاگرام</label><input id="contactInstagram" dir="ltr"></div><div class="field"><label>تلگرام</label><input id="contactTelegram" dir="ltr"></div></div></div>
+      </section>
+
+      <section class="view" id="view-notifications">
+        <div class="panel"><div class="panel-head"><h2>اعلان‌ها و یادآوری جلسات</h2><span class="tag">نیازمند بررسی اتصال</span></div><p class="muted">تنظیمات اعلان گوشی، پیام تلگرام، متن پیام‌ها و زمان یادآوری در این بخش یکپارچه می‌شود. تا زمان تأیید اتصال پایگاه داده، هیچ تنظیمی ارسال یا ذخیره نمی‌شود.</p><div class="field-grid"><div class="field"><label>یادآوری اول (ساعت)</label><input type="number" id="reminderOne" min="0" max="24" value="6"></div><div class="field"><label>یادآوری دوم (ساعت)</label><input type="number" id="reminderTwo" min="0" max="24" value="2"></div></div></div>
+      </section>
+      <footer class="workspace-foot">GYM20 · پنل مدیریت مستقل · تغییرات فقط پس از ذخیره و تأیید دسترسی مدیر</footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>
