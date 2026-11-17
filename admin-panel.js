@@ -4,6 +4,7 @@
   const PROJECT_DEFAULT = 'https://iqjujumhoawlugrmjvyj.supabase.co';
   const VIEW_META = {
     overview:['نمای کلی','وضعیت کلی آکادمی و دسترسی سریع'],
+    attendance:['حضور و غیاب','ثبت و پیگیری وضعیت جلسات منتشرشده'], coaches:['مربیان','مدیریت برنامه و آمار مربیان'], reports:['گزارش‌ها','گزارش‌های عملیاتی آکادمی'], integrations:['اتصالات','وضعیت سرویس‌های پیام‌رسانی و اعلان'],
     students:['هنرجویان و ترم‌ها','مدیریت هنرجویان، ترم‌ها و برنامه جلسات'],
     requests:['درخواست‌های ثبت‌نام','بررسی و تعیین وضعیت درخواست‌های جدید'],
     classes:['سبک‌ها و کلاس‌ها','مدیریت سبک‌ها و ضرایب قیمت‌گذاری'],
@@ -117,7 +118,7 @@
   }
   async function loadRequests() {
     $('requestsList').innerHTML='<p class="muted">در حال دریافت درخواست‌ها…</p>';
-    const {data,error}=await client.from('public_registration_requests').select('id,full_name,phone,status,created_at,selected_styles,age_group,total_sessions').order('created_at',{ascending:false}).limit(100);
+    const {data,error}=await client.from('public_registration_requests').select('id,full_name,phone,status,created_at,selected_styles,age_group,total_sessions,converted_student_id,converted_at').order('created_at',{ascending:false}).limit(100);
     if(error)throw error;
     requests=data||[];
     renderRequests();
@@ -158,7 +159,7 @@
     if(id==='view-attendance')loadAttendance();
     if(id==='view-coaches')loadCoachStats();
     if(id==='view-reports')loadReports();
-    if(id==='requestsTab')loadRequests().catch(e=>status(e.message,true));
+    if(id==='requestsTab'||id==='view-requests')loadRequests().catch(e=>status(e.message,true));
   };
   async function loadStudents() {
     if(!client||!window.gym20OwnerAuthorized)return;
@@ -198,17 +199,46 @@
     if(!client||!window.gym20OwnerAuthorized)return;
     $('attendanceList').innerHTML='<p class="muted">در حال دریافت جلسات…</p>';
     try{
-      const {data,error}=await client.schema('gym20').from('class_sessions').select('id,term_id,schedule_version_id,session_number,starts_at,ends_at,venue,coach_name,student_id,students(full_name)').not('schedule_version_id','is',null).order('starts_at',{ascending:true}).limit(300);
-      if(error)throw error;attendanceRows=data||[];renderAttendance();
+      const db=client.schema('gym20');
+      const {data:sessions,error}=await db.from('class_sessions').select('id,term_id,schedule_version_id,session_number,starts_at,ends_at,venue,coach_name').not('schedule_version_id','is',null).order('starts_at',{ascending:true}).limit(300);
+      if(error)throw error;
+      const ids=(sessions||[]).map(x=>x.id);
+      if(!ids.length){attendanceRows=[];renderAttendance();return;}
+      const {data:links,error:le}=await db.from('class_session_styles').select('session_id,enrollment_id').in('session_id',ids);if(le)throw le;
+      const enrollmentIds=[...new Set((links||[]).map(x=>x.enrollment_id))];
+      const {data:enrollments,error:ee}=enrollmentIds.length?await db.from('enrollments').select('id,student_id,students(full_name)').in('id',enrollmentIds):{data:[],error:null};if(ee)throw ee;
+      const {data:attendance,error:ae}=await db.from('attendance').select('session_id,student_id,status').in('session_id',ids);if(ae)throw ae;
+      const studentByEnrollment=new Map((enrollments||[]).map(x=>[x.id,x]));
+      const statusByKey=new Map((attendance||[]).map(x=>[x.session_id+'|'+x.student_id,x.status]));
+      attendanceRows=[];
+      (sessions||[]).forEach(session=>{
+        const related=(links||[]).filter(x=>x.session_id===session.id);
+        related.forEach(link=>{
+          const enrollment=studentByEnrollment.get(link.enrollment_id);if(!enrollment)return;
+          attendanceRows.push({...session,student_id:enrollment.student_id,student_name:enrollment.students?.full_name||'هنرجو',enrollment_id:link.enrollment_id,attendance_status:statusByKey.get(session.id+'|'+enrollment.student_id)||'pending'});
+        });
+      });
+      renderAttendance();
     }catch(e){$('attendanceList').innerHTML='<p class="muted">'+escapeHtml(e.message||'دریافت جلسات ناموفق بود.')+'</p>';}
   }
   function renderAttendance(){
+    if(!$('attendanceList'))return;
     const now=Date.now(),range=$('attendanceRange').value,q=$('attendanceSearch').value.trim().toLowerCase();
     const rows=attendanceRows.filter(x=>{
       const t=Date.parse(x.starts_at),date=new Date(x.starts_at).toDateString()===new Date().toDateString();
-      return (range==='all'||(range==='today'&&date)||(range==='past'&&t<now)||(range==='upcoming'&&t>=now))&&(!q||String((x.students?.full_name||'')+' '+(x.coach_name||'')+' '+(x.venue||'')).toLowerCase().includes(q));
+      return (range==='all'||(range==='today'&&date)||(range==='past'&&t<now)||(range==='upcoming'&&t>=now))&&(!q||String(x.student_name+' '+(x.coach_name||'')+' '+(x.venue||'')).toLowerCase().includes(q));
     });
-    $('attendanceList').innerHTML=rows.length?rows.map(x=>'<article class="request-card"><div><strong>جلسه '+escapeHtml(x.session_number)+' · '+escapeHtml(x.students?.full_name||'هنرجو')+'</strong><small>'+new Date(x.starts_at).toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'})+' · '+escapeHtml(x.coach_name||'بدون مربی')+' · '+escapeHtml(x.venue||'بدون محل')+'</small></div><div class="request-actions"><span class="tag">'+(Date.parse(x.starts_at)<now?'برگزارشده':'پیش‌رو')+'</span></div></article>').join(''):'<p class="muted">جلسه‌ای با این فیلتر پیدا نشد.</p>';
+    const names={pending:'در انتظار',present:'حاضر',absent:'غایب',excused:'غیبت موجه',makeup:'جبرانی',cancelled:'لغوشده'};
+    $('attendanceList').innerHTML=rows.length?rows.map(x=>'<article class="request-card attendance-card" data-session="'+escapeHtml(x.id)+'" data-student="'+escapeHtml(x.student_id)+'"><div><strong>'+escapeHtml(x.student_name)+' · جلسه '+escapeHtml(x.session_number)+'</strong><small>'+new Date(x.starts_at).toLocaleString('fa-IR',{dateStyle:'medium',timeStyle:'short'})+' · '+escapeHtml(x.coach_name||'بدون مربی')+' · '+escapeHtml(x.venue||'بدون محل')+'</small></div><div class="request-actions"><select data-attendance-status>'+Object.entries(names).map(([k,v])=>'<option value="'+k+'" '+(x.attendance_status===k?'selected':'')+'>'+v+'</option>').join('')+'</select><button class="primary" data-save-attendance>ذخیره</button></div></article>').join(''):'<p class="muted">جلسه‌ای با این فیلتر پیدا نشد.</p>';
+  }
+  async function saveAttendanceRow(card){
+    const session_id=card.dataset.session,student_id=card.dataset.student,statusValue=card.querySelector('[data-attendance-status]').value;
+    const {data:{user},error:ue}=await client.auth.getUser();if(ue)throw ue;
+    const row=attendanceRows.find(x=>x.id===session_id&&x.student_id===student_id);
+    const {error}=await client.schema('gym20').from('attendance').upsert({session_id,student_id,enrollment_id:row?.enrollment_id||null,status:statusValue,confirmed_by:user?.id||null,confirmed_at:new Date().toISOString()},{onConflict:'session_id,student_id'});
+    if(error)throw error;
+    row.attendance_status=statusValue;
+    status('حضور و غیاب ذخیره شد.');
   }
   async function loadCoachStats(){
     if(!client||!window.gym20OwnerAuthorized)return;
@@ -262,6 +292,7 @@
   }
 
   addRequestManagement();
+  $('attendanceList').addEventListener('click',e=>{const b=e.target.closest('[data-save-attendance]');if(b){const card=b.closest('.attendance-card');b.disabled=true;saveAttendanceRow(card).catch(err=>status(err.message||'ذخیره حضور و غیاب ناموفق بود.',true)).finally(()=>b.disabled=false);}});
   $('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const btn=$('loginSubmit');btn.disabled=true;btn.textContent='در حال ورود…';loginStatus('');
