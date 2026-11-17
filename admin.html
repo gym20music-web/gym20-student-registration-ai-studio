@@ -12,6 +12,9 @@
 <link rel="stylesheet" href="./admin-panel.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
 <script defer src="./admin-panel.js"></script>
+<script defer src="./student-terms.js"></script>
+<script defer src="./student-push-admin.js"></script>
+<script defer src="./student-exercises.js"></script>
 </head>
 <body>
 <div id="loginScreen" class="login-screen">
@@ -42,7 +45,7 @@
   <div class="shell">
     <aside class="sidebar">
       <div class="side-caption">فضای مدیریت</div>
-      <nav id="mainNav">
+      <nav id="mainNav" class="admin-tabs">
         <button class="nav-item active" data-view="overview">▦ <span>نمای کلی</span></button>
         <button class="nav-item" data-view="students">♙ <span>هنرجویان و ترم‌ها</span></button>
         <button class="nav-item" data-view="requests">⇥ <span>درخواست‌های ثبت‌نام</span><i id="pendingBadge">—</i></button>
@@ -55,10 +58,10 @@
       </nav>
       <div class="side-foot">نسخه بازسازی‌شده · آزمایشی</div>
     </aside>
-    <main class="workspace">
+    <main class="workspace admin-workspace">
       <div class="page-head"><div><div class="eyebrow">GYM20 / ADMIN</div><h1 id="pageTitle">نمای کلی</h1><p id="pageSubtitle" class="muted">وضعیت کلی آکادمی و دسترسی سریع</p></div><button id="refreshBtn" class="ghost">↻ بروزرسانی</button></div>
       <div id="globalStatus" class="global-status" role="status" aria-live="polite"></div>
-      <section class="view active" id="view-overview">
+      <section class="view admin-panel-tab active" id="view-overview">
         <div class="stats-grid">
           <article class="stat-card"><span>درخواست‌های در انتظار</span><strong id="statPending">—</strong><small>نیازمند بررسی مدیر</small></article>
           <article class="stat-card"><span>مناطق تعریف‌شده</span><strong id="statRegions">—</strong><small>تنظیمات قیمت</small></article>
@@ -69,36 +72,80 @@
         <div class="panel"><div class="panel-head"><h2>وضعیت سیستم</h2><span class="tag">امنیت مدیر</span></div><p class="muted" id="systemNote">در حال بررسی دسترسی‌ها…</p></div>
       </section>
 
-      <section class="view" id="view-students">
-        <div class="panel"><div class="panel-head"><h2>هنرجویان و مدیریت ترم‌ها</h2><span class="tag">در حال بازسازی</span></div><p>این بخش برای فهرست هنرجویان، ساخت ترم، زمان‌بندی جلسات، حضور و غیاب، لینک اختصاصی هنرجو و تمرین‌ها در نظر گرفته شده است.</p><p class="muted">اتصال این بخش به ساختار واقعی دیتابیس باید پس از بازیابی دسترسی Supabase انجام و تست شود؛ فعلاً هیچ داده‌ای تغییر نمی‌کند.</p></div>
+      <section class="view admin-panel-tab" id="view-students">
+        <div class="panel">
+          <div class="panel-head"><h2>پرونده هنرجویان</h2><button class="ghost" id="reloadStudents">↻ دریافت مجدد</button></div>
+          <div class="filters"><input id="studentSearch" placeholder="جست‌وجوی نام یا شماره تماس"><select id="studentState"><option value="active">هنرجویان فعال</option><option value="inactive">غیرفعال‌ها</option><option value="all">همه</option></select></div>
+          <div id="studentsList" class="request-list"><p class="muted">پس از ورود مدیر، فهرست هنرجویان نمایش داده می‌شود.</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2 id="studentFormTitle">افزودن هنرجوی جدید</h2><button class="ghost" id="studentFormReset">پاک‌کردن فرم</button></div>
+          <input id="editStudentId" type="hidden">
+          <div class="field-grid">
+            <div class="field"><label>نام و نام خانوادگی</label><input id="studentName" maxlength="120"></div>
+            <div class="field"><label>شماره تماس</label><input id="studentPhone" inputmode="tel" dir="ltr" maxlength="20"></div>
+            <div class="field"><label>تاریخ تولد</label><input id="studentBirth" type="date"></div>
+            <div class="field"><label>وضعیت</label><select id="studentActive"><option value="true">فعال</option><option value="false">غیرفعال</option></select></div>
+            <div class="field full"><label>یادداشت پرونده</label><textarea id="studentNotes" rows="2" maxlength="1000"></textarea></div>
+          </div>
+          <div class="panel-actions"><button class="primary" id="saveStudent">ذخیره هنرجو</button></div>
+          <p class="muted" id="studentFormStatus"></p>
+        </div>
       </section>
 
-      <section class="view" id="view-requests">
+      <section class="view admin-panel-tab" id="view-requests">
         <div class="panel"><div class="panel-head"><h2>درخواست‌های ثبت‌نام</h2><button class="ghost" id="reloadRequests">↻ دریافت مجدد</button></div><div class="filters"><input id="requestSearch" placeholder="جست‌وجوی نام یا شماره تماس"><select id="requestFilter"><option value="all">همه وضعیت‌ها</option><option value="pending">در انتظار بررسی</option><option value="approved">تأییدشده</option><option value="rejected">ردشده</option><option value="converted">تبدیل‌شده</option></select></div><div id="requestsList" class="request-list"><p class="muted">برای دریافت درخواست‌ها، اتصال مدیر لازم است.</p></div></div>
       </section>
 
-      <section class="view" id="view-classes">
+      <section class="view admin-panel-tab" id="view-classes">
         <div class="panel"><div class="panel-head"><h2>سبک‌ها و کلاس‌ها</h2><button class="primary" id="saveClasses">ذخیره تغییرات</button></div><div class="field-grid"><div class="field"><label>ضریب عمومی</label><input id="factorNormal" type="number" step=".05"></div><div class="field"><label>ضریب نیمه‌خصوصی</label><input id="factorSemi" type="number" step=".05"></div><div class="field"><label>ضریب خصوصی</label><input id="factorPrivate" type="number" step=".05"></div><div class="field"><label>ضریب VIP</label><input id="factorVip" type="number" step=".05"></div><div class="field"><label>ضریب آنلاین</label><input id="factorOnline" type="number" step=".05"></div><div class="field"><label>ضریب ۸ جلسه</label><input id="rate8" type="number" step=".05"></div><div class="field"><label>ضریب ۱۰ جلسه</label><input id="rate10" type="number" step=".05"></div><div class="field"><label>ضریب ۱۲ جلسه</label><input id="rate12" type="number" step=".05"></div></div><div class="divider"></div><div class="panel-head"><h3>فهرست سبک‌ها</h3><button class="ghost" id="addStyle">＋ سبک جدید</button></div><div id="stylesEditor" class="editable-list"></div></div>
       </section>
 
-      <section class="view" id="view-regions">
+      <section class="view admin-panel-tab" id="view-regions">
         <div class="panel"><div class="panel-head"><h2>مناطق و شهریه پایه</h2><button class="ghost" id="addRegion">＋ منطقه جدید</button></div><div id="regionsEditor" class="editable-list"></div><div class="panel-actions"><button class="primary" id="saveRegions">ذخیره مناطق و قیمت‌ها</button></div></div>
       </section>
 
-      <section class="view" id="view-rules">
+      <section class="view admin-panel-tab" id="view-rules">
         <div class="panel"><div class="panel-head"><h2>قوانین و شرایط کلاس</h2><button class="primary" id="saveRules">ذخیره قوانین</button></div><div id="rulesEditor" class="rules-grid"></div></div>
       </section>
 
-      <section class="view" id="view-site">
+      <section class="view admin-panel-tab" id="view-site">
         <div class="panel"><div class="panel-head"><h2>محتوای صفحه اصلی</h2><button class="primary" id="saveSite">ذخیره محتوا</button></div><div class="field-grid"><div class="field"><label>نام آکادمی</label><input id="brandTag"></div><div class="field"><label>عنوان بنر</label><input id="bannerTitle"></div><div class="field full"><label>زیرعنوان بنر</label><textarea id="bannerSubtitle" rows="2"></textarea></div></div></div>
       </section>
 
-      <section class="view" id="view-payments">
+      <section class="view admin-panel-tab" id="view-payments">
         <div class="panel"><div class="panel-head"><h2>پرداخت و راه‌های ارتباطی</h2><button class="primary" id="savePayments">ذخیره اطلاعات</button></div><div class="field-grid"><div class="field"><label>نام بانک</label><input id="bankName"></div><div class="field"><label>شماره کارت</label><input id="cardNumber" dir="ltr"></div><div class="field"><label>صاحب کارت</label><input id="cardOwner"></div><div class="field"><label>لینک پرداخت</label><input id="gatewayLink" dir="ltr"></div><div class="field"><label>تلفن تماس</label><input id="contactPhone" dir="ltr"></div><div class="field"><label>اینستاگرام</label><input id="contactInstagram" dir="ltr"></div><div class="field"><label>تلگرام</label><input id="contactTelegram" dir="ltr"></div></div></div>
       </section>
 
-      <section class="view" id="view-notifications">
+      <section class="view admin-panel-tab" id="view-notifications">
         <div class="panel"><div class="panel-head"><h2>اعلان‌ها و یادآوری جلسات</h2><span class="tag">نیازمند بررسی اتصال</span></div><p class="muted">تنظیمات اعلان گوشی، پیام تلگرام، متن پیام‌ها و زمان یادآوری در این بخش یکپارچه می‌شود. تا زمان تأیید اتصال پایگاه داده، هیچ تنظیمی ارسال یا ذخیره نمی‌شود.</p><div class="field-grid"><div class="field"><label>یادآوری اول (ساعت)</label><input type="number" id="reminderOne" min="0" max="24" value="6"></div><div class="field"><label>یادآوری دوم (ساعت)</label><input type="number" id="reminderTwo" min="0" max="24" value="2"></div></div></div>
+      </section>
+       
+      <section class="view admin-panel-tab" id="view-attendance">
+        <div class="panel"><div class="panel-head"><h2>حضور و غیاب جلسات</h2><button class="ghost" id="reloadAttendance">↻ بروزرسانی</button></div>
+          <div class="filters"><input id="attendanceSearch" placeholder="جست‌وجوی هنرجو، مربی یا محل"><select id="attendanceRange"><option value="upcoming">جلسات پیش‌رو</option><option value="today">امروز</option><option value="past">جلسات گذشته</option><option value="all">همه جلسات منتشرشده</option></select></div>
+          <div id="attendanceList" class="request-list"><p class="muted">جلسات منتشرشده پس از اتصال بارگذاری می‌شوند.</p></div>
+        </div>
+      </section>
+      <section class="view admin-panel-tab" id="view-coaches">
+        <div class="panel"><div class="panel-head"><h2>مربیان</h2><span class="tag">مربی‌های برنامه فعلی</span></div>
+          <div class="coach-grid"><article class="coach-card"><b>هانیه</b><span>مربی کلاس‌های GYM20</span></article><article class="coach-card"><b>بهروز</b><span>مربی کلاس‌های GYM20</span></article></div>
+          <p class="muted">انتخاب مربی هر جلسه در برنامه ترم با کنترل افقی قابل تغییر است. نام مربی در سوابق همان جلسه ذخیره می‌شود.</p>
+          <div class="panel-head"><h3>برنامه جلسات به تفکیک مربی</h3><button class="ghost" id="reloadCoachStats">↻ بروزرسانی</button></div><div id="coachStats" class="request-list"></div>
+        </div>
+      </section>
+      <section class="view admin-panel-tab" id="view-reports">
+        <div class="panel"><div class="panel-head"><h2>گزارش مدیریتی</h2><button class="ghost" id="reloadReports">↻ بروزرسانی</button></div>
+          <div class="stats-grid"><article class="stat-card"><span>کل هنرجویان</span><strong id="reportStudents">—</strong></article><article class="stat-card"><span>ثبت‌نام‌های فعال</span><strong id="reportEnrollments">—</strong></article><article class="stat-card"><span>جلسات منتشرشده</span><strong id="reportSessions">—</strong></article><article class="stat-card"><span>حضور ثبت‌شده</span><strong id="reportAttendance">—</strong></article></div>
+          <p class="muted">گزارش‌های مالی دقیق پس از تأیید ساختار جدول تراکنش‌ها تکمیل می‌شوند؛ مبلغ شهریه از روی تعداد جلسه یا وضعیت حضور حدس زده نمی‌شود.</p>
+        </div>
+      </section>
+      <section class="view admin-panel-tab" id="view-integrations">
+        <div class="panel"><div class="panel-head"><h2>تلگرام و پیام‌رسانی</h2><span class="tag">وضعیت اتصال</span></div>
+          <div class="field-grid"><div class="field"><label>نام ربات</label><input value="Gym20academybot" disabled></div><div class="field"><label>کانال آکادمی</label><input value="@GYM20MUSIC" disabled></div></div>
+          <p class="muted">ارسال اعلان فوری گوشی، تنظیم متن و زمان یادآوری در تب اعلان‌ها و پرونده هر هنرجو انجام می‌شود. توکن ربات و رمز اشتراک فقط در Secretهای سمت سرور نگهداری می‌شوند و در این صفحه نمایش داده نمی‌شوند.</p>
+          <div id="integrationStatus" class="global-status">اتصال زنده تلگرام پس از بازیابی Supabase و بررسی Edge Function قابل آزمایش است.</div>
+        </div>
       </section>
       <footer class="workspace-foot">GYM20 · پنل مدیریت مستقل · تغییرات فقط پس از ذخیره و تأیید دسترسی مدیر</footer>
     </main>
