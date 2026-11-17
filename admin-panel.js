@@ -68,11 +68,75 @@
     $('factorNormal').value=m.normal??1;$('factorSemi').value=m.semi??1.4;$('factorPrivate').value=m.private??2;$('factorVip').value=m.vip??3;$('factorOnline').value=m.online??.8;
     const sr=config.sessionRates||{};
     $('rate8').value=sr['8']??1;$('rate10').value=sr['10']??1.25;$('rate12').value=sr['12']??1.5;
-    renderStyles();renderRegions();renderRules();
+    renderStyles();renderRegions();renderRules();renderClassTypes();renderPageTexts();
     const card=config.card||{},contact=config.contact||{};
     $('bankName').value=card.bank||'';$('cardNumber').value=card.number||'';$('cardOwner').value=card.owner||'';$('gatewayLink').value=card.gatewayLink||'';
     $('contactPhone').value=contact.phone||'';$('contactInstagram').value=contact.instagram||'';$('contactTelegram').value=contact.telegram||'';
   }
+
+  const PAGE_TEXT_LABELS={stylesSectionTitle:'عنوان بخش سبک‌ها',classTypeLabel:'عنوان نوع کلاس',sessionCountLabel:'عنوان تعداد جلسات',stylesChoiceLabel:'راهنمای انتخاب سبک‌ها',tuitionLabel:'عنوان شهریه',registrationTitle:'عنوان فرم ثبت‌نام',registrationIntro:'توضیح فرم ثبت‌نام',fullNameLabel:'برچسب نام و نام خانوادگی',phoneLabel:'برچسب شماره موبایل',birthDateLabel:'برچسب تاریخ تولد',notesLabel:'برچسب توضیحات',notesPlaceholder:'متن راهنمای توضیحات',rulesSectionTitle:'عنوان قوانین',classRulesLabel:'برچسب شرایط کلاس',sessionRulesLabel:'برچسب شرایط ترم',generalRulesTitle:'عنوان قوانین عمومی',rulesAgreementText:'متن تأیید قوانین',bankInfoTitle:'عنوان اطلاعات پرداخت',onlinePayLabel:'متن پرداخت آنلاین',copyCardLabel:'متن کپی کارت',sendReceiptLabel:'متن ارسال فیش',paymentConfirmedLabel:'متن تأیید پرداخت',submitLabel:'متن دکمه ثبت‌نام',contactsSectionTitle:'عنوان راه‌های ارتباطی',instagramLabel:'برچسب اینستاگرام',telegramLabel:'برچسب تلگرام',phoneButtonLabel:'برچسب تماس',musicJoinLabel:'متن عضویت کانال'};
+  function renderPageTexts(){
+    const p=config.pageTexts||{};
+    $('pageTextsEditor').innerHTML=Object.entries(PAGE_TEXT_LABELS).map(([k,label])=>'<div><label for="pageText-'+k+'">'+label+'</label><textarea id="pageText-'+k+'" rows="2">'+escapeHtml(p[k]||'')+'</textarea></div>').join('');
+  }
+  const CLASS_LABELS={normal:'کلاس عمومی',semi:'نیمه‌خصوصی',private:'خصوصی',vip:'VIP',online:'آنلاین'};
+  function renderClassTypes(){
+    const data=config.classTypesConfig||{};
+    $('classTypesEditor').innerHTML=Object.entries(CLASS_LABELS).map(([k,label])=>{const v=data[k]||{enabled:true,statusText:'',allowedStyles:[]};return '<div class="edit-row"><div class="name-field"><span class="row-label">'+label+'</span><label><input type="checkbox" data-class-enabled="'+k+'" '+(v.enabled!==false?'checked':'')+'> فعال برای ثبت‌نام</label></div><div style="grid-column:span 2"><span class="row-label">متن وضعیت / ظرفیت</span><input data-class-status="'+k+'" value="'+escapeHtml(v.statusText||'')+'" placeholder="مثلاً ظرفیت محدود"></div></div>';}).join('');
+  }
+  async function loadNotifications(){
+    if(!client||!window.gym20OwnerAuthorized)return;
+    try{
+      const {data,error}=await client.schema('gym20').from('site_settings').select('value').eq('key','student_push_config').maybeSingle();if(error)throw error;
+      const v={enabled:true,reminder_1_hours:6,reminder_2_hours:2,reminder_1_template:'{student} عزیز، خوبی؟ 🌱 کلاس ما {relative}، {day} ساعت {time} برگزار می‌شود. منتظرت هستم!',reminder_2_template:'{student} عزیز 💪 آماده‌ای؟ کلاس شما {relative}، {day} ساعت {time} شروع می‌شود. به امید دیدار!',...(data?.value||{})};
+      $('notificationEnabled').checked=v.enabled!==false;$('reminderOne').value=v.reminder_1_hours??6;$('reminderTwo').value=v.reminder_2_hours??2;$('reminderOneText').value=v.reminder_1_template;$('reminderTwoText').value=v.reminder_2_template;
+      $('notificationStatus').textContent='تنظیمات فعلی دریافت شد.';
+    }catch(e){$('notificationStatus').textContent=e.message||'دریافت تنظیمات اعلان ناموفق بود.';}
+  }
+  async function saveNotifications(){
+    const first=Number($('reminderOne').value),second=Number($('reminderTwo').value);
+    if(!Number.isInteger(first)||first<0||first>24||!Number.isInteger(second)||second<0||second>24){$('notificationStatus').textContent='زمان هر یادآوری باید بین صفر تا ۲۴ ساعت باشد.';return;}
+    if(first>0&&second>0&&first<=second){$('notificationStatus').textContent='یادآوری اول باید از نظر زمانی زودتر باشد؛ نمونه: ۶ و سپس ۲ ساعت.';return;}
+    const one=$('reminderOneText').value.trim(),two=$('reminderTwoText').value.trim();
+    if(!one||!two||one.length>1000||two.length>1000){$('notificationStatus').textContent='متن هر دو یادآوری را کامل و حداکثر تا ۱۰۰۰ نویسه وارد کن.';return;}
+    const b=$('saveNotificationSettings');b.disabled=true;
+    try{
+      const {data,error:readError}=await client.schema('gym20').from('site_settings').select('value').eq('key','student_push_config').maybeSingle();if(readError)throw readError;
+      const {data:{user},error:authError}=await client.auth.getUser();if(authError)throw authError;
+      const value={...(data?.value||{}),enabled:$('notificationEnabled').checked,reminder_1_hours:first,reminder_2_hours:second,reminder_1_template:one,reminder_2_template:two,updated_at:new Date().toISOString()};
+      delete value.vapid_private_key;
+      const {error}=await client.schema('gym20').from('site_settings').upsert({key:'student_push_config',value,updated_at:new Date().toISOString(),updated_by:user?.id||null},{onConflict:'key'});if(error)throw error;
+      $('notificationStatus').textContent='تنظیمات یادآوری ذخیره شد ✓';
+    }catch(e){$('notificationStatus').textContent=e.message||'ذخیره تنظیمات ناموفق بود.';}
+    finally{b.disabled=false;}
+  }
+  let paymentRows=[];
+  async function loadPayments(){
+    if(!client||!window.gym20OwnerAuthorized)return;
+    $('paymentsList').innerHTML='<p class="muted">در حال دریافت دفتر مالی…</p>';
+    try{
+      const {data,error}=await client.schema('gym20').from('student_payments').select('id,student_id,transaction_type,amount_toman,payment_method,paid_at,reference,notes,students(full_name)').order('paid_at',{ascending:false}).limit(500);
+      if(error)throw error;paymentRows=data||[];
+      const total=key=>paymentRows.filter(x=>x.transaction_type===key).reduce((sum,x)=>sum+Number(x.amount_toman||0),0);
+      const paid=total('payment'),refund=total('refund');$('financePaid').textContent=paid.toLocaleString('fa-IR');$('financeRefunds').textContent=refund.toLocaleString('fa-IR');$('financeNet').textContent=(paid-refund).toLocaleString('fa-IR');
+      $('paymentStudent').innerHTML='<option value="">انتخاب هنرجو…</option>'+students.map(x=>'<option value="'+escapeHtml(x.id)+'">'+escapeHtml(x.full_name)+'</option>').join('');
+      $('paymentsList').innerHTML=paymentRows.length?paymentRows.map(x=>'<article class="request-card"><div><strong>'+escapeHtml(x.students?.full_name||'هنرجو')+' · '+Number(x.amount_toman).toLocaleString('fa-IR')+' تومان</strong><small>'+(x.transaction_type==='refund'?'برگشت وجه':'دریافت شهریه')+' · '+escapeHtml(x.payment_method)+' · '+escapeHtml(x.paid_at)+' · '+escapeHtml(x.reference||'بدون شناسه')+'</small><small>'+escapeHtml(x.notes||'')+'</small></div><span class="tag">'+(x.transaction_type==='refund'?'برگشت':'پرداخت')+'</span></article>').join(''):'<p class="muted">تراکنشی ثبت نشده است.</p>';
+    }catch(e){$('paymentsList').innerHTML='<p class="muted">'+escapeHtml(e.message||'دریافت دفتر مالی ناموفق بود.')+'</p>';}
+  }
+  async function addPayment(){
+    const student_id=$('paymentStudent').value,amount=Number($('paymentAmount').value);
+    if(!student_id){$('paymentStatus').textContent='هنرجو را انتخاب کن.';return;}
+    if(!Number.isSafeInteger(amount)||amount<1){$('paymentStatus').textContent='مبلغ معتبر به تومان وارد کن.';return;}
+    const b=$('addPayment');b.disabled=true;
+    try{
+      const {data:{user},error:authError}=await client.auth.getUser();if(authError)throw authError;
+      const row={student_id,transaction_type:$('paymentType').value,amount_toman:amount,payment_method:$('paymentMethod').value,paid_at:$('paymentDate').value||new Date().toISOString().slice(0,10),reference:$('paymentReference').value.trim()||null,notes:$('paymentNotes').value.trim()||null,created_by:user?.id||null};
+      const {error}=await client.schema('gym20').from('student_payments').insert(row);if(error)throw error;
+      $('paymentAmount').value='';$('paymentReference').value='';$('paymentNotes').value='';$('paymentStatus').textContent='تراکنش ثبت شد ✓';await loadPayments();
+    }catch(e){$('paymentStatus').textContent=e.message||'ثبت تراکنش ناموفق بود.';}
+    finally{b.disabled=false;}
+  }
+
   function updateStats() {
     $('statRegions').textContent=(config.regions||[]).length.toLocaleString('fa-IR');
     $('statStyles').textContent=(config.styles||[]).length.toLocaleString('fa-IR');
@@ -142,6 +206,8 @@
     document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
     if(view==='requests')loadRequests().catch(e=>status(e.message,true));
+    if(view==='payments')loadPayments();
+    if(view==='notifications')loadNotifications();
   }
   async function refresh() {
     try{await loadConfig();if(document.getElementById('view-requests').classList.contains('active'))await loadRequests();status('اطلاعات بروزرسانی شد.');}
@@ -318,9 +384,11 @@
   $('mainNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)showView(b.dataset.view);});
   document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showView(b.dataset.go)));
   $('refreshBtn').addEventListener('click',refresh);
+  $('saveNotificationSettings').addEventListener('click',saveNotifications);$('reloadPayments').addEventListener('click',loadPayments);$('addPayment').addEventListener('click',addPayment);
   $('reloadStudents').addEventListener('click',loadStudents);$('studentSearch').addEventListener('input',renderStudents);$('studentState').addEventListener('change',renderStudents);
   $('studentsList').addEventListener('click',e=>{const edit=e.target.closest('[data-edit-student]'),toggle=e.target.closest('[data-toggle-student]');if(edit){const s=students.find(x=>x.id===edit.dataset.editStudent);if(!s)return;$('editStudentId').value=s.id;$('studentName').value=s.full_name||'';$('studentPhone').value=s.phone||'';$('studentBirth').value=s.birth_date||'';$('studentNotes').value=s.notes||'';$('studentActive').value=String(!!s.is_active);$('studentFormTitle').textContent='ویرایش پرونده هنرجو';window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});}if(toggle)toggleStudent(toggle.dataset.toggleStudent);});
   $('studentFormReset').addEventListener('click',resetStudentForm);$('saveStudent').addEventListener('click',saveStudent);
+  $('paymentDate').value=new Date().toISOString().slice(0,10);
   $('reloadAttendance').addEventListener('click',loadAttendance);$('attendanceSearch').addEventListener('input',renderAttendance);$('attendanceRange').addEventListener('change',renderAttendance);
   $('reloadCoachStats').addEventListener('click',loadCoachStats);$('reloadReports').addEventListener('click',loadReports);
   $('reloadRequests').addEventListener('click',()=>loadRequests().catch(e=>status(e.message,true)));
@@ -329,7 +397,8 @@
   $('stylesEditor').addEventListener('click',e=>{const b=e.target.closest('[data-delete-style]');if(!b)return;config.styles.splice(Number(b.dataset.deleteStyle),1);renderStyles();});
   $('addStyle').addEventListener('click',()=>{const name=prompt('نام سبک جدید را وارد کنید:');if(name?.trim()){config.styles=config.styles||[];config.styles.push({id:'style_'+Date.now(),name:name.trim()});renderStyles();}});
   $('saveClasses').addEventListener('click',e=>runSave(e.currentTarget,async()=>{
-    readStyles();config.multipliers={...(config.multipliers||{}),normal:n($('factorNormal').value),semi:n($('factorSemi').value),private:n($('factorPrivate').value),vip:n($('factorVip').value),online:n($('factorOnline').value)};
+    readStyles();
+    config.classTypesConfig=config.classTypesConfig||{};Object.keys(CLASS_LABELS).forEach(k=>{const old=config.classTypesConfig[k]||{};config.classTypesConfig[k]={...old,enabled:!!document.querySelector('[data-class-enabled="'+k+'"]')?.checked,statusText:document.querySelector('[data-class-status="'+k+'"]')?.value||'',allowedStyles:old.allowedStyles||[]};});config.multipliers={...(config.multipliers||{}),normal:n($('factorNormal').value),semi:n($('factorSemi').value),private:n($('factorPrivate').value),vip:n($('factorVip').value),online:n($('factorOnline').value)};
     config.sessionRates={'8':n($('rate8').value),'10':n($('rate10').value),'12':n($('rate12').value)};
     await saveConfig('سبک‌ها و ضرایب کلاس ذخیره شد.');
   }));
@@ -337,6 +406,6 @@
   $('addRegion').addEventListener('click',()=>{config.regions=config.regions||[];config.regions.push({id:'reg_'+Date.now(),name:'منطقه جدید',kidsBase:1500000,adultBase:2000000,extraStylePrice:500000});renderRegions();});
   $('saveRegions').addEventListener('click',e=>runSave(e.currentTarget,async()=>{readRegions();await saveConfig('مناطق و قیمت‌ها ذخیره شد.');}));
   $('saveRules').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.rules=config.rules||{};Object.keys(RULE_NAMES).forEach(k=>config.rules[k]=$('rule-'+k).value);await saveConfig('قوانین ذخیره شد.');}));
-  $('saveSite').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.brandTag=$('brandTag').value;config.bannerTitle=$('bannerTitle').value;config.bannerSubtitle=$('bannerSubtitle').value;await saveConfig('محتوای سایت ذخیره شد.');}));
+  $('saveSite').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.brandTag=$('brandTag').value;config.bannerTitle=$('bannerTitle').value;config.bannerSubtitle=$('bannerSubtitle').value;config.pageTexts=config.pageTexts||{};Object.keys(PAGE_TEXT_LABELS).forEach(k=>config.pageTexts[k]=$('pageText-'+k).value);await saveConfig('محتوای سایت ذخیره شد.');}));
   $('savePayments').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.card={...(config.card||{}),bank:$('bankName').value,number:$('cardNumber').value,cleanNumber:$('cardNumber').value.replace(/\D/g,''),owner:$('cardOwner').value,gatewayLink:$('gatewayLink').value};config.contact={...(config.contact||{}),phone:$('contactPhone').value,instagram:$('contactInstagram').value,telegram:$('contactTelegram').value};await saveConfig('اطلاعات پرداخت و ارتباطات ذخیره شد.');}));
 })();
