@@ -59,5 +59,15 @@ jobs:
           PY
       - name: Check schedule migration regression
         run: |
-          ! grep -q 'unnest(v_session_rec.enrollment_ids)' supabase/migrations/20261118011000_restore_shared_term_editor.sql
-          grep -q 'unnest(session_row.enrollment_ids)' supabase/migrations/20261118011000_restore_shared_term_editor.sql
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          sql = Path("supabase/migrations/20261118011000_restore_shared_term_editor.sql").read_text(encoding="utf-8")
+          assert re.search(
+              r"from jsonb_to_recordset\\(p_sessions\\).*?unnest\\(session_row\\.enrollment_ids\\).*?left join gym20\\.term_enrollments",
+              sql, re.S
+          ), "Validation must unnest each session_row.enrollment_ids"
+          assert "select v_session_id,ids.enrollment_id from unnest(v_session_rec.enrollment_ids)" in sql, "Insert loop must use the current v_session_rec"
+          print("Schedule migration regression check passed")
+          PY
