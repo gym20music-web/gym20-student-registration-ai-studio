@@ -59,7 +59,7 @@
     button.disabled = true;
     try {
       if (!auth) connect();
-      await auth.sendMagicLink(document.getElementById('email').value.trim(), window.location.href);
+      await auth.sendMagicLink(document.getElementById('email').value.trim(), 'https://gym20.ir/admin-login.html');
     } catch (e) {
       status(e.message || 'اتصال یا ارسال لینک ورود ناموفق بود.', true);
       if (!auth) document.getElementById('publishableKey').disabled = false;
