@@ -182,7 +182,7 @@
   }
   async function loadRequests() {
     $('requestsList').innerHTML='<p class="muted">در حال دریافت درخواست‌ها…</p>';
-    const {data,error}=await client.from('public_registration_requests').select('id,full_name,phone,status,created_at,selected_styles,age_group,total_sessions,converted_student_id,converted_at').order('created_at',{ascending:false}).limit(100);
+    const {data,error}=await client.from('public_registration_requests').select('id,full_name,phone,birth_date,class_type,notes,status,created_at,selected_styles,age_group,total_sessions,converted_student_id,converted_at').order('created_at',{ascending:false}).limit(100);
     if(error)throw error;
     requests=data||[];
     renderRequests();
@@ -205,7 +205,6 @@
     window.switchAdminTab('view-'+view);
     document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
-    if(view==='requests')loadRequests().catch(e=>status(e.message,true));
     if(view==='payments')loadPayments();
     if(view==='notifications')loadNotifications();
   }
@@ -391,7 +390,6 @@
   $('paymentDate').value=new Date().toISOString().slice(0,10);
   $('reloadAttendance').addEventListener('click',loadAttendance);$('attendanceSearch').addEventListener('input',renderAttendance);$('attendanceRange').addEventListener('change',renderAttendance);
   $('reloadCoachStats').addEventListener('click',loadCoachStats);$('reloadReports').addEventListener('click',loadReports);
-  $('reloadRequests').addEventListener('click',()=>loadRequests().catch(e=>status(e.message,true)));
 
 
   $('stylesEditor').addEventListener('click',e=>{const b=e.target.closest('[data-delete-style]');if(!b)return;config.styles.splice(Number(b.dataset.deleteStyle),1);renderStyles();});
