@@ -69,9 +69,11 @@
         const completed = !!x.is_completed;
         const stamp = completed ? formatCompletedAt(x.completed_at) : '';
         return '<article class="request-card"><div><strong>' + esc(x.title) +
-          (completed ? ' <span style="color:#55c58a">✓ انجام‌شده</span>' : '') +
+          (completed ? ' <span style="color:#55c58a">✓ انجام‌شده</span>' : ' <span style="color:#d5b66b">در انتظار انجام</span>') +
           (stamp ? '<small>' + esc(stamp) + '</small>' : '') +
-          '</div><button class="ghost" type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین">🗑️</button></article>';
+          '</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
+          '<button class="ghost" type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
+          '<button class="ghost" type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین">🗑️</button></div></article>';
       }).join('') : '<p class="muted">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
       say(rows.length.toLocaleString('fa-IR') + ' تمرین ثبت شده است.');
     } catch (e) {
@@ -99,6 +101,20 @@
     } finally { button.disabled = false; }
   }
 
+  async function toggleExercise(id, completed) {
+    if (!currentStudentId) return;
+    try {
+      const next = !completed;
+      const {error} = await db().from('student_exercises').update({
+        is_completed: next,
+        completed_at: next ? new Date().toISOString() : null
+      }).eq('id', id).eq('student_id', currentStudentId);
+      if (error) throw error;
+      await loadStudentExercisesAdmin();
+      say(next ? 'تمرین انجام‌شده ثبت شد ✓' : 'تمرین به فهرست در انتظار بازگشت.');
+    } catch (e) { say(e.message || 'به‌روزرسانی وضعیت تمرین ناموفق بود.', true); }
+  }
+
   async function deleteExercise(id) {
     if (!currentStudentId || !confirm('این تمرین از برنامه هنرجو حذف شود؟')) return;
     try {
@@ -117,6 +133,8 @@
       if (e.key === 'Enter') { e.preventDefault(); addExercise(); }
     });
     $('gym20ExerciseList').addEventListener('click', e => {
+      const toggle = e.target.closest('[data-toggle-exercise]');
+      if (toggle) { toggleExercise(toggle.dataset.toggleExercise, toggle.dataset.completed === 'true'); return; }
       const button = e.target.closest('[data-delete-exercise]');
       if (button) deleteExercise(button.dataset.deleteExercise);
     });
