@@ -25,13 +25,31 @@ window.GYM20AdminAuth = (() => {
         .eq('id', user.id)
         .maybeSingle();
 
-      if (error || !profile || profile.role !== 'owner' || profile.is_active !== true) {
-        await client.auth.signOut();
-        onStatus('این حساب دسترسی مدیر فعال ندارد؛ تنظیمات جدول profiles و RLS را بررسی کنید.', true);
+      if (error) {
+        onStatus('ورود انجام شد، اما بررسی نقش مدیر با خطا روبه‌رو شد: ' + error.message, true);
+        return false;
+      }
+      if (!profile) {
+        onStatus('ایمیل تأیید شد و نشست ورود برقرار است؛ حساب هنوز به‌عنوان مدیر فعال نشده است. پس از ثبت نقش مالک، صفحه را تازه‌سازی کنید.', false);
+        return false;
+      }
+      if (profile.role !== 'owner' || profile.is_active !== true) {
+        onStatus('این حساب هنوز دسترسی مدیر فعال ندارد.', true);
         return false;
       }
       onAuthorized({ user, profile });
       return true;
+    }
+
+    async function sendMagicLink(email, redirectTo = window.location.href) {
+      if (!email?.trim()) throw new Error('ایمیل حساب مدیر را وارد کنید.');
+      onStatus('در حال ارسال لینک ورود به ایمیل…', false);
+      const { error } = await client.auth.signInWithOtp({
+        email: email.trim(),
+        options: { emailRedirectTo: redirectTo }
+      });
+      if (error) throw error;
+      onStatus('درخواست ارسال شد. صندوق ورودی و پوشه هرزنامه را بررسی کنید و لینک را روی همین دستگاه باز کنید.', false);
     }
 
     async function signInWithPassword(email, password) {
@@ -52,7 +70,7 @@ window.GYM20AdminAuth = (() => {
       if (error) throw error;
     }
 
-    return { verifyOwner, signInWithPassword, signOut, getClient: () => client };
+    return { verifyOwner, sendMagicLink, signInWithPassword, signOut, getClient: () => client };
   }
 
   return { init };
