@@ -1163,7 +1163,7 @@ function triggerPromoPopupIfEnabled(){
     }
 }
 
-const GYM20_SUPABASE_URL = "https://iqjujumhoawlugrmjvyj.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ";
+const GYM20_SUPABASE_URL = "https://ubrafxjpnqtjnjdaskba.supabase.co", GYM20_SUPABASE_ANON_KEY = "sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3";
 function resumeGym20AdminSession(){
   // هنگام بازدید عادی هیچ CDN خارجی برای بررسی نشست مدیر بارگذاری نمی‌کنیم.
   // نشست ذخیره‌شده با کلیک مدیر و در همان لحظهٔ نیاز بررسی می‌شود.
