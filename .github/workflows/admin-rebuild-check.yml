@@ -1,0 +1,73 @@
+name: Admin rebuild static checks
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'admin.html'
+      - 'admin-panel.js'
+      - 'student-terms.js'
+      - 'student-push-admin.js'
+      - 'student-exercises.js'
+      - 'supabase/migrations/**'
+      - '.github/workflows/admin-rebuild-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check JavaScript syntax
+        run: |
+          node --check admin-panel.js
+          node --check student-terms.js
+          node --check student-push-admin.js
+          node --check student-exercises.js
+      - name: Check admin HTML IDs and required modules
+        run: |
+          python3 - <<'PY'
+          from html.parser import HTMLParser
+          from collections import Counter
+          from pathlib import Path
+
+          class Check(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.ids = []
+                  self.scripts = []
+              def handle_starttag(self, tag, attrs):
+                  attrs = dict(attrs)
+                  if attrs.get("id"):
+                      self.ids.append(attrs["id"])
+                  if tag == "script" and attrs.get("src"):
+                      self.scripts.append(attrs["src"])
+
+          parser = Check()
+          parser.feed(Path("admin.html").read_text(encoding="utf-8"))
+          duplicates = [k for k, v in Counter(parser.ids).items() if v > 1]
+          assert not duplicates, f"Duplicate HTML IDs: {duplicates}"
+          required = {"./admin-panel.js", "./student-terms.js", "./student-push-admin.js", "./student-exercises.js"}
+          missing = required - set(parser.scripts)
+          assert not missing, f"Missing script references: {sorted(missing)}"
+          print(f"HTML static check passed: {len(parser.ids)} unique IDs")
+          PY
+      - name: Check schedule migration regression
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          sql = Path("supabase/migrations/20261118011000_restore_shared_term_editor.sql").read_text(encoding="utf-8")
+          assert re.search(
+              r"from jsonb_to_recordset\(p_sessions\).*?unnest\(session_row\.enrollment_ids\).*?left join gym20\.term_enrollments",
+              sql, re.S
+          ), "Validation must unnest each session_row.enrollment_ids"
+          assert "select v_session_id,ids.enrollment_id from unnest(v_session_rec.enrollment_ids)" in sql, "Insert loop must use the current v_session_rec"
+          print("Schedule migration regression check passed")
+          PY
