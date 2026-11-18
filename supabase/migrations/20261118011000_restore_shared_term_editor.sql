@@ -67,7 +67,7 @@ begin
       session_number integer, starts_at timestamptz, ends_at timestamptz,
       venue text, notes text, coach_name text, enrollment_ids uuid[]
     )
-    cross join lateral unnest(v_session_rec.enrollment_ids) as ids(enrollment_id)
+    cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)
     left join gym20.term_enrollments te on te.term_id=v_term_id and te.enrollment_id=ids.enrollment_id
     where te.enrollment_id is null
   ) then raise exception 'یکی از سبک‌های جلسه جزو سبک‌های انتخاب‌شده این ترم نیست.'; end if;
