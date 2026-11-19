@@ -530,7 +530,8 @@
     const style=document.createElement('style');
     style.id='gym20AdminTabSortingStyle';
     style.textContent=`
-      .admin-tabs .gym20-nav-dragging{opacity:.55!important;outline:1px solid rgba(218,190,126,.85)!important}
+      .admin-tabs>.nav-item,.admin-tabs>.admin-tab-btn{-webkit-user-select:none!important;user-select:none!important;touch-action:none!important}
+      .admin-tabs .gym20-nav-dragging{opacity:.55!important;outline:1px solid rgba(218,190,126,.85)!important;pointer-events:none!important}
       .admin-tabs .gym20-nav-over{outline:1px dashed rgba(218,190,126,.85)!important;outline-offset:-2px}
     `;
     document.head.appendChild(style);
@@ -573,6 +574,14 @@
       };
       const moveTo=(x,y)=>{
         if(!drag||!drag.active)return;
+        // Keep the dragged tab transparent to hit-testing so the tab beneath
+        // the finger can be detected, and auto-scroll the sidebar at its edges.
+        const sidebar=nav.closest('.admin-sidebar');
+        if(sidebar){
+          const sr=sidebar.getBoundingClientRect(),edge=42;
+          if(y<sr.top+edge)sidebar.scrollTop-=Math.max(3,Math.round((sr.top+edge-y)/5));
+          else if(y>sr.bottom-edge)sidebar.scrollTop+=Math.max(3,Math.round((y-(sr.bottom-edge))/5));
+        }
         const hit=document.elementFromPoint(x,y);
         const target=hit&&hit.closest?hit.closest('.nav-item,.admin-tab-btn'):null;
         clearMarks();
