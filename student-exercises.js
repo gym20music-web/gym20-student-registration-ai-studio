@@ -126,7 +126,43 @@
   }
 
   function mount() {
-    if (!$('gym20ExerciseStudentSelect')) return;
+    const nav = document.querySelector('.admin-tabs');
+    const work = document.querySelector('.admin-workspace');
+    if (!nav || !work) return;
+
+    // Build this feature inside the original right-side admin navigation.
+    if (!$('exercisesTab')) {
+      const tabButton = document.createElement('button');
+      tabButton.type = 'button';
+      tabButton.className = 'admin-tab-btn';
+      tabButton.textContent = '🏋️ تمرین هنرجویان';
+      tabButton.setAttribute('onclick', "switchAdminTab('exercisesTab')");
+      const requestsButton = nav.querySelector('[onclick*="requestsTab"]');
+      nav.insertBefore(tabButton, requestsButton || null);
+
+      const panel = document.createElement('section');
+      panel.id = 'exercisesTab';
+      panel.className = 'admin-panel-tab';
+      panel.innerHTML =
+        '<div class="admin-section-subhead">🏋️ مدیریت تمرین‌های اختصاصی هنرجویان</div>' +
+        '<div class="admin-card-section" style="margin-top:6px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-card);">' +
+          '<div class="admin-input-group"><label for="gym20ExerciseStudentSelect">انتخاب هنرجو:</label>' +
+          '<select id="gym20ExerciseStudentSelect" class="admin-select" style="width:100%;min-height:36px;"><option value="">در حال دریافت فهرست هنرجویان…</option></select></div>' +
+          '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end;margin-top:8px;">' +
+            '<div class="admin-input-group" style="min-width:0;margin:0;"><label for="gym20ExerciseInput">تمرین جدید:</label><input id="gym20ExerciseInput" type="text" maxlength="120" placeholder="مثلاً ۳ ست شنا سوئدی" style="width:100%;min-width:0;"></div>' +
+            '<button type="button" id="gym20ExerciseAdd" class="pill-btn active" style="height:34px;padding:0 12px;white-space:nowrap;">افزودن تمرین</button>' +
+          '</div>' +
+          '<div id="gym20ExerciseFeedback" role="status" aria-live="polite" style="font-size:10px;min-height:22px;margin-top:7px;"></div>' +
+        '</div>' +
+        '<div class="admin-card-section" style="margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-card);">' +
+          '<div class="admin-section-subhead" style="margin-bottom:8px;">فهرست تمرین‌ها</div>' +
+          '<div id="gym20ExerciseList"><p class="muted">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p></div>' +
+        '</div>';
+      const requestsPanel = $('requestsTab');
+      work.insertBefore(panel, requestsPanel || null);
+      tabButton.addEventListener('click', () => setTimeout(loadExerciseStudents, 0));
+    }
+
     $('gym20ExerciseStudentSelect').addEventListener('change', loadStudentExercisesAdmin);
     $('gym20ExerciseAdd').addEventListener('click', addExercise);
     $('gym20ExerciseInput').addEventListener('keydown', e => {
@@ -143,11 +179,6 @@
     });
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.loadExerciseStudents = loadExerciseStudents;
-    const nav = $('mainNav');
-    nav?.addEventListener('click', e => {
-      const item = e.target.closest('[data-view="exercises"]');
-      if (item) setTimeout(loadExerciseStudents, 0);
-    });
     loadExerciseStudents();
   }
 
