@@ -112,7 +112,7 @@
   }
   function targetFor(id){
     const selectors={
-      ageGroup:'#pill_adult',
+      ageGroup:'#pill_adult, #ageGroup',
       classType:'#classType .pill-btn',
       sessionsCount:'#sessionsCount .pill-btn',
       stylesList:'#stylesList .style-item',
@@ -129,7 +129,10 @@
     const selector=selectors[id]||('#'+id);
     // Several legacy form fragments share IDs. Always target the rendered copy,
     // not the first (possibly hidden) duplicate returned by querySelector.
-    return Array.from(document.querySelectorAll(selector)).find(visible)||null;
+    const matches=Array.from(document.querySelectorAll(selector));
+    // Prefer the actual adult button; if a mobile/browser layout reports that
+    // button as non-rendered, fall back to its visible group container.
+    return matches.find(visible)||null;
   }
   function focusStep(id,scroll=true,message='انتخاب کن'){
     if(adminIsOpen()){syncAdminVisibility();return false;}
