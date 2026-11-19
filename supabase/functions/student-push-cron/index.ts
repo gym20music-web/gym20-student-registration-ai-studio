@@ -48,6 +48,20 @@ Deno.serve(async (req: Request) => {
     const { data: allowed, error: authError } = await gym.rpc("verify_student_push_cron_secret", { p_secret: supplied });
     if (authError) throw authError;
     if (allowed !== true) return reply({ ok: false, error: "Unauthorized scheduler request" }, 401);
+    const body = await req.json().catch(() => ({}));
+    if (body?.action === "test") {
+      const studentId = String(body.student_id || "");
+      const message = String(body.message || "آزمایش اعلان گوشی GYM20");
+      if (!/^[0-9a-f-]{36}$/i.test(studentId) || message.length > 500) return reply({ ok: false, error: "Invalid test request" }, 400);
+      await getVapid();
+      const { data: subs, error: subError } = await gym.from("student_push_subscriptions").select("id,endpoint,p256dh,auth").eq("student_id", studentId).eq("is_active", true);
+      if (subError) throw subError;
+      const { data: studentLink, error: linkError } = await gym.from("student_public_links").select("code").eq("student_id", studentId).maybeSingle();
+      if (linkError) throw linkError;
+      let sent = 0;
+      for (const sub of subs || []) if (await sendOne(sub, message, "gym20-test-" + crypto.randomUUID(), studentLink?.code || "")) sent++;
+      return reply({ ok: true, test: true, sent, total: (subs || []).length });
+    }
     const { data: settingRow, error: settingError } = await gym.from("site_settings").select("value").eq("key", "student_push_config").maybeSingle();
     if (settingError) throw settingError;
     const config = settingRow?.value || {};
