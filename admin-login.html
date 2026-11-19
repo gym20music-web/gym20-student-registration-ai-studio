@@ -24,6 +24,11 @@
   <label for="email">ایمیل مدیر</label>
   <input id="email" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر">
   <button id="send" type="button">اتصال و ارسال لینک ورود</button>
+  <div id="recoveryPanel" hidden>
+    <label for="newPassword">رمز عبور جدید</label>
+    <input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ کاراکتر">
+    <button id="savePassword" type="button">ثبت رمز عبور جدید</button>
+  </div>
   <p id="status" role="status" aria-live="polite"></p>
   <p class="hint">این صفحه فقط ورود و بررسی نقش مدیر را آزمایش می‌کند؛ هنوز تنظیمات سایت را ذخیره یا تغییر نمی‌دهد.</p>
 </main>
@@ -55,12 +60,17 @@
     });
     document.getElementById('publishableKey').disabled = true;
     const supabaseClient=auth.getClient();
+    const recoveryFlow=location.search.includes('recovery=1')||location.hash.includes('type=recovery');
+    if(recoveryFlow)document.getElementById('recoveryPanel').hidden=false;
     supabaseClient.auth.onAuthStateChange((event, session) => {
-      if(session && (event==='SIGNED_IN'||event==='INITIAL_SESSION')){
+      if(event==='PASSWORD_RECOVERY'){
+        document.getElementById('recoveryPanel').hidden=false;
+        status('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
+      }else if(session && (event==='SIGNED_IN'||event==='INITIAL_SESSION')&&!recoveryFlow){
         queueMicrotask(()=>auth.verifyOwner().catch(e=>status(e.message||'بررسی نشست ورود ناموفق بود.',true)));
       }
     });
-    auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
+    if(!recoveryFlow)auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
     return auth;
   }
 
@@ -75,6 +85,19 @@
     } finally {
       button.disabled = false;
     }
+  });
+  document.getElementById('savePassword').addEventListener('click', async () => {
+    const save=document.getElementById('savePassword');save.disabled=true;
+    try{
+      if(!auth)connect();
+      const password=document.getElementById('newPassword').value;
+      if(password.length<8)throw new Error('رمز عبور باید حداقل ۸ کاراکتر باشد.');
+      const {error}=await auth.getClient().auth.updateUser({password});
+      if(error)throw error;
+      status('رمز عبور جدید ثبت شد؛ در حال بررسی دسترسی مدیر…');
+      await auth.verifyOwner();
+    }catch(e){status(e.message||'ثبت رمز عبور جدید ناموفق بود.',true);}
+    finally{save.disabled=false;}
   });
   // On the email callback, restore the session and verify the owner automatically.
   try { if (!auth) connect(); } catch (e) { status(e.message || 'اتصال ناموفق بود.', true); }
