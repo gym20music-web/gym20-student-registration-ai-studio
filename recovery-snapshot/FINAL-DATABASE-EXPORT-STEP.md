@@ -1,15 +1,15 @@
-# Final database export step
+# Complete the live database export
 
-The available connected Supabase tools do not expose the database password or a binary pg_dump download. Do not paste the database password or service-role key into ChatGPT.
+A local encrypted Supabase-native dump is required because connected Supabase tools do not provide a binary database download.
 
-To finish the encrypted full database backup:
-1. Download `export-live-db.ps1` from this folder.
-2. On Windows, install PostgreSQL 17 command-line tools (pg_dump) and OpenSSL.
-3. Open PowerShell in the folder where the script was downloaded and run:
-   `powershell -ExecutionPolicy Bypass -File .\export-live-db.ps1`
-4. When prompted, enter the database password from Supabase Dashboard → Project Settings → Database. The script uses it only in the current process, exports the database in custom pg_dump format, encrypts the dump with AES-256-CBC/PBKDF2, then deletes the unencrypted dump if encryption succeeds.
-5. Keep the encryption passphrase separately. Never upload an unencrypted dump; it contains personal data and private push keys.
+Install Supabase CLI, Docker Desktop (start it), and OpenSSL. Download `export-live-db.ps1`, open PowerShell in its folder, then run:
 
-This is a read-only export. It does not change production.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\export-live-db.ps1
+```
 
-Current live Storage inventory is zero buckets and zero objects, so there are no Storage file bodies to export at this snapshot. The database dump still captures database-side schemas/metadata. Supabase project secrets, Auth provider settings, project configuration, DNS settings, and the live database password are outside pg_dump and must be preserved separately in the Supabase dashboard. Never store secret values in this GitHub repository.
+In Supabase Dashboard for project `ubrafxjpnqtjnjdaskba`, click **Connect** and copy the full PostgreSQL URI. Use Direct connection if IPv6 is supported; otherwise use Session pooler (port 5432). Replace the password placeholder locally and paste the full URI into the hidden PowerShell prompt. Choose a strong OpenSSL encryption passphrase and keep it separately.
+
+The script exports roles, schema, and data via the Supabase CLI, archives them, encrypts the archive using AES-256-CBC/PBKDF2, and removes temporary plaintext after successful encryption. If encryption fails, it retains the local plaintext archive and reports that it must be protected. No production data is changed.
+
+The live project currently reports zero Storage buckets and zero Storage objects. Edge Function source code is stored in this recovery branch. Project secrets, Auth provider configuration, SMTP, JWT/API signing secrets, custom-domain settings, DNS and project-level settings are not included in the database dump. Record which settings are enabled and recreate/rotate secret values securely during restoration; never commit secret values to this public GitHub repository.
