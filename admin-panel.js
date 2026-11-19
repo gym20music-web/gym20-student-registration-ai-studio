@@ -38,6 +38,18 @@
       auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}
     });
     window.gym20AdminClient = client;
+    client.auth.onAuthStateChange((event,session)=>{
+      if(event==='SIGNED_OUT'&&!session){
+        window.gym20OwnerAuthorized=false;
+        $('app').hidden=true;
+        $('loginScreen').hidden=false;
+        loginStatus('نشست مدیر پایان یافته است؛ دوباره وارد شوید.',true);
+      }
+      if(event==='PASSWORD_RECOVERY'){
+        $('passwordRecoveryPanel').hidden=false;
+        loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
+      }
+    });
     return client;
   }
   async function authorizeOwner() {
@@ -184,7 +196,27 @@
     if(!channel){out.textContent='لینک یا آیدی کانال را وارد کنید.';out.style.color='#e47777';input?.focus();return;}
     button.disabled=true;button.textContent='در حال دریافت…';out.textContent='در حال ارتباط امن با تلگرام…';out.style.color='var(--muted)';details.innerHTML='';
     try{
-      const {data,error}=await client.functions.invoke('telegram-channel-info',{body:{channel}});
+      let {data:sessionData,error:sessionError}=await client.auth.getSession();
+      if(sessionError)throw sessionError;
+      let session=sessionData?.session||null;
+      if(!session){
+        const refreshed=await client.auth.refreshSession();
+        if(refreshed.error)throw refreshed.error;
+        session=refreshed.data?.session||null;
+      }
+      if(!session?.access_token)throw new Error('نشست مدیر در این مرورگر وجود ندارد یا پایان یافته است؛ دوباره با لینک ایمیل یا رمز عبور وارد شوید.');
+      let {data:userData,error:userError}=await client.auth.getUser(session.access_token);
+      if(userError||!userData?.user){
+        const refreshed=await client.auth.refreshSession();
+        if(refreshed.error||!refreshed.data?.session?.access_token)throw new Error('نشست مدیر منقضی شده است؛ از صفحه ورود دوباره وارد شوید.');
+        session=refreshed.data.session;
+        const verified=await client.auth.getUser(session.access_token);
+        if(verified.error||!verified.data?.user)throw new Error('اعتبار نشست مدیر تأیید نشد؛ دوباره وارد شوید.');
+      }
+      const {data,error}=await client.functions.invoke('telegram-channel-info',{
+        headers:{Authorization:'Bearer '+session.access_token},
+        body:{channel}
+      });
       if(error)throw new Error(error.message||'ارتباط با سرویس اطلاعات کانال ناموفق بود.');
       if(!data?.ok||!data.chat)throw new Error(data?.error||'اطلاعات کانال از تلگرام دریافت نشد.');
       const chat=data.chat;
@@ -409,6 +441,52 @@
       window.dispatchEvent(new Event('gym20:owner-authorized'));
     }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
   }
+  $('passwordLogin').addEventListener('click',async()=>{
+    const btn=$('passwordLogin');btn.disabled=true;btn.textContent='در حال بررسی…';loginStatus('');
+    try{
+      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
+      const email=$('loginEmail').value.trim(),password=$('loginPassword').value;
+      if(!email)throw new Error('ایمیل مدیر را وارد کنید.');
+      if(!password)throw new Error('رمز عبور مدیر را وارد کنید.');
+      const {error}=await client.auth.signInWithPassword({email,password});
+      if(error){
+        if(error.code==='invalid_credentials'||/invalid login credentials/i.test(error.message||''))throw new Error('ایمیل یا رمز عبور درست نیست. اگر رمز را به یاد ندارید، «فراموشی رمز عبور» را بزنید یا لینک ورود ایمیلی بگیرید.');
+        throw error;
+      }
+      await enterAdminPanel();
+    }catch(err){loginStatus(err.message||'ورود با رمز عبور ناموفق بود.',true);}
+    finally{btn.disabled=false;btn.textContent='ورود با رمز عبور';}
+  });
+  $('resetPassword').addEventListener('click',async()=>{
+    const btn=$('resetPassword');btn.disabled=true;
+    try{
+      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
+      const email=$('loginEmail').value.trim();
+      if(!email)throw new Error('ابتدا ایمیل حساب مدیر را وارد کنید.');
+      const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://gym20.ir/admin.html?recovery=1'});
+      if(error)throw error;
+      loginStatus('لینک بازیابی رمز عبور برای ایمیل حساب ارسال شد. لینک را روی همین دستگاه باز کنید.');
+    }catch(err){loginStatus(err.message||'ارسال لینک بازیابی ناموفق بود.',true);}
+    finally{btn.disabled=false;}
+  });
+  $('saveNewPassword').addEventListener('click',async()=>{
+    const btn=$('saveNewPassword');btn.disabled=true;
+    try{
+      const password=$('newAdminPassword').value;
+      if(password.length<8)throw new Error('رمز جدید باید حداقل ۸ کاراکتر باشد.');
+      const {error}=await client.auth.updateUser({password});
+      if(error)throw error;
+      $('passwordRecoveryPanel').hidden=true;
+      loginStatus('رمز عبور جدید ثبت شد؛ در حال ورود مدیر…');
+      await enterAdminPanel();
+    }catch(err){loginStatus(err.message||'ثبت رمز عبور جدید ناموفق بود.',true);}
+    finally{btn.disabled=false;}
+  });
+  if(location.search.includes('recovery=1')||location.hash.includes('type=recovery')){
+    $('passwordRecoveryPanel').hidden=false;
+    loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
+  }
+
   $('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
     const btn=$('loginSubmit');btn.disabled=true;btn.textContent='در حال ارسال…';loginStatus('');
