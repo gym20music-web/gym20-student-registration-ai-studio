@@ -1,0 +1,3068 @@
+{
+  "captured_at": "2026-11-19",
+  "project_ref": "ubrafxjpnqtjnjdaskba",
+  "database_version": "17.12.0.000",
+  "schema": "gym20",
+  "tables": [
+    {
+      "name": "gym20.profiles",
+      "rls_enabled": true,
+      "rows": 1,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "full_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "role",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'coach'::text",
+          "check": "role = ANY (ARRAY['owner'::text, 'admin'::text, 'coach'::text])"
+        },
+        {
+          "name": "is_active",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "true"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_payments_created_by_fkey",
+          "source_table": "gym20.student_payments",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_schedule_versions_created_by_fkey",
+          "source_table": "gym20.term_schedule_versions",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "site_settings_updated_by_fkey",
+          "source_table": "gym20.site_settings",
+          "source_columns": [
+            "updated_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "profiles_id_fkey",
+          "source_table": "gym20.profiles",
+          "source_columns": [
+            "id"
+          ],
+          "target_table": "auth.users",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_created_by_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "public_registration_requests_converted_by_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "converted_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_created_by_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_created_by_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_confirmed_by_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "confirmed_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.students",
+      "rls_enabled": true,
+      "rows": 2,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "full_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "phone",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "birth_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "is_active",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "true"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_push_subscriptions_student_id_fkey",
+          "source_table": "gym20.student_push_subscriptions",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "enrollments_student_id_fkey",
+          "source_table": "gym20.enrollments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_student_id_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_student_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "public_registration_requests_converted_student_id_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "converted_student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_student_id_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_payments_student_id_fkey",
+          "source_table": "gym20.student_payments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_exercises_student_id_fkey",
+          "source_table": "gym20.student_exercises",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_public_links_student_id_fkey",
+          "source_table": "gym20.student_public_links",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_push_deliveries_student_id_fkey",
+          "source_table": "gym20.student_push_deliveries",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.courses",
+      "rls_enabled": true,
+      "rows": 6,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "description",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "class_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'normal'::text"
+        },
+        {
+          "name": "is_active",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "true"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "enrollments_course_id_fkey",
+          "source_table": "gym20.enrollments",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_course_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "public_registration_requests_course_id_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.enrollments",
+      "rls_enabled": true,
+      "rows": 5,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "course_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "package_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'sessions'::text"
+        },
+        {
+          "name": "total_sessions",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "nullable",
+            "updatable"
+          ],
+          "check": "total_sessions IS NULL OR total_sessions > 0"
+        },
+        {
+          "name": "start_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "end_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'active'::text",
+          "check": "status = ANY (ARRAY['active'::text, 'completed'::text, 'cancelled'::text, 'paused'::text])"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "class_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'normal'::text",
+          "check": "class_type = ANY (ARRAY['normal'::text, 'semi'::text, 'private'::text, 'vip'::text, 'online'::text])"
+        },
+        {
+          "name": "age_group",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'adult'::text",
+          "check": "age_group = ANY (ARRAY['adult'::text, 'kids'::text])"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "payments_enrollment_id_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_enrollment_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_enrollment_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_session_styles_enrollment_id_fkey",
+          "source_table": "gym20.class_session_styles",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_enrollments_enrollment_id_fkey",
+          "source_table": "gym20.term_enrollments",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "enrollments_student_id_fkey",
+          "source_table": "gym20.enrollments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "enrollments_course_id_fkey",
+          "source_table": "gym20.enrollments",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.payments",
+      "rls_enabled": true,
+      "rows": 0,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "enrollment_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "amount_toman",
+          "data_type": "bigint",
+          "format": "int8",
+          "options": [
+            "updatable"
+          ],
+          "check": "amount_toman > 0"
+        },
+        {
+          "name": "payment_method",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'card'::text"
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'paid'::text"
+        },
+        {
+          "name": "reference",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "payments_enrollment_id_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_student_id_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "payments_created_by_fkey",
+          "source_table": "gym20.payments",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.class_sessions",
+      "rls_enabled": true,
+      "rows": 189,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "course_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "enrollment_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "starts_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "ends_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "venue",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'scheduled'::text"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "created_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "term_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "schedule_version_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "session_number",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "nullable",
+            "updatable"
+          ],
+          "check": "session_number IS NULL OR session_number > 0"
+        },
+        {
+          "name": "coach_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "class_sessions_course_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_session_styles_session_id_fkey",
+          "source_table": "gym20.class_session_styles",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_schedule_version_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "schedule_version_id"
+          ],
+          "target_table": "gym20.term_schedule_versions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_term_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_session_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_created_by_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_enrollment_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_push_deliveries_session_id_fkey",
+          "source_table": "gym20.student_push_deliveries",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.attendance",
+      "rls_enabled": true,
+      "rows": 0,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "session_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "enrollment_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'pending'::text",
+          "check": "status = ANY (ARRAY['pending'::text, 'present'::text, 'absent'::text, 'excused'::text])"
+        },
+        {
+          "name": "confirmed_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "confirmed_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "attendance_confirmed_by_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "confirmed_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_session_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_student_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "attendance_enrollment_id_fkey",
+          "source_table": "gym20.attendance",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.site_settings",
+      "rls_enabled": true,
+      "rows": 2,
+      "columns": [
+        {
+          "name": "key",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "value",
+          "data_type": "jsonb",
+          "format": "jsonb",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'{}'::jsonb"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "key"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "site_settings_updated_by_fkey",
+          "source_table": "gym20.site_settings",
+          "source_columns": [
+            "updated_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.public_registration_requests",
+      "rls_enabled": true,
+      "rows": 4,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "full_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "char_length(btrim(full_name)) >= 2 AND char_length(btrim(full_name)) <= 120"
+        },
+        {
+          "name": "phone",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "char_length(regexp_replace(phone, '[^0-9+]'::text, ''::text, 'g'::text)) >= 8 AND char_length(regexp_replace(phone, '[^0-9+]'::text, ''::text, 'g'::text)) <= 16"
+        },
+        {
+          "name": "birth_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ],
+          "check": "notes IS NULL OR char_length(notes) <= 1000"
+        },
+        {
+          "name": "course_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "selected_styles",
+          "data_type": "ARRAY",
+          "format": "_text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'{}'::text[]"
+        },
+        {
+          "name": "age_group",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'adult'::text",
+          "check": "age_group = ANY (ARRAY['adult'::text, 'kids'::text])"
+        },
+        {
+          "name": "class_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "class_type = ANY (ARRAY['normal'::text, 'semi'::text, 'private'::text, 'vip'::text])"
+        },
+        {
+          "name": "total_sessions",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "updatable"
+          ],
+          "check": "total_sessions = ANY (ARRAY[8, 10, 12])"
+        },
+        {
+          "name": "package_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'sessions'::text",
+          "check": "package_type = 'sessions'::text"
+        },
+        {
+          "name": "payment_confirmed",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'pending'::text",
+          "check": "status = ANY (ARRAY['pending'::text, 'approved'::text, 'rejected'::text, 'converted'::text])"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "converted_student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "converted_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "converted_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "public_registration_requests_course_id_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "course_id"
+          ],
+          "target_table": "gym20.courses",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "public_registration_requests_converted_student_id_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "converted_student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "public_registration_requests_converted_by_fkey",
+          "source_table": "gym20.public_registration_requests",
+          "source_columns": [
+            "converted_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_terms",
+      "rls_enabled": true,
+      "rows": 2,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "term_name",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "char_length(btrim(term_name)) >= 1 AND char_length(btrim(term_name)) <= 100"
+        },
+        {
+          "name": "term_order",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "start_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "end_date",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "total_sessions",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "8",
+          "check": "total_sessions > 0 AND total_sessions <= 100"
+        },
+        {
+          "name": "duration_minutes",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "60",
+          "check": "duration_minutes = ANY (ARRAY[60, 90])"
+        },
+        {
+          "name": "default_venue",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "schedule_mode",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'manual'::text",
+          "check": "schedule_mode = ANY (ARRAY['weekly'::text, 'manual'::text])"
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'active'::text",
+          "check": "status = ANY (ARRAY['active'::text, 'completed'::text, 'archived'::text])"
+        },
+        {
+          "name": "published_version_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "class_sessions_term_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_enrollments_term_id_fkey",
+          "source_table": "gym20.term_enrollments",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_created_by_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_student_id_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_schedule_versions_term_id_fkey",
+          "source_table": "gym20.term_schedule_versions",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_published_version_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "published_version_id"
+          ],
+          "target_table": "gym20.term_schedule_versions",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.term_enrollments",
+      "rls_enabled": true,
+      "rows": 5,
+      "columns": [
+        {
+          "name": "term_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "enrollment_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "term_id",
+        "enrollment_id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "term_enrollments_term_id_fkey",
+          "source_table": "gym20.term_enrollments",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_enrollments_enrollment_id_fkey",
+          "source_table": "gym20.term_enrollments",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.term_schedule_versions",
+      "rls_enabled": true,
+      "rows": 28,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "term_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "version_number",
+          "data_type": "integer",
+          "format": "int4",
+          "options": [
+            "updatable"
+          ],
+          "check": "version_number > 0"
+        },
+        {
+          "name": "status",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'draft'::text",
+          "check": "status = ANY (ARRAY['draft'::text, 'published'::text, 'superseded'::text])"
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "published_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "term_schedule_versions_term_id_fkey",
+          "source_table": "gym20.term_schedule_versions",
+          "source_columns": [
+            "term_id"
+          ],
+          "target_table": "gym20.student_terms",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_sessions_schedule_version_id_fkey",
+          "source_table": "gym20.class_sessions",
+          "source_columns": [
+            "schedule_version_id"
+          ],
+          "target_table": "gym20.term_schedule_versions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_terms_published_version_fkey",
+          "source_table": "gym20.student_terms",
+          "source_columns": [
+            "published_version_id"
+          ],
+          "target_table": "gym20.term_schedule_versions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "term_schedule_versions_created_by_fkey",
+          "source_table": "gym20.term_schedule_versions",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.class_session_styles",
+      "rls_enabled": true,
+      "rows": 693,
+      "columns": [
+        {
+          "name": "session_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "enrollment_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "session_id",
+        "enrollment_id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "class_session_styles_session_id_fkey",
+          "source_table": "gym20.class_session_styles",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "class_session_styles_enrollment_id_fkey",
+          "source_table": "gym20.class_session_styles",
+          "source_columns": [
+            "enrollment_id"
+          ],
+          "target_table": "gym20.enrollments",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_payments",
+      "rls_enabled": true,
+      "rows": 0,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "transaction_type",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "transaction_type = ANY (ARRAY['payment'::text, 'refund'::text])"
+        },
+        {
+          "name": "amount_toman",
+          "data_type": "bigint",
+          "format": "int8",
+          "options": [
+            "updatable"
+          ],
+          "check": "amount_toman > 0"
+        },
+        {
+          "name": "payment_method",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'card'::text",
+          "check": "payment_method = ANY (ARRAY['card'::text, 'cash'::text, 'online'::text, 'other'::text])"
+        },
+        {
+          "name": "paid_at",
+          "data_type": "date",
+          "format": "date",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "CURRENT_DATE"
+        },
+        {
+          "name": "reference",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ],
+          "check": "reference IS NULL OR char_length(reference) <= 120"
+        },
+        {
+          "name": "notes",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ],
+          "check": "notes IS NULL OR char_length(notes) <= 500"
+        },
+        {
+          "name": "created_by",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_payments_created_by_fkey",
+          "source_table": "gym20.student_payments",
+          "source_columns": [
+            "created_by"
+          ],
+          "target_table": "gym20.profiles",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_payments_student_id_fkey",
+          "source_table": "gym20.student_payments",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_exercises",
+      "rls_enabled": true,
+      "rows": 3,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "title",
+          "data_type": "character varying",
+          "format": "varchar",
+          "options": [
+            "updatable"
+          ],
+          "check": "length(TRIM(BOTH FROM title)) >= 1 AND length(TRIM(BOTH FROM title)) <= 120"
+        },
+        {
+          "name": "is_completed",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "false"
+        },
+        {
+          "name": "completed_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_exercises_student_id_fkey",
+          "source_table": "gym20.student_exercises",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_public_links",
+      "rls_enabled": true,
+      "rows": 2,
+      "columns": [
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "code",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable",
+            "unique"
+          ],
+          "check": "code ~ '^[0-9a-f]{12}$'::text"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "student_id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_public_links_student_id_fkey",
+          "source_table": "gym20.student_public_links",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_push_vapid",
+      "rls_enabled": true,
+      "rows": 1,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "smallint",
+          "format": "int2",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "1",
+          "check": "id = 1"
+        },
+        {
+          "name": "public_key",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "private_key",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "subject",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "'mailto:admin@gym20.ir'::text"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ]
+    },
+    {
+      "name": "gym20.student_push_subscriptions",
+      "rls_enabled": true,
+      "rows": 7,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "endpoint",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable",
+            "unique"
+          ]
+        },
+        {
+          "name": "p256dh",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "auth",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "user_agent",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "nullable",
+            "updatable"
+          ]
+        },
+        {
+          "name": "is_active",
+          "data_type": "boolean",
+          "format": "bool",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "true"
+        },
+        {
+          "name": "created_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "updated_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        },
+        {
+          "name": "last_seen_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_push_subscriptions_student_id_fkey",
+          "source_table": "gym20.student_push_subscriptions",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "gym20.student_push_deliveries",
+      "rls_enabled": true,
+      "rows": 19,
+      "columns": [
+        {
+          "name": "id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "gen_random_uuid()"
+        },
+        {
+          "name": "student_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "session_id",
+          "data_type": "uuid",
+          "format": "uuid",
+          "options": [
+            "updatable"
+          ]
+        },
+        {
+          "name": "reminder_kind",
+          "data_type": "text",
+          "format": "text",
+          "options": [
+            "updatable"
+          ],
+          "check": "reminder_kind = ANY (ARRAY['first'::text, 'second'::text, 'manual'::text])"
+        },
+        {
+          "name": "sent_at",
+          "data_type": "timestamp with time zone",
+          "format": "timestamptz",
+          "options": [
+            "updatable"
+          ],
+          "default_value": "now()"
+        }
+      ],
+      "primary_keys": [
+        "id"
+      ],
+      "foreign_key_constraints": [
+        {
+          "name": "student_push_deliveries_session_id_fkey",
+          "source_table": "gym20.student_push_deliveries",
+          "source_columns": [
+            "session_id"
+          ],
+          "target_table": "gym20.class_sessions",
+          "target_columns": [
+            "id"
+          ]
+        },
+        {
+          "name": "student_push_deliveries_student_id_fkey",
+          "source_table": "gym20.student_push_deliveries",
+          "source_columns": [
+            "student_id"
+          ],
+          "target_table": "gym20.students",
+          "target_columns": [
+            "id"
+          ]
+        }
+      ]
+    }
+  ],
+  "extensions": [
+    {
+      "name": "pg_stat_statements",
+      "schema": "extensions",
+      "default_version": "1.11",
+      "installed_version": "1.11",
+      "comment": "track planning and execution statistics of all SQL statements executed"
+    },
+    {
+      "name": "supabase_vault",
+      "schema": "vault",
+      "default_version": "0.3.2",
+      "installed_version": "0.3.2",
+      "comment": "Supabase Vault Extension"
+    },
+    {
+      "name": "pg_net",
+      "schema": "extensions",
+      "default_version": "0.20.4",
+      "installed_version": "0.20.4",
+      "comment": "Async HTTP"
+    },
+    {
+      "name": "pgcrypto",
+      "schema": "extensions",
+      "default_version": "1.3",
+      "installed_version": "1.3",
+      "comment": "cryptographic functions"
+    },
+    {
+      "name": "plpgsql",
+      "schema": "pg_catalog",
+      "default_version": "1.0",
+      "installed_version": "1.0",
+      "comment": "PL/pgSQL procedural language"
+    },
+    {
+      "name": "uuid-ossp",
+      "schema": "extensions",
+      "default_version": "1.1",
+      "installed_version": "1.1",
+      "comment": "generate universally unique identifiers (UUIDs)"
+    },
+    {
+      "name": "pg_cron",
+      "schema": "pg_catalog",
+      "default_version": "1.6.4",
+      "installed_version": "1.6.4",
+      "comment": "Job scheduler for PostgreSQL"
+    }
+  ],
+  "routines": [
+    {
+      "identity": "gym20.convert_registration_request(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.convert_registration_request(p_request_id uuid)\n RETURNS TABLE(student_id uuid, enrollment_count integer)\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  v_owner_id uuid;\n  v_request gym20.public_registration_requests%rowtype;\n  v_student_id uuid;\n  v_style text;\n  v_course_name text;\n  v_course_id uuid;\n  v_count integer := 0;\nbegin\n  v_owner_id := (select auth.uid());\n  if v_owner_id is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode = '42501';\n  end if;\n\n  select *\n    into v_request\n    from gym20.public_registration_requests\n   where id = p_request_id\n   for update;\n\n  if not found then\n    raise exception 'درخواست ثبت‌نام پیدا نشد.';\n  end if;\n\n  if v_request.converted_student_id is not null or v_request.status = 'converted' then\n    raise exception 'این درخواست قبلاً به هنرجو تبدیل شده است.';\n  end if;\n\n  if v_request.status = 'rejected' then\n    raise exception 'ابتدا وضعیت درخواست ردشده را اصلاح کنید.';\n  end if;\n\n  if coalesce(cardinality(v_request.selected_styles),0) = 0 then\n    raise exception 'درخواست هیچ سبک ورزشی معتبری ندارد.';\n  end if;\n\n  insert into gym20.students(full_name, phone, birth_date, notes, is_active)\n  values (\n    v_request.full_name,\n    v_request.phone,\n    v_request.birth_date,\n    v_request.notes,\n    true\n  )\n  returning id into v_student_id;\n\n  for v_style in\n    select distinct btrim(s.style_name)\n      from unnest(v_request.selected_styles) as s(style_name)\n     order by 1\n  loop\n    v_course_name := case\n      when v_style ilike '%بریک%دنس%' then 'بریک‌دنس'\n      when v_style ilike '%بوکس%' then 'بوکس'\n      when v_style ilike '%پارکور%' then 'پارکور'\n      when v_style ilike '%کلیستنیکس%' or v_style ilike '%کالیستنیکس%' then 'کلیستنیکس'\n      when v_style ilike '%کیوکوشین%' then 'کاراته کیوکوشین'\n      when v_style ilike '%نینجوتسو%' then 'نینجوتسو'\n      else null\n    end;\n\n    if v_course_name is null then\n      raise exception 'سبک «%» در فهرست دوره‌های آکادمی قابل تطبیق نیست؛ تبدیل انجام نشد.', v_style;\n    end if;\n\n    select c.id\n      into v_course_id\n      from gym20.courses c\n     where c.name = v_course_name\n       and c.is_active = true\n     limit 1;\n\n    if v_course_id is null then\n      raise exception 'دوره «%» در جدول دوره‌ها فعال نیست؛ تبدیل انجام نشد.', v_course_name;\n    end if;\n\n    insert into gym20.enrollments(\n      student_id, course_id, package_type, total_sessions, start_date, status,\n      class_type, age_group\n    )\n    values (\n      v_student_id, v_course_id, 'sessions',\n      v_request.total_sessions, current_date, 'active',\n      coalesce(v_request.class_type, 'normal'),\n      coalesce(v_request.age_group, 'adult')\n    );\n\n    v_count := v_count + 1;\n  end loop;\n\n  update gym20.public_registration_requests\n     set status = 'converted',\n         converted_student_id = v_student_id,\n         converted_at = now(),\n         converted_by = v_owner_id\n   where id = p_request_id;\n\n  return query select v_student_id, v_count;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.create_student_public_link(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.create_student_public_link(p_student_id uuid)\n RETURNS text\n LANGUAGE plpgsql\n SET search_path TO 'pg_catalog', 'gym20', 'auth'\nAS $function$\ndeclare\n  v_code text;\nbegin\n  if not exists (\n    select 1 from gym20.profiles p\n    where p.id = (select auth.uid())\n      and p.role = 'owner'\n      and p.is_active = true\n  ) then\n    raise exception 'دسترسی مدیر فعال نیست.';\n  end if;\n\n  if not exists (select 1 from gym20.students s where s.id = p_student_id) then\n    raise exception 'هنرجو پیدا نشد.';\n  end if;\n\n  insert into gym20.student_public_links(student_id, code)\n  values (p_student_id, substr(md5(gen_random_uuid()::text || clock_timestamp()::text), 1, 12))\n  on conflict (student_id) do update\n    set code = excluded.code, updated_at = now()\n  returning code into v_code;\n\n  return v_code;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.create_student_term(uuid,text,date,date,integer,integer,text,text,uuid[])",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.create_student_term(p_student_id uuid, p_term_name text, p_start_date date, p_end_date date, p_total_sessions integer, p_duration_minutes integer, p_default_venue text, p_schedule_mode text, p_enrollment_ids uuid[])\n RETURNS TABLE(term_id uuid, draft_version_id uuid)\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare\n  v_term_id uuid;\n  v_version_id uuid;\n  v_count integer;\nbegin\n  if (select auth.uid()) is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode = '42501';\n  end if;\n\n  if p_student_id is null or not exists (\n    select 1 from gym20.students s where s.id = p_student_id and s.is_active = true\n  ) then\n    raise exception 'هنرجوی فعال پیدا نشد.';\n  end if;\n\n  if p_term_name is null or char_length(btrim(p_term_name)) not between 1 and 100 then\n    raise exception 'نام ترم معتبر نیست.';\n  end if;\n\n  if p_total_sessions is null or p_total_sessions < 1 or p_total_sessions > 100 then\n    raise exception 'تعداد جلسات معتبر نیست.';\n  end if;\n\n  if p_duration_minutes not in (60,90) then\n    raise exception 'مدت جلسه باید ۶۰ یا ۹۰ دقیقه باشد.';\n  end if;\n\n  if p_schedule_mode not in ('weekly','manual') then\n    raise exception 'روش برنامه‌ریزی معتبر نیست.';\n  end if;\n\n  if p_end_date is not null and p_start_date is not null and p_end_date < p_start_date then\n    raise exception 'تاریخ پایان ترم نمی‌تواند قبل از شروع باشد.';\n  end if;\n\n  if coalesce(cardinality(p_enrollment_ids),0) = 0 then\n    raise exception 'حداقل یک سبک/ثبت‌نام را انتخاب کنید.';\n  end if;\n\n  select count(distinct x) into v_count from unnest(p_enrollment_ids) x;\n  if v_count <> cardinality(p_enrollment_ids) then\n    raise exception 'یک ثبت‌نام را بیش از یک بار انتخاب کرده‌اید.';\n  end if;\n\n  if exists (\n    select 1\n    from unnest(p_enrollment_ids) x\n    left join gym20.enrollments e on e.id = x\n    where e.id is null or e.student_id <> p_student_id or e.status not in ('active','paused')\n  ) then\n    raise exception 'یکی از سبک‌های انتخاب‌شده متعلق به این هنرجو نیست یا ثبت‌نام فعال ندارد.';\n  end if;\n\n  insert into gym20.student_terms(\n    student_id, term_name, start_date, end_date, total_sessions,\n    duration_minutes, default_venue, schedule_mode, created_by\n  )\n  values (\n    p_student_id, btrim(p_term_name), p_start_date, p_end_date, p_total_sessions,\n    p_duration_minutes, nullif(btrim(coalesce(p_default_venue,'')), ''),\n    p_schedule_mode, (select auth.uid())\n  )\n  returning id into v_term_id;\n\n  insert into gym20.term_enrollments(term_id, enrollment_id)\n  select v_term_id, x from unnest(p_enrollment_ids) x;\n\n  insert into gym20.term_schedule_versions(term_id, version_number, status, created_by)\n  values (v_term_id, 1, 'draft', (select auth.uid()))\n  returning id into v_version_id;\n\n  return query select v_term_id, v_version_id;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.create_term_draft_from_published(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.create_term_draft_from_published(p_term_id uuid)\n RETURNS uuid\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare v_published_id uuid; v_draft_id uuid; v_next_version integer; v_old record; v_new_session_id uuid;\nbegin\n  if (select auth.uid()) is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode='42501';\n  end if;\n  perform 1 from gym20.student_terms where id=p_term_id for update;\n  if not found then raise exception 'ترم پیدا نشد.'; end if;\n  select id into v_draft_id from gym20.term_schedule_versions where term_id=p_term_id and status='draft' limit 1;\n  if v_draft_id is not null then return v_draft_id; end if;\n  select published_version_id into v_published_id from gym20.student_terms where id=p_term_id;\n  select coalesce(max(version_number),0)+1 into v_next_version from gym20.term_schedule_versions where term_id=p_term_id;\n  insert into gym20.term_schedule_versions(term_id,version_number,status,created_by)\n  values(p_term_id,v_next_version,'draft',(select auth.uid())) returning id into v_draft_id;\n  if v_published_id is not null then\n    for v_old in select * from gym20.class_sessions where schedule_version_id=v_published_id order by session_number loop\n      insert into gym20.class_sessions(course_id,enrollment_id,term_id,schedule_version_id,session_number,starts_at,ends_at,venue,notes,coach_name,status,created_by)\n      values(v_old.course_id,v_old.enrollment_id,v_old.term_id,v_draft_id,v_old.session_number,v_old.starts_at,v_old.ends_at,v_old.venue,v_old.notes,v_old.coach_name,'scheduled',(select auth.uid()))\n      returning id into v_new_session_id;\n      insert into gym20.class_session_styles(session_id,enrollment_id)\n      select v_new_session_id,css.enrollment_id from gym20.class_session_styles css where css.session_id=v_old.id\n      on conflict do nothing;\n      if not exists(select 1 from gym20.class_session_styles where session_id=v_new_session_id) and v_old.enrollment_id is not null then\n        insert into gym20.class_session_styles(session_id,enrollment_id) values(v_new_session_id,v_old.enrollment_id);\n      end if;\n    end loop;\n  end if;\n  return v_draft_id;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.create_term_edit_draft(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.create_term_edit_draft(p_term_id uuid)\n RETURNS uuid\n LANGUAGE sql\n SET search_path TO ''\nAS $function$\n  select gym20.create_term_draft_from_published(p_term_id);\n$function$\n"
+    },
+    {
+      "identity": "gym20.get_student_exercises_by_code(text)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.get_student_exercises_by_code(p_code text)\n RETURNS jsonb\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select coalesce(jsonb_agg(jsonb_build_object(\n    'id',e.id,'title',e.title,'is_completed',e.is_completed,\n    'completed_at',e.completed_at,'created_at',e.created_at\n  ) order by e.created_at),'[]'::jsonb)\n  from gym20.student_exercises e\n  join gym20.student_public_links l on l.student_id=e.student_id\n  where l.code=p_code and p_code ~ '^[0-9a-f]{12}$';\n$function$\n"
+    },
+    {
+      "identity": "gym20.get_student_public_link(uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.get_student_public_link(p_student_id uuid)\n RETURNS text\n LANGUAGE sql\n STABLE\n SET search_path TO 'pg_catalog', 'gym20', 'auth'\nAS $function$\n  select l.code\n  from gym20.student_public_links l\n  where l.student_id = p_student_id\n    and exists (\n      select 1 from gym20.profiles p\n      where p.id = (select auth.uid())\n        and p.role = 'owner'\n        and p.is_active = true\n    );\n$function$\n"
+    },
+    {
+      "identity": "gym20.get_student_public_schedule_by_code(text)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.get_student_public_schedule_by_code(p_code text)\n RETURNS jsonb\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  with target as (\n    select l.student_id, s.full_name\n    from gym20.student_public_links l\n    join gym20.students s on s.id = l.student_id\n    where l.code = p_code and p_code ~ '^[0-9a-f]{12}$'\n    limit 1\n  ),\n  term_rows as (\n    select t.id,t.term_name,t.term_order,t.start_date,t.end_date,\n      coalesce((\n        select jsonb_agg(jsonb_build_object(\n          'id',cs.id,'session_number',cs.session_number,'starts_at',cs.starts_at,\n          'ends_at',cs.ends_at,'coach_name',cs.coach_name,'venue',cs.venue,\n          'notes',cs.notes,'attendance',coalesce(a.status,'pending')\n        ) order by cs.starts_at,cs.session_number)\n        from gym20.class_sessions cs\n        left join lateral (\n          select at.status from gym20.attendance at\n          where at.session_id=cs.id and at.student_id=(select student_id from target)\n          order by at.created_at desc limit 1\n        ) a on true\n        where cs.schedule_version_id=t.published_version_id\n      ),'[]'::jsonb) as sessions\n    from gym20.student_terms t\n    join gym20.term_schedule_versions v on v.id=t.published_version_id and v.term_id=t.id and v.status='published'\n    where t.student_id=(select student_id from target)\n  )\n  select case when exists(select 1 from target) then\n    jsonb_build_object(\n      'student',(select jsonb_build_object('full_name',full_name) from target),\n      'terms',coalesce((select jsonb_agg(jsonb_build_object(\n        'id',id,'term_name',term_name,'term_order',term_order,'start_date',start_date,\n        'end_date',end_date,'sessions',sessions\n      ) order by term_order nulls last,start_date desc nulls last) from term_rows),'[]'::jsonb)\n    )\n  else null end;\n$function$\n"
+    },
+    {
+      "identity": "gym20.is_active_owner()",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.is_active_owner()\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select exists (\n    select 1 from gym20.profiles p\n    where p.id = (select auth.uid())\n      and p.role = 'owner'\n      and p.is_active = true\n  );\n$function$\n"
+    },
+    {
+      "identity": "gym20.public_registration_courses()",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.public_registration_courses()\n RETURNS TABLE(id uuid, name text, description text, class_type text)\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select c.id, c.name, c.description, c.class_type\n  from gym20.courses as c\n  where c.is_active = true\n  order by c.name;\n$function$\n"
+    },
+    {
+      "identity": "gym20.publish_term_schedule(uuid,uuid)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.publish_term_schedule(p_term_id uuid, p_version_id uuid)\n RETURNS void\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare v_total integer; v_status text; v_count integer;\nbegin\n  if (select auth.uid()) is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode='42501';\n  end if;\n  select t.total_sessions,v.status into v_total,v_status\n  from gym20.student_terms t join gym20.term_schedule_versions v on v.term_id=t.id\n  where t.id=p_term_id and v.id=p_version_id for update of t,v;\n  if v_status is null or v_status<>'draft' then raise exception 'نسخه انتخاب‌شده پیش‌نویس قابل انتشار نیست.'; end if;\n  select count(*) into v_count from gym20.class_sessions where schedule_version_id=p_version_id;\n  if v_count<>v_total then raise exception 'تعداد جلسات برنامه باید دقیقاً برابر تعداد جلسات کل ترم باشد.'; end if;\n  if exists (\n    select 1 from gym20.class_sessions cs\n    where cs.schedule_version_id=p_version_id\n      and not exists(select 1 from gym20.class_session_styles css where css.session_id=cs.id)\n  ) then raise exception 'برای هر جلسه حداقل یک سبک باید انتخاب شود.'; end if;\n  if exists (\n    select 1 from gym20.term_enrollments te\n    where te.term_id=p_term_id and not exists (\n      select 1 from gym20.class_sessions cs\n      join gym20.class_session_styles css on css.session_id=cs.id\n      where cs.schedule_version_id=p_version_id and css.enrollment_id=te.enrollment_id\n    )\n  ) then raise exception 'برای تمام سبک‌های انتخاب‌شده حداقل یک جلسه باید برنامه‌ریزی شود.'; end if;\n  update gym20.term_schedule_versions set status='superseded'\n   where term_id=p_term_id and status='published';\n  update gym20.term_schedule_versions set status='published',published_at=now() where id=p_version_id;\n  update gym20.student_terms set published_version_id=p_version_id,updated_at=now() where id=p_term_id;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.replace_term_draft_sessions(uuid,jsonb)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.replace_term_draft_sessions(p_version_id uuid, p_sessions jsonb)\n RETURNS integer\n LANGUAGE plpgsql\n SET search_path TO ''\nAS $function$\ndeclare\n  v_term_id uuid;\n  v_total integer;\n  v_duration integer;\n  v_student_id uuid;\n  v_inserted integer := 0;\n  v_session_id uuid;\n  v_session_rec record;\n  v_course_id uuid;\n  v_enrollment_id uuid;\nbegin\n  if (select auth.uid()) is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode = '42501';\n  end if;\n  if p_sessions is null or jsonb_typeof(p_sessions) <> 'array' then\n    raise exception 'فهرست جلسات معتبر نیست.';\n  end if;\n  select t.id,t.total_sessions,t.duration_minutes,t.student_id\n    into v_term_id,v_total,v_duration,v_student_id\n  from gym20.term_schedule_versions v\n  join gym20.student_terms t on t.id=v.term_id\n  where v.id=p_version_id and v.status='draft'\n  for update of v,t;\n  if v_term_id is null then raise exception 'نسخه پیش‌نویس پیدا نشد یا قبلاً منتشر شده است.'; end if;\n  if exists (\n    select 1 from gym20.class_sessions cs join gym20.attendance a on a.session_id=cs.id\n    where cs.schedule_version_id=p_version_id\n  ) then raise exception 'برای این پیش‌نویس حضور و غیاب ثبت شده است؛ ویرایش مستقیم مجاز نیست.'; end if;\n  if jsonb_array_length(p_sessions) <> v_total then\n    raise exception 'تعداد جلسات باید دقیقاً برابر تعداد کل جلسات ترم باشد؛ تعداد سبک‌ها در این عدد ضرب نمی‌شود.';\n  end if;\n  if exists (\n    select 1 from jsonb_to_recordset(p_sessions) as session_row(\n      session_number integer, starts_at timestamptz, ends_at timestamptz,\n      venue text, notes text, coach_name text, enrollment_ids uuid[]\n    )\n    where session_row.session_number is null or session_row.session_number < 1 or session_row.session_number > v_total\n       or session_row.starts_at is null or session_row.ends_at is null or session_row.ends_at <= session_row.starts_at\n       or extract(epoch from (session_row.ends_at-session_row.starts_at)) <> v_duration*60\n       or char_length(coalesce(session_row.venue,''))>250 or char_length(coalesce(session_row.notes,''))>1000\n       or coalesce(cardinality(session_row.enrollment_ids),0)=0\n  ) then raise exception 'اطلاعات یکی از جلسات ناقص یا نامعتبر است؛ برای هر جلسه حداقل یک سبک انتخاب کنید.'; end if;\n  if exists (\n    select 1 from jsonb_to_recordset(p_sessions) as session_row(\n      session_number integer, starts_at timestamptz, ends_at timestamptz,\n      venue text, notes text, coach_name text, enrollment_ids uuid[]\n    ) group by session_row.session_number having count(*)>1\n  ) then raise exception 'شماره جلسه تکراری است.'; end if;\n  if (select count(distinct session_row.session_number) from jsonb_to_recordset(p_sessions) as session_row(\n      session_number integer, starts_at timestamptz, ends_at timestamptz,\n      venue text, notes text, coach_name text, enrollment_ids uuid[]\n    )) <> v_total then raise exception 'شماره جلسات باید از ۱ تا تعداد کل جلسات ترم کامل باشد.'; end if;\n  if exists (\n    select 1\n    from jsonb_to_recordset(p_sessions) as session_row(\n      session_number integer, starts_at timestamptz, ends_at timestamptz,\n      venue text, notes text, coach_name text, enrollment_ids uuid[]\n    )\n    cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)\n    left join gym20.term_enrollments te on te.term_id=v_term_id and te.enrollment_id=ids.enrollment_id\n    where te.enrollment_id is null\n  ) then raise exception 'یکی از سبک‌های جلسه جزو سبک‌های انتخاب‌شده این ترم نیست.'; end if;\n  if exists (\n    select 1 from jsonb_to_recordset(p_sessions) as session_row(\n      session_number integer, starts_at timestamptz, ends_at timestamptz,\n      venue text, notes text, coach_name text, enrollment_ids uuid[]\n    ) cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)\n    group by session_row.session_number,ids.enrollment_id having count(*)>1\n  ) then raise exception 'یک سبک در یک جلسه دوبار انتخاب شده است.'; end if;\n  if exists (\n    select 1 from gym20.term_enrollments te\n    where te.term_id=v_term_id and not exists (\n      select 1 from jsonb_to_recordset(p_sessions) as session_row(\n        session_number integer, starts_at timestamptz, ends_at timestamptz,\n        venue text, notes text, coach_name text, enrollment_ids uuid[]\n      ) cross join lateral unnest(session_row.enrollment_ids) as ids(enrollment_id)\n      where ids.enrollment_id=te.enrollment_id\n    )\n  ) then raise exception 'برای همه سبک‌های انتخاب‌شده باید حداقل یک جلسه اختصاص داده شود.'; end if;\n\n  delete from gym20.class_sessions where schedule_version_id=p_version_id;\n  for v_session_rec in select * from jsonb_to_recordset(p_sessions) as session_row(\n    session_number integer, starts_at timestamptz, ends_at timestamptz,\n    venue text, notes text, coach_name text, enrollment_ids uuid[]\n  ) order by session_number\n  loop\n    v_enrollment_id := v_session_rec.enrollment_ids[1];\n    select e.course_id into v_course_id from gym20.enrollments e where e.id=v_enrollment_id;\n    insert into gym20.class_sessions(\n      course_id,enrollment_id,term_id,schedule_version_id,session_number,\n      starts_at,ends_at,venue,notes,coach_name,status,created_by\n    ) values (\n      v_course_id,null,v_term_id,p_version_id,v_session_rec.session_number,\n      v_session_rec.starts_at,v_session_rec.ends_at,nullif(btrim(coalesce(v_session_rec.venue,'')),''),\n      nullif(btrim(coalesce(v_session_rec.notes,'')),''),nullif(btrim(coalesce(v_session_rec.coach_name,'')),''),'scheduled',(select auth.uid())\n    ) returning id into v_session_id;\n    insert into gym20.class_session_styles(session_id,enrollment_id)\n    select v_session_id,ids.enrollment_id from unnest(v_session_rec.enrollment_ids) ids(enrollment_id);\n    v_inserted:=v_inserted+1;\n  end loop;\n  return v_inserted;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.set_student_exercise_completion(text,uuid,boolean)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.set_student_exercise_completion(p_code text, p_exercise_id uuid, p_completed boolean)\n RETURNS boolean\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare v_student_id uuid; v_rows integer;\nbegin\n  if p_code is null or p_code !~ '^[0-9a-f]{12}$' then return false; end if;\n  select l.student_id into v_student_id from gym20.student_public_links l where l.code=p_code limit 1;\n  if v_student_id is null then return false; end if;\n  update gym20.student_exercises\n  set is_completed=coalesce(p_completed,false),\n      completed_at=case when coalesce(p_completed,false) then now() else null end\n  where id=p_exercise_id and student_id=v_student_id;\n  get diagnostics v_rows=row_count;\n  return v_rows=1;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.submit_public_registration(text,text,date,text,text[],text,text,integer,boolean)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.submit_public_registration(p_full_name text, p_phone text, p_birth_date date, p_notes text, p_selected_styles text[], p_age_group text, p_class_type text, p_total_sessions integer, p_payment_confirmed boolean)\n RETURNS uuid\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\ndeclare\n  v_id uuid;\n  v_styles text[];\nbegin\n  if p_full_name is null or char_length(btrim(p_full_name)) < 2\n     or char_length(btrim(p_full_name)) > 120 then\n    raise exception 'نام و نام خانوادگی معتبر وارد کنید.';\n  end if;\n\n  if p_phone is null\n     or char_length(regexp_replace(p_phone, '[^0-9+]', '', 'g')) < 8\n     or char_length(regexp_replace(p_phone, '[^0-9+]', '', 'g')) > 16 then\n    raise exception 'شماره تلفن معتبر وارد کنید.';\n  end if;\n\n  if p_notes is not null and char_length(p_notes) > 1000 then\n    raise exception 'توضیحات بیش از حد طولانی است.';\n  end if;\n\n  if p_birth_date is not null and (p_birth_date > current_date or p_birth_date < date '1900-01-01') then\n    raise exception 'تاریخ تولد معتبر نیست.';\n  end if;\n\n  if p_selected_styles is null\n     or cardinality(p_selected_styles) < 1\n     or cardinality(p_selected_styles) > 20 then\n    raise exception 'حداقل یک سبک معتبر انتخاب کنید.';\n  end if;\n\n  if exists (\n    select 1\n    from unnest(p_selected_styles) as t(style_name)\n    where style_name is null\n       or char_length(btrim(style_name)) < 1\n       or char_length(btrim(style_name)) > 80\n  ) then\n    raise exception 'نام یکی از سبک‌های انتخاب‌شده معتبر نیست.';\n  end if;\n\n  if p_age_group is null or p_age_group not in ('adult', 'kids') then\n    raise exception 'رده سنی معتبر نیست.';\n  end if;\n\n  if p_class_type is null or p_class_type not in ('normal', 'semi', 'private', 'vip') then\n    raise exception 'نوع کلاس معتبر نیست.';\n  end if;\n\n  if p_total_sessions is null or p_total_sessions not in (8, 10, 12) then\n    raise exception 'تعداد جلسات معتبر نیست.';\n  end if;\n\n  if p_payment_confirmed is distinct from true then\n    raise exception 'ابتدا پرداخت شهریه را تأیید کنید.';\n  end if;\n\n  select array_agg(btrim(style_name) order by ord)\n    into v_styles\n  from unnest(p_selected_styles) with ordinality as t(style_name, ord);\n\n  insert into gym20.public_registration_requests\n    (full_name, phone, birth_date, notes, course_id, selected_styles, age_group,\n     class_type, total_sessions, package_type, payment_confirmed)\n  values\n    (btrim(p_full_name),\n     regexp_replace(btrim(p_phone), '[[:space:]]+', '', 'g'),\n     p_birth_date,\n     nullif(btrim(coalesce(p_notes, '')), ''),\n     null,\n     v_styles,\n     p_age_group,\n     p_class_type,\n     p_total_sessions,\n     'sessions',\n     true)\n  returning id into v_id;\n\n  return v_id;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.update_registration_request_status(uuid,text)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.update_registration_request_status(p_request_id uuid, p_status text)\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO ''\nAS $function$\nbegin\n  if (select auth.uid()) is null or not (select gym20.is_active_owner()) then\n    raise exception 'اجازه انجام این عملیات را ندارید.' using errcode = '42501';\n  end if;\n\n  if p_status not in ('pending','approved','rejected') then\n    raise exception 'وضعیت انتخاب‌شده معتبر نیست.';\n  end if;\n\n  update gym20.public_registration_requests\n     set status = p_status\n   where id = p_request_id\n     and converted_student_id is null\n     and status <> 'converted';\n\n  if not found then\n    raise exception 'درخواست پیدا نشد یا قبلاً به هنرجو تبدیل شده است.';\n  end if;\nend;\n$function$\n"
+    },
+    {
+      "identity": "gym20.verify_student_push_cron_secret(text)",
+      "definition": "CREATE OR REPLACE FUNCTION gym20.verify_student_push_cron_secret(p_secret text)\n RETURNS boolean\n LANGUAGE sql\n STABLE SECURITY DEFINER\n SET search_path TO ''\nAS $function$\n  select coalesce(\n    p_secret is not null\n    and p_secret = (\n      select ds.decrypted_secret\n      from vault.decrypted_secrets ds\n      where ds.name = 'gym20_student_push_cron_secret'\n      limit 1\n    ),\n    false\n  );\n$function$\n"
+    }
+  ],
+  "policies": [
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "attendance",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "class_session_styles",
+      "permissive": "PERMISSIVE",
+      "policyname": "class_session_styles_owner_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "class_sessions",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "courses",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "enrollments",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "payments",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "profiles",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "DELETE",
+      "qual": "(( SELECT gym20.is_active_owner() AS is_active_owner) AND (converted_student_id IS NULL))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "public_registration_requests",
+      "permissive": "PERMISSIVE",
+      "policyname": "registration_requests_owner_delete_unconverted",
+      "schemaname": "gym20",
+      "with_check": null
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "public_registration_requests",
+      "permissive": "PERMISSIVE",
+      "policyname": "registration_requests_owner_select",
+      "schemaname": "gym20",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "gym20.is_active_owner()",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "site_settings",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "gym20.is_active_owner()"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(key = 'public_site_config'::text)",
+      "roles": [
+        "anon"
+      ],
+      "tablename": "site_settings",
+      "permissive": "PERMISSIVE",
+      "policyname": "public_read_site_config",
+      "schemaname": "gym20",
+      "with_check": null
+    },
+    {
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_exercises",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_exercises_owner_all",
+      "schemaname": "gym20",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_payments",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_payments_owner_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "INSERT",
+      "qual": null,
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_public_links",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_public_links_owner_insert",
+      "schemaname": "gym20",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))"
+    },
+    {
+      "cmd": "SELECT",
+      "qual": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_public_links",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_public_links_owner_select",
+      "schemaname": "gym20",
+      "with_check": null
+    },
+    {
+      "cmd": "UPDATE",
+      "qual": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_public_links",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_public_links_owner_update",
+      "schemaname": "gym20",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM gym20.profiles p\n  WHERE ((p.id = ( SELECT auth.uid() AS uid)) AND (p.role = 'owner'::text) AND (p.is_active = true))))"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "service_role"
+      ],
+      "tablename": "student_push_deliveries",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_push_service_only",
+      "schemaname": "gym20",
+      "with_check": "true"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "service_role"
+      ],
+      "tablename": "student_push_subscriptions",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_push_service_only",
+      "schemaname": "gym20",
+      "with_check": "true"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "true",
+      "roles": [
+        "service_role"
+      ],
+      "tablename": "student_push_vapid",
+      "permissive": "PERMISSIVE",
+      "policyname": "student_push_service_only",
+      "schemaname": "gym20",
+      "with_check": "true"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "gym20.is_active_owner()",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "student_terms",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "gym20.is_active_owner()"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "( SELECT gym20.is_active_owner() AS is_active_owner)",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "students",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "( SELECT gym20.is_active_owner() AS is_active_owner)"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "gym20.is_active_owner()",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "term_enrollments",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "gym20.is_active_owner()"
+    },
+    {
+      "cmd": "ALL",
+      "qual": "gym20.is_active_owner()",
+      "roles": [
+        "authenticated"
+      ],
+      "tablename": "term_schedule_versions",
+      "permissive": "PERMISSIVE",
+      "policyname": "owner_manage_all",
+      "schemaname": "gym20",
+      "with_check": "gym20.is_active_owner()"
+    }
+  ],
+  "indexes": [
+    {
+      "table": "attendance",
+      "name": "attendance_pkey",
+      "definition": "CREATE UNIQUE INDEX attendance_pkey ON gym20.attendance USING btree (id)"
+    },
+    {
+      "table": "attendance",
+      "name": "attendance_session_student_key",
+      "definition": "CREATE UNIQUE INDEX attendance_session_student_key ON gym20.attendance USING btree (session_id, student_id)"
+    },
+    {
+      "table": "attendance",
+      "name": "idx_gym20_attendance_confirmed_by",
+      "definition": "CREATE INDEX idx_gym20_attendance_confirmed_by ON gym20.attendance USING btree (confirmed_by)"
+    },
+    {
+      "table": "attendance",
+      "name": "idx_gym20_attendance_enrollment_id",
+      "definition": "CREATE INDEX idx_gym20_attendance_enrollment_id ON gym20.attendance USING btree (enrollment_id)"
+    },
+    {
+      "table": "attendance",
+      "name": "idx_gym20_attendance_student_id",
+      "definition": "CREATE INDEX idx_gym20_attendance_student_id ON gym20.attendance USING btree (student_id)"
+    },
+    {
+      "table": "class_session_styles",
+      "name": "class_session_styles_pkey",
+      "definition": "CREATE UNIQUE INDEX class_session_styles_pkey ON gym20.class_session_styles USING btree (session_id, enrollment_id)"
+    },
+    {
+      "table": "class_session_styles",
+      "name": "idx_gym20_class_session_styles_enrollment_id",
+      "definition": "CREATE INDEX idx_gym20_class_session_styles_enrollment_id ON gym20.class_session_styles USING btree (enrollment_id)"
+    },
+    {
+      "table": "class_sessions",
+      "name": "class_sessions_pkey",
+      "definition": "CREATE UNIQUE INDEX class_sessions_pkey ON gym20.class_sessions USING btree (id)"
+    },
+    {
+      "table": "class_sessions",
+      "name": "class_sessions_term_version_start_idx",
+      "definition": "CREATE INDEX class_sessions_term_version_start_idx ON gym20.class_sessions USING btree (term_id, schedule_version_id, starts_at)"
+    },
+    {
+      "table": "class_sessions",
+      "name": "class_sessions_version_enrollment_number_key",
+      "definition": "CREATE UNIQUE INDEX class_sessions_version_enrollment_number_key ON gym20.class_sessions USING btree (schedule_version_id, enrollment_id, session_number) WHERE ((schedule_version_id IS NOT NULL) AND (enrollment_id IS NOT NULL) AND (session_number IS NOT NULL))"
+    },
+    {
+      "table": "class_sessions",
+      "name": "idx_gym20_class_sessions_course_id",
+      "definition": "CREATE INDEX idx_gym20_class_sessions_course_id ON gym20.class_sessions USING btree (course_id)"
+    },
+    {
+      "table": "class_sessions",
+      "name": "idx_gym20_class_sessions_created_by",
+      "definition": "CREATE INDEX idx_gym20_class_sessions_created_by ON gym20.class_sessions USING btree (created_by)"
+    },
+    {
+      "table": "class_sessions",
+      "name": "idx_gym20_class_sessions_enrollment_id",
+      "definition": "CREATE INDEX idx_gym20_class_sessions_enrollment_id ON gym20.class_sessions USING btree (enrollment_id)"
+    },
+    {
+      "table": "courses",
+      "name": "courses_name_key",
+      "definition": "CREATE UNIQUE INDEX courses_name_key ON gym20.courses USING btree (name)"
+    },
+    {
+      "table": "courses",
+      "name": "courses_pkey",
+      "definition": "CREATE UNIQUE INDEX courses_pkey ON gym20.courses USING btree (id)"
+    },
+    {
+      "table": "enrollments",
+      "name": "enrollments_pkey",
+      "definition": "CREATE UNIQUE INDEX enrollments_pkey ON gym20.enrollments USING btree (id)"
+    },
+    {
+      "table": "enrollments",
+      "name": "idx_gym20_enrollments_course_id",
+      "definition": "CREATE INDEX idx_gym20_enrollments_course_id ON gym20.enrollments USING btree (course_id)"
+    },
+    {
+      "table": "enrollments",
+      "name": "idx_gym20_enrollments_student_id",
+      "definition": "CREATE INDEX idx_gym20_enrollments_student_id ON gym20.enrollments USING btree (student_id)"
+    },
+    {
+      "table": "payments",
+      "name": "idx_gym20_payments_created_by",
+      "definition": "CREATE INDEX idx_gym20_payments_created_by ON gym20.payments USING btree (created_by)"
+    },
+    {
+      "table": "payments",
+      "name": "idx_gym20_payments_enrollment_id",
+      "definition": "CREATE INDEX idx_gym20_payments_enrollment_id ON gym20.payments USING btree (enrollment_id)"
+    },
+    {
+      "table": "payments",
+      "name": "idx_gym20_payments_student_id",
+      "definition": "CREATE INDEX idx_gym20_payments_student_id ON gym20.payments USING btree (student_id)"
+    },
+    {
+      "table": "payments",
+      "name": "payments_pkey",
+      "definition": "CREATE UNIQUE INDEX payments_pkey ON gym20.payments USING btree (id)"
+    },
+    {
+      "table": "profiles",
+      "name": "profiles_pkey",
+      "definition": "CREATE UNIQUE INDEX profiles_pkey ON gym20.profiles USING btree (id)"
+    },
+    {
+      "table": "public_registration_requests",
+      "name": "idx_gym20_registration_requests_converted_by",
+      "definition": "CREATE INDEX idx_gym20_registration_requests_converted_by ON gym20.public_registration_requests USING btree (converted_by)"
+    },
+    {
+      "table": "public_registration_requests",
+      "name": "idx_gym20_registration_requests_course_id",
+      "definition": "CREATE INDEX idx_gym20_registration_requests_course_id ON gym20.public_registration_requests USING btree (course_id)"
+    },
+    {
+      "table": "public_registration_requests",
+      "name": "public_registration_requests_converted_student_uidx",
+      "definition": "CREATE UNIQUE INDEX public_registration_requests_converted_student_uidx ON gym20.public_registration_requests USING btree (converted_student_id) WHERE (converted_student_id IS NOT NULL)"
+    },
+    {
+      "table": "public_registration_requests",
+      "name": "public_registration_requests_pkey",
+      "definition": "CREATE UNIQUE INDEX public_registration_requests_pkey ON gym20.public_registration_requests USING btree (id)"
+    },
+    {
+      "table": "site_settings",
+      "name": "idx_gym20_site_settings_updated_by",
+      "definition": "CREATE INDEX idx_gym20_site_settings_updated_by ON gym20.site_settings USING btree (updated_by)"
+    },
+    {
+      "table": "site_settings",
+      "name": "site_settings_pkey",
+      "definition": "CREATE UNIQUE INDEX site_settings_pkey ON gym20.site_settings USING btree (key)"
+    },
+    {
+      "table": "student_exercises",
+      "name": "student_exercises_pkey",
+      "definition": "CREATE UNIQUE INDEX student_exercises_pkey ON gym20.student_exercises USING btree (id)"
+    },
+    {
+      "table": "student_exercises",
+      "name": "student_exercises_student_created_idx",
+      "definition": "CREATE INDEX student_exercises_student_created_idx ON gym20.student_exercises USING btree (student_id, created_at)"
+    },
+    {
+      "table": "student_payments",
+      "name": "idx_gym20_student_payments_created_by",
+      "definition": "CREATE INDEX idx_gym20_student_payments_created_by ON gym20.student_payments USING btree (created_by)"
+    },
+    {
+      "table": "student_payments",
+      "name": "student_payments_paid_at_idx",
+      "definition": "CREATE INDEX student_payments_paid_at_idx ON gym20.student_payments USING btree (paid_at DESC)"
+    },
+    {
+      "table": "student_payments",
+      "name": "student_payments_pkey",
+      "definition": "CREATE UNIQUE INDEX student_payments_pkey ON gym20.student_payments USING btree (id)"
+    },
+    {
+      "table": "student_payments",
+      "name": "student_payments_student_paid_at_idx",
+      "definition": "CREATE INDEX student_payments_student_paid_at_idx ON gym20.student_payments USING btree (student_id, paid_at DESC)"
+    },
+    {
+      "table": "student_public_links",
+      "name": "student_public_links_code_key",
+      "definition": "CREATE UNIQUE INDEX student_public_links_code_key ON gym20.student_public_links USING btree (code)"
+    },
+    {
+      "table": "student_public_links",
+      "name": "student_public_links_pkey",
+      "definition": "CREATE UNIQUE INDEX student_public_links_pkey ON gym20.student_public_links USING btree (student_id)"
+    },
+    {
+      "table": "student_push_deliveries",
+      "name": "idx_gym20_student_push_deliveries_session_id",
+      "definition": "CREATE INDEX idx_gym20_student_push_deliveries_session_id ON gym20.student_push_deliveries USING btree (session_id)"
+    },
+    {
+      "table": "student_push_deliveries",
+      "name": "student_push_deliveries_pkey",
+      "definition": "CREATE UNIQUE INDEX student_push_deliveries_pkey ON gym20.student_push_deliveries USING btree (id)"
+    },
+    {
+      "table": "student_push_deliveries",
+      "name": "student_push_deliveries_student_id_session_id_reminder_kind_key",
+      "definition": "CREATE UNIQUE INDEX student_push_deliveries_student_id_session_id_reminder_kind_key ON gym20.student_push_deliveries USING btree (student_id, session_id, reminder_kind)"
+    },
+    {
+      "table": "student_push_subscriptions",
+      "name": "student_push_subscriptions_endpoint_key",
+      "definition": "CREATE UNIQUE INDEX student_push_subscriptions_endpoint_key ON gym20.student_push_subscriptions USING btree (endpoint)"
+    },
+    {
+      "table": "student_push_subscriptions",
+      "name": "student_push_subscriptions_pkey",
+      "definition": "CREATE UNIQUE INDEX student_push_subscriptions_pkey ON gym20.student_push_subscriptions USING btree (id)"
+    },
+    {
+      "table": "student_push_subscriptions",
+      "name": "student_push_subscriptions_student_active_idx",
+      "definition": "CREATE INDEX student_push_subscriptions_student_active_idx ON gym20.student_push_subscriptions USING btree (student_id, is_active)"
+    },
+    {
+      "table": "student_push_vapid",
+      "name": "student_push_vapid_pkey",
+      "definition": "CREATE UNIQUE INDEX student_push_vapid_pkey ON gym20.student_push_vapid USING btree (id)"
+    },
+    {
+      "table": "student_terms",
+      "name": "idx_gym20_student_terms_created_by",
+      "definition": "CREATE INDEX idx_gym20_student_terms_created_by ON gym20.student_terms USING btree (created_by)"
+    },
+    {
+      "table": "student_terms",
+      "name": "idx_gym20_student_terms_published_version_id",
+      "definition": "CREATE INDEX idx_gym20_student_terms_published_version_id ON gym20.student_terms USING btree (published_version_id)"
+    },
+    {
+      "table": "student_terms",
+      "name": "student_terms_pkey",
+      "definition": "CREATE UNIQUE INDEX student_terms_pkey ON gym20.student_terms USING btree (id)"
+    },
+    {
+      "table": "student_terms",
+      "name": "student_terms_student_created_idx",
+      "definition": "CREATE INDEX student_terms_student_created_idx ON gym20.student_terms USING btree (student_id, created_at DESC)"
+    },
+    {
+      "table": "student_terms",
+      "name": "student_terms_student_name_key",
+      "definition": "CREATE UNIQUE INDEX student_terms_student_name_key ON gym20.student_terms USING btree (student_id, term_name)"
+    },
+    {
+      "table": "students",
+      "name": "students_pkey",
+      "definition": "CREATE UNIQUE INDEX students_pkey ON gym20.students USING btree (id)"
+    },
+    {
+      "table": "term_enrollments",
+      "name": "term_enrollments_enrollment_idx",
+      "definition": "CREATE INDEX term_enrollments_enrollment_idx ON gym20.term_enrollments USING btree (enrollment_id)"
+    },
+    {
+      "table": "term_enrollments",
+      "name": "term_enrollments_pkey",
+      "definition": "CREATE UNIQUE INDEX term_enrollments_pkey ON gym20.term_enrollments USING btree (term_id, enrollment_id)"
+    },
+    {
+      "table": "term_schedule_versions",
+      "name": "idx_gym20_term_schedule_versions_created_by",
+      "definition": "CREATE INDEX idx_gym20_term_schedule_versions_created_by ON gym20.term_schedule_versions USING btree (created_by)"
+    },
+    {
+      "table": "term_schedule_versions",
+      "name": "term_schedule_one_draft_per_term",
+      "definition": "CREATE UNIQUE INDEX term_schedule_one_draft_per_term ON gym20.term_schedule_versions USING btree (term_id) WHERE (status = 'draft'::text)"
+    },
+    {
+      "table": "term_schedule_versions",
+      "name": "term_schedule_versions_pkey",
+      "definition": "CREATE UNIQUE INDEX term_schedule_versions_pkey ON gym20.term_schedule_versions USING btree (id)"
+    },
+    {
+      "table": "term_schedule_versions",
+      "name": "term_schedule_versions_term_id_version_number_key",
+      "definition": "CREATE UNIQUE INDEX term_schedule_versions_term_id_version_number_key ON gym20.term_schedule_versions USING btree (term_id, version_number)"
+    },
+    {
+      "table": "term_schedule_versions",
+      "name": "term_schedule_versions_term_idx",
+      "definition": "CREATE INDEX term_schedule_versions_term_idx ON gym20.term_schedule_versions USING btree (term_id, version_number DESC)"
+    }
+  ],
+  "note": "Read-only schema metadata snapshot. Does not include table row contents, auth.users, Storage objects, secrets, or full PostgreSQL DDL dump."
+}
