@@ -121,13 +121,12 @@
   function focusFrom(index){
     for(let i=index;i<stepIds.length;i++)if(focusStep(stepIds[i],true))return;
   }
-  const originalSelect=window.gym20SelectRegion;
-  if(typeof originalSelect==='function'){
-    window.gym20SelectRegion=function(){
-      const result=originalSelect.apply(this,arguments);
-      setTimeout(()=>focusFrom(0),180);return result;
-    };
-  }
+  // Listen for the confirmed region-selection event emitted by the registration app.
+  // This avoids wrapping a global function and guarantees the guide starts only after the region is committed.
+  window.addEventListener('gym20:region-selected',()=>{
+    clear();
+    setTimeout(()=>focusFrom(0),220);
+  });
   // Start one 6-second grace period on the first selected style.
   // Further selections do not restart it; selecting every available style advances immediately.
   window.gym20GuidedFlowStyleSelected=function(){
