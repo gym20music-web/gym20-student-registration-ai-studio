@@ -1,0 +1,59 @@
+{
+  "snapshot": "GYM20-STUDENT-PANEL-BASELINE-2026-11-19",
+  "project_ref": "ubrafxjpnqtjnjdaskba",
+  "captured_at": "2026-11-19",
+  "functions": [
+    {
+      "slug": "telegram-channel-info",
+      "version": 2,
+      "sha256": "6d40d874d80571851344fdadcd918e807f53bb1f9454635aed014cb992b092ce",
+      "status": "ACTIVE",
+      "verify_jwt": true,
+      "source_path": "recovery-snapshot/edge-functions/telegram-channel-info/index.ts"
+    },
+    {
+      "slug": "student-push-cron",
+      "version": 6,
+      "sha256": "7c6c5cc8b9ae4369fc118aff0a7695c19b1b49e3a1418367428a6cea97f6395b",
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "source_path": "recovery-snapshot/edge-functions/student-push-cron/index.ts"
+    },
+    {
+      "slug": "telegram-notify",
+      "version": 3,
+      "sha256": "eb9a1861014aa5fb1d321cc655ea0c0df23333ed2259e71b43459031109b8e4e",
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "source_path": "recovery-snapshot/edge-functions/telegram-notify/index.ts"
+    },
+    {
+      "slug": "student-push-admin",
+      "version": 4,
+      "sha256": "669302eb0bfcc062282d4b7174db7eecd3acbb0ebb20c8e71e547d95cee9f45c",
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "source_path": "recovery-snapshot/edge-functions/student-push-admin/index.ts"
+    },
+    {
+      "slug": "student-push",
+      "version": 1,
+      "sha256": "4baf33c86e9dd8df3464dbe847580f21a9f2438dd118d9b2a8bab0d8dfd4a711",
+      "status": "ACTIVE",
+      "verify_jwt": false,
+      "source_path": "recovery-snapshot/edge-functions/student-push/index.ts"
+    }
+  ],
+  "database": {
+    "status": "ACTIVE_HEALTHY",
+    "migrations": 16,
+    "auth_users": 1,
+    "storage_buckets": 0,
+    "storage_objects": 0,
+    "gym20_routines": 16,
+    "gym20_triggers": 0,
+    "gym20_rls_policies": 23,
+    "gym20_indexes": 57
+  },
+  "note": "Deployed Edge Function source files captured separately from repository. This is not a database dump, Storage binary backup, Auth configuration export, or secret backup."
+}
