@@ -543,7 +543,11 @@
       await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
       const {data:{session},error}=await client.auth.getSession();
       if(error)throw error;
-      if(session)await enterAdminPanel();
+      const recoveryFlow=location.search.includes('recovery=1')||location.hash.includes('type=recovery');
+      if(recoveryFlow){
+        $('passwordRecoveryPanel').hidden=false;
+        loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
+      }else if(session)await enterAdminPanel();
     }catch(err){
       loginStatus(err.message||'بازیابی نشست ورود مدیر ناموفق بود.',true);
     }
