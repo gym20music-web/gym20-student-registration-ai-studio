@@ -24,12 +24,15 @@ async function getVapid() {
 async function sendStudent(studentId: string, message: string, tag: string) {
   const { data: subs, error } = await gym.from("student_push_subscriptions").select("id,endpoint,p256dh,auth").eq("student_id", studentId).eq("is_active", true);
   if (error) throw error;
+  const { data: studentLink, error: linkError } = await gym.from("student_public_links").select("code").eq("student_id", studentId).maybeSingle();
+  if (linkError) throw linkError;
+  const targetUrl = studentLink?.code ? "https://gym20.ir/s/" + studentLink.code : "https://gym20.ir/";
   let sent = 0, failed = 0;
   for (const sub of subs || []) {
     try {
       await webpush.sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-        JSON.stringify({ title: "آکادمی GYM20", body: message, tag, url: "https://gym20.ir/" }),
+        JSON.stringify({ title: "آکادمی GYM20", body: message, tag, url: targetUrl }),
         { TTL: 3600, urgency: "normal" }
       );
       sent++;
