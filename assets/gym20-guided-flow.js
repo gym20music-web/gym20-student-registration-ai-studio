@@ -56,7 +56,7 @@
     return !!(modal&&visible(modal));
   }
   function syncAdminVisibility(){
-    if(!adminIsOpen())return;
+    if(!adminIsOpen()){if(pop)pop.style.display='';return;}
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
     if(pop){pop.classList.remove('is-visible');pop.style.display='none';}
     activeTarget=null;
