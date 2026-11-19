@@ -12,12 +12,8 @@
   z-index:1205!important;transform:none!important;
 }
 #customRegionMenu.open{display:flex!important;flex-direction:column!important}
-#customRegionMenu:before{
-  content:"";position:absolute;z-index:2;pointer-events:none;left:9px;right:9px;top:50%;height:40px;transform:translateY(-50%);
-  border-top:1px solid rgba(222,190,116,.45);border-bottom:1px solid rgba(222,190,116,.45);
-  border-radius:11px;background:linear-gradient(90deg,rgba(214,179,90,.035),rgba(214,179,90,.13),rgba(214,179,90,.035));
-  box-shadow:inset 0 0 18px rgba(214,179,90,.045),0 0 16px rgba(214,179,90,.055);
-}
+/* Removed the stationary center marker; the active wheel row itself remains highlighted. */
+#customRegionMenu:before{content:none!important;display:none!important;}
 #customRegionMenu:after{
   content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;
   background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96));
