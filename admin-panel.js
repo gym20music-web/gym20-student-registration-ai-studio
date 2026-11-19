@@ -219,7 +219,8 @@
     document.querySelectorAll('.view,.admin-panel-tab').forEach(el=>el.classList.toggle('active',el.id===id));
     document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===''+id.replace(/^view-/,'') ));
     document.querySelectorAll('.admin-tab-btn').forEach(el=>el.classList.toggle('active',String(el.getAttribute('onclick')||'').includes("'"+id+"'")));
-    const meta=VIEW_META[id.replace(/^view-/,'')];
+    const metaKey=id==='studentTermsTab'?'students':id.replace(/^view-/,'');
+    const meta=VIEW_META[metaKey];
     if(meta){$('pageTitle').textContent=meta[0];$('pageSubtitle').textContent=meta[1];}
     if(id==='view-students')loadStudents();
     if(id==='view-exercises'&&window.gym20OwnerAuthorized)window.loadExerciseStudents?.();
