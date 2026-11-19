@@ -1080,7 +1080,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(!S.pushTemplatesLoaded)throw Error('تنظیمات اعلان هنوز بارگذاری نشده است؛ صفحه را تازه‌سازی کن و دوباره تلاش کن.');
       if(!first||!second)throw Error('متن هر دو یادآوری را وارد کن.');
       if(first.length>1000||second.length>1000)throw Error('حداکثر طول هر متن ۱۰۰۰ کاراکتر است.');
-      if(!Number.isInteger(firstHours)||firstHours<0||firstHours>168||!Number.isInteger(secondHours)||secondHours<0||secondHours>168)throw Error('زمان یادآوری باید بین صفر تا ۱۶۸ ساعت باشد.');
+      if(!Number.isInteger(firstHours)||firstHours<0||firstHours>24||!Number.isInteger(secondHours)||secondHours<0||secondHours>24)throw Error('زمان یادآوری باید بین صفر تا ۲۴ ساعت باشد.');
       if(firstHours>0&&secondHours>0&&firstHours===secondHours)throw Error('ساعت یادآوری اول و دوم باید متفاوت باشد.');
       if(firstHours>0&&secondHours>0&&firstHours<secondHours)throw Error('یادآوری اول باید زودتر از یادآوری دوم باشد؛ مثلاً ۶ و سپس ۲ ساعت.');
       const {data:{user},error:userError}=await gym20AdminClient.auth.getUser();if(userError)throw userError;
