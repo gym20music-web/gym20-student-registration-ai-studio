@@ -463,7 +463,7 @@
       if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
       const email=$('loginEmail').value.trim();
       if(!email)throw new Error('ابتدا ایمیل حساب مدیر را وارد کنید.');
-      const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://gym20.ir/admin.html?recovery=1'});
+      const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://gym20.ir/admin-login.html?recovery=1'});
       if(error)throw error;
       loginStatus('لینک بازیابی رمز عبور برای ایمیل حساب ارسال شد. لینک را روی همین دستگاه باز کنید.');
     }catch(err){loginStatus(err.message||'ارسال لینک بازیابی ناموفق بود.',true);}
