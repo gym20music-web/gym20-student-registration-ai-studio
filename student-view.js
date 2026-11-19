@@ -421,7 +421,7 @@
     panel.classList.remove('hide');
     try{
       const exerciseResult=shortCode
-        ?await client.schema('gym20').rpc('get_student_exercises_by_code',{p_code:shortCode})
+        ?await client.rpc('get_student_exercises_by_code',{p_code:shortCode})
         :await client.schema('gym20').rpc('get_student_exercises_by_token',{p_token:token});
       const {data,error}=exerciseResult;
       if(error)throw error;
@@ -442,7 +442,7 @@
           feedback.textContent=completed?'در حال ثبت انجام تمرین…':'در حال به‌روزرسانی…';
           try{
             const updateResult=shortCode
-              ?await client.schema('gym20').rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed})
+              ?await client.rpc('set_student_exercise_completion',{p_code:shortCode,p_exercise_id:id,p_completed:completed})
               :await client.schema('gym20').rpc('set_student_exercise_completion_by_token',{p_token:token,p_exercise_id:id,p_completed:completed});
             const {data,error}=updateResult;
             if(error)throw error;
@@ -474,7 +474,7 @@
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
       const getSchedule=async()=>{
         const result=shortCode
-          ?await client.schema('gym20').rpc('get_student_public_schedule_by_code',{p_code:shortCode})
+          ?await client.rpc('get_student_public_schedule_by_code',{p_code:shortCode})
           :await client.schema('gym20').rpc('get_student_public_schedule',{p_token:token});
         if(result.error)throw result.error;
         if(!result.data||!result.data.student)throw Error('لینک برنامه معتبر نیست یا غیرفعال شده است.');
