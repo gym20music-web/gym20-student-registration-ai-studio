@@ -12,8 +12,17 @@
   z-index:1205!important;transform:none!important;
 }
 #customRegionMenu.open{display:flex!important;flex-direction:column!important}
-/* Removed the stationary center marker; the active wheel row itself remains highlighted. */
-#customRegionMenu:before{content:none!important;display:none!important;}
+/* No fixed center frame: only the active row may be highlighted. */
+#customRegionMenu::before,
+#customRegionWheelList::before,
+#customRegionWheelList::after,
+#customRegionWheelList .region-wheel-item::before,
+#customRegionWheelList .region-wheel-item::after,
+#customRegionWheelList .region-wheel-item.wheel-focus::before,
+#customRegionWheelList .region-wheel-item.wheel-focus::after{
+ content:none!important;display:none!important;border:0!important;outline:0!important;box-shadow:none!important;
+}
+#customRegionMenu::before{content:none!important;display:none!important;}
 #customRegionMenu:after{
   content:"";position:absolute;z-index:1;pointer-events:none;left:0;right:0;bottom:0;height:30px;
   background:linear-gradient(to bottom,transparent,rgba(35,42,51,.96));

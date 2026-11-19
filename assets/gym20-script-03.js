@@ -100,7 +100,8 @@
     x.trigger.setAttribute('aria-expanded',String(open));
     if(open){
       const selected=x.menu.querySelector('.region-wheel-item.selected');
-      pendingRegionId=selected?selected.dataset.regionId:'';
+      const first=x.menu.querySelector('.region-wheel-item[data-region-copy="0"]');
+      pendingRegionId=selected?selected.dataset.regionId:(first?first.dataset.regionId:'');
       const wheel=wheelOf(x.menu);
       if(wheel){
         clearTimeout(wheel._gym20SettleTimer);
