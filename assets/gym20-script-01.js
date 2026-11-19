@@ -1116,8 +1116,11 @@ async function fetchPromoChannelInfo(){
             if(response.status===401)throw new Error('نشست مدیر منقضی شده است؛ یک‌بار از پنل خارج و دوباره وارد شوید.');
             throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
         }
-        const fetchedTitle=String(result.title||'').trim();
-        const fetchedDescription=String(result.description||result.bio||'').trim();
+        // telegram-channel-info پاسخ استاندارد را داخل result.chat برمی‌گرداند.
+        // سازگاری با پاسخ قدیمیِ سطح‌بالا نیز حفظ می‌شود.
+        const channelData=result.chat&&typeof result.chat==='object'?result.chat:result;
+        const fetchedTitle=String(channelData.title||result.title||'').trim();
+        const fetchedDescription=String(channelData.description||channelData.bio||result.description||result.bio||'').trim();
         const previousTitle=(document.getElementById('editPromoChannelTitle')?.value||'').trim();
         const previousDescription=(document.getElementById('editPromoChannelDescription')?.value||'').trim();
         // اگر تلگرام موقتاً بیو را خالی برگرداند، متن قبلی را پاک نکن.
@@ -1129,7 +1132,7 @@ async function fetchPromoChannelInfo(){
         renderPromoChannelPreview(displayTitle,displayDescription,!!(displayTitle||displayDescription));
         if(fetchedDescription)setPromoChannelStatus('عنوان و بیوی کانال با موفقیت دریافت شد.','success');
         else if(previousDescription)setPromoChannelStatus('تلگرام این بار بیو را برنگرداند؛ متن ذخیره‌شده قبلی حفظ شد.','success');
-        else setPromoChannelStatus('عنوان کانال دریافت شد؛ تلگرام پس از ۳ تلاش بیویی برنگرداند.','error');
+        else setPromoChannelStatus('عنوان کانال دریافت شد، اما تلگرام توضیحات (بیو) را در پاسخ نفرستاد؛ دسترسی ربات به کانال را بررسی کنید.','error');
     }catch(error){
         setPromoChannelStatus(error.message||'ارتباط با سرویس تلگرام برقرار نشد.','error');
     }finally{
