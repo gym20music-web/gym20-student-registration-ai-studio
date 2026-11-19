@@ -71,12 +71,25 @@
     }
     activeTarget=null;
   }
-  const adminObserver=new MutationObserver(()=>syncAdminVisibility());
+  let adminWasOpen=false;
+  const adminObserver=new MutationObserver(()=>{
+    const isOpen=adminIsOpen();
+    syncAdminVisibility();
+    // Opening the admin panel intentionally clears the public-form hint.
+    // When the panel closes, resume the guide if the region-dependent form
+    // is already visible; otherwise a previously cleared guide stays lost.
+    if(adminWasOpen&&!isOpen){
+      const content=document.getElementById('regionDependentContent');
+      if(content&&visible(content)){
+        requestAnimationFrame(()=>requestAnimationFrame(startRegionGuide));
+      }
+    }
+    adminWasOpen=isOpen;
+  });
   function watchAdminModal(){
-    // adminModal is present in index.html from the initial document.
-    // Observe only this modal; observing the whole body also observes our own
-    // popover/style mutations and can create a self-triggering observer loop.
+    // Observe only the admin modal, never the whole body.
     const modal=document.getElementById('adminModal');
+    adminWasOpen=adminIsOpen();
     if(modal)adminObserver.observe(modal,{attributes:true,attributeFilter:['class','style','aria-hidden']});
     syncAdminVisibility();
   }
