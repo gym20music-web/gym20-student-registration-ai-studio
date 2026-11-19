@@ -164,10 +164,15 @@
         </div>
       </section>
       <section class="view admin-panel-tab" id="view-integrations">
-        <div class="panel"><div class="panel-head"><h2>تلگرام و پیام‌رسانی</h2><span class="tag">وضعیت اتصال</span></div>
-          <div class="field-grid"><div class="field"><label>نام ربات</label><input value="Gym20academybot" disabled></div><div class="field"><label>کانال آکادمی</label><input value="@GYM20MUSIC" disabled></div></div>
-          <p class="muted">ارسال اعلان فوری گوشی، تنظیم متن و زمان یادآوری در تب اعلان‌ها و پرونده هر هنرجو انجام می‌شود. توکن ربات و رمز اشتراک فقط در Secretهای سمت سرور نگهداری می‌شوند و در این صفحه نمایش داده نمی‌شوند.</p>
-          <div id="integrationStatus" class="global-status">اتصال زنده تلگرام پس از بازیابی Supabase و بررسی Edge Function قابل آزمایش است.</div>
+        <div class="panel"><div class="panel-head"><h2>تلگرام و پیام‌رسانی</h2><span class="tag">اتصال امن</span></div>
+          <div class="field-grid">
+            <div class="field"><label>نام ربات</label><input value="Gym20academybot" disabled></div>
+            <div class="field"><label for="telegramChannelId">لینک یا آیدی کانال تلگرام</label><input id="telegramChannelId" value="@GYM20MUSIC" dir="ltr" placeholder="@channel یا https://t.me/channel"></div>
+          </div>
+          <div class="panel-actions"><button class="primary" type="button" id="getTelegramChannelInfo">دریافت اطلاعات کانال</button></div>
+          <div id="telegramChannelDetails" class="request-list" aria-live="polite"></div>
+          <p class="muted">برای دریافت مشخصات، ربات باید به کانال دسترسی داشته باشد. توکن ربات و کلیدهای محرمانه فقط در Secretهای سمت سرور نگهداری می‌شوند.</p>
+          <div id="integrationStatus" class="global-status" role="status" aria-live="polite">برای بررسی اتصال، آیدی یا لینک کانال را وارد کنید.</div>
         </div>
       </section>
       <footer class="workspace-foot">GYM20 · پنل مدیریت مستقل · تغییرات فقط پس از ذخیره و تأیید دسترسی مدیر</footer>
