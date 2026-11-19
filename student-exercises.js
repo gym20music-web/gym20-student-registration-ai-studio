@@ -152,24 +152,6 @@
       work.appendChild(panel);
     }
 
-    const openExerciseTab = () => {
-      const target = $('view-exercises');
-      if (!target) return;
-      document.querySelectorAll('.view,.admin-panel-tab').forEach(el => el.classList.toggle('active', el === target));
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === 'exercises'));
-      if ($('pageTitle')) $('pageTitle').textContent = 'تمرین هنرجویان';
-      if ($('pageSubtitle')) $('pageSubtitle').textContent = 'تعریف و پیگیری تمرین‌های اختصاصی هر هنرجو';
-      if (window.gym20OwnerAuthorized) loadExerciseStudents();
-      else say('برای استفاده از تمرین‌ها ابتدا وارد حساب مدیر شوید.', true);
-    };
-    navButton.addEventListener('click', event => { event.preventDefault(); openExerciseTab(); });
-    document.querySelectorAll('[data-go="exercises"]').forEach(button => {
-      if (!button.dataset.exerciseRouteBound) {
-        button.dataset.exerciseRouteBound = '1';
-        button.addEventListener('click', event => { event.preventDefault(); openExerciseTab(); });
-      }
-    });
-
     const select = $('gym20ExerciseStudentSelect');
     const add = $('gym20ExerciseAdd');
     const input = $('gym20ExerciseInput');
