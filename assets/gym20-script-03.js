@@ -24,18 +24,8 @@
     if(y<cycle*.35)wheel.scrollTop=y+cycle;
     else if(y>cycle*1.65)wheel.scrollTop=y-cycle;
   }
-  function settle(wheel,menu){
-    clearTimeout(wheel._gym20SettleTimer);
-    if(!wheel._gym20GestureMoved||wheel._gym20PointerDown)return;
-    // Scrolling only highlights the centered region. Selection is explicit:
-    // the visitor must tap the highlighted region itself.
-    wheel._gym20SettleTimer=setTimeout(()=>{
-      if(wheel._gym20PointerDown||!wheel._gym20GestureMoved)return;
-      updateFocus(menu);
-      wheel._gym20GestureMoved=false;
-      wheel._gym20Dragged=false;
-    },180);
-  }
+  // No timer-based selection: wheel movement only changes the highlighted item.
+  // A region is committed exclusively by a deliberate tap/click on that item.
   function centerItem(menu,id,smooth){
     const wheel=wheelOf(menu);if(!wheel)return;
     const item=Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id&&x.dataset.regionCopy==='1')||Array.from(wheel.querySelectorAll('.region-wheel-item')).find(x=>x.dataset.regionId===id);
@@ -59,13 +49,12 @@
     const pointerEnd=()=>{
       if(!wheel._gym20PointerDown)return;
       wheel._gym20PointerDown=false;wheel._gym20StartX=null;wheel._gym20StartY=null;
-      if(wheel._gym20GestureMoved)settle(wheel,menu);
     };
     wheel.addEventListener('pointerup',pointerEnd,{passive:true});
     wheel.addEventListener('pointercancel',pointerEnd,{passive:true});
     wheel.addEventListener('wheel',()=>{
       wheel._gym20GestureMoved=true;
-      settle(wheel,menu);
+      updateFocus(menu);
     },{passive:true});
     wheel.addEventListener('scroll',()=>{
       const now=wheel.scrollTop,delta=Math.abs(now-wheel._gym20LastScrollTop);
@@ -78,7 +67,6 @@
           wheel._gym20Frame=0;recycle(wheel);updateFocus(menu);
         });
       }
-      if(wheel._gym20GestureMoved&&!wheel._gym20PointerDown)settle(wheel,menu);
     },{passive:true});
   }
   document.addEventListener('click',e=>{
@@ -88,7 +76,7 @@
     e.preventDefault();e.stopPropagation();
     const wheel=wheelOf(x.menu);if(!wheel)return;
     if(wheel._gym20Dragged){
-      wheel._gym20Dragged=false;wheel._gym20GestureMoved=true;return;
+      wheel._gym20GestureMoved=true;return;
     }
     const id=item.dataset.regionId;
     clearTimeout(wheel._gym20SettleTimer);
