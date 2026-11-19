@@ -203,6 +203,7 @@
     status('وضعیت درخواست بروزرسانی شد.');
   }
   function showView(view) {
+    if(!VIEW_META[view]){status('بخش انتخاب‌شده در پنل تعریف نشده است.',true);return;}
     window.switchAdminTab('view-'+view);
     document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
@@ -370,6 +371,8 @@
       await loadStudents();
       await loadReports();
       showView('students');
+      window.dispatchEvent(new Event('gym20:owner-authorized'));
+      window.loadExerciseStudents?.();
     }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
   }
   $('loginForm').addEventListener('submit',async e=>{
