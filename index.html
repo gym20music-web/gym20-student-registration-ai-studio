@@ -23,7 +23,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='gym20-g-eq-20261114-1';
+ const assetVersion='gym20-admin-modal-20261119-v3';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -249,6 +249,7 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر بالا</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('infoTab')">💳 کارت و پرداخت</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('requestsTab')">📥 درخواست‌های ثبت‌نام</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('exercisesTab')">🤸🏻‍♂️ تمرین هنرجویان</button>
             </nav>
           </aside>
           <main class="admin-workspace">
@@ -573,6 +574,19 @@
           </div>
           <div class="request-detail-panel" id="requestDetailsPanel" hidden></div>
         </div>
+        <section class="admin-panel-tab" id="exercisesTab">
+          <div id="gym20ExercisesTab" class="admin-card-section">
+            <div class="admin-section-subhead">🤸🏻‍♂️ تمرین‌های اختصاصی هنرجویان</div>
+            <p class="hint">برای هر هنرجو تمرین اختصاصی ثبت کنید و وضعیت انجام آن را پیگیری کنید.</p>
+            <div class="admin-grid-2">
+              <div class="admin-input-group"><label for="gym20ExerciseStudentSelect">انتخاب هنرجو</label><select id="gym20ExerciseStudentSelect"><option value="">در حال دریافت فهرست هنرجویان…</option></select></div>
+              <div class="admin-input-group"><label for="gym20ExerciseInput">عنوان تمرین</label><input id="gym20ExerciseInput" maxlength="120" placeholder="مثلاً پوش‌آپ ۳۰ تکرار"></div>
+            </div>
+            <button type="button" class="copy-btn" id="gym20ExerciseAdd">＋ افزودن تمرین</button>
+            <div id="gym20ExerciseFeedback" class="gym20-ex-meta" role="status" aria-live="polite"></div>
+            <div id="gym20ExerciseList" class="request-list"><p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p></div>
+          </div>
+        </section>
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:10px;margin-top:14px;font-weight:800;width:100%;">💾 ذخیره تنظیمات</button>
           </main>
         </div>
