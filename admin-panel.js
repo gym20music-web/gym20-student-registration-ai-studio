@@ -574,13 +574,18 @@
       };
       const moveTo=(x,y)=>{
         if(!drag||!drag.active)return;
-        // Keep the dragged tab transparent to hit-testing so the tab beneath
-        // the finger can be detected, and auto-scroll the sidebar at its edges.
-        const sidebar=nav.closest('.admin-sidebar');
-        if(sidebar){
-          const sr=sidebar.getBoundingClientRect(),edge=42;
-          if(y<sr.top+edge)sidebar.scrollTop-=Math.max(3,Math.round((sr.top+edge-y)/5));
-          else if(y>sr.bottom-edge)sidebar.scrollTop+=Math.max(3,Math.round((y-(sr.bottom-edge))/5));
+        // Mobile navigation is a horizontal strip; desktop navigation is vertical.
+        const horizontal=getComputedStyle(nav).display==='flex' && getComputedStyle(nav).flexDirection!=='column';
+        const scrollBox=horizontal?nav:nav.closest('.sidebar');
+        if(scrollBox){
+          const sr=scrollBox.getBoundingClientRect(),edge=38;
+          if(horizontal){
+            if(x<sr.left+edge)scrollBox.scrollLeft-=Math.max(4,Math.round((sr.left+edge-x)/4));
+            else if(x>sr.right-edge)scrollBox.scrollLeft+=Math.max(4,Math.round((x-(sr.right-edge))/4));
+          }else{
+            if(y<sr.top+edge)scrollBox.scrollTop-=Math.max(4,Math.round((sr.top+edge-y)/4));
+            else if(y>sr.bottom-edge)scrollBox.scrollTop+=Math.max(4,Math.round((y-(sr.bottom-edge))/4));
+          }
         }
         const hit=document.elementFromPoint(x,y);
         const target=hit&&hit.closest?hit.closest('.nav-item,.admin-tab-btn'):null;
@@ -588,7 +593,7 @@
         if(!target||target===drag.el||target.parentElement!==nav)return;
         target.classList.add('gym20-nav-over');
         const r=target.getBoundingClientRect();
-        const after=y>r.top+r.height/2;
+        const after=horizontal?x>r.left+r.width/2:y>r.top+r.height/2;
         if(after){if(target.nextElementSibling!==drag.el)nav.insertBefore(drag.el,target.nextElementSibling);}
         else if(target!==drag.el.nextElementSibling)nav.insertBefore(drag.el,target);
         drag.moved=true;
@@ -601,17 +606,18 @@
         if(e.pointerType==='mouse'&&e.button!==0)return;
         stop();
         drag={el,id:e.pointerId,x:e.clientX,y:e.clientY,active:e.pointerType!=='touch',moved:false,touch:e.pointerType==='touch'};
+        try{el.setPointerCapture(e.pointerId);}catch(_){}
         if(drag.active)el.classList.add('gym20-nav-dragging');
         else timer=setTimeout(()=>{
           if(!drag||drag.id!==e.pointerId)return;
           drag.active=true;
           drag.el.classList.add('gym20-nav-dragging');
-        },450);
+        },380);
       },{passive:false});
       document.addEventListener('pointermove',e=>{
         if(!drag||e.pointerId!==drag.id)return;
         if(!drag.active){
-          if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>22){
+          if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>14){
             clearTimeout(timer);
             drag=null;
           }
