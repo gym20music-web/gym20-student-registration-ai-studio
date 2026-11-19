@@ -41,6 +41,13 @@
     card.append(kicker,heading,body,close);overlay.appendChild(card);document.body.appendChild(overlay);
     document.addEventListener("keydown",onKey);close.focus({preventScroll:true});
   }
+  // Show the notification message as soon as the student page script starts.
+  // Do not wait for the schedule API: slow mobile connections must not hide the message.
+  if(pendingClassNotice){
+    const notice=pendingClassNotice;
+    pendingClassNotice="";
+    requestAnimationFrame(()=>showClassNotice(notice));
+  }
   // Center each field's label and value inside its own box on mobile and desktop.
   const studentFieldCenterStyle=document.createElement('style');
   studentFieldCenterStyle.textContent=`
@@ -462,7 +469,6 @@
       };
       const data=await getSchedule();
       $('studentName').textContent='هنرجو: '+data.student.full_name;
-      if(pendingClassNotice){showClassNotice(pendingClassNotice);pendingClassNotice="";}
       if(shortCode)setupPush(shortCode,client);loadStudentExercises(shortCode,token,client);
       terms=Array.isArray(data.terms)?data.terms:[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
