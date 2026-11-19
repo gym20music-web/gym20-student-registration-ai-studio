@@ -102,17 +102,28 @@
       setTimeout(()=>focusFrom(0),180);return result;
     };
   }
-  // Let the student finish selecting any additional styles before moving to the form.
-  // Every style change restarts the 6.5-second pause.
+  // Start one 6-second grace period on the first selected style.
+  // Further selections do not restart it; selecting every available style advances immediately.
   window.gym20GuidedFlowStyleSelected=function(){
-    if(styleAdvanceTimer)clearTimeout(styleAdvanceTimer);
-    styleAdvanceTimer=setTimeout(()=>{
+    const items=Array.from(document.querySelectorAll('#stylesList .style-item'));
+    const selected=items.filter(item=>item.classList.contains('selected')).length;
+    if(!selected){
+      if(styleAdvanceTimer)clearTimeout(styleAdvanceTimer);
       styleAdvanceTimer=null;
-      if(document.querySelector('#stylesList .style-item.selected')){
-        formGuideStage=0;
-        focusStep('regFullName',true,'بنویس');
-      }
-    },6500);
+      return;
+    }
+    const advance=()=>{
+      if(styleAdvanceTimer)clearTimeout(styleAdvanceTimer);
+      styleAdvanceTimer=null;
+      formGuideStage=0;
+      focusStep('regFullName',true,'بنویس');
+    };
+    if(items.length&&selected===items.length){
+      advance();
+      return;
+    }
+    if(styleAdvanceTimer)return;
+    styleAdvanceTimer=setTimeout(advance,6000);
   };
 
   document.addEventListener('click',function(e){
