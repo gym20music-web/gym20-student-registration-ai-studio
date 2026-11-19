@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const $ = id => document.getElementById(id);
-  const PROJECT_DEFAULT = 'https://iqjujumhoawlugrmjvyj.supabase.co';
+  const PROJECT_DEFAULT = 'https://ubrafxjpnqtjnjdaskba.supabase.co';
   const VIEW_META = {
     overview:['نمای کلی','وضعیت کلی آکادمی و دسترسی سریع'],
     attendance:['حضور و غیاب','ثبت و پیگیری وضعیت جلسات منتشرشده'], coaches:['مربیان','مدیریت برنامه و آمار مربیان'], reports:['گزارش‌ها','گزارش‌های عملیاتی آکادمی'], integrations:['اتصالات','وضعیت سرویس‌های پیام‌رسانی و اعلان'],
@@ -208,6 +208,7 @@
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
     if(view==='payments')loadPayments();
     if(view==='notifications')loadNotifications();
+    if(view==='exercises'&&window.gym20OwnerAuthorized)window.loadExerciseStudents?.();
   }
   async function refresh() {
     try{await loadConfig();if(document.getElementById('view-requests').classList.contains('active'))await loadRequests();status('اطلاعات بروزرسانی شد.');}
@@ -222,6 +223,7 @@
     const meta=VIEW_META[id.replace(/^view-/,'')];
     if(meta){$('pageTitle').textContent=meta[0];$('pageSubtitle').textContent=meta[1];}
     if(id==='view-students')loadStudents();
+    if(id==='view-exercises'&&window.gym20OwnerAuthorized)window.loadExerciseStudents?.();
     if(id==='view-attendance')loadAttendance();
     if(id==='view-coaches')loadCoachStats();
     if(id==='view-reports')loadReports();
