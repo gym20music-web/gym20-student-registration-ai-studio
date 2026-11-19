@@ -511,10 +511,10 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   if(isIOS){
     var manifestLink=document.querySelector('link[rel="manifest"]');
     if(manifestLink)manifestLink.remove();
-    // Keep the direct, code-bearing URL as the Home Screen launch URL.
-    if(pathCode){
-      history.replaceState(null,"","/student.html?c="+code+location.hash);
-    }
+    // Give each iPhone Home Screen icon its own stable, code-bearing PATH.
+    // iOS may drop query parameters from saved launch URLs; /s/<code> is
+    // preserved as a distinct launch address and 404.html routes it back.
+    history.replaceState(null,"","/s/"+code+location.hash);
     return;
   }
 
