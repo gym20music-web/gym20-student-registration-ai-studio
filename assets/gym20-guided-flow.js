@@ -98,6 +98,23 @@
       setTimeout(()=>focusFrom(0),180);return result;
     };
   }
+  // Capture style clicks BEFORE the style renderer replaces the clicked DOM node.
+  // The normal bubble phase is too late because toggleStyle() rebuilds #stylesList.
+  document.addEventListener('click',function(e){
+    const target=e.target instanceof Element?e.target:e.target?.parentElement;
+    if(!target||!target.closest('#stylesList .style-item'))return;
+    setTimeout(()=>{
+      if(focusStep('tuition',true)){
+        const priceTarget=activeTarget;
+        setTimeout(()=>{
+          if(activeTarget===priceTarget)focusStep('publicRegistrationCard',true);
+        },1700);
+      }else{
+        focusStep('publicRegistrationCard',true);
+      }
+    },180);
+  },true);
+
   document.addEventListener('click',function(e){
     const target=e.target instanceof Element?e.target:e.target?.parentElement;
     if(!target)return;
@@ -108,14 +125,6 @@
       const next={ageGroup:1,classType:2,sessionsCount:3}[group.id];
       if(next!==undefined)setTimeout(()=>focusFrom(next),100);
       return;
-    }
-    if(target.closest('#stylesList .style-item')){
-      setTimeout(()=>{
-        if(focusStep('tuition',true)){
-          const priceTarget=activeTarget;
-          setTimeout(()=>{if(activeTarget===priceTarget)focusStep('publicRegistrationCard',true);},1700);
-        }else focusStep('publicRegistrationCard',true);
-      },100);return;
     }
     if(target.closest('#txt_rulesSection')||target.closest('#dynamicRulesBox')){
       if(!document.getElementById('acceptRules')?.checked){
