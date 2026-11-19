@@ -23,7 +23,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='gym20-guided-flow-fix-20261119-v25';
+ const assetVersion='gym20-guided-flow-fix-20261119-v26';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -629,17 +629,25 @@
 
 <script>
 (async function(){
- const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js","assets/gym20-guided-flow.js"];
- try{
-  await window.__gym20CssReady;
-  for(const path of files){
-   const source=await window.__gym20FetchAsset(path);
-   const blob=new Blob([source],{type:'text/javascript'});
-   const url=URL.createObjectURL(blob);
-   const script=document.createElement('script');script.src=url;
+ const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
+ async function loadScriptAsset(path){
+  const source=await window.__gym20FetchAsset(path);
+  const blob=new Blob([source],{type:'text/javascript'});
+  const url=URL.createObjectURL(blob);
+  const script=document.createElement('script');script.src=url;
+  try{
    await new Promise((resolve,reject)=>{script.onload=resolve;script.onerror=()=>reject(new Error(path+' execution failed'));document.body.appendChild(script);});
+  }finally{
    script.remove();URL.revokeObjectURL(url);
   }
+ }
+ try{
+  await window.__gym20CssReady;
+  // Install the public-form guide independently and BEFORE the main app scripts.
+  // A failure in any unrelated app module must never prevent the guide from loading.
+  try{await loadScriptAsset("assets/gym20-guided-flow.js");}
+  catch(guideError){console.error('[GYM20] Guided flow failed to load',guideError);}
+  for(const path of files)await loadScriptAsset(path);
   document.documentElement.dataset.gym20Assets='ready';
   console.info('[GYM20] Raw assets loaded successfully');
  }catch(error){
