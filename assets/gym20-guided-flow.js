@@ -2,7 +2,6 @@
 (function(){
   'use strict';
   if(window.__gym20GuidedFlowInstalled) return;
-  window.__gym20GuidedFlowInstalled = true;
 
   const style=document.createElement('style');
   style.id='gym20-guided-flow-style';
@@ -49,7 +48,10 @@
   }
   function clear(){
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
-    if(pop){pop.classList.remove('is-visible');}
+    if(pop){
+      pop.classList.remove('is-visible');
+      ['display','visibility','opacity','transform','z-index'].forEach(k=>pop.style.removeProperty(k));
+    }
     activeTarget=null;
   }
   function adminIsOpen(){
@@ -68,6 +70,7 @@
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
     if(pop){
       pop.classList.remove('is-visible');
+      ['display','visibility','opacity','transform','z-index'].forEach(k=>pop.style.removeProperty(k));
       pop.classList.add('gym20-flow-suppressed');
     }
     activeTarget=null;
@@ -141,10 +144,17 @@
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
     ensurePop();
-    // Keep visibility and animation controlled by CSS classes. Inline !important
-    // declarations previously overrode the admin/drawer hide rules and opacity reset.
-    pop.textContent=message;place();
-    requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
+    pop.classList.remove('gym20-flow-suppressed');
+    pop.textContent=message;
+    // Force the active hint above legacy page styles. clear()/admin suppression
+    // always remove these inline values, so the hint cannot leak into admin or drawer UI.
+    pop.style.setProperty('display','flex','important');
+    pop.style.setProperty('visibility','visible','important');
+    pop.style.setProperty('opacity','1','important');
+    pop.style.setProperty('transform','none','important');
+    pop.style.setProperty('z-index','2147483647','important');
+    place();
+    requestAnimationFrame(()=>{if(activeTarget!==anchor||adminIsOpen()||document.body.classList.contains('region-sheet-open'))return;place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
     // Highlighting the styles step must not start the timer: preselected styles are not user confirmation.
     return true;
@@ -279,5 +289,6 @@
   });
   addEventListener('scroll',place,{passive:true});
   addEventListener('resize',place);
+  window.__gym20GuidedFlowInstalled = true;
   console.info('[GYM20] Compact guided popover ready');
 })();
