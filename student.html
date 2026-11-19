@@ -500,12 +500,18 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   var params=new URLSearchParams(location.search);
   var parts=location.pathname.split("/");
   var pathCode=(parts.length>=3&&parts[1]==="s")?parts[2]:"";
-  var code=pathCode||params.get("c")||"";
+  var storedCode="";
+  try{storedCode=localStorage.getItem("gym20_student_short_code")||"";}catch(_){}
+  if(!storedCode){
+    var match=document.cookie.match(/(?:^|;\\s*)gym20_student_short_code=([0-9a-f]{12})/i);
+    if(match)storedCode=match[1];
+  }
+  var code=pathCode||params.get("c")||storedCode||"";
   if(!/^[0-9a-f]{12}$/i.test(code))return;
   code=code.toLowerCase();
-  // Give each student's installed iPhone web app its own launch URL.
-  // The shared static manifest used to launch /student.html?app=1 without
-  // the student's code, which made the Home Screen app report an invalid link.
+  try{localStorage.setItem("gym20_student_short_code",code);}catch(_){}
+  try{document.cookie="gym20_student_short_code="+code+"; Path=/; Max-Age=31536000; SameSite=Lax; Secure";}catch(_){}
+  // Each installed iPhone app must retain the student's own launch code.
   var manifest={
     id:"/s/"+code,
     name:"GYM20 | برنامه کلاس‌های من",
@@ -525,8 +531,10 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     var blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
     link.href=URL.createObjectURL(blob);
   }
-  if(params.has("c"))history.replaceState(null,"","/s/"+code+location.hash);
-})();
+  if(!pathCode){
+    history.replaceState(null,"","/s/"+code+location.hash);
+  }
+})();;
 </script><script src="/student-view.js?v=20261119-class-notice-popup-v8"></script>
 
 </body></html>
