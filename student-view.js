@@ -1,6 +1,6 @@
 (() => {
-  const SUPABASE_URL='https://iqjujumhoawlugrmjvyj.supabase.co';
-  const SUPABASE_KEY='sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ';
+  const SUPABASE_URL='https://ubrafxjpnqtjnjdaskba.supabase.co';
+  const SUPABASE_KEY='sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3';
   const $=id=>document.getElementById(id);
   // Center each field's label and value inside its own box on mobile and desktop.
   const studentFieldCenterStyle=document.createElement('style');
