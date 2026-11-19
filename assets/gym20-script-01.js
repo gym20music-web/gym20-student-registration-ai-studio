@@ -115,7 +115,7 @@ function renderStyles(){
         item.onclick=()=>toggleStyle(st.id);stylesListEl.appendChild(item);
     });
 }
-function toggleStyle(id){if(selectedStyles.includes(id)){if(selectedStyles.length>1)selectedStyles=selectedStyles.filter(s=>s!==id);}else selectedStyles.push(id);renderStyles();calculatePrice();}
+function toggleStyle(id){if(selectedStyles.includes(id)){if(selectedStyles.length>1)selectedStyles=selectedStyles.filter(s=>s!==id);}else selectedStyles.push(id);renderStyles();calculatePrice();if(typeof window.gym20GuidedFlowStyleSelected==='function')window.gym20GuidedFlowStyleSelected();}
 
 function switchAdminClassType(t){adminActiveEditingClassType=t;document.querySelectorAll('#sub_class_status .sub-tab-btn').forEach(b=>b.classList.remove('active'));if(window.event)window.event.target.classList.add('active');loadAdminClassTypeConfig();}
 function loadAdminClassTypeConfig(){

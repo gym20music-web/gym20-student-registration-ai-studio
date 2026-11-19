@@ -98,11 +98,9 @@
       setTimeout(()=>focusFrom(0),180);return result;
     };
   }
-  // Capture style clicks BEFORE the style renderer replaces the clicked DOM node.
-  // The normal bubble phase is too late because toggleStyle() rebuilds #stylesList.
-  document.addEventListener('click',function(e){
-    const target=e.target instanceof Element?e.target:e.target?.parentElement;
-    if(!target||!target.closest('#stylesList .style-item'))return;
+  // Advance from the style picker through the live app callback, not a delegated click.
+  // toggleStyle() rerenders #stylesList, so this direct callback is deterministic.
+  window.gym20GuidedFlowStyleSelected=function(){
     setTimeout(()=>{
       if(focusStep('tuition',true)){
         const priceTarget=activeTarget;
@@ -113,7 +111,7 @@
         focusStep('publicRegistrationCard',true);
       }
     },180);
-  },true);
+  };
 
   document.addEventListener('click',function(e){
     const target=e.target instanceof Element?e.target:e.target?.parentElement;
