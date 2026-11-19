@@ -26,9 +26,9 @@
     }
     .gym20-flow-pop.is-visible{opacity:1;transform:translateY(0) scale(1)}
     .gym20-flow-pop::after{
-      content:'';position:absolute;left:50%;bottom:-6px;width:10px;height:10px;
+      content:'';position:absolute;left:50%;top:-6px;width:10px;height:10px;
       background:rgba(29,31,33,.96);border-right:1px solid rgba(218,190,126,.68);
-      border-bottom:1px solid rgba(218,190,126,.68);transform:translateX(-50%) rotate(45deg);
+      border-bottom:1px solid rgba(218,190,126,.68);transform:translateX(-50%) rotate(225deg);
     }
     @media(prefers-reduced-motion:reduce){.gym20-flow-pop{transition:none}.gym20-flow-current{transition:none!important}}
   `;
@@ -54,13 +54,12 @@
   function place(){
     if(!activeTarget||!visible(activeTarget)||!pop)return;
     const r=activeTarget.getBoundingClientRect(),w=pop.offsetWidth||76,h=pop.offsetHeight||27;
-    const isHeading=activeTarget.matches('#txt_rulesSection,h1,h2,h3,h4,[role="heading"]');
-    // Keep the hint outside heading text: align it to the target's right edge,
-    // rather than centering it over the title.
-    let left=isHeading?r.right-w:r.left+r.width/2-w/2;
-    let top=r.top-h-11;
+    // Always keep the hint in its own space BELOW the focused control/heading.
+    // This prevents it from covering labels, titles, or text inside the target.
+    let left=r.right-w;
+    let top=r.bottom+9;
     left=Math.max(8,Math.min(innerWidth-w-8,left));
-    if(top<8)top=Math.min(innerHeight-h-10,r.bottom+11);
+    if(top+h>innerHeight-8)top=Math.max(8,r.top-h-9);
     pop.style.left=left+'px';pop.style.top=top+'px';
   }
   function targetFor(id){
