@@ -32,6 +32,8 @@
       border-bottom:1px solid rgba(218,190,126,.68);transform:translateX(-50%) rotate(225deg);
     }
     @media(prefers-reduced-motion:reduce){.gym20-flow-pop{transition:none}.gym20-flow-current{transition:none!important}}
+    body.region-sheet-open .gym20-flow-current{outline:0!important;outline-offset:0!important;box-shadow:none!important;}
+    body.region-sheet-open .gym20-flow-pop{display:none!important;}
   `;
   document.head.appendChild(style);
 
