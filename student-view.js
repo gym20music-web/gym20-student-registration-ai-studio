@@ -434,7 +434,19 @@
   async function init(){
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
-    const shortCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||params.get('c');
+    const pathCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||'';
+    let shortCode=pathCode||params.get('c')||'';
+    // iOS Home Screen can relaunch without the query string. Recover the
+    // last valid student code opened on this device.
+    try{
+      if(/^[0-9a-f]{12}$/i.test(shortCode)){
+        shortCode=shortCode.toLowerCase();
+        localStorage.setItem('gym20_student_launch_code',shortCode);
+      }else{
+        const savedCode=localStorage.getItem('gym20_student_launch_code')||'';
+        if(/^[0-9a-f]{12}$/i.test(savedCode))shortCode=savedCode.toLowerCase();
+      }
+    }catch(_){}
     viewStorageKey='gym20-session-view-'+(shortCode||'token');
     try{const saved=localStorage.getItem(viewStorageKey);if(['grid','list'].includes(saved))activeView=saved;}catch(_){}
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
