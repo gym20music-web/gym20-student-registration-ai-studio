@@ -495,7 +495,38 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>(function(){var c=new URLSearchParams(location.search).get("c");if(/^[0-9a-f]{12}$/i.test(c||""))history.replaceState(null,"","/s/"+c);})();</script><script src="/student-view.js?v=20261119-ios-safari-push-v6"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>
+(function(){
+  var params=new URLSearchParams(location.search);
+  var match=location.pathname.match(/\\/s\\/([0-9a-f]{12})\\/?$/i);
+  var code=(match&&match[1])||params.get("c")||"";
+  if(!/^[0-9a-f]{12}$/i.test(code))return;
+  code=code.toLowerCase();
+  // Give each student's installed iPhone web app its own launch URL.
+  // The shared static manifest used to launch /student.html?app=1 without
+  // the student's code, which made the Home Screen app report an invalid link.
+  var manifest={
+    id:"/s/"+code,
+    name:"GYM20 | برنامه کلاس‌های من",
+    short_name:"GYM20",
+    description:"برنامه اختصاصی کلاس‌های هنرجویان GYM20",
+    lang:"fa",dir:"rtl",
+    start_url:"/student.html?app=1&c="+code,
+    scope:"/",
+    display:"standalone",
+    orientation:"portrait",
+    background_color:"#080a0f",
+    theme_color:"#080a0f",
+    icons:[{src:"/favicon.svg",sizes:"any",type:"image/svg+xml",purpose:"any"}]
+  };
+  var link=document.querySelector('link[rel="manifest"]');
+  if(link){
+    var blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+    link.href=URL.createObjectURL(blob);
+  }
+  if(params.has("c"))history.replaceState(null,"","/s/"+code);
+})();
+</script><script src="/student-view.js?v=20261119-ios-safari-push-v7"></script>
 
 </body></html>
 
