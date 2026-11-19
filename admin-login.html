@@ -24,6 +24,13 @@
   <label for="email">ایمیل مدیر</label>
   <input id="email" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر">
   <button id="send" type="button">اتصال و ارسال لینک ورود</button>
+  <div id="passwordSyncPanel" hidden>
+    <label for="existingPassword">همگام‌سازی همان رمز قبلی</label>
+    <input id="existingPassword" type="password" autocomplete="current-password" minlength="8" placeholder="همان رمز قبلی حساب مدیر">
+    <button id="syncPassword" type="button">ثبت همان رمز برای ورود عادی</button>
+    <button id="continueWithoutSync" type="button" style="background:#374151">ورود به پنل بدون تغییر رمز</button>
+    <p class="hint">رمز فقط مستقیم و امن به Supabase ارسال می‌شود؛ در این گفتگو نمایش داده نمی‌شود.</p>
+  </div>
   <div id="recoveryPanel" hidden>
     <label for="newPassword">رمز عبور جدید</label>
     <input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ کاراکتر">
@@ -54,8 +61,8 @@
       publishableKey: key,
       onStatus: status,
       onAuthorized: ({ user }) => {
-        status('ورود مدیر تأیید شد؛ انتقال به پنل مدیریت…');
-        window.location.replace('https://gym20.ir/admin.html');
+        document.getElementById('passwordSyncPanel').hidden = false;
+        status('ایمیل و دسترسی مدیر تأیید شد. اگر می‌خواهید همان رمز قبلی برای ورود مستقیم فعال شود، آن را یک‌بار در کادر پایین وارد کنید؛ در غیر این صورت مستقیم وارد پنل شوید.');
       }
     });
     document.getElementById('publishableKey').disabled = true;
@@ -99,6 +106,26 @@
     }catch(e){status(e.message||'ثبت رمز عبور جدید ناموفق بود.',true);}
     finally{save.disabled=false;}
   });
+  document.getElementById('syncPassword').addEventListener('click', async () => {
+    const save = document.getElementById('syncPassword');
+    save.disabled = true;
+    try {
+      const password = document.getElementById('existingPassword').value;
+      if (password.length < 8) throw new Error('رمز واردشده باید حداقل ۸ کاراکتر باشد.');
+      const { error } = await auth.getClient().auth.updateUser({ password });
+      if (error) throw error;
+      status('همان رمز قبلی روی حساب فعلی فعال شد؛ ورود به پنل…');
+      window.location.replace('https://gym20.ir/admin.html');
+    } catch (e) {
+      status(e.message || 'همگام‌سازی رمز انجام نشد.', true);
+    } finally {
+      save.disabled = false;
+    }
+  });
+  document.getElementById('continueWithoutSync').addEventListener('click', () => {
+    window.location.replace('https://gym20.ir/admin.html');
+  });
+
   // On the email callback, restore the session and verify the owner automatically.
   try { if (!auth) connect(); } catch (e) { status(e.message || 'اتصال ناموفق بود.', true); }
 </script>
