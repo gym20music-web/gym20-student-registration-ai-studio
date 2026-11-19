@@ -436,6 +436,7 @@ function switchAdminTab(tId){
   const saveButton=document.getElementById('autoCommitBtn');
   if(saveButton)saveButton.style.display=tId==='requestsTab'?'none':'block';
   if(tId==='requestsTab')loadRegistrationRequests();
+  if(tId==='exercisesTab')window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
 }
 
 /* Owner-only registration request management */
@@ -690,9 +691,12 @@ function loadGym20Module(src){
 }
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
-    gym20AdminModulesPromise=loadGym20Module('student-terms.js?v=20261112-term-wheel-fix-v95')
-      .then(()=>loadGym20Module('./student-push-admin.js?v=20261112-active-count-v16'))
-      .then(()=>loadGym20Module('./student-exercises.js?v=20261119-sidebar-integration-v1'))
+    const modules=[
+      'student-terms.js?v=20261119-admin-modal-v3',
+      './student-push-admin.js?v=20261119-admin-modal-v3',
+      './student-exercises.js?v=20261119-admin-modal-v3'
+    ];
+    gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
   return gym20AdminModulesPromise;
@@ -701,15 +705,15 @@ function openAuthorizedAdminPanel(){
   if(!gym20OwnerAuthorized)return;
   const modal=document.getElementById('adminModal');
   if(modal)modal.style.display='flex';
+  loadAdminForm();
   const status=document.getElementById('adminModulesStatus');
-  if(status){status.textContent='در حال آماده‌سازی پنل مدیریت…';status.style.color='#d6b35a';}
+  if(status){status.textContent='پنل مدیریت باز شد؛ بخش‌های تخصصی در پس‌زمینه آماده می‌شوند…';status.style.color='#d6b35a';}
   loadGym20AdminModules().then(()=>{
     if(!gym20OwnerAuthorized)return;
-    loadAdminForm();
     if(status)status.textContent='';
   }).catch(err=>{
     console.error('GYM20 admin modules failed:',err);
-    if(status){status.textContent=err.message||'بارگذاری بعضی بخش‌های پنل ناموفق بود؛ اتصال را بررسی و دوباره تلاش کنید.';status.style.color='#fb7185';}
+    if(status){status.textContent=err.message||'بارگذاری یکی از بخش‌های مدیریتی ناموفق بود؛ اتصال را بررسی و دوباره تلاش کنید.';status.style.color='#fb7185';}
     setAdminLoginStatus(err.message||'بارگذاری پنل مدیریت ناموفق بود.',true);
   });
 }
