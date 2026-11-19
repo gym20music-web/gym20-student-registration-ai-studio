@@ -148,6 +148,7 @@
     attempt();
     if(attempts<20)regionGuideRetryTimer=setInterval(attempt,250);
   }
+  window.gym20GuidedFlowStart=startRegionGuide;
   window.addEventListener('gym20:region-selected',startRegionGuide);
   // Start one 6-second grace period on the first selected style.
   // Further selections do not restart it; selecting every available style advances immediately.
