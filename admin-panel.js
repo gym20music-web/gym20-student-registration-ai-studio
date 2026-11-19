@@ -227,9 +227,21 @@
   }
   function showView(view) {
     if(!VIEW_META[view]){status('بخش انتخاب‌شده در پنل تعریف نشده است.',true);return;}
-    window.switchAdminTab('view-'+view);
+    const target=$('view-'+view);
+    if(!target){status('محتوای این بخش در صفحه بارگذاری نشده است.',true);return;}
+    document.querySelectorAll('.view,.admin-panel-tab').forEach(el=>el.classList.toggle('active',el===target));
     document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.view===view));
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
+    if(view==='students')loadStudents();
+    if(view==='exercises'){
+      if(window.gym20OwnerAuthorized&&typeof window.loadExerciseStudents==='function')window.loadExerciseStudents();
+      else if(window.gym20OwnerAuthorized)status('ماژول تمرین بارگذاری نشده است؛ فایل student-exercises.js را بررسی کنید.',true);
+      else status('برای استفاده از تمرین‌ها ابتدا وارد حساب مدیر شوید.',true);
+    }
+    if(view==='requests')loadRequests().catch(e=>status(e.message||'دریافت درخواست‌ها ناموفق بود.',true));
+    if(view==='attendance')loadAttendance();
+    if(view==='coaches')loadCoachStats();
+    if(view==='reports')loadReports();
     if(view==='payments')loadPayments();
     if(view==='notifications')loadNotifications();
   }
@@ -395,7 +407,6 @@
       await loadReports();
       showView('students');
       window.dispatchEvent(new Event('gym20:owner-authorized'));
-      window.loadExerciseStudents?.();
     }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
   }
   $('loginForm').addEventListener('submit',async e=>{
