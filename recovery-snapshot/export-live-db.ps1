@@ -1,45 +1,57 @@
-# GYM20 encrypted live database export
-# Run in PowerShell on Windows. Requires PostgreSQL 17 client (pg_dump) and OpenSSL.
-# This reads production only; it does not modify the database.
+# GYM20 encrypted Supabase-native database backup
+# Exports roles, schema, and data using Supabase CLI (with Docker).
+# READ-ONLY against production.
 $ErrorActionPreference = "Stop"
-$hostName = "db.ubrafxjpnqtjnjdaskba.supabase.co"
-$port = "5432"
-$dbName = "postgres"
-$dbUser = "postgres"
 $stamp = Get-Date -Format "yyyyMMdd-HHmmss"
 $outDir = Join-Path (Get-Location) "GYM20-Backup-$stamp"
+$workDir = Join-Path $env:TEMP "GYM20-db-export-$stamp"
 New-Item -ItemType Directory -Path $outDir | Out-Null
-$rawDump = Join-Path $outDir "gym20-live.dump"
-$encryptedDump = Join-Path $outDir "gym20-live.dump.enc"
+New-Item -ItemType Directory -Path $workDir | Out-Null
+$archive = Join-Path $outDir "GYM20-database-backup.zip"
+$encrypted = Join-Path $outDir "GYM20-database-backup.zip.enc"
 
-$pg = Get-Command pg_dump -ErrorAction SilentlyContinue
-if (-not $pg) { throw "pg_dump not found. Install PostgreSQL 17 command-line tools, then reopen PowerShell." }
-$version = (& pg_dump --version | Out-String).Trim()
-if ($version -notmatch "([0-9]+)\.") { throw "Cannot identify pg_dump version: $version" }
-if ([int]$Matches[1] -lt 17) { throw "PostgreSQL 17 client is required. Found: $version" }
-if (-not (Get-Command openssl -ErrorAction SilentlyContinue)) { throw "OpenSSL not found. Install OpenSSL before running this backup." }
+foreach ($tool in @("supabase","docker","openssl")) {
+  if (-not (Get-Command $tool -ErrorAction SilentlyContinue)) {
+    throw "$tool is not installed or not in PATH. Install Supabase CLI, Docker Desktop, and OpenSSL, then reopen PowerShell."
+  }
+}
+docker info *> $null
+if ($LASTEXITCODE -ne 0) { throw "Docker Desktop is not running. Start it and retry." }
 
-$secure = Read-Host "Enter the Supabase DATABASE password (it will not be saved in this script)" -AsSecureString
+Write-Host "Supabase Dashboard > project > Connect: copy the full PostgreSQL URI."
+Write-Host "Use Direct connection (IPv6) or Session pooler (IPv4, port 5432). Replace [YOUR-PASSWORD] locally."
+$secure = Read-Host "Paste the complete PostgreSQL connection URI (hidden input)" -AsSecureString
 $bstr = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($secure)
-try { $env:PGPASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
+try { $dbUrl = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($bstr) }
 finally { [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($bstr) }
-$env:PGSSLMODE = "require"
 
 try {
-  & pg_dump --format=custom --no-owner --no-acl --host=$hostName --port=$port --username=$dbUser --dbname=$dbName --file=$rawDump
-  if ($LASTEXITCODE -ne 0 -or -not (Test-Path $rawDump)) { throw "pg_dump failed. No encrypted backup was created." }
-  Write-Host "Database dump created. Encrypt it now; choose a strong passphrase and store it separately."
-  & openssl enc -aes-256-cbc -pbkdf2 -iter 250000 -salt -in $rawDump -out $encryptedDump
-  if ($LASTEXITCODE -ne 0 -or -not (Test-Path $encryptedDump)) { throw "Encryption failed. The raw dump is retained at $rawDump; protect it and do not share it." }
-  Remove-Item $rawDump -Force
-  $hash = (Get-FileHash $encryptedDump -Algorithm SHA256).Hash
-  Set-Content -Path (Join-Path $outDir "SHA256.txt") -Value "$hash  gym20-live.dump.enc"
-  Write-Host "SUCCESS: $encryptedDump"
+  if ($dbUrl -notmatch '^postgres(ql)?://') { throw "Connection URI format is invalid." }
+  $roles = Join-Path $workDir "roles.sql"
+  $schema = Join-Path $workDir "schema.sql"
+  $data = Join-Path $workDir "data.sql"
+  & supabase db dump --db-url $dbUrl -f $roles --role-only
+  if ($LASTEXITCODE -ne 0) { throw "Supabase roles export failed." }
+  & supabase db dump --db-url $dbUrl -f $schema
+  if ($LASTEXITCODE -ne 0) { throw "Supabase schema export failed." }
+  & supabase db dump --db-url $dbUrl -f $data --use-copy --data-only
+  if ($LASTEXITCODE -ne 0) { throw "Supabase data export failed." }
+  foreach ($file in @($roles,$schema,$data)) {
+    if (-not (Test-Path $file) -or (Get-Item $file).Length -eq 0) { throw "Export file missing or empty: $file" }
+  }
+  Compress-Archive -Path $roles,$schema,$data -DestinationPath $archive -CompressionLevel Optimal
+  if (-not (Test-Path $archive) -or (Get-Item $archive).Length -eq 0) { throw "Archive creation failed." }
+  Write-Host "Exports created. Choose a strong encryption passphrase and store it separately."
+  & openssl enc -aes-256-cbc -pbkdf2 -iter 250000 -salt -in $archive -out $encrypted
+  if ($LASTEXITCODE -ne 0 -or -not (Test-Path $encrypted)) { throw "Encryption failed. Plain ZIP remains at $archive; protect it and do not share it." }
+  Remove-Item $archive -Force
+  $hash = (Get-FileHash $encrypted -Algorithm SHA256).Hash
+  Set-Content -Path (Join-Path $outDir "SHA256.txt") -Value "$hash  GYM20-database-backup.zip.enc"
+  Write-Host "SUCCESS: $encrypted"
   Write-Host "SHA256: $hash"
-  Write-Host "The encrypted dump contains database records, including Auth records and sensitive push-key data. Keep the encryption passphrase separate."
 }
 finally {
-  Remove-Item Env:PGPASSWORD -ErrorAction SilentlyContinue
-  Remove-Item Env:PGSSLMODE -ErrorAction SilentlyContinue
+  $dbUrl = $null
+  Remove-Item $workDir -Recurse -Force -ErrorAction SilentlyContinue
   $secure.Dispose()
 }
