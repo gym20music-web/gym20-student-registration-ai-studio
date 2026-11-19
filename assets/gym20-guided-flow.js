@@ -13,6 +13,7 @@
       box-shadow:0 0 0 3px rgba(214,179,90,.08),0 6px 18px rgba(0,0,0,.14)!important;
       transition:outline-color .22s ease,box-shadow .22s ease!important;
     }
+    #regPhone.gym20-phone-invalid{border:1.5px solid #e05252!important;outline:2px solid rgba(224,82,82,.18)!important;outline-offset:1px!important;box-shadow:0 0 0 3px rgba(224,82,82,.12)!important;}
     .gym20-flow-pop{
       position:fixed;z-index:2147483000;display:flex;align-items:center;justify-content:center;
       min-width:66px;height:27px;padding:0 11px;box-sizing:border-box;
@@ -73,7 +74,7 @@
       regFullName:'#regFullName',
       regPhone:'#regPhone',
       regBirthDateShamsi:'#regBirthDateShamsi',
-      rulesSection:'#txt_rulesSection',
+      rulesSection:'.rule-agreement',
       acceptRules:'.rule-agreement',
       paymentSection:'#regPaymentConfirmed',
       regSubmitBtn:'#regSubmitBtn'
@@ -126,11 +127,7 @@
       return;
     }
     if(target.closest('#txt_rulesSection')||target.closest('#dynamicRulesBox')){
-      if(!document.getElementById('acceptRules')?.checked){
-        focusStep('rulesSection',false);
-        const rulesTarget=activeTarget;
-        setTimeout(()=>{if(activeTarget===rulesTarget&&!document.getElementById('acceptRules')?.checked)focusStep('acceptRules',true);},2200);
-      }
+      if(!document.getElementById('acceptRules')?.checked)focusStep('acceptRules',true,'انتخاب کن');
     }
     if(target.closest('#acceptRules')){
       setTimeout(()=>{if(document.getElementById('acceptRules')?.checked)focusStep('paymentSection',true);},100);
@@ -150,7 +147,7 @@
       }else if(field.id==='regPhone'&&field.value.trim()&&formGuideStage<2){
         formGuideStage=2;focusStep('regBirthDateShamsi',true,'بنویس');
       }else if(field.id==='regBirthDateShamsi'&&field.value.trim()&&formGuideStage<3){
-        formGuideStage=3;focusStep('rulesSection',true,'انتخاب کن');
+        formGuideStage=3;focusStep('acceptRules',true,'انتخاب کن');
       }
     });
   }

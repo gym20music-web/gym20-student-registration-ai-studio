@@ -1370,7 +1370,18 @@ registrationForm.addEventListener('submit',async e=>{
             notes: notes
         };
         dispatchTelegramNotification(regInfo).catch(err => { console.warn('Telegram notification error:', err); setRegistrationStatus('ثبت‌نام انجام شد؛ اما پیام تلگرام ارسال نشد: ' + (err.message || 'خطای نامشخص'), 'error'); });
-    }catch(err){setRegistrationStatus(err.message||'خطا در ارسال.','error');}finally{registrationSubmit.textContent=(appData.buttons&&appData.buttons.submitReg)||'ارسال درخواست ثبت‌نام';updateRegistrationSubmitState();}
+    }catch(err){
+        const errorText=String(err?.message||'');
+        setRegistrationStatus(errorText||'خطا در ارسال.','error');
+        if(/شماره.{0,12}(تلفن|موبایل)|موبایل.{0,12}(معتبر|صحیح)|تلفن.{0,12}(معتبر|صحیح)/i.test(errorText)){
+            const phoneField=document.getElementById('regPhone');
+            if(phoneField){
+                phoneField.classList.add('gym20-phone-invalid');
+                phoneField.scrollIntoView({behavior:'smooth',block:'center'});
+                phoneField.focus({preventScroll:true});
+            }
+        }
+    }finally{registrationSubmit.textContent=(appData.buttons&&appData.buttons.submitReg)||'ارسال درخواست ثبت‌نام';updateRegistrationSubmitState();}
 });
 
 function isValidGym20SiteConfig(data){
