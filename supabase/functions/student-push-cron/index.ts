@@ -34,7 +34,7 @@ async function sendOne(sub: any, message: string, tag: string, studentCode: stri
     return true;
   } catch (e) {
     const status = Number((e as { statusCode?: number })?.statusCode || 0);
-    if (status === 404 || status === 410) await gym.from("student_push_subscriptions").update({ is_active: false, updated_at: new Date().toISOString() }).eq("id", sub.id);
+    if (status === 404 || status === 410 || status === 403) await gym.from("student_push_subscriptions").update({ is_active: false, updated_at: new Date().toISOString() }).eq("id", sub.id);
     console.error("scheduled push failed", status, e);
     return false;
   }
