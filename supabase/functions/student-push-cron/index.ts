@@ -95,27 +95,32 @@ Deno.serve(async (req: Request) => {
         if (enrollmentError) throw enrollmentError;
         const studentIds = [...new Set((enrollments || []).map(x => x.student_id))];
         for (const studentId of studentIds) {
-          const { data: existing, error: existingError } = await gym.from("student_push_deliveries").select("id").eq("student_id", studentId).eq("session_id", session.id).eq("reminder_kind", reminder.kind).maybeSingle();
-          if (existingError) throw existingError;
-          if (existing) continue;
+          const { data: claim, error: claimError } = await gym.from("student_push_deliveries")
+            .insert({ student_id: studentId, session_id: session.id, reminder_kind: reminder.kind })
+            .select("id").maybeSingle();
+          if (claimError) {
+            if (/duplicate|unique/i.test(claimError.message || "")) continue;
+            throw claimError;
+          }
+          if (!claim) continue;
           const { data: student, error: studentError } = await gym.from("students").select("full_name").eq("id", studentId).maybeSingle();
           if (studentError) throw studentError;
           const { data: studentLink, error: studentLinkError } = await gym.from("student_public_links").select("code").eq("student_id", studentId).maybeSingle();
           if (studentLinkError) throw studentLinkError;
           const { data: subs, error: subError } = await gym.from("student_push_subscriptions").select("id,endpoint,p256dh,auth").eq("student_id", studentId).eq("is_active", true);
           if (subError) throw subError;
-          if (!subs?.length) continue;
+          if (!subs?.length) {
+            await gym.from("student_push_deliveries").delete().eq("id", claim.id);
+            continue;
+          }
           const { day, time } = localDateTime(session.starts_at);
           const relative = reminder.hours === 1 ? "یک ساعت دیگر" : reminder.hours.toLocaleString("fa-IR") + " ساعت دیگر";
           const message = fillTemplate(reminder.template, { student: student?.full_name || "هنرجو", relative, day, time });
           const tag = "gym20-" + session.id + "-" + reminder.kind;
           let studentSent = 0;
           for (const sub of subs) if (await sendOne(sub, message, tag, studentLink?.code || "")) studentSent++;
-          if (studentSent > 0) {
-            const { error: deliveryError } = await gym.from("student_push_deliveries").insert({ student_id: studentId, session_id: session.id, reminder_kind: reminder.kind });
-            if (deliveryError && !/duplicate|unique/i.test(deliveryError.message || "")) throw deliveryError;
-            sent += studentSent;
-          }
+          if (studentSent > 0) sent += studentSent;
+          else await gym.from("student_push_deliveries").delete().eq("id", claim.id);
           processed++;
         }
       }
