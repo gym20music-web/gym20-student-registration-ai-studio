@@ -208,7 +208,6 @@
     $('pageTitle').textContent=VIEW_META[view][0];$('pageSubtitle').textContent=VIEW_META[view][1];
     if(view==='payments')loadPayments();
     if(view==='notifications')loadNotifications();
-    if(view==='exercises'&&window.gym20OwnerAuthorized)window.loadExerciseStudents?.();
   }
   async function refresh() {
     try{await loadConfig();if(document.getElementById('view-requests').classList.contains('active'))await loadRequests();status('اطلاعات بروزرسانی شد.');}
