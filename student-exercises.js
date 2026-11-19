@@ -127,9 +127,30 @@
 
   function mount() {
     const nav = document.querySelector('.admin-tabs');
-    const panel = $('view-exercises');
-    if (!nav || !panel) return;
-    
+    const work = document.querySelector('.admin-workspace');
+    if (!nav || !work) return;
+
+    // Keep the exercise destination available even if an older cached admin shell is opened.
+    let navButton = nav.querySelector('[data-view="exercises"]');
+    if (!navButton) {
+      navButton = document.createElement('button');
+      navButton.type = 'button';
+      navButton.className = 'nav-item';
+      navButton.dataset.view = 'exercises';
+      navButton.innerHTML = '🏋️ <span>تمرین هنرجویان</span>';
+      const overview = nav.querySelector('[data-view="overview"]');
+      if (overview?.nextSibling) nav.insertBefore(navButton, overview.nextSibling);
+      else nav.appendChild(navButton);
+    }
+    let panel = $('view-exercises');
+    if (!panel) {
+      panel = document.createElement('section');
+      panel.id = 'view-exercises';
+      panel.className = 'view admin-panel-tab';
+      panel.innerHTML = '<div class="panel"><div class="panel-head"><h2>تمرین‌های اختصاصی هنرجویان</h2><span class="tag">برنامه تمرینی</span></div><div class="field-grid"><div class="field full"><label for="gym20ExerciseStudentSelect">انتخاب هنرجو</label><select id="gym20ExerciseStudentSelect"><option value="">در حال دریافت فهرست هنرجویان…</option></select></div><div class="field full"><label for="gym20ExerciseInput">عنوان تمرین</label><input id="gym20ExerciseInput" maxlength="120" placeholder="مثلاً پوش‌آپ ۳۰ تکرار"></div></div><div class="panel-actions"><button class="primary" id="gym20ExerciseAdd" type="button">＋ افزودن تمرین</button></div><p class="muted" id="gym20ExerciseFeedback" role="status" aria-live="polite"></p><div id="gym20ExerciseList" class="request-list"><p class="muted">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p></div></div>';
+      work.appendChild(panel);
+    }
+
     const select = $('gym20ExerciseStudentSelect');
     const add = $('gym20ExerciseAdd');
     const input = $('gym20ExerciseInput');
@@ -153,6 +174,10 @@
     });
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.loadExerciseStudents = loadExerciseStudents;
+    window.gym20ExerciseTabReady = true;
+    window.addEventListener('gym20:owner-authorized', () => {
+      if (window.gym20OwnerAuthorized) loadExerciseStudents();
+    });
     if (window.gym20OwnerAuthorized) loadExerciseStudents();
   }
 
