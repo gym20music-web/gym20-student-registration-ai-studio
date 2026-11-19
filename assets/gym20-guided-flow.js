@@ -142,6 +142,7 @@
     registrationForm.addEventListener('input',function(e){
       const field=e.target;
       if(!(field instanceof HTMLInputElement))return;
+      if(field.id==='regPhone')field.classList.remove('gym20-phone-invalid');
       if(field.id==='regFullName'&&field.value.trim()&&formGuideStage<1){
         formGuideStage=1;focusStep('regPhone',true,'بنویس');
       }else if(field.id==='regPhone'&&field.value.trim()&&formGuideStage<2){
