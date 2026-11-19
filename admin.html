@@ -26,10 +26,19 @@
     <label for="projectUrl">آدرس پروژه Supabase</label>
     <input id="projectUrl" type="url" value="https://ubrafxjpnqtjnjdaskba.supabase.co" dir="ltr" required>
     <label for="publishableKey">کلید عمومی Publishable</label>
-    <input id="publishableKey" type="password" value="sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3" placeholder="sb_publishable_…" dir="ltr" autocomplete="off" required>
+    <input id="publishableKey" name="gym20-public-project-key" type="text" value="sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3" placeholder="sb_publishable_…" dir="ltr" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" required>
     <label for="loginEmail">ایمیل مدیر</label>
-    <input id="loginEmail" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر" required>
-    <button class="primary wide" id="loginSubmit">ارسال لینک ورود</button>
+    <input id="loginEmail" name="username" type="email" autocomplete="username" placeholder="ایمیل حساب مدیر" required>
+    <label for="loginPassword">رمز عبور مدیر</label>
+    <input id="loginPassword" name="password" type="password" autocomplete="current-password" placeholder="رمز عبور حساب مدیر">
+    <button class="primary wide" id="passwordLogin" type="button">ورود با رمز عبور</button>
+    <button class="ghost wide" id="loginSubmit" type="submit">ارسال لینک ورود به ایمیل</button>
+    <button class="ghost wide" id="resetPassword" type="button">فراموشی رمز عبور</button>
+    <div id="passwordRecoveryPanel" hidden>
+      <label for="newAdminPassword">رمز عبور جدید</label>
+      <input id="newAdminPassword" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ کاراکتر">
+      <button class="primary wide" id="saveNewPassword" type="button">ثبت رمز عبور جدید</button>
+    </div>
     <p class="status" id="loginStatus" role="status" aria-live="polite"></p>
     <small class="muted">کلید Secret یا service_role را اینجا وارد نکنید. اطلاعات ورود در کد ذخیره نمی‌شود.</small>
   </form>
