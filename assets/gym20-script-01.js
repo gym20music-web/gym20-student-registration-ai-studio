@@ -919,46 +919,47 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
         applyDataToUI();updateClassStatusAndStylesFlow();
         
         let dbSynced=false;
-        
-        // ۱. ذخیره لحظه‌ای در دیتابیس Supabase (برای اعمال بلادرنگ روی گوشی همه هنرجوها)
+        // ذخیره با کلاینت احراز هویت‌شده مدیر؛ کلید Publishable فقط برای شناسایی پروژه است و مجوز نوشتن نیست.
         try {
-            // تلاش از طریق تابع اختصاصی امن با پین
-            const dbRpcRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/rpc/save_site_config', {
-                method: 'POST',
-                headers: {
-                    'apikey': GYM20_SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                    'Content-Type': 'application/json',
-                    'Content-Profile': 'gym20',
-                    'Accept-Profile': 'gym20'
-                },
-                body: JSON.stringify({ p_config: appData, p_pin: '1234' })
+            if(!gym20OwnerAuthorized||!gym20AdminClient)throw new Error('نشست معتبر مدیر برای ذخیره تنظیمات پیدا نشد؛ دوباره وارد پنل شوید.');
+            let {data:sessionResult,error:sessionError}=await gym20AdminClient.auth.getSession();
+            if(sessionError)throw sessionError;
+            if(!sessionResult?.session?.access_token){
+                const refreshed=await gym20AdminClient.auth.refreshSession();
+                if(refreshed.error)throw refreshed.error;
+            }
+            const {data:savedRow,error:saveError}=await gym20AdminClient
+                .schema('gym20')
+                .from('site_settings')
+                .update({value:appData})
+                .eq('key','public_site_config')
+                .select('key,value')
+                .maybeSingle();
+            if(saveError)throw saveError;
+            if(!savedRow||savedRow.key!=='public_site_config'||!savedRow.value||typeof savedRow.value!=='object'){
+                throw new Error('دیتابیس ردیف تنظیمات را تأیید نکرد؛ هیچ تغییری به‌عنوان ذخیره‌شده اعلام نشد.');
+            }
+            // تأیید بازخوانی از سرور، به‌ویژه برای جلوگیری از گم‌شدن منطقه تازه‌افزوده‌شده.
+            const {data:verifiedRow,error:verifyError}=await gym20AdminClient
+                .schema('gym20')
+                .from('site_settings')
+                .select('value')
+                .eq('key','public_site_config')
+                .single();
+            if(verifyError)throw verifyError;
+            const expectedRegions=Array.isArray(appData.regions)?appData.regions:[];
+            const storedRegions=Array.isArray(verifiedRow?.value?.regions)?verifiedRow.value.regions:[];
+            const regionCheck=expectedRegions.every(expected=>{
+                const actual=storedRegions.find(item=>String(item.id)===String(expected.id));
+                return actual&&actual.name===expected.name&&Number(actual.kidsBase)===Number(expected.kidsBase)&&Number(actual.adultBase)===Number(expected.adultBase)&&Number(actual.extraStylePrice)===Number(expected.extraStylePrice);
             });
-            if (dbRpcRes.ok) {
-                const rpcResult = await dbRpcRes.json().catch(() => false);
-                dbSynced = rpcResult === true;
+            if(!regionCheck||storedRegions.length!==expectedRegions.length){
+                throw new Error('ذخیره انجام شد اما تأیید نهایی مناطق با اطلاعات پنل یکسان نیست؛ دوباره تلاش کنید.');
             }
-            if (!dbSynced) {
-                // تلاش پشتیبان: آپدیت مستقیم ردیف تنظیمات در جدول site_settings
-                const dbPatchRes = await fetch(GYM20_SUPABASE_URL + '/rest/v1/site_settings?key=eq.public_site_config', {
-                    method: 'PATCH',
-                    headers: {
-                        'apikey': GYM20_SUPABASE_ANON_KEY,
-                        'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-                        'Content-Type': 'application/json',
-                        'Content-Profile': 'gym20',
-                        'Accept-Profile': 'gym20',
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify({ value: appData })
-                });
-                if (dbPatchRes.ok) {
-                    const patchedRows = await dbPatchRes.json().catch(() => []);
-                    dbSynced = Array.isArray(patchedRows) && patchedRows.length > 0;
-                }
-            }
+            dbSynced=true;
         } catch(e) {
-            console.warn('Supabase DB save error:', e);
+            console.error('GYM20 authenticated settings save failed:',e);
+            throw new Error(e?.message||'ذخیره آنلاین تنظیمات ناموفق بود.');
         }
 
         if(dbSynced){
