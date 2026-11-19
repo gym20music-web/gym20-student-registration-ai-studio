@@ -16,7 +16,10 @@ window.GYM20AdminAuth = (() => {
     });
 
     async function verifyOwner() {
-      const { data: { user }, error: userError } = await client.auth.getUser();
+      const { data: { session }, error: sessionError } = await client.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (!session?.access_token) return false;
+      const { data: { user }, error: userError } = await client.auth.getUser(session.access_token);
       if (userError || !user) return false;
       const { data: profile, error } = await client
         .schema('gym20')
