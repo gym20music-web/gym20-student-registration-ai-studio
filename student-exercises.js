@@ -127,59 +127,39 @@
 
   function mount() {
     const nav = document.querySelector('.admin-tabs');
-    const work = document.querySelector('.admin-workspace');
-    if (!nav || !work) return;
-
-    // Build this feature inside the original right-side admin navigation.
-    if (!$('exercisesTab')) {
-      const tabButton = document.createElement('button');
-      tabButton.type = 'button';
-      tabButton.className = 'admin-tab-btn';
-      tabButton.textContent = '🏋️ تمرین هنرجویان';
-      tabButton.setAttribute('onclick', "switchAdminTab('exercisesTab')");
-      const requestsButton = nav.querySelector('[onclick*="requestsTab"]');
-      nav.insertBefore(tabButton, requestsButton || null);
-
-      const panel = document.createElement('section');
-      panel.id = 'exercisesTab';
-      panel.className = 'admin-panel-tab';
-      panel.innerHTML =
-        '<div class="admin-section-subhead">🏋️ مدیریت تمرین‌های اختصاصی هنرجویان</div>' +
-        '<div class="admin-card-section" style="margin-top:6px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-card);">' +
-          '<div class="admin-input-group"><label for="gym20ExerciseStudentSelect">انتخاب هنرجو:</label>' +
-          '<select id="gym20ExerciseStudentSelect" class="admin-select" style="width:100%;min-height:36px;"><option value="">در حال دریافت فهرست هنرجویان…</option></select></div>' +
-          '<div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:end;margin-top:8px;">' +
-            '<div class="admin-input-group" style="min-width:0;margin:0;"><label for="gym20ExerciseInput">تمرین جدید:</label><input id="gym20ExerciseInput" type="text" maxlength="120" placeholder="مثلاً ۳ ست شنا سوئدی" style="width:100%;min-width:0;"></div>' +
-            '<button type="button" id="gym20ExerciseAdd" class="pill-btn active" style="height:34px;padding:0 12px;white-space:nowrap;">افزودن تمرین</button>' +
-          '</div>' +
-          '<div id="gym20ExerciseFeedback" role="status" aria-live="polite" style="font-size:10px;min-height:22px;margin-top:7px;"></div>' +
-        '</div>' +
-        '<div class="admin-card-section" style="margin-top:8px;padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-card);">' +
-          '<div class="admin-section-subhead" style="margin-bottom:8px;">فهرست تمرین‌ها</div>' +
-          '<div id="gym20ExerciseList"><p class="muted">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p></div>' +
-        '</div>';
-      const requestsPanel = $('requestsTab');
-      work.insertBefore(panel, requestsPanel || null);
-      tabButton.addEventListener('click', () => setTimeout(loadExerciseStudents, 0));
+    const panel = $('view-exercises');
+    if (!nav || !panel) return;
+    const tab = nav.querySelector('[data-view="exercises"]');
+    if (tab && !tab.dataset.exerciseBound) {
+      tab.dataset.exerciseBound = '1';
+      tab.addEventListener('click', () => setTimeout(() => {
+        if (window.gym20OwnerAuthorized) loadExerciseStudents();
+      }, 0));
     }
-
-    $('gym20ExerciseStudentSelect').addEventListener('change', loadStudentExercisesAdmin);
-    $('gym20ExerciseAdd').addEventListener('click', addExercise);
-    $('gym20ExerciseInput').addEventListener('keydown', e => {
-      if (e.key === 'Enter') { e.preventDefault(); addExercise(); }
+    const select = $('gym20ExerciseStudentSelect');
+    const add = $('gym20ExerciseAdd');
+    const input = $('gym20ExerciseInput');
+    const list = $('gym20ExerciseList');
+    if (!select || !add || !input || !list) return;
+    if (select.dataset.exerciseBound) return;
+    select.dataset.exerciseBound = '1';
+    select.addEventListener('change', loadStudentExercisesAdmin);
+    add.addEventListener('click', addExercise);
+    input.addEventListener('keydown', event => {
+      if (event.key === 'Enter') { event.preventDefault(); addExercise(); }
     });
-    $('gym20ExerciseList').addEventListener('click', e => {
-      const toggle = e.target.closest('[data-toggle-exercise]');
+    list.addEventListener('click', event => {
+      const toggle = event.target.closest('[data-toggle-exercise]');
       if (toggle) { toggleExercise(toggle.dataset.toggleExercise, toggle.dataset.completed === 'true'); return; }
-      const button = e.target.closest('[data-delete-exercise]');
+      const button = event.target.closest('[data-delete-exercise]');
       if (button) deleteExercise(button.dataset.deleteExercise);
     });
     $('refreshBtn')?.addEventListener('click', () => {
-      if (document.getElementById('view-exercises')?.classList.contains('active')) loadExerciseStudents();
+      if (panel.classList.contains('active') && window.gym20OwnerAuthorized) loadExerciseStudents();
     });
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.loadExerciseStudents = loadExerciseStudents;
-    loadExerciseStudents();
+    if (window.gym20OwnerAuthorized) loadExerciseStudents();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
