@@ -181,9 +181,9 @@
       if (panel.classList.contains('active') && window.gym20OwnerAuthorized) loadExerciseStudents();
     });
     window.addEventListener('gym20:owner-authorized', () => {
-      if (window.gym20OwnerAuthorized) loadExerciseStudents();
+      if (window.gym20OwnerAuthorized && panel.classList.contains('active')) loadExerciseStudents();
     });
-    if (window.gym20OwnerAuthorized) loadExerciseStudents();
+    if (window.gym20OwnerAuthorized && panel.classList.contains('active')) loadExerciseStudents();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount);
