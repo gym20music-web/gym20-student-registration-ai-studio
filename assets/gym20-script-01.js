@@ -1094,26 +1094,27 @@ async function fetchPromoChannelInfo(){
     if(btn){btn.disabled=true;btn.textContent='در حال دریافت…';}
     setPromoChannelStatus('در حال دریافت عنوان و توضیحات کانال از تلگرام…');
     try{
-        let result={},lastFetchError=null;
-        // اگر تلگرام پاسخ ناقص بدهد، دو بار دیگر با فاصله کوتاه تلاش می‌کنیم.
-        for(let attempt=0;attempt<3;attempt++){
-            try{
-                const response=await fetch(GYM20_SUPABASE_URL+'/functions/v1/telegram-channel-info',{
-                    method:'POST',
-                    headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,'Content-Type':'application/json'},
-                    body:JSON.stringify({channel:link})
-                });
-                result=await response.json().catch(()=>({}));
-                if(!response.ok||result.error)throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
-                lastFetchError=null;
-                if(String(result.description||result.bio||'').trim()||attempt===2)break;
-            }catch(fetchError){
-                lastFetchError=fetchError;
-                if(attempt===2)throw fetchError;
-            }
-            await new Promise(resolve=>setTimeout(resolve,450*(attempt+1)));
+        if(!gym20AdminClient)throw new Error('اتصال ورود مدیر آماده نیست؛ یک‌بار از پنل خارج و دوباره وارد شوید.');
+        // تابع امن سرور باید access token واقعی نشست مدیر را دریافت کند؛ Publishable key جایگزین نشست کاربر نیست.
+        let {data:sessionData,error:sessionError}=await gym20AdminClient.auth.getSession();
+        if(sessionError)throw sessionError;
+        let accessToken=sessionData?.session?.access_token||'';
+        if(!accessToken){
+            const refreshed=await gym20AdminClient.auth.refreshSession();
+            if(refreshed.error)throw new Error('نشست مدیر در دسترس نیست؛ از پنل خارج و دوباره وارد شوید.');
+            accessToken=refreshed.data?.session?.access_token||'';
         }
-        if(lastFetchError)throw lastFetchError;
+        if(!accessToken)throw new Error('نشست معتبر مدیر پیدا نشد؛ دوباره وارد شوید.');
+        const response=await fetch(GYM20_SUPABASE_URL+'/functions/v1/telegram-channel-info',{
+            method:'POST',
+            headers:{'apikey':GYM20_SUPABASE_ANON_KEY,'Authorization':'Bearer '+accessToken,'Content-Type':'application/json'},
+            body:JSON.stringify({channel:link})
+        });
+        const result=await response.json().catch(()=>({}));
+        if(!response.ok||result.error){
+            if(response.status===401)throw new Error('نشست مدیر منقضی شده است؛ یک‌بار از پنل خارج و دوباره وارد شوید.');
+            throw new Error(result.error||'دریافت اطلاعات کانال ناموفق بود.');
+        }
         const fetchedTitle=String(result.title||'').trim();
         const fetchedDescription=String(result.description||result.bio||'').trim();
         const previousTitle=(document.getElementById('editPromoChannelTitle')?.value||'').trim();
