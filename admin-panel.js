@@ -593,55 +593,46 @@
         else if(target!==drag.el.nextElementSibling)nav.insertBefore(drag.el,target);
         drag.moved=true;
       };
-      // Mouse/trackpad path.
+      // Unified Pointer Events path for mouse, pen and Android touch.
+      let suppressClickUntil=0;
       nav.addEventListener('pointerdown',e=>{
-        if(e.pointerType!=='mouse')return;
-        const el=e.target.closest('.nav-item,.admin-tab-btn');
-        if(!el||el.parentElement!==nav||e.button!==0)return;
-        e.preventDefault();
+        const el=e.target.closest?.('.nav-item,.admin-tab-btn');
+        if(!el||el.parentElement!==nav)return;
+        if(e.pointerType==='mouse'&&e.button!==0)return;
         stop();
-        drag={el,id:e.pointerId,x:e.clientX,y:e.clientY,active:true,moved:false};
-        el.classList.add('gym20-nav-dragging');
-      });
-      document.addEventListener('pointermove',e=>{
-        if(!drag||e.pointerType!=='mouse'||e.pointerId!==drag.id)return;
-        moveTo(e.clientX,e.clientY);
-      });
-      document.addEventListener('pointerup',e=>{if(drag&&e.pointerType==='mouse'&&e.pointerId===drag.id)stop();});
-      document.addEventListener('pointercancel',e=>{if(drag&&e.pointerType==='mouse'&&e.pointerId===drag.id)stop();});
-      // Dedicated touch path for Android: long-press the grip, then drag.
-      nav.addEventListener('touchstart',e=>{
-        const t=e.changedTouches&&e.changedTouches[0];
-        const el=e.target.closest('.nav-item,.admin-tab-btn');
-        if(!t||!el||el.parentElement!==nav)return;
-        stop();
-        // Suppress the browser's competing scroll/selection gesture on the
-        // dedicated handle; keep a generous movement tolerance for finger jitter.
-        drag={el,id:t.identifier,x:t.clientX,y:t.clientY,active:false,moved:false,touch:true};
-        timer=setTimeout(()=>{
-          if(!drag||!drag.touch)return;
+        drag={el,id:e.pointerId,x:e.clientX,y:e.clientY,active:e.pointerType!=='touch',moved:false,touch:e.pointerType==='touch'};
+        if(drag.active)el.classList.add('gym20-nav-dragging');
+        else timer=setTimeout(()=>{
+          if(!drag||drag.id!==e.pointerId)return;
           drag.active=true;
           drag.el.classList.add('gym20-nav-dragging');
-        },380);
+        },450);
       },{passive:false});
-      nav.addEventListener('touchmove',e=>{
-        if(!drag||!drag.touch)return;
-        const t=Array.from(e.changedTouches||[]).find(x=>x.identifier===drag.id);
-        if(!t)return;
+      document.addEventListener('pointermove',e=>{
+        if(!drag||e.pointerId!==drag.id)return;
         if(!drag.active){
-          if(Math.hypot(t.clientX-drag.x,t.clientY-drag.y)>34){clearTimeout(timer);drag=null;}
+          if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>22){
+            clearTimeout(timer);
+            drag=null;
+          }
           return;
         }
-        e.preventDefault();
-        moveTo(t.clientX,t.clientY);
+        if(e.cancelable)e.preventDefault();
+        moveTo(e.clientX,e.clientY);
       },{passive:false});
-      const finishTouch=e=>{
-        if(!drag||!drag.touch)return;
-        const ended=Array.from(e.changedTouches||[]).some(x=>x.identifier===drag.id);
-        if(ended)stop();
+      const finishPointer=e=>{
+        if(!drag||e.pointerId!==drag.id)return;
+        if(drag.moved)suppressClickUntil=Date.now()+500;
+        stop();
       };
-      document.addEventListener('touchend',finishTouch,{passive:true});
-      document.addEventListener('touchcancel',finishTouch,{passive:true});
+      document.addEventListener('pointerup',finishPointer);
+      document.addEventListener('pointercancel',finishPointer);
+      nav.addEventListener('click',e=>{
+        if(Date.now()>suppressClickUntil)return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        suppressClickUntil=0;
+      },true);
       restore();
       const observer=new MutationObserver(records=>{
         let added=false;
