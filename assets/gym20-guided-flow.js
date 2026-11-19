@@ -202,6 +202,17 @@
   else watchRegionContent();
   window.gym20GuidedFlowStart=startRegionGuide;
   window.addEventListener('gym20:region-selected',startRegionGuide);
+  // Capture the user's actual region-item tap before the region picker handler
+  // stops propagation. Re-run after the selection handler updates the form.
+  document.addEventListener('click',function(e){
+    const target=e.target instanceof Element?e.target:e.target?.parentElement;
+    if(!target||!target.closest('.region-wheel-item'))return;
+    const run=()=>{
+      if(typeof window.gym20GuidedFlowStart==='function')window.gym20GuidedFlowStart();
+    };
+    setTimeout(run,100);
+    setTimeout(run,450);
+  },true);
   // Start one 6-second grace period on the first selected style.
   // Further selections do not restart it; selecting every available style advances immediately.
   window.gym20GuidedFlowStyleSelected=function(){
