@@ -2,6 +2,45 @@
   const SUPABASE_URL='https://ubrafxjpnqtjnjdaskba.supabase.co';
   const SUPABASE_KEY='sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3';
   const $=id=>document.getElementById(id);
+  let pendingClassNotice="";
+  try{
+    const hash=String(location.hash||"");
+    const marker="gym20-notice=";
+    const index=hash.indexOf(marker);
+    if(index>=0){
+      pendingClassNotice=decodeURIComponent(hash.slice(index+marker.length).split("&")[0]).slice(0,1200);
+      history.replaceState(null,"",location.pathname+location.search);
+    }
+  }catch(_){}
+  function showClassNotice(message){
+    const text=String(message||"").trim();
+    if(!text)return;
+    document.getElementById("gym20ClassNotice")?.remove();
+    const style=document.createElement("style");
+    style.id="gym20ClassNoticeStyle";
+    style.textContent=`
+      #gym20ClassNotice{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:18px;background:rgba(3,6,10,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+      #gym20ClassNotice .notice-card{width:min(100%,440px);max-height:min(78dvh,620px);overflow:auto;padding:18px;border:1px solid rgba(232,196,107,.38);border-radius:16px;background:linear-gradient(150deg,#202936,#10151e);box-shadow:0 22px 65px #000a}
+      #gym20ClassNotice .notice-kicker{color:#e8c46b;font:800 9px Montserrat,sans-serif;letter-spacing:1.4px;text-align:center}
+      #gym20ClassNotice .notice-title{margin:8px 0 12px;color:#f3d58b;font-size:15px;font-weight:800;text-align:center}
+      #gym20ClassNotice .notice-body{white-space:pre-wrap;overflow-wrap:anywhere;color:#f2f4f8;font:500 13px/2 Vazirmatn,sans-serif;text-align:right}
+      #gym20ClassNotice .notice-close{width:100%;min-height:40px;margin-top:16px;border:1px solid #a98743;border-radius:9px;background:linear-gradient(120deg,#e8c46b,#b58b3c);color:#17130b;font:800 11px Vazirmatn,sans-serif}
+    `;
+    if(!document.getElementById("gym20ClassNoticeStyle"))document.head.appendChild(style);
+    const overlay=document.createElement("div");
+    overlay.id="gym20ClassNotice";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","متن اعلان کلاس");
+    const card=document.createElement("section");card.className="notice-card";
+    const kicker=document.createElement("div");kicker.className="notice-kicker";kicker.textContent="GYM20 · CLASS NOTIFICATION";
+    const heading=document.createElement("div");heading.className="notice-title";heading.textContent="پیام کلاس شما";
+    const body=document.createElement("div");body.className="notice-body";body.textContent=text;
+    const close=document.createElement("button");close.type="button";close.className="notice-close";close.textContent="متوجه شدم";
+    const dismiss=()=>{overlay.remove();document.removeEventListener("keydown",onKey);};
+    const onKey=e=>{if(e.key==="Escape")dismiss();};
+    close.addEventListener("click",dismiss);
+    overlay.addEventListener("click",e=>{if(e.target===overlay)dismiss();});
+    card.append(kicker,heading,body,close);overlay.appendChild(card);document.body.appendChild(overlay);
+    document.addEventListener("keydown",onKey);close.focus({preventScroll:true});
+  }
   // Center each field's label and value inside its own box on mobile and desktop.
   const studentFieldCenterStyle=document.createElement('style');
   studentFieldCenterStyle.textContent=`
@@ -411,6 +450,7 @@
       };
       const data=await getSchedule();
       $('studentName').textContent='هنرجو: '+data.student.full_name;
+      if(pendingClassNotice){showClassNotice(pendingClassNotice);pendingClassNotice="";}
       if(shortCode)setupPush(shortCode,client);loadStudentExercises(shortCode,token,client);
       terms=Array.isArray(data.terms)?data.terms:[];
       if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
