@@ -26,6 +26,7 @@
       transition:opacity .18s ease,transform .18s ease;
     }
     .gym20-flow-pop.is-visible{opacity:1;transform:translateY(0) scale(1)}
+    .gym20-flow-pop.gym20-flow-suppressed{display:none!important;}
     .gym20-flow-pop::after{
       content:'';position:absolute;left:50%;top:-6px;width:10px;height:10px;
       background:rgba(29,31,33,.96);border-right:1px solid rgba(218,190,126,.68);
@@ -61,13 +62,13 @@
     if(!adminIsOpen()){
       // Do not write the same style value repeatedly: the old body-wide observer
       // watched this mutation and could retrigger itself indefinitely.
-      if(pop&&pop.style.display!=='')pop.style.display='';
+      if(pop)pop.classList.remove('gym20-flow-suppressed');
       return;
     }
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
     if(pop){
       pop.classList.remove('is-visible');
-      if(pop.style.display!=='none')pop.style.display='none';
+      pop.classList.add('gym20-flow-suppressed');
     }
     activeTarget=null;
   }
@@ -140,16 +141,8 @@
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
     ensurePop();
-    // Force the hint above every page layer. Some Android/WebView rendering
-    // stacks suppress stylesheet-driven opacity/position for dynamically added
-    // fixed elements; inline important values make the cue deterministic.
-    pop.style.setProperty('position','fixed','important');
-    pop.style.setProperty('z-index','2147483647','important');
-    pop.style.setProperty('display','flex','important');
-    pop.style.setProperty('visibility','visible','important');
-    pop.style.setProperty('opacity','1','important');
-    pop.style.setProperty('transform','none','important');
-    pop.style.setProperty('pointer-events','none','important');
+    // Keep visibility and animation controlled by CSS classes. Inline !important
+    // declarations previously overrode the admin/drawer hide rules and opacity reset.
     pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
