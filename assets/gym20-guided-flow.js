@@ -53,7 +53,9 @@
   }
   function adminIsOpen(){
     const modal=document.getElementById('adminModal');
-    return !!(modal&&visible(modal));
+    if(!modal||modal.hidden||modal.getAttribute('aria-hidden')==='true')return false;
+    const display=getComputedStyle(modal).display;
+    return modal.style.display!=='none'&&display!=='none';
   }
   function syncAdminVisibility(){
     if(!adminIsOpen()){if(pop)pop.style.display='';return;}
@@ -65,7 +67,7 @@
   function watchAdminModal(){
     const modal=document.getElementById('adminModal');
     if(modal)adminObserver.observe(modal,{attributes:true,attributeFilter:['class','style','aria-hidden']});
-    adminObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+    adminObserver.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','aria-hidden']});
     syncAdminVisibility();
   }
   function visible(el){
