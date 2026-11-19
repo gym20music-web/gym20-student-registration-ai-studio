@@ -14,9 +14,23 @@ self.addEventListener("notificationclick",event=>{
   const target=notificationData.url;
   const url=typeof target==="string"&&target.startsWith("https://gym20.ir/")?target:"https://gym20.ir/";
   const launchUrl=new URL(url);
-  if(typeof notificationData.body==="string"&&notificationData.body.trim())launchUrl.hash="gym20-notice="+encodeURIComponent(notificationData.body.trim());
-  event.waitUntil(clients.matchAll({type:"window",includeUncontrolled:true}).then(list=>{
-    for(const client of list){if(client.url.startsWith("https://gym20.ir/")&&"focus" in client)return client.focus().then(()=>client.navigate?client.navigate(launchUrl.href):undefined);}
-    return clients.openWindow(launchUrl.href);
-  }));
+  const notice=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
+  if(notice){
+    // Query survives the /s/<code> -> student.html fallback on Android PWAs;
+    // hash remains as a compatibility fallback for older student pages.
+    launchUrl.searchParams.set("gym20_notice",notice);
+    launchUrl.hash="gym20-notice="+encodeURIComponent(notice);
+  }
+  event.waitUntil((async()=>{
+    const list=await clients.matchAll({type:"window",includeUncontrolled:true});
+    const existing=list.find(client=>client.url.startsWith("https://gym20.ir/"));
+    if(existing){
+      try{
+        if(typeof existing.navigate==="function")await existing.navigate(launchUrl.href);
+        await existing.focus();
+        return;
+      }catch(error){console.warn("GYM20 notification window navigation failed:",error);}
+    }
+    await clients.openWindow(launchUrl.href);
+  })());
 });
