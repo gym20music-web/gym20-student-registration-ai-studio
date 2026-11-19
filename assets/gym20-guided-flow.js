@@ -34,7 +34,7 @@
   `;
   document.head.appendChild(style);
 
-  let pop=null,activeTarget=null;
+  let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
   function ensurePop(){
     if(pop&&pop.isConnected)return pop;
     pop=document.createElement('div');pop.className='gym20-flow-pop';pop.textContent='انتخاب کن';
@@ -70,6 +70,9 @@
       stylesList:'#stylesList .style-item',
       tuition:'#finalPrice',
       publicRegistrationCard:'#regFullName',
+      regFullName:'#regFullName',
+      regPhone:'#regPhone',
+      regBirthDateShamsi:'#regBirthDateShamsi',
       rulesSection:'#txt_rulesSection',
       acceptRules:'.rule-agreement',
       paymentSection:'#regPaymentConfirmed',
@@ -78,11 +81,11 @@
     const el=document.querySelector(selectors[id]||('#'+id));
     return visible(el)?el:null;
   }
-  function focusStep(id,scroll=true){
+  function focusStep(id,scroll=true,message='انتخاب کن'){
     const anchor=targetFor(id);
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
-    ensurePop();place();
+    ensurePop();pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
     return true;
@@ -98,19 +101,17 @@
       setTimeout(()=>focusFrom(0),180);return result;
     };
   }
-  // Advance from the style picker through the live app callback, not a delegated click.
-  // toggleStyle() rerenders #stylesList, so this direct callback is deterministic.
+  // Let the student finish selecting any additional styles before moving to the form.
+  // Every style change restarts the 6.5-second pause.
   window.gym20GuidedFlowStyleSelected=function(){
-    setTimeout(()=>{
-      if(focusStep('tuition',true)){
-        const priceTarget=activeTarget;
-        setTimeout(()=>{
-          if(activeTarget===priceTarget)focusStep('publicRegistrationCard',true);
-        },1700);
-      }else{
-        focusStep('publicRegistrationCard',true);
+    if(styleAdvanceTimer)clearTimeout(styleAdvanceTimer);
+    styleAdvanceTimer=setTimeout(()=>{
+      styleAdvanceTimer=null;
+      if(document.querySelector('#stylesList .style-item.selected')){
+        formGuideStage=0;
+        focusStep('regFullName',true,'بنویس');
       }
-    },180);
+    },6500);
   };
 
   document.addEventListener('click',function(e){
@@ -140,16 +141,17 @@
   });
   const registrationForm=document.getElementById('publicRegistrationForm');
   if(registrationForm){
-    registrationForm.addEventListener('focusout',function(e){
-      const next=e.relatedTarget;
-      if(next&&(registrationForm.contains(next)||next.closest?.('.rule-agreement')))return;
-      setTimeout(()=>{
-        if(!registrationForm.contains(document.activeElement)&&!document.getElementById('acceptRules')?.checked){
-          focusStep('rulesSection',true);
-          const rulesTarget=activeTarget;
-          setTimeout(()=>{if(activeTarget===rulesTarget&&!document.getElementById('acceptRules')?.checked)focusStep('acceptRules',true);},2200);
-        }
-      },120);
+    // Advance only when the student actually starts typing in each field.
+    registrationForm.addEventListener('input',function(e){
+      const field=e.target;
+      if(!(field instanceof HTMLInputElement))return;
+      if(field.id==='regFullName'&&field.value.trim()&&formGuideStage<1){
+        formGuideStage=1;focusStep('regPhone',true,'بنویس');
+      }else if(field.id==='regPhone'&&field.value.trim()&&formGuideStage<2){
+        formGuideStage=2;focusStep('regBirthDateShamsi',true,'بنویس');
+      }else if(field.id==='regBirthDateShamsi'&&field.value.trim()&&formGuideStage<3){
+        formGuideStage=3;focusStep('rulesSection',true,'انتخاب کن');
+      }
     });
   }
   document.addEventListener('change',function(e){
