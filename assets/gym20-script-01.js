@@ -226,19 +226,8 @@ function bindAdminRegionWheel(w){
     w._gym20AdminRegionDragged=false;
     w._gym20AdminRegionLastScrollTop=w.scrollTop;
 
-    const settle=()=>{
-        clearTimeout(w._gym20AdminRegionSettleTimer);
-        if(!w._gym20AdminRegionGestureMoved||w._gym20AdminRegionPointerDown)return;
-        w._gym20AdminRegionSettleTimer=setTimeout(()=>{
-            if(w._gym20AdminRegionPointerDown||!w._gym20AdminRegionGestureMoved)return;
-            const best=updateAdminRegionWheelFocus();
-            if(best){
-                const id=best.dataset.regionId;
-                w._gym20AdminRegionGestureMoved=false;
-                switchAdminRegion(id);
-            }
-        },760);
-    };
+    // Region management wheel also requires an explicit tap; never select on a timer.
+    const settle=()=>{ updateAdminRegionWheelFocus(); };
 
     w.addEventListener('pointerdown',e=>{
         w._gym20AdminRegionPointerDown=true;
