@@ -1,4 +1,4 @@
-/* GYM20 guided public registration flow — additive, no form/layout replacement */
+/* GYM20 guided public registration flow — additive, preserves the existing form and layout */
 (function(){
   'use strict';
   if(window.__gym20GuidedFlowInstalled) return;
@@ -16,7 +16,6 @@
       transition:outline-color .25s ease,box-shadow .25s ease!important;
       animation:gym20FlowBreath 2.8s ease-in-out infinite;
     }
-    .gym20-flow-done{opacity:.82;transition:opacity .25s ease}
     .gym20-flow-hint{
       display:flex;align-items:center;gap:6px;margin:5px 2px 7px;
       color:#e3c77e;font:600 11px/1.7 Vazirmatn,sans-serif;
@@ -30,72 +29,89 @@
   `;
   document.head.appendChild(style);
 
-  let active = null;
   const steps = [
-    {id:'ageGroup', hint:'مرحله ۱ از ۶ · رده سنی را انتخاب کنید'},
-    {id:'classType', hint:'مرحله ۲ از ۶ · نوع برگزاری کلاس را انتخاب کنید'},
-    {id:'sessionsCount', hint:'مرحله ۳ از ۶ · تعداد جلسات ترم را انتخاب کنید'},
-    {id:'stylesList', hint:'مرحله ۴ از ۶ · سبک یا سبک‌های موردنظر را انتخاب کنید'},
-    {id:'publicRegistrationCard', hint:'مرحله ۵ از ۶ · اطلاعات هنرجو را وارد کنید'},
-    {id:'dynamicRulesBox', hint:'مرحله ۶ از ۶ · شرایط را مطالعه و تأیید کنید'}
+    {id:'ageGroup', hint:'مرحله ۱ · رده سنی را انتخاب کنید'},
+    {id:'classType', hint:'مرحله ۲ · نوع برگزاری کلاس را انتخاب کنید'},
+    {id:'sessionsCount', hint:'مرحله ۳ · تعداد جلسات ترم را انتخاب کنید'},
+    {id:'stylesList', hint:'مرحله ۴ · سبک یا سبک‌های موردنظر را انتخاب کنید'},
+    {id:'publicRegistrationCard', hint:'مرحله ۵ · اطلاعات هنرجو را وارد کنید'}
   ];
+
   function clear(){
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
     document.querySelectorAll('.gym20-flow-hint').forEach(el=>el.remove());
   }
-  function focusStep(id, hint, scroll=true){
-    const el=document.getElementById(id);
-    if(!el || el.offsetParent===null) return;
-    clear(); active=id; el.classList.add('gym20-flow-current');
-    const note=document.createElement('div');
-    note.className='gym20-flow-hint'; note.textContent=hint;
-    el.insertAdjacentElement('beforebegin',note);
-    if(scroll) setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),80);
+  function isVisible(el){
+    if(!el || el.hidden || el.getAttribute('aria-hidden')==='true') return false;
+    const css=window.getComputedStyle(el);
+    return css.display!=='none' && css.visibility!=='hidden' && el.getClientRects().length>0;
   }
-  function focusByIndex(i){const s=steps[i];if(s)focusStep(s.id,s.hint);}
+  function focusStep(id,hint,scroll=true){
+    const el=document.getElementById(id);
+    if(!isVisible(el)) return false;
+    clear();
+    el.classList.add('gym20-flow-current');
+    const note=document.createElement('div');
+    note.className='gym20-flow-hint';
+    note.textContent=hint;
+    el.insertAdjacentElement('beforebegin',note);
+    if(scroll) requestAnimationFrame(()=>el.scrollIntoView({behavior:'smooth',block:'center'}));
+    return true;
+  }
+  function focusFrom(index){
+    for(let i=index;i<steps.length;i++){
+      const step=steps[i];
+      if(focusStep(step.id,step.hint,true)) return;
+    }
+  }
+
   const originalSelect=window.gym20SelectRegion;
   if(typeof originalSelect==='function'){
     window.gym20SelectRegion=function(){
       const result=originalSelect.apply(this,arguments);
-      setTimeout(()=>focusByIndex(0),180);
+      setTimeout(()=>focusFrom(0),180);
       return result;
     };
   }
+
   document.addEventListener('click',function(e){
-    const pill=e.target.closest('.pill-btn');
+    const target=e.target instanceof Element ? e.target : e.target.parentElement;
+    if(!target) return;
+
+    const pill=target.closest('.pill-btn');
     if(pill){
       const group=pill.closest('#ageGroup,#classType,#sessionsCount');
-      if(!group)return;
-      setTimeout(()=>{
-        if(group.id==='ageGroup') focusByIndex(1);
-        else if(group.id==='classType') focusByIndex(2);
-        else if(group.id==='sessionsCount') focusByIndex(3);
-      },60);
+      if(!group) return;
+      const nextIndex={ageGroup:1,classType:2,sessionsCount:3}[group.id];
+      if(nextIndex!==undefined) setTimeout(()=>focusFrom(nextIndex),100);
       return;
     }
-    const chosenStyle=e.target.closest('#stylesList .style-item');
-    if(chosenStyle){setTimeout(()=>focusByIndex(4),80);return;}
-    if(e.target.closest('#acceptRules')){
+
+    if(target.closest('#stylesList .style-item')){
+      setTimeout(()=>focusFrom(4),100);
+      return;
+    }
+
+    if(target.closest('#acceptRules')){
       setTimeout(()=>{
-        const payment=document.getElementById('paymentSection');
-        if(document.getElementById('acceptRules')?.checked && payment){
+        if(document.getElementById('acceptRules')?.checked){
           focusStep('paymentSection','پرداخت شهریه و تأیید نهایی',true);
         }
-      },80);
+      },100);
     }
-    if(e.target.closest('#regPaymentConfirmed')){
+
+    if(target.closest('#regPaymentConfirmed')){
       setTimeout(()=>{
-        const submit=document.getElementById('regSubmitBtn');
-        if(document.getElementById('regPaymentConfirmed')?.checked && submit){
+        if(document.getElementById('regPaymentConfirmed')?.checked){
           focusStep('regSubmitBtn','همه مراحل تکمیل شد · درخواست ثبت‌نام را ارسال کنید',true);
         }
-      },80);
+      },100);
     }
   });
+
   document.addEventListener('change',function(e){
-    if(e.target.id==='acceptRules' && !e.target.checked) clear();
-    if(e.target.id==='regPaymentConfirmed' && !e.target.checked) clear();
+    if((e.target.id==='acceptRules' || e.target.id==='regPaymentConfirmed') && !e.target.checked) clear();
   });
-  // Initial state: wait until a region is chosen; never auto-select anything.
+
   console.info('[GYM20] Guided registration flow ready');
 })();
