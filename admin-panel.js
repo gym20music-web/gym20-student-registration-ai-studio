@@ -635,13 +635,20 @@
       },true);
       restore();
       const observer=new MutationObserver(records=>{
-        let added=false;
+        // Reordering an existing tab also creates an addedNodes record.
+        // Restore only when a genuinely new tab key has been injected.
+        if(drag)return;
+        let stored=[];try{stored=JSON.parse(localStorage.getItem(STORE)||'[]');}catch(_){}
+        const known=new Set([...stored,...list().map(key)].filter(Boolean));
+        let hasNewTab=false;
         records.forEach(record=>record.addedNodes.forEach(node=>{
           if(node.nodeType!==1)return;
-          if(node.matches?.('.nav-item,.admin-tab-btn')&&!node.querySelector(':scope > .gym20-nav-grip'))added=true;
-          node.querySelectorAll?.('.nav-item,.admin-tab-btn').forEach(el=>{if(!el.querySelector(':scope > .gym20-nav-grip'))added=true;});
+          const candidates=[];
+          if(node.matches?.('.nav-item,.admin-tab-btn'))candidates.push(node);
+          node.querySelectorAll?.('.nav-item,.admin-tab-btn').forEach(el=>candidates.push(el));
+          if(candidates.some(el=>{const k=key(el);return k&&!known.has(k);} ))hasNewTab=true;
         }));
-        if(added){restore();}
+        if(hasNewTab)restore();
       });
       observer.observe(nav,{childList:true});
     });
