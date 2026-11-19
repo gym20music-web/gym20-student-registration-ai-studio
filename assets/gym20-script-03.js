@@ -9,7 +9,11 @@
     const center=wheel.getBoundingClientRect().top+wheel.clientHeight/2;
     let best=null,bestDistance=Infinity;
     for(const item of items){const r=item.getBoundingClientRect(),d=Math.abs(r.top+r.height/2-center);if(d<bestDistance){best=item;bestDistance=d;}}
-    items.forEach(item=>item.classList.toggle('wheel-focus',item===best));
+    if(wheel._gym20FocusedItem!==best){
+      if(wheel._gym20FocusedItem)wheel._gym20FocusedItem.classList.remove('wheel-focus');
+      if(best)best.classList.add('wheel-focus');
+      wheel._gym20FocusedItem=best;
+    }
     if(best)pendingRegionId=best.dataset.regionId||'';
     return best;
   }
@@ -19,8 +23,9 @@
     return items[count].offsetTop-items[0].offsetTop;
   }
   function recycle(wheel){
-    const cycle=cycleSize(wheel);if(!cycle)return;
+    const cycle=wheel._gym20CycleSize||0;if(!cycle)return;
     const y=wheel.scrollTop;
+    // Shift by exactly one identical region cycle; this preserves the finger/inertia position.
     if(y<cycle*.35)wheel.scrollTop=y+cycle;
     else if(y>cycle*1.65)wheel.scrollTop=y-cycle;
   }
@@ -37,6 +42,8 @@
   function bind(wheel,menu){
     if(wheel._gym20Bound)return;wheel._gym20Bound=true;
     wheel._gym20PointerDown=false;wheel._gym20GestureMoved=false;wheel._gym20Dragged=false;wheel._gym20LastScrollTop=wheel.scrollTop;
+    // Cache the exact repeated-cycle distance once per rendered wheel, not on every scroll frame.
+    wheel._gym20CycleSize=cycleSize(wheel);
     wheel.addEventListener('pointerdown',e=>{
       wheel._gym20PointerDown=true;wheel._gym20Dragged=false;wheel._gym20GestureMoved=false;
       wheel._gym20StartX=e.clientX;wheel._gym20StartY=e.clientY;
