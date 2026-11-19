@@ -103,8 +103,10 @@
       paymentSection:'#regPaymentConfirmed',
       regSubmitBtn:'#regSubmitBtn'
     };
-    const el=document.querySelector(selectors[id]||('#'+id));
-    return visible(el)?el:null;
+    const selector=selectors[id]||('#'+id);
+    // Several legacy form fragments share IDs. Always target the rendered copy,
+    // not the first (possibly hidden) duplicate returned by querySelector.
+    return Array.from(document.querySelectorAll(selector)).find(visible)||null;
   }
   function focusStep(id,scroll=true,message='انتخاب کن'){
     if(adminIsOpen()){syncAdminVisibility();return false;}
