@@ -3,131 +3,16 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <title>ورود مدیر | GYM20</title>
-  <style>
-    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0f19;color:#f9fafb;font-family:Tahoma,Arial,sans-serif;padding:20px}
-    main{width:min(100%,420px);background:#111827;border:1px solid #374151;border-radius:18px;padding:24px;box-shadow:0 20px 60px #0005}
-    h1{font-size:1.2rem;margin:0 0 8px}p{color:#cbd5e1;font-size:.9rem;line-height:1.8}
-    label{display:block;margin:16px 0 7px;font-size:.9rem}input{width:100%;padding:12px;border:1px solid #4b5563;border-radius:9px;background:#0b0f19;color:#fff;font-size:1rem}
-    button{width:100%;padding:12px;margin-top:16px;border:0;border-radius:9px;background:#2563eb;color:white;font-weight:bold;font-size:1rem;cursor:pointer}
-    button:disabled{opacity:.6;cursor:wait}#status{min-height:48px;font-size:.85rem;overflow-wrap:anywhere}.hint{font-size:.78rem;color:#9ca3af}
-  </style>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>انتقال به ورود مدیر | GYM20</title>
+  <script>
+    location.replace('/admin.html' + location.search + location.hash);
+  </script>
 </head>
 <body>
-<main>
-  <h1>ورود مدیر آکادمی GYM20</h1>
-  <p>برای امنیت، لینک ورود یک‌بارمصرف به ایمیل حساب مدیر ارسال می‌شود.</p>
-  <label for="publishableKey">کلید عمومی Publishable پروژه</label>
-  <input id="publishableKey" name="gym20-public-project-key" type="text" autocomplete="off" autocapitalize="off" data-lpignore="true" placeholder="sb_publishable_..." spellcheck="false" value="sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3">
-  <p class="hint">این کلید عمومی برای اتصال مرورگر است. هرگز کلید Secret یا service_role را در سایت قرار ندهید.</p>
-  <label for="email">ایمیل مدیر</label>
-  <input id="email" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر">
-  <button id="send" type="button">اتصال و ارسال لینک ورود</button>
-  <div id="passwordSyncPanel" hidden>
-    <label for="existingPassword">همگام‌سازی همان رمز قبلی</label>
-    <input id="existingPassword" type="password" autocomplete="current-password" minlength="8" placeholder="همان رمز قبلی حساب مدیر">
-    <button id="syncPassword" type="button">ثبت همان رمز برای ورود عادی</button>
-    <button id="continueWithoutSync" type="button" style="background:#374151">ورود به پنل بدون تغییر رمز</button>
-    <p class="hint">رمز فقط مستقیم و امن به Supabase ارسال می‌شود؛ در این گفتگو نمایش داده نمی‌شود.</p>
-  </div>
-  <div id="recoveryPanel" hidden>
-    <label for="newPassword">رمز عبور جدید</label>
-    <input id="newPassword" type="password" autocomplete="new-password" minlength="8" placeholder="حداقل ۸ کاراکتر">
-    <button id="savePassword" type="button">ثبت رمز عبور جدید</button>
-  </div>
-  <p id="status" role="status" aria-live="polite"></p>
-  <p class="hint">این صفحه فقط ورود و بررسی نقش مدیر را آزمایش می‌کند؛ هنوز تنظیمات سایت را ذخیره یا تغییر نمی‌دهد.</p>
-</main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
-<script src="./supabase-auth.js?v=20261119-auth-session-repair-v1"></script>
-<script>
-  const PROJECT_URL = 'https://ubrafxjpnqtjnjdaskba.supabase.co';
-  const statusEl = document.getElementById('status');
-  const button = document.getElementById('send');
-  let auth;
-
-  function status(message, isError = false) {
-    statusEl.textContent = message;
-    statusEl.style.color = isError ? '#f87171' : '#cbd5e1';
-  }
-
-  function connect() {
-    const key = document.getElementById('publishableKey').value.trim();
-    if (!key) throw new Error('کلید عمومی Publishable را وارد کنید.');
-    if (/service_role|sb_secret_/i.test(key)) throw new Error('این نوع کلید برای مرورگر ممنوع است؛ فقط Publishable key مجاز است.');
-    auth = window.GYM20AdminAuth.init({
-      url: PROJECT_URL,
-      publishableKey: key,
-      onStatus: status,
-      onAuthorized: ({ user }) => {
-        document.getElementById('passwordSyncPanel').hidden = false;
-        status('ایمیل و دسترسی مدیر تأیید شد. اگر می‌خواهید همان رمز قبلی برای ورود مستقیم فعال شود، آن را یک‌بار در کادر پایین وارد کنید؛ در غیر این صورت مستقیم وارد پنل شوید.');
-      }
-    });
-    document.getElementById('publishableKey').disabled = true;
-    const supabaseClient=auth.getClient();
-    const recoveryFlow=location.search.includes('recovery=1')||location.hash.includes('type=recovery');
-    if(recoveryFlow)document.getElementById('recoveryPanel').hidden=false;
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if(event==='PASSWORD_RECOVERY'){
-        document.getElementById('recoveryPanel').hidden=false;
-        status('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
-      }else if(session && (event==='SIGNED_IN'||event==='INITIAL_SESSION')&&!recoveryFlow){
-        queueMicrotask(()=>auth.verifyOwner().catch(e=>status(e.message||'بررسی نشست ورود ناموفق بود.',true)));
-      }
-    });
-    if(!recoveryFlow)auth.verifyOwner().catch((e) => status(e.message || 'بررسی نشست ورود ناموفق بود.', true));
-    return auth;
-  }
-
-  button.addEventListener('click', async () => {
-    button.disabled = true;
-    try {
-      if (!auth) connect();
-      await auth.sendMagicLink(document.getElementById('email').value.trim(), 'https://gym20.ir/admin-login.html');
-    } catch (e) {
-      status(e.message || 'اتصال یا ارسال لینک ورود ناموفق بود.', true);
-      if (!auth) document.getElementById('publishableKey').disabled = false;
-    } finally {
-      button.disabled = false;
-    }
-  });
-  document.getElementById('savePassword').addEventListener('click', async () => {
-    const save=document.getElementById('savePassword');save.disabled=true;
-    try{
-      if(!auth)connect();
-      const password=document.getElementById('newPassword').value;
-      if(password.length<8)throw new Error('رمز عبور باید حداقل ۸ کاراکتر باشد.');
-      const {error}=await auth.getClient().auth.updateUser({password});
-      if(error)throw error;
-      status('رمز عبور جدید ثبت شد؛ در حال بررسی دسترسی مدیر…');
-      await auth.verifyOwner();
-    }catch(e){status(e.message||'ثبت رمز عبور جدید ناموفق بود.',true);}
-    finally{save.disabled=false;}
-  });
-  document.getElementById('syncPassword').addEventListener('click', async () => {
-    const save = document.getElementById('syncPassword');
-    save.disabled = true;
-    try {
-      const password = document.getElementById('existingPassword').value;
-      if (password.length < 8) throw new Error('رمز واردشده باید حداقل ۸ کاراکتر باشد.');
-      const { error } = await auth.getClient().auth.updateUser({ password });
-      if (error) throw error;
-      status('همان رمز قبلی روی حساب فعلی فعال شد؛ ورود به پنل…');
-      window.location.replace('https://gym20.ir/admin.html');
-    } catch (e) {
-      status(e.message || 'همگام‌سازی رمز انجام نشد.', true);
-    } finally {
-      save.disabled = false;
-    }
-  });
-  document.getElementById('continueWithoutSync').addEventListener('click', () => {
-    window.location.replace('https://gym20.ir/admin.html');
-  });
-
-  // On the email callback, restore the session and verify the owner automatically.
-  try { if (!auth) connect(); } catch (e) { status(e.message || 'اتصال ناموفق بود.', true); }
-</script>
+  <p>در حال انتقال به صفحه اصلی ورود مدیر GYM20…</p>
+  <a href="/admin.html">ورود به پنل مدیریت</a>
 </body>
 </html>
