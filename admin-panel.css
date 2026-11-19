@@ -17,3 +17,9 @@
  .admin-tabs .admin-tab-btn{height:34px;flex:0 0 auto;padding:0 9px;font-size:10px}
  .coach-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Always-visible shortcut to the student exercises workspace */
+.exercise-top-shortcut{height:30px;padding:0 10px;border:1px solid #806b42;border-radius:8px;background:linear-gradient(135deg,#302b20,#24221c);color:#f0dfb8;font:700 10px Vazirmatn,sans-serif;white-space:nowrap;display:inline-flex!important;align-items:center;justify-content:center;visibility:visible!important;opacity:1!important}
+.nav-item[data-view="exercises"]{border-color:#806b42!important;background:#29261f!important;color:#f1e4c6!important;font-weight:800!important;visibility:visible!important;opacity:1!important}
+#view-exercises.admin-panel-tab.active{display:block!important;visibility:visible!important}
+@media(max-width:520px){.top-actions{gap:6px}.exercise-top-shortcut{height:28px;padding:0 7px;font-size:9px}.connection{display:none}}
