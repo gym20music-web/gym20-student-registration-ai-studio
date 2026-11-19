@@ -22,3 +22,20 @@
 .exercise-top-shortcut{height:30px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:#24282b;color:var(--text);font:600 10px Vazirmatn,sans-serif;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center}
 #view-exercises.admin-panel-tab.active{display:block;visibility:visible}
 @media(max-width:520px){.top-actions{gap:6px}.exercise-top-shortcut{height:28px;padding:0 7px;font-size:9px}.connection{display:none}}
+
+
+/* GYM20 exercise tab — match the core premium charcoal admin theme */
+#view-exercises{width:100%;min-width:0;color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
+#view-exercises .gym20-exercises-panel{border:1px solid var(--line)!important;background:linear-gradient(145deg,#1d2124,#171a1c)!important;border-radius:12px!important;padding:15px!important;color:var(--text)!important;box-shadow:none!important}
+#view-exercises .panel-head h2{color:#f1f1ed;font:700 14px Vazirmatn,sans-serif}
+#view-exercises .tag{background:rgba(200,170,105,.07);border-color:#554a34;color:var(--gold)}
+#view-exercises .field label{color:#c5c2b8;font-size:11px}
+#view-exercises .field input,#view-exercises .field select{height:35px;background:#101315;border:1px solid var(--line);border-radius:8px;color:var(--text);font:11px Vazirmatn,sans-serif;padding:7px 9px;outline:none}
+#view-exercises .field input:focus,#view-exercises .field select:focus{border-color:var(--gold)}
+#view-exercises .primary{background:linear-gradient(135deg,#d7bd83,#a98b50);border-color:#d2b878;color:#19160f;font-weight:800}
+#view-exercises .ghost{background:#24282b;border:1px solid var(--line);color:var(--text)}
+#view-exercises .request-card{background:linear-gradient(145deg,#202427,#191d20);border:1px solid var(--line);border-radius:9px;color:var(--text)}
+#view-exercises .request-card strong{font-size:11px;color:#f1f1ed}
+#view-exercises .request-card small{color:var(--muted)}
+#view-exercises #gym20ExerciseFeedback{min-height:18px;margin:8px 0;font-size:10px}
+@media(max-width:520px){#view-exercises .gym20-exercises-panel{padding:11px!important}#view-exercises .request-card{grid-template-columns:minmax(0,1fr)!important;gap:7px}#view-exercises .request-actions{justify-content:flex-start}}
