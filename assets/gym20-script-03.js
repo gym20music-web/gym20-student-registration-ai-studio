@@ -27,15 +27,14 @@
   function settle(wheel,menu){
     clearTimeout(wheel._gym20SettleTimer);
     if(!wheel._gym20GestureMoved||wheel._gym20PointerDown)return;
+    // Scrolling only highlights the centered region. Selection is explicit:
+    // the visitor must tap the highlighted region itself.
     wheel._gym20SettleTimer=setTimeout(()=>{
       if(wheel._gym20PointerDown||!wheel._gym20GestureMoved)return;
-      const best=updateFocus(menu);
-      if(best&&typeof window.gym20SelectRegion==='function'){
-        const id=best.dataset.regionId;
-        wheel._gym20GestureMoved=false;
-        window.gym20SelectRegion(id);
-      }
-    },760);
+      updateFocus(menu);
+      wheel._gym20GestureMoved=false;
+      wheel._gym20Dragged=false;
+    },180);
   }
   function centerItem(menu,id,smooth){
     const wheel=wheelOf(menu);if(!wheel)return;
