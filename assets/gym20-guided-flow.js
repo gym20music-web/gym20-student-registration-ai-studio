@@ -65,7 +65,10 @@
       classType:'#classType .pill-btn',
       sessionsCount:'#sessionsCount .pill-btn',
       stylesList:'#stylesList .style-item',
+      tuition:'#finalPrice',
       publicRegistrationCard:'#regFullName',
+      rulesSection:'#txt_rulesSection',
+      acceptRules:'.rule-agreement',
       paymentSection:'#regPaymentConfirmed',
       regSubmitBtn:'#regSubmitBtn'
     };
@@ -103,7 +106,21 @@
       if(next!==undefined)setTimeout(()=>focusFrom(next),100);
       return;
     }
-    if(target.closest('#stylesList .style-item')){setTimeout(()=>focusFrom(4),100);return;}
+    if(target.closest('#stylesList .style-item')){
+      setTimeout(()=>{
+        if(focusStep('tuition',true)){
+          const priceTarget=activeTarget;
+          setTimeout(()=>{if(activeTarget===priceTarget)focusStep('publicRegistrationCard',true);},1700);
+        }else focusStep('publicRegistrationCard',true);
+      },100);return;
+    }
+    if(target.closest('#txt_rulesSection')||target.closest('#dynamicRulesBox')){
+      if(!document.getElementById('acceptRules')?.checked){
+        focusStep('rulesSection',false);
+        const rulesTarget=activeTarget;
+        setTimeout(()=>{if(activeTarget===rulesTarget&&!document.getElementById('acceptRules')?.checked)focusStep('acceptRules',true);},2200);
+      }
+    }
     if(target.closest('#acceptRules')){
       setTimeout(()=>{if(document.getElementById('acceptRules')?.checked)focusStep('paymentSection',true);},100);
     }
@@ -111,6 +128,20 @@
       setTimeout(()=>{if(document.getElementById('regPaymentConfirmed')?.checked)focusStep('regSubmitBtn',true);},100);
     }
   });
+  const registrationForm=document.getElementById('publicRegistrationForm');
+  if(registrationForm){
+    registrationForm.addEventListener('focusout',function(e){
+      const next=e.relatedTarget;
+      if(next&&(registrationForm.contains(next)||next.closest?.('.rule-agreement')))return;
+      setTimeout(()=>{
+        if(!registrationForm.contains(document.activeElement)&&!document.getElementById('acceptRules')?.checked){
+          focusStep('rulesSection',true);
+          const rulesTarget=activeTarget;
+          setTimeout(()=>{if(activeTarget===rulesTarget&&!document.getElementById('acceptRules')?.checked)focusStep('acceptRules',true);},2200);
+        }
+      },120);
+    });
+  }
   document.addEventListener('change',function(e){
     if((e.target.id==='acceptRules'||e.target.id==='regPaymentConfirmed')&&!e.target.checked)clear();
   });
