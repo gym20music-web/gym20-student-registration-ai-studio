@@ -429,14 +429,14 @@
   async function enterAdminPanel(){
     await authorizeOwner();
     $('loginScreen').hidden=true;$('app').hidden=false;
-    status('ورود مدیر تأیید شد؛ در حال دریافت اطلاعات…');
-    try{
-      await loadConfig();
-      await loadStudents();
-      await loadReports();
-      showView('students');
-      window.dispatchEvent(new Event('gym20:owner-authorized'));
-    }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
+    // Render the admin workspace immediately; network-backed data loads independently.
+    status('پنل مدیریت آماده است؛ اطلاعات در پس‌زمینه دریافت می‌شوند…');
+    showView('students');
+    window.dispatchEvent(new Event('gym20:owner-authorized'));
+    const jobs = await Promise.allSettled([loadConfig(), loadReports()]);
+    const failed = jobs.find(x => x.status === 'rejected');
+    if(failed) status(failed.reason?.message || 'بخشی از اطلاعات پنل دریافت نشد؛ از دکمه بروزرسانی استفاده کنید.', true);
+    else status('پنل مدیریت آماده است.');
   }
   $('loginForm').addEventListener('submit',async e=>{
     e.preventDefault();
