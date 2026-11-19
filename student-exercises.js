@@ -129,13 +129,7 @@
     const nav = document.querySelector('.admin-tabs');
     const panel = $('view-exercises');
     if (!nav || !panel) return;
-    const tab = nav.querySelector('[data-view="exercises"]');
-    if (tab && !tab.dataset.exerciseBound) {
-      tab.dataset.exerciseBound = '1';
-      tab.addEventListener('click', () => setTimeout(() => {
-        if (window.gym20OwnerAuthorized) loadExerciseStudents();
-      }, 0));
-    }
+    
     const select = $('gym20ExerciseStudentSelect');
     const add = $('gym20ExerciseAdd');
     const input = $('gym20ExerciseInput');
