@@ -138,7 +138,7 @@
       navButton.type = 'button';
       navButton.className = 'nav-item';
       navButton.dataset.view = 'exercises';
-      navButton.innerHTML = '🏋️ <span>تمرین هنرجویان</span>';
+      navButton.innerHTML = '🤸🏻‍♂️ <span>تمرین هنرجویان</span>';
       const overview = nav.querySelector('[data-view="overview"]');
       if (overview?.nextSibling) nav.insertBefore(navButton, overview.nextSibling);
       else nav.appendChild(navButton);
