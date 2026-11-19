@@ -37,6 +37,9 @@
   `;
   document.head.appendChild(style);
 
+  document.addEventListener('DOMContentLoaded',watchAdminModal,{once:true});
+  if(document.readyState!=='loading')watchAdminModal();
+
   let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
   function ensurePop(){
     if(pop&&pop.isConnected)return pop;
@@ -49,12 +52,30 @@
     if(pop){pop.classList.remove('is-visible');}
     activeTarget=null;
   }
+  function adminIsOpen(){
+    const modal=document.getElementById('adminModal');
+    return !!(modal&&visible(modal));
+  }
+  function syncAdminVisibility(){
+    if(!adminIsOpen())return;
+    document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
+    if(pop){pop.classList.remove('is-visible');pop.style.display='none';}
+    activeTarget=null;
+  }
+  const adminObserver=new MutationObserver(()=>syncAdminVisibility());
+  function watchAdminModal(){
+    const modal=document.getElementById('adminModal');
+    if(modal)adminObserver.observe(modal,{attributes:true,attributeFilter:['class','style','aria-hidden']});
+    adminObserver.observe(document.body,{attributes:true,attributeFilter:['class']});
+    syncAdminVisibility();
+  }
   function visible(el){
     if(!el||el.hidden||el.getAttribute('aria-hidden')==='true')return false;
     const c=getComputedStyle(el);
     return c.display!=='none'&&c.visibility!=='hidden'&&el.getClientRects().length>0;
   }
   function place(){
+    if(adminIsOpen()){syncAdminVisibility();return;}
     if(!activeTarget||!visible(activeTarget)||!pop)return;
     const r=activeTarget.getBoundingClientRect(),w=pop.offsetWidth||76,h=pop.offsetHeight||27;
     // Always keep the hint in its own space BELOW the focused control/heading.
@@ -85,6 +106,7 @@
     return visible(el)?el:null;
   }
   function focusStep(id,scroll=true,message='انتخاب کن'){
+    if(adminIsOpen()){syncAdminVisibility();return false;}
     const anchor=targetFor(id);
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
