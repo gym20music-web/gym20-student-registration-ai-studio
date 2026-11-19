@@ -153,14 +153,35 @@
     if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
     clear();
     let attempts=0;
+    const stop=()=>{if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}};
     const attempt=()=>{
-      if(adminIsOpen()||focusFrom(0)||++attempts>=20){
-        if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
+      // If the admin panel is open, keep waiting instead of abandoning the
+      // public-form guide. The previous implementation stopped on the first
+      // admin check and could permanently lose the guide after a region pick.
+      if(adminIsOpen()){
+        syncAdminVisibility();
+        if(++attempts>=80)stop();
+        return;
       }
+      if(focusFrom(0)){stop();return;}
+      if(++attempts>=80)stop();
     };
     attempt();
-    if(attempts<20)regionGuideRetryTimer=setInterval(attempt,250);
+    if(attempts<80)regionGuideRetryTimer=setInterval(attempt,250);
   }
+  // Also react to the actual public form becoming visible. This is independent
+  // of the region-wheel click event and covers delayed region/layout rendering.
+  function watchRegionContent(){
+    const content=document.getElementById('regionDependentContent');
+    if(!content)return;
+    const regionObserver=new MutationObserver(()=>{
+      if(visible(content)&&!adminIsOpen()&&!activeTarget)startRegionGuide();
+    });
+    regionObserver.observe(content,{attributes:true,attributeFilter:['style','class','hidden','aria-hidden']});
+    if(visible(content)&&!adminIsOpen()&&!activeTarget)startRegionGuide();
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',watchRegionContent,{once:true});
+  else watchRegionContent();
   window.gym20GuidedFlowStart=startRegionGuide;
   window.addEventListener('gym20:region-selected',startRegionGuide);
   // Start one 6-second grace period on the first selected style.
