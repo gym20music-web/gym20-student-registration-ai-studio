@@ -57,7 +57,7 @@ Deno.serve(async (req: Request) => {
     const reminders = [
       { kind: "first", hours: Number(config.reminder_1_hours ?? 6), template: String(config.reminder_1_template || "{student} عزیز، کلاس ما {relative}، {day} ساعت {time} برگزار می‌شود.") },
       { kind: "second", hours: Number(config.reminder_2_hours ?? 2), template: String(config.reminder_2_template || "{student} عزیز، کلاس شما {relative}، {day} ساعت {time} شروع می‌شود.") }
-    ].filter(x => Number.isInteger(x.hours) && x.hours > 0 && x.hours <= 168);
+    ].filter(x => Number.isInteger(x.hours) && x.hours > 0 && x.hours <= 24);
     const { data: versions, error: versionError } = await gym.from("term_schedule_versions").select("id").eq("status", "published");
     if (versionError) throw versionError;
     const versionIds = (versions || []).map(x => x.id);
@@ -69,7 +69,7 @@ Deno.serve(async (req: Request) => {
       const to = new Date(target).toISOString();
       const { data: sessions, error: sessionError } = await gym.from("class_sessions")
         .select("id,term_id,starts_at,coach_name")
-        .in("schedule_version_id", versionIds).gte("starts_at", from).lt("starts_at", to);
+        .in("schedule_version_id", versionIds).eq("status", "scheduled").gte("starts_at", from).lt("starts_at", to);
       if (sessionError) throw sessionError;
       for (const session of sessions || []) {
         if (!session.term_id) continue;
