@@ -498,8 +498,9 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>
 (function(){
   var params=new URLSearchParams(location.search);
-  var match=location.pathname.match(/\\/s\\/([0-9a-f]{12})\\/?$/i);
-  var code=(match&&match[1])||params.get("c")||"";
+  var parts=location.pathname.split("/");
+  var pathCode=(parts.length>=3&&parts[1]==="s")?parts[2]:"";
+  var code=pathCode||params.get("c")||"";
   if(!/^[0-9a-f]{12}$/i.test(code))return;
   code=code.toLowerCase();
   // Give each student's installed iPhone web app its own launch URL.
