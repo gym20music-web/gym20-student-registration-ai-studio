@@ -176,6 +176,3 @@
   addEventListener('resize',place);
   console.info('[GYM20] Compact guided popover ready');
 })();
-
-  /* Keep the guided target and its hint out of the way while the region wheel is open.
-     The current step remains active and becomes visible again when the drawer closes. */
