@@ -223,7 +223,11 @@
         let permission=Notification.permission;if(permission!=="granted")permission=await Notification.requestPermission();
         if(permission!=="granted")throw new Error("اجازه نمایش اعلان داده نشد.");
         await ensureReady();if(!publicKey)throw new Error("کلید عمومی اعلان از سرور دریافت نشد.");
-        let subscription=await readSubscription();if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
+        let subscription=null;
+        // Some Android browsers throw when reading a stale local subscription.
+        // Do not let that read failure block creating a fresh subscription.
+        try{subscription=await readSubscription();}catch(readError){console.warn("GYM20 old push subscription could not be read; creating a fresh subscription:",readError);}
+        if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         await saveSubscription(subscription);paint(true);status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
       }catch(error){status.textContent=friendlyError(error);paint(false);}
       finally{button.disabled=false;}
@@ -247,7 +251,7 @@
             }
           }
         }
-        catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(subscriptionError);return;}
+        catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent="وضعیت اشتراک قبلی قابل خواندن نیست؛ با زدن دکمه، اشتراک تازه ساخته می‌شود.";console.warn("GYM20 existing push subscription read failed:",subscriptionError);return;}
       }
       if(Notification.permission==="granted"&&existing){
         try{await saveSubscription(existing);paint(true);status.textContent="✓ اعلان فعال";}
