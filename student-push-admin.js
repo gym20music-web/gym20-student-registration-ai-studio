@@ -17,7 +17,7 @@
   async function toggleConfig(){
     const db=client();if(!db||!(typeof gym20OwnerAuthorized!=='undefined'&&gym20OwnerAuthorized)){note('ابتدا با حساب مدیر وارد شوید.',true);return;}
     const first=Number($('stReminder1Hours').value),second=Number($('stReminder2Hours').value);
-    if(!Number.isInteger(first)||first<0||first>168||!Number.isInteger(second)||second<0||second>168){note('زمان یادآوری باید عددی بین صفر تا ۱۶۸ ساعت باشد.',true);return;}
+    if(!Number.isInteger(first)||first<0||first>24||!Number.isInteger(second)||second<0||second>24){note('زمان یادآوری باید عددی بین صفر تا ۲۴ ساعت باشد.',true);return;}
     if(first>0&&second>0&&first<=second){note('یادآوری اول باید زودتر از یادآوری دوم باشد؛ مثلاً ۶ و سپس ۲ ساعت.',true);return;}
     const b=$('stPushSave'),old=b.textContent;b.disabled=true;b.textContent='در حال ذخیره…';
     try{
