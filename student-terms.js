@@ -1187,10 +1187,21 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     }catch(e){if(status)status.textContent=e.message||'ساخت لینک ناموفق بود.';btn.disabled=false;}
   }
 
-  function stageNewTerm(selectedDates){
+  async function stageNewTerm(selectedDates){
     try{
-      const activeEnrollments=S.enrollments.filter(e=>e.status==='active'||e.status==='paused'),ids=activeEnrollments.map(x=>x.id);
-      if(!ids.length)throw Error('برای این هنرجو سبک فعالی در ثبت‌نام اولیه پیدا نشد.');
+      let activeEnrollments=S.enrollments.filter(e=>e.status==='active'||e.status==='paused');
+      if(!activeEnrollments.length&&S.studentId){
+        // The calendar can be opened immediately after choosing a student, before loadStudent finishes.
+        // Re-fetch the enrollments here so a fast click cannot be mistaken for a student with no styles.
+        const refreshed=await db().from('enrollments')
+          .select('id,course_id,class_type,age_group,total_sessions,start_date,end_date,status,courses(name)')
+          .eq('student_id',S.studentId).in('status',['active','paused']).order('created_at');
+        if(refreshed.error)throw refreshed.error;
+        S.enrollments=refreshed.data||[];
+        activeEnrollments=S.enrollments.filter(e=>e.status==='active'||e.status==='paused');
+      }
+      const ids=activeEnrollments.map(x=>x.id);
+      if(!ids.length)throw Error('برای این هنرجو ثبت‌نام فعال پیدا نشد. ابتدا پرونده هنرجو را بروزرسانی کن و دوباره تلاش کن.');
       const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
       if(!Array.isArray(selectedDates)||!selectedDates.length)throw Error('حداقل یک تاریخ جلسه انتخاب کن.');
       if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
