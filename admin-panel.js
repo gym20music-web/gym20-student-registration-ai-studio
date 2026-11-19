@@ -359,26 +359,38 @@
 
   addRequestManagement();
   $('attendanceList').addEventListener('click',e=>{const b=e.target.closest('[data-save-attendance]');if(b){const card=b.closest('.attendance-card');b.disabled=true;saveAttendanceRow(card).catch(err=>status(err.message||'ذخیره حضور و غیاب ناموفق بود.',true)).finally(()=>b.disabled=false);}});
-  $('loginForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const btn=$('loginSubmit');btn.disabled=true;btn.textContent='در حال ورود…';loginStatus('');
+  async function enterAdminPanel(){
+    await authorizeOwner();
+    $('loginScreen').hidden=true;$('app').hidden=false;
+    status('ورود مدیر تأیید شد؛ در حال دریافت اطلاعات…');
     try{
-      await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
-      const {error}=await client.auth.signInWithPassword({email:$('loginEmail').value.trim(),password:$('loginPassword').value});
-      if(error)throw error;
-      await authorizeOwner();
-      $('loginPassword').value='';
-      $('loginScreen').hidden=true;$('app').hidden=false;
       await loadConfig();
-      status('ورود مدیر تأیید شد.');
       await loadStudents();
       await loadReports();
       showView('students');
+    }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
+  }
+  $('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const btn=$('loginSubmit');btn.disabled=true;btn.textContent='در حال ارسال…';loginStatus('');
+    try{
+      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
+      const email=$('loginEmail').value.trim();
+      if(!email)throw new Error('ایمیل حساب مدیر را وارد کنید.');
+      const {error}=await client.auth.signInWithOtp({
+        email,
+        options:{
+          emailRedirectTo:'https://gym20.ir/admin-login.html',
+          shouldCreateUser:false
+        }
+      });
+      if(error)throw error;
+      loginStatus('لینک ورود به ایمیل مدیر ارسال شد. صندوق ورودی و پوشه هرزنامه را بررسی کنید؛ لینک را روی همین دستگاه باز کنید.');
+      btn.textContent='ارسال دوباره لینک';
     }catch(err){
-      window.gym20OwnerAuthorized=false;
-      if(client)await client.auth.signOut().catch(()=>{});
-      loginStatus(err.message||'ورود یا بررسی دسترسی مدیر ناموفق بود.',true);
-    }finally{btn.disabled=false;btn.textContent='ورود امن';}
+      loginStatus(err.message||'ارسال لینک ورود ناموفق بود.',true);
+      btn.textContent='ارسال لینک ورود';
+    }finally{btn.disabled=false;}
   });
   $('logoutBtn').addEventListener('click',async()=>{window.gym20OwnerAuthorized=false;if(client)await client.auth.signOut();location.reload();});
   $('mainNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)showView(b.dataset.view);});
@@ -407,4 +419,16 @@
   $('saveRules').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.rules=config.rules||{};Object.keys(RULE_NAMES).forEach(k=>config.rules[k]=$('rule-'+k).value);await saveConfig('قوانین ذخیره شد.');}));
   $('saveSite').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.brandTag=$('brandTag').value;config.bannerTitle=$('bannerTitle').value;config.bannerSubtitle=$('bannerSubtitle').value;config.pageTexts=config.pageTexts||{};Object.keys(PAGE_TEXT_LABELS).forEach(k=>config.pageTexts[k]=$('pageText-'+k).value);await saveConfig('محتوای سایت ذخیره شد.');}));
   $('savePayments').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.card={...(config.card||{}),bank:$('bankName').value,number:$('cardNumber').value,cleanNumber:$('cardNumber').value.replace(/\D/g,''),owner:$('cardOwner').value,gatewayLink:$('gatewayLink').value};config.contact={...(config.contact||{}),phone:$('contactPhone').value,instagram:$('contactInstagram').value,telegram:$('contactTelegram').value};await saveConfig('اطلاعات پرداخت و ارتباطات ذخیره شد.');}));
+  // Restore the verified owner session after the email magic-link callback.
+  (async()=>{
+    try{
+      await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
+      const {data:{session},error}=await client.auth.getSession();
+      if(error)throw error;
+      if(session)await enterAdminPanel();
+    }catch(err){
+      loginStatus(err.message||'بازیابی نشست ورود مدیر ناموفق بود.',true);
+    }
+  })();
+
 })();
