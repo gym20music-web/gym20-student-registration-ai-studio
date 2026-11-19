@@ -534,6 +534,14 @@
       .admin-tabs .gym20-nav-over{outline:1px dashed rgba(218,190,126,.85)!important;outline-offset:-2px}
     `;
     document.head.appendChild(style);
+    // Remove legacy six-dot drag handles left by older cached scripts.
+    const stripLegacyGrips=()=>document.querySelectorAll('.admin-tabs .gym20-nav-grip,.admin-tabs .gym20-tab-grip').forEach(el=>el.remove());
+    stripLegacyGrips();
+    const gripCleanup=new MutationObserver(stripLegacyGrips);
+    gripCleanup.observe(document.documentElement,{childList:true,subtree:true});
+    const legacyGripStyle=document.createElement('style');
+    legacyGripStyle.textContent='.admin-tabs .gym20-nav-grip,.admin-tabs .gym20-tab-grip{display:none!important}';
+    document.head.appendChild(legacyGripStyle);
     navs.forEach(nav=>{
       if(nav.dataset.gym20SortReady==='1')return;
       nav.dataset.gym20SortReady='1';
