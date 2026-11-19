@@ -65,7 +65,7 @@ function renderCustomRegionDropdown(){
     const regions=appData.regions||[];
     const act=regions.find(r=>r.id===currentRegionId);
     if(act){const p=formatRegionDisplayName(act.name);customRegionSelectedTextEl.innerHTML=`<span style="color:var(--neon-blue);font-weight:800;font-size:.75rem;">📍 ${p.title}</span>${p.desc?`<span style="font-size:.62rem;color:var(--text-secondary);margin-right:4px;">(${p.desc.split(':')[0]||p.desc})</span>`:''}`;}
-    else customRegionSelectedTextEl.innerHTML=`<span>📍</span><span>${(appData.titles&&appData.titles.regionSection)||'انتخاب منطقه در تهران...'}</span>`;
+    else customRegionSelectedTextEl.innerHTML=`<span>${(appData.titles&&appData.titles.regionSection)||'📍 انتخاب منطقه در تهران...'}</span>`;
     const wheel=document.createElement('div');
     wheel.id='customRegionWheelList';
     wheel.className='region-wheel-list';
