@@ -100,3 +100,27 @@ hr,.divider{border-color:rgba(220,230,240,.1)!important}
 #editPromoText{min-height:76px!important;height:76px;resize:vertical!important;overflow:auto!important;touch-action:pan-y!important;padding:10px 12px!important;line-height:1.85!important;cursor:text}
 #editPromoText:focus{min-height:92px!important}
 @media(max-width:600px){#editPromoText{min-height:82px!important;height:82px;resize:vertical!important;font-size:11px!important}#editPromoText:focus{min-height:100px!important}}
+
+/* GYM20 ADMIN MOBILE LAYOUT — vertical right navigation, independently scrolling workspace */
+@media(max-width:720px){
+ #adminModal .admin-layout{flex-direction:row!important;align-items:stretch!important;overflow:hidden!important}
+ #adminModal .admin-sidebar{width:112px!important;min-width:112px!important;max-width:112px!important;flex:0 0 112px!important;max-height:none!important;min-height:0!important;height:auto!important;padding:8px 6px!important;border-left:1px solid var(--border)!important;border-bottom:0!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}
+ #adminModal .admin-sidebar-brand{display:none!important}
+ #adminModal .admin-tabs{display:flex!important;flex-direction:column!important;flex-wrap:nowrap!important;align-items:stretch!important;gap:5px!important;width:100%!important;overflow:visible!important;white-space:normal!important;padding:0!important}
+ #adminModal .admin-tab-btn{display:flex!important;width:100%!important;min-width:0!important;min-height:39px!important;flex:0 0 auto!important;justify-content:flex-start!important;text-align:right!important;white-space:normal!important;padding:7px 7px!important;font-size:10px!important;line-height:1.45!important;border-radius:8px!important}
+ #adminModal .admin-workspace{flex:1 1 0!important;width:calc(100% - 112px)!important;min-width:0!important;min-height:0!important;overflow-x:hidden!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch!important;padding:11px 9px calc(18px + env(safe-area-inset-bottom))!important}
+}
+@media(max-width:380px){
+ #adminModal .admin-sidebar{width:100px!important;min-width:100px!important;max-width:100px!important;flex-basis:100px!important;padding:7px 5px!important}
+ #adminModal .admin-tab-btn{font-size:9px!important;padding:6px 5px!important;min-height:36px!important}
+ #adminModal .admin-workspace{width:calc(100% - 100px)!important;padding:9px 7px calc(16px + env(safe-area-inset-bottom))!important}
+}
+#adminModal #exercisesTab #gym20ExercisesTab{width:100%;min-width:0;border:1px solid var(--border);border-radius:12px;padding:14px;background:linear-gradient(145deg,rgba(39,46,55,.96),rgba(28,34,41,.98));color:var(--text-primary)}
+#adminModal #exercisesTab .admin-section-subhead{font-size:13px;font-weight:800;color:#d6b35a;margin-bottom:7px}
+#adminModal #exercisesTab .admin-input-group{min-width:0}
+#adminModal #exercisesTab #gym20ExerciseStudentSelect,#adminModal #exercisesTab #gym20ExerciseInput{width:100%;min-width:0;min-height:36px;border-radius:8px;padding:7px 9px;font:11px Vazirmatn,sans-serif}
+#adminModal #exercisesTab #gym20ExerciseAdd{min-height:34px;padding:7px 12px;border:1px solid rgba(214,179,90,.45);border-radius:8px;background:linear-gradient(135deg,#d7bd83,#a98b50);color:#19160f;font-weight:800}
+#adminModal #exercisesTab #gym20ExerciseFeedback{min-height:20px;margin:8px 0;font-size:10px}
+#adminModal #exercisesTab .gym20-ex-admin-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px;margin:7px 0;border:1px solid var(--border);border-radius:9px;background:rgba(255,255,255,.035)}
+#adminModal #exercisesTab .gym20-ex-admin-row button{min-height:28px;padding:5px 8px;border:1px solid var(--border);border-radius:7px;background:#252c34;color:#e5eaf0;font-size:10px}
+#adminModal #exercisesTab .gym20-ex-meta{font-size:10px;color:var(--text-secondary)}
