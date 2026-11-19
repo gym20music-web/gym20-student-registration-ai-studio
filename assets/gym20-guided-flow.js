@@ -37,7 +37,7 @@
   `;
   document.head.appendChild(style);
 
-  let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
+  let pop=null,activeTarget=null,styleAdvanceTimer=null,regionGuideRetryTimer=null,formGuideStage=0;
   document.addEventListener('DOMContentLoaded',watchAdminModal,{once:true});
   if(document.readyState!=='loading')watchAdminModal();
   function ensurePop(){
@@ -123,7 +123,7 @@
     const anchor=targetFor(id);
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
-    ensurePop();pop.textContent=message;place();
+    ensurePop();pop.style.display='flex';pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
     // Highlighting the styles step must not start the timer: preselected styles are not user confirmation.
@@ -131,14 +131,24 @@
   }
   const stepIds=['ageGroup','classType','sessionsCount','stylesList','publicRegistrationCard'];
   function focusFrom(index){
-    for(let i=index;i<stepIds.length;i++)if(focusStep(stepIds[i],true))return;
+    for(let i=index;i<stepIds.length;i++)if(focusStep(stepIds[i],true))return true;
+    return false;
   }
-  // Listen for the confirmed region-selection event emitted by the registration app.
-  // This avoids wrapping a global function and guarantees the guide starts only after the region is committed.
-  window.addEventListener('gym20:region-selected',()=>{
+  // The region content can become measurable after its visibility/layout update.
+  // Retry briefly instead of silently abandoning the guide after one timing-sensitive attempt.
+  function startRegionGuide(){
+    if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
     clear();
-    setTimeout(()=>focusFrom(0),220);
-  });
+    let attempts=0;
+    const attempt=()=>{
+      if(adminIsOpen()||focusFrom(0)||++attempts>=20){
+        if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
+      }
+    };
+    attempt();
+    if(attempts<20)regionGuideRetryTimer=setInterval(attempt,250);
+  }
+  window.addEventListener('gym20:region-selected',startRegionGuide);
   // Start one 6-second grace period on the first selected style.
   // Further selections do not restart it; selecting every available style advances immediately.
   window.gym20GuidedFlowStyleSelected=function(){
