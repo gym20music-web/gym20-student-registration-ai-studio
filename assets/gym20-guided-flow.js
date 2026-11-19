@@ -54,7 +54,11 @@
   function place(){
     if(!activeTarget||!visible(activeTarget)||!pop)return;
     const r=activeTarget.getBoundingClientRect(),w=pop.offsetWidth||76,h=pop.offsetHeight||27;
-    let left=r.left+r.width/2-w/2,top=r.top-h-11;
+    const isHeading=activeTarget.matches('#txt_rulesSection,h1,h2,h3,h4,[role="heading"]');
+    // Keep the hint outside heading text: align it to the target's right edge,
+    // rather than centering it over the title.
+    let left=isHeading?r.right-w:r.left+r.width/2-w/2;
+    let top=r.top-h-11;
     left=Math.max(8,Math.min(innerWidth-w-8,left));
     if(top<8)top=Math.min(innerHeight-h-10,r.bottom+11);
     pop.style.left=left+'px';pop.style.top=top+'px';
