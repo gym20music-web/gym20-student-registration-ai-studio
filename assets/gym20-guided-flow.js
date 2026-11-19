@@ -89,6 +89,10 @@
     ensurePop();pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
+    // Begin the style-selection grace period only when the guide actually reaches this step.
+    if(id==='stylesList'&&typeof window.gym20GuidedFlowStyleSelected==='function'){
+      window.gym20GuidedFlowStyleSelected();
+    }
     return true;
   }
   const stepIds=['ageGroup','classType','sessionsCount','stylesList','publicRegistrationCard'];
@@ -125,19 +129,6 @@
     if(styleAdvanceTimer)return;
     styleAdvanceTimer=setTimeout(advance,6000);
   };
-
-  // Observe the public styles list so the timer also starts when its default first style
-  // is preselected during rendering, not only after a later manual click.
-  const stylesGuideRoot=document.getElementById('stylesList');
-  if(stylesGuideRoot){
-    const stylesGuideObserver=new MutationObserver(()=>{
-      if(typeof window.gym20GuidedFlowStyleSelected==='function'){
-        window.gym20GuidedFlowStyleSelected();
-      }
-    });
-    stylesGuideObserver.observe(stylesGuideRoot,{childList:true,subtree:true});
-    window.gym20GuidedFlowStyleSelected();
-  }
 
   document.addEventListener('click',function(e){
     const target=e.target instanceof Element?e.target:e.target?.parentElement;
