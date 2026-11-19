@@ -11,7 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./admin-panel.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0/dist/umd/supabase.js"></script>
-<script defer src="./admin-panel.js?v=20261118-exercises1"></script>
+<script defer src="./admin-panel.js?v=20261119-magiclink1"></script>
 <script defer src="./student-terms.js?v=20261118-termfix96"></script>
 <script defer src="./student-push-admin.js?v=20261118-pushfix1"></script>
 <script defer src="./student-exercises.js?v=20261118-exercises2"></script>
@@ -28,10 +28,8 @@
     <label for="publishableKey">کلید عمومی Publishable</label>
     <input id="publishableKey" type="password" value="sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3" placeholder="sb_publishable_…" dir="ltr" autocomplete="off" required>
     <label for="loginEmail">ایمیل مدیر</label>
-    <input id="loginEmail" type="email" autocomplete="username" required>
-    <label for="loginPassword">رمز عبور</label>
-    <input id="loginPassword" type="password" autocomplete="current-password" required>
-    <button class="primary wide" id="loginSubmit">ورود امن</button>
+    <input id="loginEmail" type="email" autocomplete="email" placeholder="ایمیل حساب مدیر" required>
+    <button class="primary wide" id="loginSubmit">ارسال لینک ورود</button>
     <p class="status" id="loginStatus" role="status" aria-live="polite"></p>
     <small class="muted">کلید Secret یا service_role را اینجا وارد نکنید. اطلاعات ورود در کد ذخیره نمی‌شود.</small>
   </form>
