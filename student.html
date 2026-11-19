@@ -503,7 +503,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   var storedCode="";
   try{storedCode=localStorage.getItem("gym20_student_short_code")||"";}catch(_){}
   if(!storedCode){
-    var match=document.cookie.match(/(?:^|;\\s*)gym20_student_short_code=([0-9a-f]{12})/i);
+    var match=document.cookie.match(/(?:^|;\s*)gym20_student_short_code=([0-9a-f]{12})/i);
     if(match)storedCode=match[1];
   }
   var code=pathCode||params.get("c")||storedCode||"";
@@ -534,7 +534,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   if(!pathCode){
     history.replaceState(null,"","/s/"+code+location.hash);
   }
-})();;
+})();
 </script><script src="/student-view.js?v=20261119-class-notice-popup-v8"></script>
 
 </body></html>
