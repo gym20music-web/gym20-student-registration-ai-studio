@@ -462,16 +462,7 @@
       const {error}=await client.auth.signInWithPassword({email,password});
       if(error){
         if(error.code==='invalid_credentials'||/invalid login credentials/i.test(error.message||'')){
-          const {error:otpError}=await client.auth.signInWithOtp({
-            email,
-            options:{
-              emailRedirectTo:'https://gym20.ir/admin.html?sync-password=1',
-              shouldCreateUser:false
-            }
-          });
-          if(otpError)throw otpError;
-          loginStatus('برای فعال‌شدن همین رمز روی حساب فعلی، لینک تأیید به ایمیل مدیر ارسال شد. لینک را باز کنید؛ سپس همین ایمیل و همین رمز را دوباره در همین صفحه وارد کنید.');
-          return;
+          throw new Error('ایمیل یا رمز عبور با حساب فعلی مطابقت ندارد. ارسال ایمیل خودکار غیرفعال است؛ کمی بعد دوباره تلاش کنید.');
         }
         throw error;
       }
