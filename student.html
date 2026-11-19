@@ -2,7 +2,7 @@
 <html lang="fa" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/favicon.svg"><link rel="manifest" href="/student.webmanifest"><meta name="theme-color" content="#080a0f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="GYM20"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="apple-touch-icon" href="/favicon.svg"><meta name="theme-color" content="#080a0f"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="GYM20"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
 <title>برنامه کلاس‌های من | GYM20</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -533,11 +533,14 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     theme_color:"#080a0f",
     icons:[{src:"/favicon.svg",sizes:"any",type:"image/svg+xml",purpose:"any"}]
   };
-  var link=document.querySelector('link[rel="manifest"]');
-  if(link){
-    var blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
-    link.href=URL.createObjectURL(blob);
-  }
+  // Add a manifest only after confirming this is not iOS.
+  // A static manifest in <head> is fetched before JavaScript runs and can
+  // make iOS Home Screen use the shared start_url without the student code.
+  var link=document.createElement("link");
+  link.rel="manifest";
+  var blob=new Blob([JSON.stringify(manifest)],{type:"application/manifest+json"});
+  link.href=URL.createObjectURL(blob);
+  document.head.appendChild(link);
   if(!pathCode){
     history.replaceState(null,"","/s/"+code+location.hash);
   }
