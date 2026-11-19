@@ -33,6 +33,11 @@
     }
     @media(prefers-reduced-motion:reduce){.gym20-flow-pop{transition:none}.gym20-flow-current{transition:none!important}}
   `;
+
+    body.region-sheet-open .gym20-flow-current{
+      outline:0!important;outline-offset:0!important;box-shadow:none!important;
+    }
+    body.region-sheet-open .gym20-flow-pop{display:none!important;}
   document.head.appendChild(style);
 
   let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
@@ -171,3 +176,6 @@
   addEventListener('resize',place);
   console.info('[GYM20] Compact guided popover ready');
 })();
+
+  /* Keep the guided target and its hint out of the way while the region wheel is open.
+     The current step remains active and becomes visible again when the drawer closes. */
