@@ -614,19 +614,22 @@
         const el=grip&&grip.parentElement;
         if(!t||!el||el.parentElement!==nav)return;
         stop();
+        // Suppress the browser's competing scroll/selection gesture on the
+        // dedicated handle; keep a generous movement tolerance for finger jitter.
+        e.preventDefault();
         drag={el,id:t.identifier,x:t.clientX,y:t.clientY,active:false,moved:false,touch:true};
         timer=setTimeout(()=>{
           if(!drag||!drag.touch)return;
           drag.active=true;
           drag.el.classList.add('gym20-nav-dragging');
-        },280);
+        },220);
       },{passive:false});
       nav.addEventListener('touchmove',e=>{
         if(!drag||!drag.touch)return;
         const t=Array.from(e.changedTouches||[]).find(x=>x.identifier===drag.id);
         if(!t)return;
         if(!drag.active){
-          if(Math.hypot(t.clientX-drag.x,t.clientY-drag.y)>12){clearTimeout(timer);drag=null;}
+          if(Math.hypot(t.clientX-drag.x,t.clientY-drag.y)>34){clearTimeout(timer);drag=null;}
           return;
         }
         e.preventDefault();
