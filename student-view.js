@@ -174,171 +174,72 @@
   async function setupPush(shortCode,client){
     const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus");
     if(!box||!button||!status||!shortCode)return;
-    box.classList.remove("hide");
-    button.disabled=true;
-    button.textContent="در حال آماده‌سازی اعلان…";
-
+    box.classList.remove("hide");button.disabled=true;button.textContent="در حال آماده‌سازی اعلان…";
     const ua=navigator.userAgent||"";
     const isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
     const isStandalone=!!(navigator.standalone||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches));
-    if(isIOS&&!isStandalone){
-      button.hidden=true;
-      status.textContent="برای اعلان در آیفون: این صفحه را در Safari باز کن، دکمه Share را بزن و Add to Home Screen را انتخاب کن؛ سپس برنامه GYM20 را از آیکون صفحه اصلی باز کن و اعلان را فعال کن. (نیازمند iOS 16.4 یا جدیدتر)";
-      return;
-    }
-    if(!window.isSecureContext){
-      button.disabled=true;
-      status.textContent="اعلان فقط روی اتصال امن HTTPS فعال می‌شود. آدرس gym20.ir را باز کن.";
-      return;
-    }
-    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){
-      button.disabled=true;
-      status.textContent=isIOS
-        ?"برای اعلان آیفون، iOS 16.4 یا جدیدتر و اجرای برنامه از آیکون Add to Home Screen لازم است."
-        :"این مرورگر اعلان وب را پشتیبانی نمی‌کند. صفحه را در نسخه به‌روز Chrome، Firefox، Edge، Safari یا Zen باز کن؛ مرورگرهای داخلی بعضی برنامه‌ها پشتیبانی ندارند.";
-      return;
-    }
-
-    const api=client.schema("gym20");
+    if(isIOS&&!isStandalone){button.hidden=true;status.textContent="برای اعلان در آیفون، صفحه را در Safari با Share و سپس Add to Home Screen به صفحه اصلی اضافه کن و از آیکون GYM20 باز کن.";return;}
+    if(!window.isSecureContext){button.disabled=true;status.textContent="اعلان فقط روی اتصال امن HTTPS فعال می‌شود. آدرس gym20.ir را باز کن.";return;}
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){button.disabled=true;status.textContent="این مرورگر اعلان وب را پشتیبانی نمی‌کند. صفحه را در نسخه به‌روز Chrome، Firefox، Edge یا Safari باز کن.";return;}
+    const endpoint=SUPABASE_URL+"/functions/v1/student-push";
     let registration=null,publicKey="",configReady=false;
-    const paint=active=>{
-      button.dataset.active=active?"1":"0";
-      button.hidden=!!active;
-    };
+    const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;};
     const friendlyError=error=>{
-      const name=String(error?.name||"");
-      const raw=String(error?.message||error||"");
-      if(name==="NotAllowedError"||Notification.permission==="denied")
-        return "اجازه اعلان برای gym20.ir مسدود است. از تنظیمات اعلان مرورگر یا گوشی، اجازه Notifications را فعال کن.";
-      if(name==="SecurityError")
-        return "مرورگر اجازه اعلان نمی‌دهد. مطمئن شو سایت با HTTPS باز شده و در حالت خصوصی مرورگر نیستی.";
-      if(name==="InvalidStateError")
-        return "اشتراک قبلی اعلان در مرورگر ناسازگار یا ناقص است. مجوز اعلان سایت را از تنظیمات مرورگر بررسی کن و دوباره تلاش کن.";
-      if(/retriev.*push subscription|push subscription/i.test(raw))
-        return "مرورگر Zen نتوانست اشتراک اعلان ذخیره‌شده را بخواند. مرورگر را به‌روز کن، مجوز اعلان gym20.ir را بررسی کن و دوباره فعال‌سازی را بزن.";
-      if(/مهلت|timeout|timed out/i.test(raw))
-        return "آماده‌سازی اعلان بیش از حد طول کشید. اتصال اینترنت را بررسی کن و روی «تلاش دوباره» بزن.";
-      if(/network|fetch|load failed|failed to fetch/i.test(raw))
-        return "ارتباط با سرور اعلان برقرار نشد. اتصال اینترنت را بررسی کن و دوباره تلاش کن.";
-      return "فعال‌سازی اعلان انجام نشد. مرورگر را به‌روز کن و مجوز اعلان سایت gym20.ir را بررسی کن.";
+      const name=String(error?.name||""),raw=String(error?.message||error||"");
+      if(name==="NotAllowedError"||Notification.permission==="denied")return "اجازه اعلان برای gym20.ir مسدود است. از تنظیمات اعلان مرورگر یا گوشی، اجازه Notifications را فعال کن.";
+      if(name==="SecurityError")return "مرورگر اجازه اعلان نمی‌دهد. مطمئن شو سایت با HTTPS باز شده و در حالت خصوصی مرورگر نیستی.";
+      if(name==="InvalidStateError")return "اشتراک قبلی اعلان در مرورگر ناسازگار یا ناقص است. مجوز اعلان سایت را بررسی کن و دوباره تلاش کن.";
+      if(/network|fetch|load failed|failed to fetch/i.test(raw))return "ارتباط با سرویس اعلان برقرار نشد. اینترنت را بررسی کن و دوباره تلاش کن.";
+      return raw&&raw.length<220?raw:"فعال‌سازی اعلان انجام نشد. دوباره تلاش کن.";
     };
-    const withTimeout=(promise,ms,message)=>new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>reject(new Error(message)),ms);
-      Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});
-    });
+    const withTimeout=(promise,ms,message)=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),ms);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});
+    const requestPush=async(method,body)=>{
+      const response=await withTimeout(fetch(endpoint+(method==="GET"?"?code="+encodeURIComponent(shortCode):""),{method,headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined}),12000,"ارتباط با سرویس اعلان بیش از حد طول کشید.");
+      const data=await response.json().catch(()=>({}));
+      if(!response.ok||data.ok===false)throw new Error(data.error||"سرویس اعلان پاسخ معتبر نداد.");
+      return data;
+    };
     const ensureReady=async()=>{
       let current=await withTimeout(navigator.serviceWorker.getRegistration("/"),7000,"مهلت بررسی سرویس‌ورکر تمام شد.");
-      if(!current)current=await withTimeout(
-        navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"}),
-        9000,"ثبت سرویس‌ورکر بیش از حد طول کشید."
-      );
+      if(!current)current=await withTimeout(navigator.serviceWorker.register("/sw.js",{scope:"/",updateViaCache:"none"}),9000,"ثبت سرویس‌ورکر بیش از حد طول کشید.");
       registration=current;
-      // Do not await registration.update() during page startup: on slow networks it
-      // can remain pending and leave the button stuck in its loading state.
       const ready=await withTimeout(navigator.serviceWorker.ready,9000,"سرویس‌ورکر در زمان مجاز آماده نشد.");
-      registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"بررسی وضعیت سرویس‌ورکر ناموفق بود.")||ready;
-      if(!registration||!registration.pushManager)throw new Error("PushManager unavailable");
+      registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"بررسی سرویس‌ورکر ناموفق بود.")||ready;
+      if(!registration||!registration.pushManager)throw new Error("مرورگر امکان ساخت اشتراک اعلان را فراهم نکرد.");
       return registration;
     };
     const readSubscription=async()=>{
       try{return await withTimeout(registration.pushManager.getSubscription(),7000,"مهلت خواندن اشتراک اعلان تمام شد.");}
       catch(firstError){
-        // Retry once against the current root-scope service worker. Never unregister
-        // here: doing so can disrupt other tabs and valid subscriptions on this device.
-        try{
-          registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;
-          try{await withTimeout(registration.update(),5000,"مهلت به‌روزرسانی سرویس‌ورکر تمام شد.");}catch(_){}
-          await withTimeout(navigator.serviceWorker.ready,7000,"سرویس‌ورکر برای خواندن اشتراک آماده نشد.");
-          registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;
-          return await withTimeout(registration.pushManager.getSubscription(),7000,"مهلت خواندن اشتراک اعلان تمام شد.");
-        }catch(_){throw firstError;}
+        try{registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;try{await withTimeout(registration.update(),5000,"مهلت به‌روزرسانی سرویس‌ورکر تمام شد.");}catch(_){}await withTimeout(navigator.serviceWorker.ready,7000,"سرویس‌ورکر برای خواندن اشتراک آماده نشد.");registration=await withTimeout(navigator.serviceWorker.getRegistration("/"),5000,"مهلت بررسی سرویس‌ورکر تمام شد.")||registration;return await withTimeout(registration.pushManager.getSubscription(),7000,"مهلت خواندن اشتراک تمام شد.");}
+        catch(_){throw firstError;}
       }
     };
-    const saveSubscription=async subscription=>{
-      const keys=subscription.toJSON().keys||{};
-      if(!keys.p256dh||!keys.auth)throw new Error("Push subscription keys missing");
-      const {error}=await api.rpc("subscribe_student_push",{
-        p_code:shortCode,p_endpoint:subscription.endpoint,p_p256dh:keys.p256dh,p_auth:keys.auth,p_user_agent:navigator.userAgent
-      });
-      if(error)throw error;
-    };
-
+    const saveSubscription=async subscription=>{const data=await requestPush("POST",{action:"subscribe",code:shortCode,subscription:subscription.toJSON(),user_agent:navigator.userAgent});if(!data.ok)throw new Error(data.error||"ثبت اشتراک در سرور انجام نشد.");};
     button.addEventListener("click",async()=>{
-      if(button.disabled||!configReady)return;
-      button.disabled=true;
+      if(button.disabled||!configReady)return;button.disabled=true;
       try{
-        if(Notification.permission==="denied")throw new Error("Notification permission denied");
-        let permission=Notification.permission;
-        if(permission!=="granted")permission=await Notification.requestPermission();
-        if(permission!=="granted")throw new Error("Notification permission denied");
-        await ensureReady();
-        if(!publicKey)throw new Error("Push public key unavailable");
-        let subscription=await readSubscription();
-        if(!subscription){
-          subscription=await registration.pushManager.subscribe({
-            userVisibleOnly:true,
-            applicationServerKey:decodePushKey(publicKey)
-          });
-        }
-        await saveSubscription(subscription);
-        paint(true);
-        status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
-      }catch(error){
-        status.textContent=friendlyError(error);
-        paint(false);
-      }finally{button.disabled=false;}
+        if(Notification.permission==="denied")throw new Error("اجازه اعلان برای gym20.ir در تنظیمات مرورگر مسدود است.");
+        let permission=Notification.permission;if(permission!=="granted")permission=await Notification.requestPermission();
+        if(permission!=="granted")throw new Error("اجازه نمایش اعلان داده نشد.");
+        await ensureReady();if(!publicKey)throw new Error("کلید عمومی اعلان از سرور دریافت نشد.");
+        let subscription=await readSubscription();if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
+        await saveSubscription(subscription);paint(true);status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
+      }catch(error){status.textContent=friendlyError(error);paint(false);}
+      finally{button.disabled=false;}
     });
-
     try{
-      const {data,error}=await withTimeout(api.rpc("get_student_push_public_config"),9000,"مهلت دریافت تنظیمات اعلان تمام شد.");
-      if(error)throw error;
-      const config=Array.isArray(data)?data[0]:data;
-      if(!config?.enabled||!config?.public_key){
-        box.classList.add("hide");
-        return;
-      }
-      publicKey=config.public_key;
-      await ensureReady();
-      let existing=null;
-      try{
-        existing=await readSubscription();
-      }catch(subscriptionError){
-        // Do not fail the schedule page because one browser cannot read its local
-        // subscription. Leave a retry action available to the student.
-        configReady=true;
-        paint(false);
-        button.disabled=false;
-        button.textContent="تلاش دوباره برای فعال‌سازی اعلان";
-        status.textContent=friendlyError(subscriptionError);
-        return;
-      }
+      const config=await requestPush("GET");if(!config.enabled){box.classList.add("hide");return;}
+      publicKey=config.public_key||"";if(!publicKey)throw new Error("کلید عمومی اعلان در سرویس ثبت نشده است.");
+      await ensureReady();let existing=null;
+      try{existing=await readSubscription();}
+      catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(subscriptionError);return;}
       if(Notification.permission==="granted"&&existing){
-        try{
-          await saveSubscription(existing);
-          paint(true);
-          status.textContent="✓ اعلان فعال";
-        }catch(saveError){
-          paint(false);
-          status.textContent="اشتراک مرورگر پیدا شد، اما ثبت آن در سرور انجام نشد. دکمه فعال‌سازی را بزن و دوباره تلاش کن.";
-        }
-      }else{
-        paint(false);
-        status.textContent=Notification.permission==="denied"
-          ?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن."
-          :"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";
-      }
-      configReady=true;
-      button.disabled=false;
-      button.textContent="فعال‌سازی اعلان کلاس‌ها";
-    }catch(error){
-      // Keep the schedule usable and provide a retry instead of exposing browser
-      // implementation-specific English exceptions.
-      configReady=true;
-      button.disabled=false;
-      paint(false);
-      button.textContent="تلاش دوباره برای فعال‌سازی اعلان";
-      status.textContent=friendlyError(error);
-    }
+        try{await saveSubscription(existing);paint(true);status.textContent="✓ اعلان فعال";}
+        catch(saveError){paint(false);status.textContent="اشتراک مرورگر پیدا شد، اما ثبت آن در سرور انجام نشد. دوباره فعال‌سازی را بزن.";}
+      }else{paint(false);status.textContent=Notification.permission==="denied"?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن.":"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";}
+      configReady=true;button.disabled=false;button.textContent="فعال‌سازی اعلان کلاس‌ها";
+    }catch(error){configReady=true;button.disabled=false;paint(false);button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(error);}
   }
   let terms=[];
   let activeView="grid";
