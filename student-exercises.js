@@ -39,6 +39,7 @@
         '<option value="' + esc(s.id) + '">' + esc(s.full_name) + (s.is_active ? '' : ' · غیرفعال') + '</option>'
       ).join('');
       if (currentStudentId && students.some(s => s.id === currentStudentId)) select.value = currentStudentId;
+      else if (students.length === 1) { currentStudentId = students[0].id; select.value = currentStudentId; }
       if (select.value) await loadStudentExercisesAdmin();
       else $('gym20ExerciseList').innerHTML = '<p class="muted">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
     } catch (e) {
@@ -151,14 +152,39 @@
       work.appendChild(panel);
     }
 
+    const openExerciseTab = () => {
+      const target = $('view-exercises');
+      if (!target) return;
+      document.querySelectorAll('.view,.admin-panel-tab').forEach(el => el.classList.toggle('active', el === target));
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === 'exercises'));
+      if ($('pageTitle')) $('pageTitle').textContent = 'تمرین هنرجویان';
+      if ($('pageSubtitle')) $('pageSubtitle').textContent = 'تعریف و پیگیری تمرین‌های اختصاصی هر هنرجو';
+      if (window.gym20OwnerAuthorized) loadExerciseStudents();
+      else say('برای استفاده از تمرین‌ها ابتدا وارد حساب مدیر شوید.', true);
+    };
+    navButton.addEventListener('click', event => { event.preventDefault(); openExerciseTab(); });
+    document.querySelectorAll('[data-go="exercises"]').forEach(button => {
+      if (!button.dataset.exerciseRouteBound) {
+        button.dataset.exerciseRouteBound = '1';
+        button.addEventListener('click', event => { event.preventDefault(); openExerciseTab(); });
+      }
+    });
+
     const select = $('gym20ExerciseStudentSelect');
     const add = $('gym20ExerciseAdd');
     const input = $('gym20ExerciseInput');
     const list = $('gym20ExerciseList');
-    if (!select || !add || !input || !list) return;
+    window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
+    window.loadExerciseStudents = loadExerciseStudents;
+    window.gym20ExerciseTabReady = true;
+    if (!select || !add || !input || !list) {
+      console.error('[GYM20] Exercise module mounted without required controls.');
+      return;
+    }
     if (select.dataset.exerciseBound) return;
     select.dataset.exerciseBound = '1';
-    select.addEventListener('change', loadStudentExercisesAdmin);
+    select.addEventListener('change', () => { currentStudentId = select.value; loadStudentExercisesAdmin(); });
+    add.type = 'button';
     add.addEventListener('click', addExercise);
     input.addEventListener('keydown', event => {
       if (event.key === 'Enter') { event.preventDefault(); addExercise(); }
@@ -172,9 +198,6 @@
     $('refreshBtn')?.addEventListener('click', () => {
       if (panel.classList.contains('active') && window.gym20OwnerAuthorized) loadExerciseStudents();
     });
-    window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
-    window.loadExerciseStudents = loadExerciseStudents;
-    window.gym20ExerciseTabReady = true;
     window.addEventListener('gym20:owner-authorized', () => {
       if (window.gym20OwnerAuthorized) loadExerciseStudents();
     });
