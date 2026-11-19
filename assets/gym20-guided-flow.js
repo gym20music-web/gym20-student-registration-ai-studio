@@ -37,10 +37,9 @@
   `;
   document.head.appendChild(style);
 
+  let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
   document.addEventListener('DOMContentLoaded',watchAdminModal,{once:true});
   if(document.readyState!=='loading')watchAdminModal();
-
-  let pop=null,activeTarget=null,styleAdvanceTimer=null,formGuideStage=0;
   function ensurePop(){
     if(pop&&pop.isConnected)return pop;
     pop=document.createElement('div');pop.className='gym20-flow-pop';pop.textContent='انتخاب کن';
