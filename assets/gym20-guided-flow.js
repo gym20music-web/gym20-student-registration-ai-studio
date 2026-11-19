@@ -148,11 +148,11 @@
     pop.textContent=message;
     // Force the active hint above legacy page styles. clear()/admin suppression
     // always remove these inline values, so the hint cannot leak into admin or drawer UI.
-    pop.style.setProperty('display','flex','important');
-    pop.style.setProperty('visibility','visible','important');
-    pop.style.setProperty('opacity','1','important');
-    pop.style.setProperty('transform','none','important');
-    pop.style.setProperty('z-index','2147483647','important');
+    pop.style.setProperty('display','flex');
+    pop.style.setProperty('visibility','visible');
+    pop.style.setProperty('opacity','1');
+    pop.style.setProperty('transform','none');
+    pop.style.setProperty('z-index','2147483647');
     place();
     requestAnimationFrame(()=>{if(activeTarget!==anchor||adminIsOpen()||document.body.classList.contains('region-sheet-open'))return;place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
