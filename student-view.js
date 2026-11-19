@@ -232,7 +232,18 @@
       const config=await requestPush("GET");if(!config.enabled){box.classList.add("hide");return;}
       publicKey=config.public_key||"";if(!publicKey)throw new Error("کلید عمومی اعلان در سرویس ثبت نشده است.");
       await ensureReady();let existing=null;
-      try{existing=await readSubscription();}
+      try{
+        existing=await readSubscription();
+        if(existing){
+          const bound=existing.options?.applicationServerKey;
+          const actual=bound?Array.from(new Uint8Array(bound)):[];
+          const expected=Array.from(decodePushKey(publicKey));
+          if(actual.length!==expected.length||actual.some((value,index)=>value!==expected[index])){
+            await withTimeout(existing.unsubscribe(),7000,"اشتراک قبلی اعلان آزاد نشد.");
+            existing=null;
+          }
+        }
+      }
       catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(subscriptionError);return;}
       if(Notification.permission==="granted"&&existing){
         try{await saveSubscription(existing);paint(true);status.textContent="✓ اعلان فعال";}
