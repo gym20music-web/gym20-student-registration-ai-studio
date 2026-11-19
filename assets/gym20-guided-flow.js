@@ -153,24 +153,35 @@
   // The region content can become measurable after its visibility/layout update.
   // Retry briefly instead of silently abandoning the guide after one timing-sensitive attempt.
   function startRegionGuide(){
+    // The region click handler and the visibility observer can both request
+    // the first step. Do not restart a guide that is already visible.
+    if(activeTarget&&visible(activeTarget)&&pop&&pop.classList.contains('is-visible')&&!adminIsOpen())return;
     if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
     clear();
-    let attempts=0;
-    const stop=()=>{if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}};
+    let attempts=0,started=false;
+    const stop=()=>{
+      if(regionGuideRetryTimer){clearInterval(regionGuideRetryTimer);regionGuideRetryTimer=null;}
+    };
     const attempt=()=>{
-      // If the admin panel is open, keep waiting instead of abandoning the
-      // public-form guide. The previous implementation stopped on the first
-      // admin check and could permanently lose the guide after a region pick.
       if(adminIsOpen()){
         syncAdminVisibility();
-        if(++attempts>=80)stop();
-        return;
+      }else{
+        const content=document.getElementById('regionDependentContent');
+        // Never focus a target while its parent registration section is hidden.
+        if(visible(content)&&focusFrom(0)){
+          started=true;
+          stop();
+          return;
+        }
       }
-      if(focusFrom(0)){stop();return;}
-      if(++attempts>=80)stop();
+      attempts++;
+      if(attempts>=80)stop();
     };
     attempt();
-    if(attempts<80)regionGuideRetryTimer=setInterval(attempt,250);
+    // Important: only create the retry timer if the immediate attempt failed.
+    // Previously attempts stayed at zero after success, so an interval was
+    // still created and repeatedly cleared/repositioned the popover every 250ms.
+    if(!started&&attempts<80)regionGuideRetryTimer=setInterval(attempt,250);
   }
   // Also react to the actual public form becoming visible. This is independent
   // of the region-wheel click event and covers delayed region/layout rendering.
