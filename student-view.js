@@ -4,14 +4,23 @@
   const $=id=>document.getElementById(id);
   let pendingClassNotice="";
   try{
-    const hash=String(location.hash||"");
-    const marker="gym20-notice=";
-    const index=hash.indexOf(marker);
-    if(index>=0){
-      pendingClassNotice=decodeURIComponent(hash.slice(index+marker.length).split("&")[0]).slice(0,1200);
-      history.replaceState(null,"",location.pathname+location.search);
+    const url=new URL(location.href);
+    // Prefer the query payload (survives Android PWA/fallback navigation),
+    // then accept the hash used by previously installed service workers.
+    pendingClassNotice=String(url.searchParams.get("gym20_notice")||"").trim();
+    if(!pendingClassNotice){
+      const hash=String(url.hash||"");
+      const marker="gym20-notice=";
+      const index=hash.indexOf(marker);
+      if(index>=0)pendingClassNotice=decodeURIComponent(hash.slice(index+marker.length).split("&")[0]).slice(0,1200);
     }
-  }catch(_){}
+    if(pendingClassNotice){
+      url.searchParams.delete("gym20_notice");
+      if(url.hash.startsWith("#gym20-notice="))url.hash="";
+      history.replaceState(null,"",url.pathname+url.search+url.hash);
+      pendingClassNotice=pendingClassNotice.slice(0,1200);
+    }
+  }catch(error){console.warn("GYM20 notification message recovery failed:",error);}
   function showClassNotice(message){
     const text=String(message||"").trim();
     if(!text)return;
