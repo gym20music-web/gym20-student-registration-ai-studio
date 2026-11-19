@@ -65,6 +65,7 @@
     $('brandTag').value=config.brandTag||'';
     $('bannerTitle').value=config.bannerTitle||'';
     $('bannerSubtitle').value=config.bannerSubtitle||'';
+    if($('telegramChannelId'))$('telegramChannelId').value=config.telegramChannelId||'@GYM20MUSIC';
     const m=config.multipliers||{};
     $('factorNormal').value=m.normal??1;$('factorSemi').value=m.semi??1.4;$('factorPrivate').value=m.private??2;$('factorVip').value=m.vip??3;$('factorOnline').value=m.online??.8;
     const sr=config.sessionRates||{};
@@ -176,6 +177,28 @@
     status(message||'تغییرات ذخیره شد.');
     updateStats();
   }
+  async function loadTelegramChannelInfo(){
+    const input=$('telegramChannelId'),button=$('getTelegramChannelInfo'),details=$('telegramChannelDetails'),out=$('integrationStatus');
+    const channel=(input?.value||'').trim();
+    if(!client||!window.gym20OwnerAuthorized){out.textContent='ابتدا با حساب مدیر وارد شوید.';out.style.color='#e47777';return;}
+    if(!channel){out.textContent='لینک یا آیدی کانال را وارد کنید.';out.style.color='#e47777';input?.focus();return;}
+    button.disabled=true;button.textContent='در حال دریافت…';out.textContent='در حال ارتباط امن با تلگرام…';out.style.color='var(--muted)';details.innerHTML='';
+    try{
+      const {data,error}=await client.functions.invoke('telegram-channel-info',{body:{channel}});
+      if(error)throw new Error(error.message||'ارتباط با سرویس اطلاعات کانال ناموفق بود.');
+      if(!data?.ok||!data.chat)throw new Error(data?.error||'اطلاعات کانال از تلگرام دریافت نشد.');
+      const chat=data.chat;
+      const rows=[['عنوان کانال',chat.title||'—'],['شناسه',chat.id||'—'],['نام کاربری',chat.username?'@'+chat.username:'ندارد'],['نوع',chat.type||'—'],['توضیحات',chat.description||'—']];
+      details.innerHTML='<article class="request-card"><div>'+rows.map(([k,v])=>'<small><b>'+escapeHtml(k)+':</b> '+escapeHtml(v)+'</small>').join('')+'</div><span class="tag">دریافت شد</span></article>';
+      config.telegramChannelId=channel;
+      try{await saveConfig('اطلاعات کانال دریافت و شناسه آن ذخیره شد.');}
+      catch(saveError){out.textContent='اطلاعات کانال دریافت شد؛ اما ذخیره شناسه ناموفق بود: '+(saveError.message||'خطای ذخیره');out.style.color='#e47777';return;}
+      out.textContent='اطلاعات کانال با موفقیت دریافت شد و شناسه ذخیره شد ✓';out.style.color='var(--green)';
+    }catch(error){
+      out.textContent=error.message||'دریافت اطلاعات کانال ناموفق بود.';out.style.color='#e47777';
+    }finally{button.disabled=false;button.textContent='دریافت اطلاعات کانال';}
+  }
+
   async function runSave(button,fn) {
     const old=button.textContent;button.disabled=true;button.textContent='در حال ذخیره…';
     try{await fn();}catch(e){status(e.message||'ذخیره انجام نشد.',true);}
@@ -422,6 +445,7 @@
   $('addRegion').addEventListener('click',()=>{config.regions=config.regions||[];config.regions.push({id:'reg_'+Date.now(),name:'منطقه جدید',kidsBase:1500000,adultBase:2000000,extraStylePrice:500000});renderRegions();});
   $('saveRegions').addEventListener('click',e=>runSave(e.currentTarget,async()=>{readRegions();await saveConfig('مناطق و قیمت‌ها ذخیره شد.');}));
   $('saveRules').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.rules=config.rules||{};Object.keys(RULE_NAMES).forEach(k=>config.rules[k]=$('rule-'+k).value);await saveConfig('قوانین ذخیره شد.');}));
+  $('getTelegramChannelInfo').addEventListener('click',loadTelegramChannelInfo);
   $('saveSite').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.brandTag=$('brandTag').value;config.bannerTitle=$('bannerTitle').value;config.bannerSubtitle=$('bannerSubtitle').value;config.pageTexts=config.pageTexts||{};Object.keys(PAGE_TEXT_LABELS).forEach(k=>config.pageTexts[k]=$('pageText-'+k).value);await saveConfig('محتوای سایت ذخیره شد.');}));
   $('savePayments').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.card={...(config.card||{}),bank:$('bankName').value,number:$('cardNumber').value,cleanNumber:$('cardNumber').value.replace(/\D/g,''),owner:$('cardOwner').value,gatewayLink:$('gatewayLink').value};config.contact={...(config.contact||{}),phone:$('contactPhone').value,instagram:$('contactInstagram').value,telegram:$('contactTelegram').value};await saveConfig('اطلاعات پرداخت و ارتباطات ذخیره شد.');}));
   // Restore the verified owner session after the email magic-link callback.
