@@ -139,7 +139,18 @@
     const anchor=targetFor(id);
     if(!anchor)return false;
     clear();activeTarget=anchor;anchor.classList.add('gym20-flow-current');
-    ensurePop();pop.style.display='flex';pop.textContent=message;place();
+    ensurePop();
+    // Force the hint above every page layer. Some Android/WebView rendering
+    // stacks suppress stylesheet-driven opacity/position for dynamically added
+    // fixed elements; inline important values make the cue deterministic.
+    pop.style.setProperty('position','fixed','important');
+    pop.style.setProperty('z-index','2147483647','important');
+    pop.style.setProperty('display','flex','important');
+    pop.style.setProperty('visibility','visible','important');
+    pop.style.setProperty('opacity','1','important');
+    pop.style.setProperty('transform','none','important');
+    pop.style.setProperty('pointer-events','none','important');
+    pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
     // Highlighting the styles step must not start the timer: preselected styles are not user confirmation.
