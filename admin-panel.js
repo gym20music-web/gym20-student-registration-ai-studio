@@ -530,8 +530,6 @@
     const style=document.createElement('style');
     style.id='gym20AdminTabSortingStyle';
     style.textContent=`
-      .admin-tabs .gym20-nav-grip{display:inline-flex;align-items:center;justify-content:center;flex:0 0 25px;width:25px;min-width:25px;height:28px;margin-inline-end:5px;border-radius:6px;color:rgba(218,190,126,.9);font-size:19px;line-height:1;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-      .admin-tabs .gym20-nav-grip:active{cursor:grabbing}
       .admin-tabs .gym20-nav-dragging{opacity:.55!important;outline:1px solid rgba(218,190,126,.85)!important}
       .admin-tabs .gym20-nav-over{outline:1px dashed rgba(218,190,126,.85)!important;outline-offset:-2px}
     `;
@@ -556,19 +554,7 @@
         sorted.forEach(b=>nav.appendChild(b));
         lastSaved=sorted.map(key).filter(Boolean).join('|');
       };
-      const decorate=()=>{
-        list().forEach(b=>{
-          if(b.querySelector(':scope > .gym20-nav-grip'))return;
-          const grip=document.createElement('span');
-          grip.className='gym20-nav-grip';
-          grip.textContent='⠿';
-          grip.setAttribute('role','img');
-          grip.setAttribute('aria-label','برای جابه‌جایی نگه دارید و بکشید');
-          grip.title='برای جابه‌جایی نگه دارید و بکشید';
-          grip.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();});
-          b.insertBefore(grip,b.firstChild);
-        });
-      };
+      const decorate=()=>{};
       const stop=()=>{
         if(!drag)return;
         clearTimeout(timer);
@@ -593,8 +579,7 @@
       // Mouse/trackpad path.
       nav.addEventListener('pointerdown',e=>{
         if(e.pointerType!=='mouse')return;
-        const grip=e.target.closest('.gym20-nav-grip');
-        const el=grip&&grip.parentElement;
+        const el=e.target.closest('.nav-item,.admin-tab-btn');
         if(!el||el.parentElement!==nav||e.button!==0)return;
         e.preventDefault();
         stop();
@@ -610,19 +595,17 @@
       // Dedicated touch path for Android: long-press the grip, then drag.
       nav.addEventListener('touchstart',e=>{
         const t=e.changedTouches&&e.changedTouches[0];
-        const grip=e.target.closest('.gym20-nav-grip');
-        const el=grip&&grip.parentElement;
+        const el=e.target.closest('.nav-item,.admin-tab-btn');
         if(!t||!el||el.parentElement!==nav)return;
         stop();
         // Suppress the browser's competing scroll/selection gesture on the
         // dedicated handle; keep a generous movement tolerance for finger jitter.
-        e.preventDefault();
         drag={el,id:t.identifier,x:t.clientX,y:t.clientY,active:false,moved:false,touch:true};
         timer=setTimeout(()=>{
           if(!drag||!drag.touch)return;
           drag.active=true;
           drag.el.classList.add('gym20-nav-dragging');
-        },220);
+        },380);
       },{passive:false});
       nav.addEventListener('touchmove',e=>{
         if(!drag||!drag.touch)return;
@@ -642,7 +625,6 @@
       };
       document.addEventListener('touchend',finishTouch,{passive:true});
       document.addEventListener('touchcancel',finishTouch,{passive:true});
-      decorate();
       restore();
       const observer=new MutationObserver(records=>{
         let added=false;
@@ -651,7 +633,7 @@
           if(node.matches?.('.nav-item,.admin-tab-btn')&&!node.querySelector(':scope > .gym20-nav-grip'))added=true;
           node.querySelectorAll?.('.nav-item,.admin-tab-btn').forEach(el=>{if(!el.querySelector(':scope > .gym20-nav-grip'))added=true;});
         }));
-        if(added){decorate();restore();}
+        if(added){restore();}
       });
       observer.observe(nav,{childList:true});
     });
