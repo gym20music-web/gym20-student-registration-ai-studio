@@ -1,5 +1,5 @@
 (() => {
-  const SUPABASE_URL = 'https://iqjujumhoawlugrmjvyj.supabase.co';
+  const SUPABASE_URL = 'https://ubrafxjpnqtjnjdaskba.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_L8uWywK_73syAaq_wvr72Q_WlvD-IcZ';
   const ENDPOINT = SUPABASE_URL + '/functions/v1/student-push';
   const code = (location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i) || [])[1] ||
@@ -13,7 +13,7 @@
     return out;
   };
   const api = async (method, body) => {
-    const response = await fetch(ENDPOINT, {
+    const response = await fetch(ENDPOINT + (method === 'GET' ? '?code=' + encodeURIComponent(code) : ''), {
       method, headers: { apikey: SUPABASE_KEY, 'Content-Type': 'application/json' },
       body: body ? JSON.stringify(body) : undefined
     });
