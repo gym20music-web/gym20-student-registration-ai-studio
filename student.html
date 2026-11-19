@@ -500,18 +500,25 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   var params=new URLSearchParams(location.search);
   var parts=location.pathname.split("/");
   var pathCode=(parts.length>=3&&parts[1]==="s")?parts[2]:"";
-  var storedCode="";
-  try{storedCode=localStorage.getItem("gym20_student_short_code")||"";}catch(_){}
-  if(!storedCode){
-    var match=document.cookie.match(/(?:^|;\s*)gym20_student_short_code=([0-9a-f]{12})/i);
-    if(match)storedCode=match[1];
-  }
-  var code=pathCode||params.get("c")||storedCode||"";
+  var code=pathCode||params.get("c")||"";
   if(!/^[0-9a-f]{12}$/i.test(code))return;
   code=code.toLowerCase();
-  try{localStorage.setItem("gym20_student_short_code",code);}catch(_){}
-  try{document.cookie="gym20_student_short_code="+code+"; Path=/; Max-Age=31536000; SameSite=Lax; Secure";}catch(_){}
-  // Each installed iPhone app must retain the student's own launch code.
+
+  // iOS Home Screen apps must launch the exact student URL, not the
+  // shared manifest start_url (which has no student code).
+  var isIOS=/iPhone|iPad|iPod/i.test(navigator.userAgent)||
+    (navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+  if(isIOS){
+    var manifestLink=document.querySelector('link[rel="manifest"]');
+    if(manifestLink)manifestLink.remove();
+    // Keep the direct, code-bearing URL as the Home Screen launch URL.
+    if(pathCode){
+      history.replaceState(null,"","/student.html?c="+code+location.hash);
+    }
+    return;
+  }
+
+  // Keep Android/other browsers on the per-student web manifest.
   var manifest={
     id:"/s/"+code,
     name:"GYM20 | برنامه کلاس‌های من",
@@ -534,7 +541,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
   if(!pathCode){
     history.replaceState(null,"","/s/"+code+location.hash);
   }
-})();
+})();;
 </script><script src="/student-view.js?v=20261119-class-notice-popup-v8"></script>
 
 </body></html>
