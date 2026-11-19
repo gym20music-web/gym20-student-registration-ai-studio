@@ -115,7 +115,14 @@ function renderStyles(){
         item.onclick=()=>toggleStyle(st.id);stylesListEl.appendChild(item);
     });
 }
-function toggleStyle(id){if(selectedStyles.includes(id)){if(selectedStyles.length>1)selectedStyles=selectedStyles.filter(s=>s!==id);}else selectedStyles.push(id);renderStyles();calculatePrice();if(typeof window.gym20GuidedFlowStyleSelected==='function')window.gym20GuidedFlowStyleSelected();}
+function toggleStyle(id){
+    const wasSelected=selectedStyles.includes(id);
+    if(wasSelected){if(selectedStyles.length>1)selectedStyles=selectedStyles.filter(s=>s!==id);}
+    else selectedStyles.push(id);
+    renderStyles();calculatePrice();
+    // Only a real user action that adds a style may start/complete the 6-second timer.
+    if(!wasSelected&&typeof window.gym20GuidedFlowStyleSelected==='function')window.gym20GuidedFlowStyleSelected();
+}
 
 function switchAdminClassType(t){adminActiveEditingClassType=t;document.querySelectorAll('#sub_class_status .sub-tab-btn').forEach(b=>b.classList.remove('active'));if(window.event)window.event.target.classList.add('active');loadAdminClassTypeConfig();}
 function loadAdminClassTypeConfig(){

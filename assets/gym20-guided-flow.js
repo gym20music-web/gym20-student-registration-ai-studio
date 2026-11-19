@@ -89,10 +89,7 @@
     ensurePop();pop.textContent=message;place();
     requestAnimationFrame(()=>{place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
-    // Begin the style-selection grace period only when the guide actually reaches this step.
-    if(id==='stylesList'&&typeof window.gym20GuidedFlowStyleSelected==='function'){
-      window.gym20GuidedFlowStyleSelected();
-    }
+    // Highlighting the styles step must not start the timer: preselected styles are not user confirmation.
     return true;
   }
   const stepIds=['ageGroup','classType','sessionsCount','stylesList','publicRegistrationCard'];
