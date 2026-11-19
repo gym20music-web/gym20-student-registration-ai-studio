@@ -58,16 +58,26 @@
     return modal.style.display!=='none'&&display!=='none';
   }
   function syncAdminVisibility(){
-    if(!adminIsOpen()){if(pop)pop.style.display='';return;}
+    if(!adminIsOpen()){
+      // Do not write the same style value repeatedly: the old body-wide observer
+      // watched this mutation and could retrigger itself indefinitely.
+      if(pop&&pop.style.display!=='')pop.style.display='';
+      return;
+    }
     document.querySelectorAll('.gym20-flow-current').forEach(el=>el.classList.remove('gym20-flow-current'));
-    if(pop){pop.classList.remove('is-visible');pop.style.display='none';}
+    if(pop){
+      pop.classList.remove('is-visible');
+      if(pop.style.display!=='none')pop.style.display='none';
+    }
     activeTarget=null;
   }
   const adminObserver=new MutationObserver(()=>syncAdminVisibility());
   function watchAdminModal(){
+    // adminModal is present in index.html from the initial document.
+    // Observe only this modal; observing the whole body also observes our own
+    // popover/style mutations and can create a self-triggering observer loop.
     const modal=document.getElementById('adminModal');
     if(modal)adminObserver.observe(modal,{attributes:true,attributeFilter:['class','style','aria-hidden']});
-    adminObserver.observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','style','aria-hidden']});
     syncAdminVisibility();
   }
   function visible(el){
