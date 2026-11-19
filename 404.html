@@ -25,7 +25,7 @@ b{display:block;color:#e8c46b;margin-bottom:10px}p{font-size:13px;line-height:2;
   var parts=location.pathname.split("/");
   if(parts.length===3&&parts[1]==="s"&&/^[0-9a-f]{12}$/i.test(parts[2]))params.set("c",parts[2]);
   var query=params.toString();
-  location.replace("/student.html"+(query?"?"+query:""));
+  location.replace("/student.html"+(query?"?"+query:"")+location.hash);
 })();
 </script>
 </body>
