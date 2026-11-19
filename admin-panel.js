@@ -2,6 +2,7 @@
   'use strict';
   const $ = id => document.getElementById(id);
   const PROJECT_DEFAULT = 'https://ubrafxjpnqtjnjdaskba.supabase.co';
+  const PUBLISHABLE_DEFAULT = 'sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3';
   const VIEW_META = {
     overview:['نمای کلی','وضعیت کلی آکادمی و دسترسی سریع'],
     attendance:['حضور و غیاب','ثبت و پیگیری وضعیت جلسات منتشرشده'], coaches:['مربیان','مدیریت برنامه و آمار مربیان'], reports:['گزارش‌ها','گزارش‌های عملیاتی آکادمی'], integrations:['اتصالات','وضعیت سرویس‌های پیام‌رسانی و اعلان'],
@@ -30,7 +31,7 @@
   const n = value => Number(String(value ?? '').replace(/[^0-9.-]/g,'')) || 0;
   const fmt = value => n(value).toLocaleString('en-US');
 
-  async function connect(url,key) {
+  async function connect(url=PROJECT_DEFAULT,key=PUBLISHABLE_DEFAULT) {
     if (!window.supabase?.createClient) throw new Error('کتابخانه Supabase بارگذاری نشده است؛ اتصال اینترنت را بررسی کنید.');
     if (/service_role|sb_secret_/i.test(key)) throw new Error('کلید Secret یا service_role برای مرورگر مجاز نیست؛ فقط Publishable key.');
     client = window.supabase.createClient(url.replace(/\/$/,''), key, {
@@ -44,10 +45,6 @@
         $('app').hidden=true;
         $('loginScreen').hidden=false;
         loginStatus('نشست مدیر پایان یافته است؛ دوباره وارد شوید.',true);
-      }
-      if(event==='PASSWORD_RECOVERY'){
-        $('passwordRecoveryPanel').hidden=false;
-        loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
       }
     });
     return client;
@@ -441,73 +438,46 @@
       window.dispatchEvent(new Event('gym20:owner-authorized'));
     }catch(err){status(err.message||'دریافت اطلاعات پنل ناموفق بود.',true);}
   }
-  $('passwordLogin').addEventListener('click',async()=>{
-    const btn=$('passwordLogin');btn.disabled=true;btn.textContent='در حال بررسی…';loginStatus('');
+  $('loginForm').addEventListener('submit',async e=>{
+    e.preventDefault();
+    const btn=$('passwordLogin');
+    btn.disabled=true;btn.textContent='در حال ورود…';loginStatus('');
     try{
-      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
-      const email=$('loginEmail').value.trim(),password=$('loginPassword').value;
+      if(!client)await connect();
+      const email=$('loginEmail').value.trim();
+      const password=$('loginPassword').value;
       if(!email)throw new Error('ایمیل مدیر را وارد کنید.');
-      if(!password)throw new Error('رمز عبور مدیر را وارد کنید.');
+      if(!password)throw new Error('رمز عبور را وارد کنید.');
+
+      const {data:{session}}=await client.auth.getSession();
+      if(session && location.search.includes('sync-password=1')){
+        const {error}=await client.auth.updateUser({password});
+        if(error)throw error;
+        history.replaceState({},document.title,location.pathname);
+        loginStatus('ورود تأیید شد؛ در حال ورود به پنل…');
+        await enterAdminPanel();
+        return;
+      }
+
       const {error}=await client.auth.signInWithPassword({email,password});
       if(error){
-        if(error.code==='invalid_credentials'||/invalid login credentials/i.test(error.message||''))throw new Error('ایمیل یا رمز عبور درست نیست. اگر رمز را به یاد ندارید، «فراموشی رمز عبور» را بزنید یا لینک ورود ایمیلی بگیرید.');
+        if(error.code==='invalid_credentials'||/invalid login credentials/i.test(error.message||'')){
+          const {error:otpError}=await client.auth.signInWithOtp({
+            email,
+            options:{
+              emailRedirectTo:'https://gym20.ir/admin.html?sync-password=1',
+              shouldCreateUser:false
+            }
+          });
+          if(otpError)throw otpError;
+          loginStatus('برای فعال‌شدن همین رمز روی حساب فعلی، لینک تأیید به ایمیل مدیر ارسال شد. لینک را باز کنید؛ سپس همین ایمیل و همین رمز را دوباره در همین صفحه وارد کنید.');
+          return;
+        }
         throw error;
       }
       await enterAdminPanel();
-    }catch(err){loginStatus(err.message||'ورود با رمز عبور ناموفق بود.',true);}
-    finally{btn.disabled=false;btn.textContent='ورود با رمز عبور';}
-  });
-  $('resetPassword').addEventListener('click',async()=>{
-    const btn=$('resetPassword');btn.disabled=true;
-    try{
-      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
-      const email=$('loginEmail').value.trim();
-      if(!email)throw new Error('ابتدا ایمیل حساب مدیر را وارد کنید.');
-      const {error}=await client.auth.resetPasswordForEmail(email,{redirectTo:'https://gym20.ir/admin-login.html?recovery=1'});
-      if(error)throw error;
-      loginStatus('لینک بازیابی رمز عبور برای ایمیل حساب ارسال شد. لینک را روی همین دستگاه باز کنید.');
-    }catch(err){loginStatus(err.message||'ارسال لینک بازیابی ناموفق بود.',true);}
-    finally{btn.disabled=false;}
-  });
-  $('saveNewPassword').addEventListener('click',async()=>{
-    const btn=$('saveNewPassword');btn.disabled=true;
-    try{
-      const password=$('newAdminPassword').value;
-      if(password.length<8)throw new Error('رمز جدید باید حداقل ۸ کاراکتر باشد.');
-      const {error}=await client.auth.updateUser({password});
-      if(error)throw error;
-      $('passwordRecoveryPanel').hidden=true;
-      loginStatus('رمز عبور جدید ثبت شد؛ در حال ورود مدیر…');
-      await enterAdminPanel();
-    }catch(err){loginStatus(err.message||'ثبت رمز عبور جدید ناموفق بود.',true);}
-    finally{btn.disabled=false;}
-  });
-  if(location.search.includes('recovery=1')||location.hash.includes('type=recovery')){
-    $('passwordRecoveryPanel').hidden=false;
-    loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
-  }
-
-  $('loginForm').addEventListener('submit',async e=>{
-    e.preventDefault();
-    const btn=$('loginSubmit');btn.disabled=true;btn.textContent='در حال ارسال…';loginStatus('');
-    try{
-      if(!client)await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
-      const email=$('loginEmail').value.trim();
-      if(!email)throw new Error('ایمیل حساب مدیر را وارد کنید.');
-      const {error}=await client.auth.signInWithOtp({
-        email,
-        options:{
-          emailRedirectTo:'https://gym20.ir/admin-login.html',
-          shouldCreateUser:false
-        }
-      });
-      if(error)throw error;
-      loginStatus('لینک ورود به ایمیل مدیر ارسال شد. صندوق ورودی و پوشه هرزنامه را بررسی کنید؛ لینک را روی همین دستگاه باز کنید.');
-      btn.textContent='ارسال دوباره لینک';
-    }catch(err){
-      loginStatus(err.message||'ارسال لینک ورود ناموفق بود.',true);
-      btn.textContent='ارسال لینک ورود';
-    }finally{btn.disabled=false;}
+    }catch(err){loginStatus(err.message||'ورود به پنل ناموفق بود.',true);}
+    finally{btn.disabled=false;btn.textContent='ورود به پنل';}
   });
   $('logoutBtn').addEventListener('click',async()=>{window.gym20OwnerAuthorized=false;if(client)await client.auth.signOut();location.reload();});
   $('mainNav').addEventListener('click',e=>{const b=e.target.closest('[data-view]');if(b)showView(b.dataset.view);});
@@ -537,19 +507,20 @@
   $('getTelegramChannelInfo').addEventListener('click',loadTelegramChannelInfo);
   $('saveSite').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.brandTag=$('brandTag').value;config.bannerTitle=$('bannerTitle').value;config.bannerSubtitle=$('bannerSubtitle').value;config.pageTexts=config.pageTexts||{};Object.keys(PAGE_TEXT_LABELS).forEach(k=>config.pageTexts[k]=$('pageText-'+k).value);await saveConfig('محتوای سایت ذخیره شد.');}));
   $('savePayments').addEventListener('click',e=>runSave(e.currentTarget,async()=>{config.card={...(config.card||{}),bank:$('bankName').value,number:$('cardNumber').value,cleanNumber:$('cardNumber').value.replace(/\D/g,''),owner:$('cardOwner').value,gatewayLink:$('gatewayLink').value};config.contact={...(config.contact||{}),phone:$('contactPhone').value,instagram:$('contactInstagram').value,telegram:$('contactTelegram').value};await saveConfig('اطلاعات پرداخت و ارتباطات ذخیره شد.');}));
-  // Restore the verified owner session after the email magic-link callback.
+  // Restore a verified owner session. A one-time email confirmation is used only
+  // when the legacy password hash was not carried into the replacement project.
   (async()=>{
     try{
-      await connect($('projectUrl').value.trim(),$('publishableKey').value.trim());
+      await connect();
       const {data:{session},error}=await client.auth.getSession();
       if(error)throw error;
-      const recoveryFlow=location.search.includes('recovery=1')||location.hash.includes('type=recovery');
-      if(recoveryFlow){
-        $('passwordRecoveryPanel').hidden=false;
-        loginStatus('لینک بازیابی تأیید شد؛ رمز عبور جدید را وارد کنید.');
-      }else if(session)await enterAdminPanel();
+      if(session && location.search.includes('sync-password=1')){
+        loginStatus('ایمیل تأیید شد. همان رمز قبلی را دوباره وارد کنید و «ورود به پنل» را بزنید.');
+      }else if(session){
+        await enterAdminPanel();
+      }
     }catch(err){
-      loginStatus(err.message||'بازیابی نشست ورود مدیر ناموفق بود.',true);
+      loginStatus(err.message||'برقراری نشست ورود ناموفق بود.',true);
     }
   })();
 
