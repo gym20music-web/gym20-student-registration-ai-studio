@@ -1844,6 +1844,14 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   `;
   document.head.appendChild(publicActions24Css);
 
+  // Keep the calendar action visibly labeled even if another style/script clears its text.
+  const manualCalendarButton=$('stManualCalendar');
+  if(manualCalendarButton&&!manualCalendarButton.textContent.trim())manualCalendarButton.textContent='▦ انتخاب جلسات از تقویم';
+  if(!document.getElementById('stManualCalendarVisibleCss')){const s=document.createElement('style');s.id='stManualCalendarVisibleCss';s.textContent=`
+    #studentTermsTab #stManualCalendar{color:#f0d58e!important;-webkit-text-fill-color:#f0d58e!important;font-size:8px!important;text-indent:0!important;letter-spacing:0!important;opacity:1!important;visibility:visible!important;}
+    #studentTermsTab #stManualCalendar:empty::before{content:'▦ انتخاب جلسات از تقویم';color:#f0d58e!important;-webkit-text-fill-color:#f0d58e!important;}
+  `;document.head.appendChild(s);}
+
   window.addEventListener('load',()=>{if(!$(TAB))mount();});
   if(!document.getElementById('stCalendarActionOrderCss')){const x=document.createElement('style');x.id='stCalendarActionOrderCss';x.textContent="\n#studentTermsTab .st-term-grid>.st-calendar-action-row{\n  grid-column:1/-1!important;display:flex!important;align-items:center!important;\n  justify-content:flex-start!important;gap:8px!important;margin:0!important;\n  padding:2px 0!important;min-width:0!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  width:auto!important;min-width:0!important;height:31px!important;min-height:31px!important;\n  max-height:31px!important;padding:4px 12px!important;border-radius:7px!important;\n  font-size:10px!important;line-height:1.3!important;white-space:nowrap!important;\n}\n#studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCount{font-size:9px!important}\n@media(max-width:600px){\n #studentTermsTab .st-term-grid>.st-calendar-action-row #stManualCalendar{\n  height:29px!important;min-height:29px!important;max-height:29px!important;\n  padding:3px 9px!important;font-size:9px!important\n }\n}\n";document.head.appendChild(x);}
 
