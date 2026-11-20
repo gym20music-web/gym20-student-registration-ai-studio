@@ -379,7 +379,7 @@ body[data-theme="light"] #adminBtn{
 
 /* GYM20 region pricing map + multi-area tariff assignment */
 #customRegionMenu{max-height:min(78vh,680px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
-#customRegionMenu .region-wheel-list{display:none!important}
+:is(#customRegionMenu,#gym20AreaPickerHost) .region-wheel-list{display:none!important}
 .gym20-area-picker{direction:rtl;color:var(--text-primary);font-family:Vazirmatn,Tahoma,sans-serif}
 .gym20-area-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
 .gym20-city-switch{display:flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card)}
@@ -461,134 +461,134 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
   overflow-y:auto!important;
   overscroll-behavior:contain!important;
 }
-#customRegionMenu .region-wheel-list{display:none!important}
-#customRegionMenu .gym20-area-picker{
+:is(#customRegionMenu,#gym20AreaPickerHost) .region-wheel-list{display:none!important}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-picker{
   --gym20-area-accent:#c9aa70;
   direction:rtl;
   color:#f2f0eb;
   font-family:Vazirmatn,Tahoma,sans-serif;
 }
-#customRegionMenu .gym20-area-head{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-head{
   display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:9px;
 }
-#customRegionMenu .gym20-city-switch{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-city-switch{
   display:flex;gap:5px;padding:3px;border:1px solid rgba(255,255,255,.10);
   border-radius:9px;background:#121517;
 }
-#customRegionMenu .gym20-city-btn{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-city-btn{
   border:0;border-radius:7px;padding:5px 13px;background:transparent;color:#aeb4b8;
   font:700 11px Vazirmatn,sans-serif;cursor:pointer;
 }
-#customRegionMenu .gym20-city-btn.active{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-city-btn.active{
   background:linear-gradient(135deg,#d7bd8d,#a98751);color:#17191b;box-shadow:0 2px 8px #0005;
 }
-#customRegionMenu .gym20-area-counter{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-counter{
   font-size:10px;color:#92979b;border:1px solid rgba(255,255,255,.10);
   border-radius:20px;padding:3px 8px;
 }
-#customRegionMenu .gym20-area-layout{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-layout{
   display:grid;grid-template-columns:245px minmax(0,1fr);gap:10px;align-items:stretch;
 }
-#customRegionMenu .gym20-area-side{display:flex;flex-direction:column;gap:7px;min-width:0}
-#customRegionMenu .gym20-area-map-side{display:flex;flex-direction:column;gap:7px;min-width:0}
-#customRegionMenu .gym20-area-zones{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-side{display:flex;flex-direction:column;gap:7px;min-width:0}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map-side{display:flex;flex-direction:column;gap:7px;min-width:0}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-zones{
   display:flex;align-items:center;gap:5px;overflow-x:auto;scrollbar-width:none;padding:1px 0 3px;
 }
-#customRegionMenu .gym20-area-zones::-webkit-scrollbar{display:none}
-#customRegionMenu .gym20-area-zone{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-zones::-webkit-scrollbar{display:none}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-zone{
   flex:none;white-space:nowrap;border:1px solid rgba(255,255,255,.10);background:#1b1e21;
   color:#92979b;border-radius:7px;padding:5px 11px;font:10px Vazirmatn,sans-serif;cursor:pointer;
 }
-#customRegionMenu .gym20-area-zone.active{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-zone.active{
   background:#c9aa70;border-color:#c9aa70;color:#17191b;font-weight:800;
   box-shadow:0 0 0 2px rgba(201,170,112,.22);
 }
-#customRegionMenu .gym20-area-search{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-search{
   width:100%;height:32px;border:1px solid rgba(255,255,255,.10);border-radius:8px;
   background:#15181a;color:#f2f0eb;padding:0 10px;font:11px Vazirmatn,sans-serif;outline:none;
 }
-#customRegionMenu .gym20-area-search:focus{border-color:#c9aa70}
-#customRegionMenu .gym20-area-list{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-search:focus{border-color:#c9aa70}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-list{
   height:224px;overflow:auto;display:flex;flex-direction:column;gap:5px;
   scrollbar-width:thin;scrollbar-color:#555 transparent;padding-left:2px;
   overscroll-behavior:contain;touch-action:pan-y;
 }
-#customRegionMenu .gym20-area-item{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item{
   position:relative;flex:none;width:100%;text-align:right;border:1px solid rgba(255,255,255,.10);
   border-radius:8px;background:linear-gradient(135deg,#292d30,#202326);
   padding:6px 8px 6px 26px;cursor:pointer;color:#f2f0eb;font-family:Vazirmatn,sans-serif;
 }
-#customRegionMenu .gym20-area-item.active{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item.active{
   border-color:#c9aa70;background:rgba(201,170,112,.15);box-shadow:inset -2px 0 #c9aa70;
 }
-#customRegionMenu .gym20-area-item-top{display:block;font-size:11px;font-weight:800}
-#customRegionMenu .gym20-area-item-sub{display:block;font-size:9px;color:#969ba0;line-height:1.55;margin-top:2px}
-#customRegionMenu .gym20-area-item.active .gym20-area-item-sub{color:#e5dfd3}
-#customRegionMenu .gym20-area-item-check{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item-top{display:block;font-size:11px;font-weight:800}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item-sub{display:block;font-size:9px;color:#969ba0;line-height:1.55;margin-top:2px}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item.active .gym20-area-item-sub{color:#e5dfd3}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item-check{
   position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;
   color:#c9aa70;opacity:0;
 }
-#customRegionMenu .gym20-area-item.active .gym20-area-item-check{opacity:1}
-#customRegionMenu .gym20-area-viewport{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-item.active .gym20-area-item-check{opacity:1}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-viewport{
   position:relative;min-height:300px;border:1px solid rgba(255,255,255,.10);border-radius:10px;
   background:radial-gradient(ellipse at 48% 40%,#34393d 0,#202428 48%,#15181b 100%);
   display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px;
 }
-#customRegionMenu .gym20-area-viewport:before{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-viewport:before{
   content:"";position:absolute;inset:0;
   background:linear-gradient(120deg,transparent 25%,#ffffff05 50%,transparent 70%);pointer-events:none;
 }
-#customRegionMenu .gym20-area-map{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map{
   width:100%;max-width:440px;height:auto;overflow:visible;filter:drop-shadow(0 15px 14px #0009);
   touch-action:manipulation;
 }
-#customRegionMenu .gym20-map-node{cursor:pointer;transition:transform .25s cubic-bezier(.2,1.2,.3,1);transform-box:fill-box;transform-origin:center}
-#customRegionMenu .gym20-map-node.active{transform:translateY(-7px)}
-#customRegionMenu .gym20-map-under{fill:#080a0b;opacity:.7}
-#customRegionMenu .gym20-map-wall{fill:#111416;stroke:#080a0b;stroke-width:.8}
-#customRegionMenu .gym20-map-top{fill:#343a3e;stroke:#8b9295;stroke-opacity:.45;stroke-width:1.4;transition:.2s}
-#customRegionMenu .gym20-map-node:hover .gym20-map-top{fill:#5a6063}
-#customRegionMenu .gym20-map-node.active .gym20-map-top{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node{cursor:pointer;transition:transform .25s cubic-bezier(.2,1.2,.3,1);transform-box:fill-box;transform-origin:center}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node.active{transform:translateY(-7px)}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-under{fill:#080a0b;opacity:.7}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-wall{fill:#111416;stroke:#080a0b;stroke-width:.8}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-top{fill:#343a3e;stroke:#8b9295;stroke-opacity:.45;stroke-width:1.4;transition:.2s}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node:hover .gym20-map-top{fill:#5a6063}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node.active .gym20-map-top{
   fill:#c9aa70;stroke:#fff;stroke-width:2;
 }
-#customRegionMenu .gym20-map-node.dim{opacity:.17;filter:saturate(.25)}
-#customRegionMenu .gym20-map-node.search-hit .gym20-map-top{stroke:#fff;stroke-width:3;fill:#c9aa70}
-#customRegionMenu .gym20-map-label{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node.dim{opacity:.17;filter:saturate(.25)}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node.search-hit .gym20-map-top{stroke:#fff;stroke-width:3;fill:#c9aa70}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-label{
   font:800 18px Vazirmatn,Tahoma,sans-serif;fill:#f4f1eb;text-anchor:middle;
   dominant-baseline:central;pointer-events:none;
 }
-#customRegionMenu .gym20-map-node.active .gym20-map-label{fill:#141719}
-#customRegionMenu .gym20-area-compass{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-map-node.active .gym20-map-label{fill:#141719}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-compass{
   position:absolute;top:9px;right:10px;border:1px solid rgba(255,255,255,.10);
   border-radius:7px;padding:3px 7px;font-size:9px;color:#c9aa70;background:#101316c9;z-index:2;
 }
-#customRegionMenu .gym20-area-hud{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-hud{
   position:absolute;left:9px;top:9px;max-width:185px;background:#101316df;
   border:1px solid rgba(201,170,112,.6);border-radius:8px;padding:6px 8px;z-index:2;
 }
-#customRegionMenu .gym20-area-hud b{display:block;color:#c9aa70;font-size:10px}
-#customRegionMenu .gym20-area-hud span{display:block;color:#e5e5e5;font-size:9px;line-height:1.5;margin-top:2px}
-#customRegionMenu .gym20-area-legend{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-hud b{display:block;color:#c9aa70;font-size:10px}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-hud span{display:block;color:#e5e5e5;font-size:9px;line-height:1.5;margin-top:2px}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-legend{
   position:absolute;bottom:8px;right:10px;left:10px;display:flex;justify-content:space-between;
   color:#858b90;font-size:8px;pointer-events:none;
 }
-#customRegionMenu .gym20-area-status{
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-status{
   margin-top:8px;padding:6px 8px;border:1px solid rgba(255,255,255,.10);border-radius:8px;
   background:#191c1f;font-size:9px;line-height:1.6;color:#92979b;
 }
-#customRegionMenu .gym20-area-status.is-ready{border-color:rgba(34,197,94,.38);color:#86efac}
-#customRegionMenu .gym20-area-status.is-missing{border-color:rgba(248,113,113,.42);color:#fca5a5}
-#customRegionMenu .gym20-area-foot{font-size:9px;line-height:1.6;color:#777e83;text-align:center;margin-top:7px}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-status.is-ready{border-color:rgba(34,197,94,.38);color:#86efac}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-status.is-missing{border-color:rgba(248,113,113,.42);color:#fca5a5}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-foot{font-size:9px;line-height:1.6;color:#777e83;text-align:center;margin-top:7px}
 @media(max-width:620px){
   #customRegionMenu{max-height:78vh!important}
-  #customRegionMenu .gym20-area-layout{grid-template-columns:minmax(0,1fr);gap:8px}
-  #customRegionMenu .gym20-area-map-side{grid-row:1}
-  #customRegionMenu .gym20-area-side{grid-row:2}
-  #customRegionMenu .gym20-area-viewport{min-height:260px}
-  #customRegionMenu .gym20-area-map{max-width:370px}
-  #customRegionMenu .gym20-area-list{height:178px}
-  #customRegionMenu .gym20-area-hud{max-width:150px}
-  #customRegionMenu .gym20-area-hud span{font-size:8px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-layout{grid-template-columns:minmax(0,1fr);gap:8px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map-side{grid-row:1}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-side{grid-row:2}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-viewport{min-height:260px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map{max-width:370px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-list{height:178px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-hud{max-width:150px}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-hud span{font-size:8px}
 }
 
 
@@ -619,10 +619,10 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
   pointer-events:auto!important;
 }
 #customRegionMenu:after{display:none!important;content:none!important}
-#customRegionMenu .gym20-area-picker{width:100%;min-width:0}
-#customRegionMenu .gym20-area-layout{width:100%;min-width:0}
-#customRegionMenu .gym20-area-side,
-#customRegionMenu .gym20-area-map-side{min-width:0}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-picker{width:100%;min-width:0}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-layout{width:100%;min-width:0}
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-side,
+:is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map-side{min-width:0}
 @media(max-width:720px){
   #customRegionMenu{
     position:relative!important;
@@ -636,11 +636,11 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
     overflow:visible!important;
     border-radius:11px!important;
   }
-  #customRegionMenu .gym20-area-layout{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
-  #customRegionMenu .gym20-area-map-side{grid-row:1}
-  #customRegionMenu .gym20-area-side{grid-row:2}
-  #customRegionMenu .gym20-area-viewport{min-height:260px!important}
-  #customRegionMenu .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-layout{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-map-side{grid-row:1}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-side{grid-row:2}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-viewport{min-height:260px!important}
+  :is(#customRegionMenu,#gym20AreaPickerHost) .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
 }
 
 
@@ -661,3 +661,9 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
 
 /* The legacy empty dropdown shell stays hidden; only the sibling picker is visible. */
 #customRegionMenu,#customRegionMenu.open{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
+
+/* Unboxed map section: only the map viewport/list keep their own internal surfaces. */
+#gym20AreaPickerHost{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;margin:10px 0 14px!important;}
+#gym20AreaPickerHost .gym20-area-picker{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;}
+@media(max-width:720px){#gym20AreaPickerHost{margin:8px 0 12px!important}}
