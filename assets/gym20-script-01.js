@@ -686,13 +686,30 @@ function loadGym20Module(src){
     document.body.appendChild(script);
   });
 }
+function waitForGym20StudentTab(){
+  return new Promise((resolve,reject)=>{
+    const started=Date.now();
+    const check=()=>{
+      if(window.gym20StudentTermsError){reject(new Error(window.gym20StudentTermsError));return;}
+      const tab=document.getElementById('studentTermsTab');
+      const button=document.querySelector('.admin-tabs [onclick*="studentTermsTab"]');
+      if(window.gym20StudentTermsReady&&tab&&button){resolve();return;}
+      if(Date.now()-started>12000){reject(new Error('تب «هنرجویان و ترم‌ها» پس از بارگذاری فایل تخصصی ساخته نشد. لطفاً صفحه را یک‌بار تازه‌سازی کنید؛ اگر تکرار شد، خطای اجرای ماژول باید بررسی شود.'));return;}
+      setTimeout(check,100);
+    };
+    check();
+  });
+}
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
+    window.gym20StudentTermsReady=false;
+    window.gym20StudentTermsError='';
     const modules=[
-      '/student-terms.js?v=20261120-calendar-count-colors-v12',
-      './student-push-admin.js?v=20261120-push-size-green-v5'
+      '/student-terms.js?v=20261120-calendar-count-colors-v13',
+      './student-push-admin.js?v=20261120-push-size-green-v6'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
+      .then(waitForGym20StudentTab)
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
   return gym20AdminModulesPromise;
