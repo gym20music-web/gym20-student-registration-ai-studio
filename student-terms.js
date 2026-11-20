@@ -831,7 +831,24 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       
       '<div class="st-reminder-row st-custom-push-row"><div class="st-field"><label for="stCustomPushText">اعلان فوری جدید</label><input id="stCustomPushText" type="text" maxlength="1200" placeholder="متن اعلان فوری…" autocomplete="off"></div><div class="st-field st-send-push-field"><label>ارسال</label><button type="button" class="st-btn primary" id="stSendCustomPush">ارسال اعلان</button></div></div>'+
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
-    const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary.nextSibling);else $('stMain').appendChild(pushCard);
+    const quickActions=document.createElement('div');quickActions.className='st-push-quick-actions';
+    const pushToolbar=pushCard.querySelector('.st-push-toolbar'),customPushRow=pushCard.querySelector('.st-custom-push-row'),pushHeading=pushCard.querySelector('.st-push-heading');
+    if(pushToolbar&&customPushRow&&pushHeading){quickActions.append(pushToolbar,customPushRow);pushHeading.after(quickActions);}
+    const quickActionsCss=document.createElement('style');quickActionsCss.id='stPushQuickActionsCss';quickActionsCss.textContent=`
+      #stPushCard .st-push-quick-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;width:100%!important;margin:4px 0 7px!important}
+      #stPushCard .st-push-quick-actions .st-push-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important;gap:6px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-width:0!important}
+      #stPushCard .st-push-quick-actions #stPushStatusControls{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;min-width:0!important;flex:1 1 auto!important}
+      #stPushCard .st-push-quick-actions #stPushTestAdmin{flex:0 0 auto!important}
+      #stPushCard .st-push-quick-actions .st-custom-push-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:6px!important;margin:0!important;padding:0!important;width:100%!important}
+      #stPushCard .st-push-quick-actions .st-custom-push-row>.st-field{min-width:0!important;margin:0!important}
+      #stPushCard .st-push-quick-actions .st-custom-push-row .st-send-push-field{width:auto!important;min-width:76px!important;flex:0 0 auto!important}
+      #stPushCard .st-push-quick-actions .st-custom-push-row label{display:none!important}
+      #stPushCard .st-push-quick-actions #stCustomPushText{width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important}
+      #stPushCard .st-push-quick-actions #stSendCustomPush{width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 8px!important}
+      #stPushCard .st-push-quick-actions .st-push-toolbar button,
+      #stPushCard .st-push-quick-actions .st-push-toolbar #stPushStatusControls>*{white-space:nowrap!important}
+    `;document.head.appendChild(quickActionsCss);
+    const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
       '#stPushCard.st-needs-student{display:none!important}'+
       '#stPushCard.st-needs-student::before{content:none!important}';
