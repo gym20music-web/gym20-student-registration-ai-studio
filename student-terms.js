@@ -785,6 +785,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #studentTermsTab .st-create-compact .st-field>label{
         font-size:8px!important;margin-bottom:3px!important;
       }
+      #studentTermsTab .st-create-compact #stTotalSessions{height:24px!important;min-height:24px!important;max-height:24px!important;padding:2px 6px!important;font-size:9px!important;line-height:18px!important;border-radius:6px!important;box-sizing:border-box!important;}
     `;
     document.head.appendChild(termCreateCompactCss);
 
@@ -804,6 +805,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div class="st-grid st-term-grid">'+
       '<div class="st-field"><label>شروع ترم</label><div class="st-date-wrap"><input id="stStart" data-jalali-date type="text" placeholder="تاریخ شروع" required><button type="button" class="st-calendar-btn" data-calendar="stStart">▦</button></div></div>'+
       '<div class="st-field"><label>پایان ترم</label><div class="st-date-wrap"><input id="stEnd" data-jalali-date type="text" placeholder="تاریخ پایان" required><button type="button" class="st-calendar-btn" data-calendar="stEnd">▦</button></div></div>'+
+      '<div class="st-field"><label>تعداد جلسات ترم</label><input id="stTotalSessions" type="number" min="1" max="100" step="1" value="8" inputmode="numeric" placeholder="مثلاً ۸"></div>'+
       '<div class="st-actions st-calendar-action-row"><button class="st-btn primary" type="button" id="stManualCalendar">▦ انتخاب جلسات از تقویم</button><span id="stManualCount" class="st-muted"></span></div>'+
       '<div class="st-field st-term-picker-field"><label>ترم‌های هنرجو</label><div class="st-term-picker-row"><select id="stTerm"><option value="">انتخاب ترم…</option></select><button type="button" class="st-btn danger st-icon-delete-term" id="stDeleteTerm" disabled aria-label="حذف ترم" title="حذف ترم" style="width:36px;min-width:36px;height:36px;padding:0;display:inline-flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" style="width:17px;height:17px;display:block"><path d="M4 7h16M10 11v6m4-6v6M5.5 7l1 13h11l1-13M9 7V4h6v3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>'+
       '</div></form></div>'+
@@ -1214,8 +1216,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       const mins=60;
       S.rows=S.manualDates.map((d,i)=>{const startAt=localISO(d,'18:00');return {enrollment_ids:ids,session_number:i+1,starts_at:startAt,ends_at:new Date(new Date(startAt).getTime()+mins*60000).toISOString(),venue:null,coach_name:'هانیه',notes:null};});
       $('stManualCount').textContent=fa(S.rows.length)+' جلسه انتخاب شده';
+      const targetSessions=Math.max(1,Math.min(100,Number($('stTotalSessions')?.value)||8));
       $('stPublish').hidden=false;$('stPublish').textContent='ثبت نهایی';$('stSchedule').classList.remove('st-hide');
-      drawDraft();say('جلسات آماده‌اند؛ ساعت و مربی را بررسی کن و فقط «ثبت نهایی» را بزن.');
+      drawDraft();say(S.rows.length!==targetSessions?'هشدار: '+fa(S.rows.length)+' تاریخ انتخاب شده اما تعداد جلسات ترم '+fa(targetSessions)+' است. می‌توانی با همین تعداد هم ثبت کنی؛ فقط اختلاف را بررسی کن.':'جلسات آماده‌اند؛ ساعت و مربی را بررسی کن و فقط «ثبت نهایی» را بزن.');
     }catch(e){say(e.message||'آماده‌سازی ترم ناموفق بود.',true);}
   }
 
@@ -1419,7 +1422,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const minKey=startDate,maxKey=endDate;
         const draw=()=>{
           const g=jalaliToGregorian(jy,jm,1),next=jm===12?jalaliToGregorian(jy+1,1,1):jalaliToGregorian(jy,jm+1,1),first=new Date(g+'T12:00:00'),days=Math.round((new Date(next+'T12:00:00')-first)/86400000),offset=(first.getDay()+1)%7,monthKey=jy*12+jm,minMonth=startJ[0]*12+startJ[1],maxMonth=endJ[0]*12+endJ[1];
-          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),inRange=iso>=minKey&&iso<=maxKey,valid=inRange&&!existingDates.has(iso),selected=currentTermDates.has(iso)||chosen.has(iso),inTable=existingDates.has(iso),boundary=iso===minKey||iso===maxKey;return '<button type="button" class="st-jcal-day '+(iso===minKey?'term-range-start ':'')+(iso===maxKey?'term-range-end ':'')+(boundary?'term-boundary ':'')+(inTable?'session-existing ':'')+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!chosen.has(iso)?'disabled':'')+' title="'+(iso===minKey?'شروع ترم':iso===maxKey?'پایان ترم':'')+'">'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-muted" data-calendar-count style="text-align:center;margin:6px 0 2px">تعداد جلسات انتخابی: <b>'+fa(currentTermDates.size+chosen.size)+'</b></div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ 'تأیید تاریخ‌های جدید'+' ('+fa(chosen.size)+')</button></div>';
+          pop.innerHTML='<div class="st-jcal-head"><button type="button" data-prev '+(monthKey<=minMonth?'disabled':'')+'>‹</button><b>'+['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'][jm-1]+' '+fa(jy)+'</b><button type="button" data-next '+(monthKey>=maxMonth?'disabled':'')+'>›</button></div><div class="st-muted" style="text-align:center;margin-bottom:6px">بازه ترم: '+jalaliInput(startDate)+' تا '+jalaliInput(endDate)+' · انتخاب آزاد جلسات</div><div class="st-jcal-grid">'+['ش','ی','د','س','چ','پ','ج'].map(x=>'<span>'+x+'</span>').join('')+Array(offset).fill('<i></i>').join('')+Array.from({length:days},(_,i)=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(i+1).padStart(2,'0'),iso=gregorianInput(d),inRange=iso>=minKey&&iso<=maxKey,valid=inRange&&!existingDates.has(iso),selected=currentTermDates.has(iso)||chosen.has(iso),inTable=existingDates.has(iso),boundary=iso===minKey||iso===maxKey;return '<button type="button" class="st-jcal-day '+(iso===minKey?'term-range-start ':'')+(iso===maxKey?'term-range-end ':'')+(boundary?'term-boundary ':'')+(inTable?'session-existing ':'')+(selected?'selected':'')+'" data-day="'+(i+1)+'" '+(!valid&&!chosen.has(iso)?'disabled':'')+' title="'+(iso===minKey?'شروع ترم':iso===maxKey?'پایان ترم':'')+'">'+fa(i+1)+'</button>';}).join('')+'</div><div class="st-muted" data-calendar-count style="text-align:center;margin:6px 0 2px">تعداد جلسات انتخابی: <b>'+fa(currentTermDates.size+chosen.size)+'</b><div style="margin-top:3px;color:#e7c979">تعداد جلسات ترم: '+fa(Number($('stTotalSessions')?.value)||8)+' · اختلاف فقط هشدار دارد.</div></div><div class="st-actions"><button type="button" class="st-btn primary" data-confirm '+(!chosen.size?'disabled':'')+'>'+ 'تأیید تاریخ‌های جدید'+' ('+fa(chosen.size)+')</button></div>';
           pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
           pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
           pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
@@ -1455,6 +1458,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         if(!S.manualDates.length||!S.rows.length)throw Error('ابتدا تاریخ‌های جلسات را از تقویم انتخاب کن.');
         const startDate=gregorianInput($('stStart').value),endDate=gregorianInput($('stEnd').value);
         if(!startDate||!endDate||endDate<startDate)throw Error('تاریخ شروع و پایان ترم را درست انتخاب کن.');
+        const requestedSessions=Math.max(1,Math.min(100,Number($('stTotalSessions')?.value)||8));
         const p=enDigits($('stStart').value).split('/').map(Number),months=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'];
         const termName='ترم '+months[p[1]-1]+' '+p[0];
         const exists=await db().from('student_terms').select('id,term_name').eq('student_id',S.studentId).eq('term_name',termName);if(exists.error)throw exists.error;
@@ -1463,12 +1467,13 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         const ids=S.enrollments.filter(e=>e.status==='active'||e.status==='paused').map(e=>e.id);
         if(!ids.length)throw Error('برای این هنرجو سبک فعالی پیدا نشد.');
         say('در حال ثبت ترم و برنامه جلسات…');
-        const created=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:S.rows.length,p_duration_minutes:60,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
+        const created=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:requestedSessions,p_duration_minutes:60,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
         if(created.error)throw created.error;const x=Array.isArray(created.data)?created.data[0]:created.data;
         if(!x?.term_id||!x?.draft_version_id)throw Error('ترم یا پیش‌نویس برنامه ساخته نشد.');
         S.termId=x.term_id;S.draftId=x.draft_version_id;
         const payload=collectDraftPayload();
         const saved=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(saved.error)throw saved.error;
+        if(payload.length!==requestedSessions)say('هشدار: '+fa(payload.length)+' جلسه در تقویم ثبت شده اما تعداد جلسات ترم '+fa(requestedSessions)+' است؛ ثبت بدون محدودیت ادامه پیدا می‌کند.');
         const pub=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(pub.error)throw pub.error;
         await loadStudent(S.studentId);
         S.termId='';S.term=null;S.draftId='';S.rows=[];S.manualDates=[];S.publishedId=null;S.publishedReadOnly=false;
