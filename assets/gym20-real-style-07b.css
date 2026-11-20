@@ -590,3 +590,55 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
   #customRegionMenu .gym20-area-hud{max-width:150px}
   #customRegionMenu .gym20-area-hud span{font-size:8px}
 }
+
+
+/* GYM20 area picker: render the drawer in normal document flow like the approved HTML preview.
+   Remove legacy wheel-sheet fixed sizing and all clipping from the outer drawer. */
+#customRegionDropdown{overflow:visible!important}
+#customRegionMenu{
+  position:relative!important;
+  inset:auto!important;
+  display:none!important;
+  width:100%!important;
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin-top:8px!important;
+  padding:10px!important;
+  overflow:visible!important;
+  overflow-x:visible!important;
+  overflow-y:visible!important;
+  box-sizing:border-box!important;
+  transform:none!important;
+  border-radius:11px!important;
+}
+#customRegionMenu.open{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  pointer-events:auto!important;
+}
+#customRegionMenu:after{display:none!important;content:none!important}
+#customRegionMenu .gym20-area-picker{width:100%;min-width:0}
+#customRegionMenu .gym20-area-layout{width:100%;min-width:0}
+#customRegionMenu .gym20-area-side,
+#customRegionMenu .gym20-area-map-side{min-width:0}
+@media(max-width:720px){
+  #customRegionMenu{
+    position:relative!important;
+    inset:auto!important;
+    right:auto!important;left:auto!important;bottom:auto!important;top:auto!important;
+    width:100%!important;
+    height:auto!important;
+    max-height:none!important;
+    margin-top:8px!important;
+    padding:8px!important;
+    overflow:visible!important;
+    border-radius:11px!important;
+  }
+  #customRegionMenu .gym20-area-layout{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+  #customRegionMenu .gym20-area-map-side{grid-row:1}
+  #customRegionMenu .gym20-area-side{grid-row:2}
+  #customRegionMenu .gym20-area-viewport{min-height:260px!important}
+  #customRegionMenu .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
+}
