@@ -857,7 +857,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #stSummary .st-push-quick-actions .st-push-toolbar button,
       #stSummary .st-push-quick-actions .st-push-toolbar #stPushStatusControls>*{white-space:nowrap!important}
     `;document.head.appendChild(quickActionsCss);
-    const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary);else $('stMain').appendChild(pushCard);
+    const summary=$('stSummary');if(summary?.parentNode)summary.after(pushCard);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
       '#stPushCard.st-needs-student{display:none!important}'+
       '#stPushCard.st-needs-student::before{content:none!important}';
