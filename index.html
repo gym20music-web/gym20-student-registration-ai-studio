@@ -657,13 +657,14 @@
  }
  try{
   await window.__gym20CssReady;
-  // Install the public-form guide independently and BEFORE the main app scripts.
-  // A failure in any unrelated app module must never prevent the guide from loading.
-  try{await loadScriptAssetWithRetry("assets/gym20-guided-flow.js",4);}
-  catch(guideError){console.error('[GYM20] Guided flow failed after retries',guideError);}
+  // The guide is already loaded directly above when the same-origin asset succeeds.
+  // Fetch it from raw GitHub only as a fallback; preserve the retry path if direct loading failed.
+  if(typeof window.gym20GuidedFlowStart!=='function'){
+   try{await loadScriptAssetWithRetry("assets/gym20-guided-flow.js",4);}
+   catch(guideError){console.error('[GYM20] Guided flow failed after retries',guideError);}
+  }
   for(const path of files)await loadScriptAsset(path);
-  // A second guarded attempt catches a transient guide-fetch failure without
-  // interrupting the public registration app or its other modules.
+  // Keep one final recovery attempt for transient fallback-network failures.
   if(typeof window.gym20GuidedFlowStart!=='function'){
    try{await loadScriptAssetWithRetry("assets/gym20-guided-flow.js",3);}
    catch(guideError){console.error('[GYM20] Guided flow remains unavailable after recovery',guideError);}
