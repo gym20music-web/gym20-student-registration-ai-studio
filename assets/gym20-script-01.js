@@ -689,7 +689,7 @@ function loadGym20Module(src){
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     const modules=[
-      'student-terms.js?v=20261120-calendar-count-colors-v11',
+      '/student-terms.js?v=20261120-calendar-count-colors-v12',
       './student-push-admin.js?v=20261120-push-size-green-v5'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
