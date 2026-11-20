@@ -697,7 +697,13 @@ function loadGym20AdminModules(){
   }
   return gym20AdminModulesPromise;
 }
-function openAuthorizedAdminPanel(){
+async function openAuthorizedAdminPanel(){
+  if(!gym20OwnerAuthorized)return;
+  try{
+    if(window.__gym20LoadAdminCss)await window.__gym20LoadAdminCss();
+  }catch(err){
+    console.error('GYM20 admin CSS deferred load failed:',err);
+  }
   if(!gym20OwnerAuthorized)return;
   const modal=document.getElementById('adminModal');
   if(modal)modal.style.display='flex';
