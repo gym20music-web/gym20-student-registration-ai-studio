@@ -632,8 +632,19 @@
 <script>
 (async function(){
  const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
- async function loadScriptAsset(path){
-  const source=await window.__gym20FetchAsset(path);
+ async function fetchScriptSourceWithRetry(path,maxAttempts=4){
+  let lastError;
+  for(let attempt=1;attempt<=maxAttempts;attempt++){
+   try{return await window.__gym20FetchAsset(path);}
+   catch(error){
+    lastError=error;
+    console.warn('[GYM20] Asset fetch attempt '+attempt+'/'+maxAttempts+' failed for '+path,error);
+    if(attempt<maxAttempts)await new Promise(resolve=>setTimeout(resolve,350*attempt));
+   }
+  }
+  throw lastError||new Error(path+' could not be fetched');
+ }
+ async function executeScriptAsset(path,source){
   const blob=new Blob([source],{type:'text/javascript'});
   const url=URL.createObjectURL(blob);
   const script=document.createElement('script');script.src=url;
@@ -646,8 +657,11 @@
  async function loadScriptAssetWithRetry(path,maxAttempts=4){
   let lastError;
   for(let attempt=1;attempt<=maxAttempts;attempt++){
-   try{await loadScriptAsset(path);return;}
-   catch(error){
+   try{
+    const source=await fetchScriptSourceWithRetry(path,1);
+    await executeScriptAsset(path,source);
+    return;
+   }catch(error){
     lastError=error;
     console.warn('[GYM20] Asset load attempt '+attempt+'/'+maxAttempts+' failed for '+path,error);
     if(attempt<maxAttempts)await new Promise(resolve=>setTimeout(resolve,350*attempt));
@@ -663,7 +677,8 @@
    try{await loadScriptAssetWithRetry("assets/gym20-guided-flow.js",4);}
    catch(guideError){console.error('[GYM20] Guided flow failed after retries',guideError);}
   }
-  for(const path of files)await loadScriptAsset(path);
+  const scriptSources=await Promise.all(files.map(path=>fetchScriptSourceWithRetry(path)));
+  for(let i=0;i<files.length;i++)await executeScriptAsset(files[i],scriptSources[i]);
   // Keep one final recovery attempt for transient fallback-network failures.
   if(typeof window.gym20GuidedFlowStart!=='function'){
    try{await loadScriptAssetWithRetry("assets/gym20-guided-flow.js",3);}
