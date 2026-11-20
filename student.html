@@ -6,7 +6,10 @@
 <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
 <title>برنامه کلاس‌های من | GYM20</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preconnect" href="https://ubrafxjpnqtjnjdaskba.supabase.co" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{color-scheme:dark;--bg:#080a0f;--panel:#111722;--panel2:#171f2c;--gold:#e8c46b;--muted:#8e9aaa;--line:#293343}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:#f7f8fb;font-family:Vazirmatn,sans-serif}
@@ -495,7 +498,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>
+<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>
 (function(){
   var params=new URLSearchParams(location.search);
   var parts=location.pathname.split("/");
@@ -545,7 +548,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     history.replaceState(null,"","/s/"+code+location.hash);
   }
 })();;
-</script><script src="/student-view.js?v=20261119-notice-popup-v11"></script>
+</script><script defer src="/student-view.js?v=20261120-fast-student-start-v1"></script>
 
 </body></html>
 
