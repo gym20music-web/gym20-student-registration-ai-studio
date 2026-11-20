@@ -143,6 +143,79 @@
       say('تمرین حذف شد.');
     } catch (e) { say(e.message || 'حذف تمرین ناموفق بود.', true); }
   }
+  function exercisePushStatus(message,bad=false){
+    const el=$('gym20ExercisePushStatus');if(el){el.textContent=message||'';el.style.color=bad?'#fda4af':'#9aa6b6';}
+  }
+  async function invokeExercisePush(body){
+    const auth=authContext();
+    if(!auth.authorized||!auth.client)throw new Error('ابتدا با حساب مدیر وارد شوید.');
+    const {data,error}=await auth.client.functions.invoke('student-push',{body});
+    if(error)throw error;
+    if(!data?.ok)throw new Error(data?.error||'سرویس اعلان پاسخ معتبری نداد.');
+    return data;
+  }
+  function pushKeyBytes(value){
+    const base64=String(value||'').replace(/-/g,'+').replace(/_/g,'/')+'='.repeat((4-String(value||'').length%4)%4);
+    const raw=atob(base64),out=new Uint8Array(raw.length);
+    for(let i=0;i<raw.length;i++)out[i]=raw.charCodeAt(i);
+    return out;
+  }
+  async function syncExercisePushStatus(){
+    const button=$('gym20ExercisePushToggle');
+    if(!button||!authContext().authorized)return;
+    if(!('Notification' in window)||!('serviceWorker' in navigator)||!('PushManager' in window)){
+      button.disabled=true;exercisePushStatus('اعلان گوشی در این مرورگر پشتیبانی نمی‌شود.',true);return;
+    }
+    try{
+      const registration=await navigator.serviceWorker.register('/sw.js',{scope:'/'});
+      await navigator.serviceWorker.ready;
+      const subscription=await registration.pushManager.getSubscription();
+      if(!subscription){
+        button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+        exercisePushStatus(Notification.permission==='denied'?'اجازه اعلان برای سایت مسدود است. از تنظیمات مرورگر فعالش کن.':'برای دریافت گزارش انجام تمرین، اعلان این گوشی را فعال کن.');
+        return;
+      }
+      const state=await invokeExercisePush({action:'admin-status',endpoint:subscription.endpoint});
+      button.dataset.active=state.active?'1':'0';
+      button.textContent=state.active?'غیرفعال‌سازی اعلان':'فعال‌سازی اعلان روی این گوشی';
+      exercisePushStatus(state.active?'اعلان انجام تمرین برای این گوشی فعال است.':'اشتراک اعلان این گوشی هنوز برای مدیر فعال نشده است.');
+    }catch(e){
+      button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+      exercisePushStatus('بررسی وضعیت اعلان ناموفق بود: '+(e.message||'خطای ارتباط'),true);
+    }
+  }
+  async function toggleExercisePush(){
+    const button=$('gym20ExercisePushToggle');
+    if(!button)return;
+    const wasActive=button.dataset.active==='1';
+    button.disabled=true;
+    const old=button.textContent;button.textContent='در حال انجام…';
+    try{
+      const registration=await navigator.serviceWorker.register('/sw.js',{scope:'/'});
+      await navigator.serviceWorker.ready;
+      let subscription=await registration.pushManager.getSubscription();
+      if(wasActive){
+        if(subscription)await invokeExercisePush({action:'admin-unsubscribe',endpoint:subscription.endpoint});
+        button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+        exercisePushStatus('اعلان انجام تمرین برای این گوشی غیرفعال شد.');
+      }else{
+        if(!('Notification' in window)||!('PushManager' in window))throw new Error('این مرورگر از اعلان گوشی پشتیبانی نمی‌کند.');
+        let permission=Notification.permission;
+        if(permission!=='granted')permission=await Notification.requestPermission();
+        if(permission!=='granted')throw new Error('اجازه نمایش اعلان داده نشد.');
+        const config=await invokeExercisePush({action:'admin-config'});
+        if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushKeyBytes(config.public_key)});
+        await invokeExercisePush({action:'admin-subscribe',subscription:subscription.toJSON(),user_agent:navigator.userAgent});
+        button.dataset.active='1';button.textContent='غیرفعال‌سازی اعلان';
+        const test=await invokeExercisePush({action:'admin-test',endpoint:subscription.endpoint});
+        exercisePushStatus(test.sent>0?'اعلان فعال شد؛ پیام آزمایشی هم به این گوشی ارسال شد.':'اشتراک ثبت شد، اما پیام آزمایشی به گوشی نرسید.',test.sent<=0);
+      }
+    }catch(e){
+      button.dataset.active=wasActive?'1':'0';button.textContent=old;
+      exercisePushStatus(e.message||'فعال‌سازی اعلان ناموفق بود.',true);
+    }finally{button.disabled=false;}
+  }
+
   function mount() {
     if (mounted) return;
     const embedded = !!document.querySelector('#adminModal .admin-tabs');
@@ -154,6 +227,16 @@
       return;
     }
     mounted = true;
+    const pushBar=document.createElement('div');
+    pushBar.id='gym20ExercisePushBar';
+    pushBar.innerHTML='<div class="gym20-ex-push-copy"><strong>🔔 اعلان انجام تمرین</strong><small id="gym20ExercisePushStatus" role="status" aria-live="polite">برای دریافت اعلان روی گوشی، این دستگاه را فعال کن.</small></div><button type="button" id="gym20ExercisePushToggle">فعال‌سازی اعلان روی این گوشی</button>';
+    const pushHost=embedded?$('gym20ExercisesTab'):panel;
+    const pushHeading=pushHost?.querySelector('.admin-section-subhead');
+    if(pushHeading)pushHeading.insertAdjacentElement('afterend',pushBar);else pushHost?.prepend(pushBar);
+    const pushStyle=document.createElement('style');
+    pushStyle.id='gym20ExercisePushStyle';
+    pushStyle.textContent='#gym20ExercisePushBar{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:8px 0 10px;padding:9px 10px;border:1px solid rgba(214,179,90,.22);border-radius:10px;background:linear-gradient(135deg,rgba(214,179,90,.075),rgba(255,255,255,.018));min-width:0}#gym20ExercisePushBar .gym20-ex-push-copy{display:flex;flex-direction:column;gap:3px;min-width:0}#gym20ExercisePushBar strong{font-size:10px;color:#e8c46b;font-weight:800}#gym20ExercisePushBar small{font-size:8px;line-height:1.6;color:#9aa6b6}#gym20ExercisePushBar button{box-sizing:border-box;flex:0 0 auto;min-height:26px;height:26px;padding:0 9px;border:1px solid rgba(214,179,90,.5);border-radius:7px;background:rgba(214,179,90,.12);color:#e8c46b;font:800 8px Vazirmatn,sans-serif;white-space:nowrap}#gym20ExercisePushBar button:disabled{opacity:.55}@media(max-width:420px){#gym20ExercisePushBar{gap:6px;padding:7px}#gym20ExercisePushBar button{padding:0 6px;font-size:7px}}';
+    document.head.appendChild(pushStyle);
     const style = document.createElement('style');
     style.id = 'gym20ExerciseCompactStyle';
     style.textContent = `
@@ -193,13 +276,14 @@
       const button = event.target.closest('[data-delete-exercise]');
       if (button) deleteExercise(button.dataset.deleteExercise);
     });
+    $('gym20ExercisePushToggle').addEventListener('click',toggleExercisePush);
     window.addEventListener('gym20:owner-authorized', () => {
-      if (authContext().authorized && panel.classList.contains('active')) loadExerciseStudents();
+      if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
     window.addEventListener('gym20:exercise-tab-opened', () => {
-      if (authContext().authorized) loadExerciseStudents();
+      if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
-    if (authContext().authorized && panel.classList.contains('active')) loadExerciseStudents();
+    if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
