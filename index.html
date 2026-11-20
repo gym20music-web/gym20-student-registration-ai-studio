@@ -397,6 +397,7 @@
                     </div>
                     <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="grid-column:2;grid-row:2;width:34px;height:34px;min-width:34px;max-width:34px;padding:0;margin:0;align-self:stretch;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;box-sizing:border-box;">🗑️</button>
                 </div>
+                <div id="adminRegionAreasContainer" class="gym20-admin-area-assignment" style="display:none;"></div>
             </div>
             <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
                 <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف منطقه جدید:</div>
@@ -631,7 +632,7 @@
 <script src="/assets/gym20-admin-tab-sort.js?v=20261119-3"></script>
 <script>
 (async function(){
- const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
+ const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-region-pricing-map.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
  async function loadScriptAsset(path){
   const source=await window.__gym20FetchAsset(path);
   const blob=new Blob([source],{type:'text/javascript'});
