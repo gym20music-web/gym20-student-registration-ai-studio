@@ -689,9 +689,8 @@ function loadGym20Module(src){
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     const modules=[
-      'student-terms.js?v=20261120-calendar-count-colors-v10',
-      './student-push-admin.js?v=20261120-push-size-green-v5',
-      './student-exercises.js?v=20261120-term-count-warning-v4'
+      'student-terms.js?v=20261120-calendar-count-colors-v11',
+      './student-push-admin.js?v=20261120-push-size-green-v5'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
@@ -738,6 +737,10 @@ async function ensureGym20AdminAuth(){
 }
 async function openAdminLogin(){
   setAdminLoginStatus('');
+  // Warm the delayed admin tabs while the manager enters credentials.
+  // This overlaps network loading with authentication instead of waiting
+  // until the admin workspace has already opened.
+  loadGym20AdminModules().catch(err=>console.warn('GYM20 admin tab preload failed:',err));
   adminLoginEmail.value='';
   adminLoginModal.classList.add('open');
   adminLoginModal.setAttribute('aria-hidden','false');
