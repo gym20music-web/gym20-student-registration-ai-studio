@@ -1534,9 +1534,22 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     try{const {data:{user},error:ue}=await gym20AdminClient.auth.getUser();if(ue)throw ue;const records=Array.from(document.querySelectorAll('[data-att]')).map(el=>({session_id:el.dataset.att,student_id:S.studentId,enrollment_id:null,status:el.value,confirmed_by:user?.id||null,confirmed_at:new Date().toISOString()}));
       say('در حال ذخیره حضور و غیاب…');const {error}=await db().from('attendance').upsert(records,{onConflict:'session_id,student_id'});if(error)throw error;await loadAttendance();say('حضور و غیاب ذخیره شد.');
     }catch(e){say(e.message||'ذخیره حضور و غیاب ناموفق بود.',true);}
+    window.gym20StudentTermsReady=true;
+    window.gym20StudentTermsError='';
   }
   function init(){
-    mount();
+    window.gym20StudentTermsReady=false;
+    window.gym20StudentTermsError='';
+    try{
+      mount();
+      if(!window.gym20StudentTermsReady||!$(TAB))throw new Error('ماژول مدیریت هنرجویان اجرا شد، اما تب و اجزای اصلی آن ساخته نشد.');
+    }catch(error){
+      window.gym20StudentTermsReady=false;
+      window.gym20StudentTermsError=error?.message||'خطای ناشناخته هنگام ساخت تب هنرجویان و ترم‌ها.';
+      console.error('[GYM20] student-terms initialization failed:',error);
+      window.dispatchEvent(new CustomEvent('gym20:admin-module-error',{detail:{module:'student-terms',message:window.gym20StudentTermsError}}));
+      return;
+    }
     const tabObserver=new MutationObserver(()=>{
       if(!$(TAB)&&document.querySelector('.admin-tabs')&&document.querySelector('.admin-workspace'))mount();
       if($(TAB))tabObserver.disconnect();
