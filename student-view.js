@@ -6,7 +6,7 @@
   exerciseScrollStyle.textContent=`
     #exercisePanel #exerciseList{
       display:grid!important;gap:7px!important;
-      max-height:min(42vh,340px)!important;
+      max-height:min(46vh,380px)!important;min-height:0!important;
       overflow-y:auto!important;overflow-x:hidden!important;
       overscroll-behavior:contain!important;
       scrollbar-width:thin;scrollbar-color:rgba(210,177,105,.55) rgba(255,255,255,.045);
@@ -439,7 +439,7 @@
       items.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||dateValue(b)-dateValue(a));
       list.innerHTML=items.map(item=>{
         const done=!!item.is_completed;
-        return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
+        return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+dateValue(item)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
       }).join('');
       panel.classList.remove('hide');
       if(!list.dataset.bound){
@@ -458,7 +458,7 @@
             if(error)throw error;
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
             feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';
-            Array.from(list.querySelectorAll('[data-exercise-row]')).sort((a,b)=>Number(!!a.querySelector('input')?.checked)-Number(!!b.querySelector('input')?.checked)).forEach(el=>list.appendChild(el));
+            Array.from(list.querySelectorAll('[data-exercise-row]')).sort((a,b)=>Number(!!a.querySelector('input')?.checked)-Number(!!b.querySelector('input')?.checked)||Number(b.dataset.createdAt||0)-Number(a.dataset.createdAt||0)).forEach(el=>list.appendChild(el));
             if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
