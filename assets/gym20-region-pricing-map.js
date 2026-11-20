@@ -94,6 +94,13 @@ function applyAreaSelection(area,fromScroll){
   }));
  }
 }
+window.gym20StartAreaSelectionById=function(id){
+ const key=String(id==null?'':id).trim();
+ const area=allAreas().find(a=>String(a.id)===key||String(a.id).split('_').pop()===key||String(a.name)===key);
+ if(!area)return false;
+ startAreaSelectionFlow(area);
+ return true;
+};
 function startAreaSelectionFlow(target){
  if(!target)return;
  const token=++areaFlowToken;
