@@ -689,7 +689,7 @@ function loadGym20Module(src){
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     const modules=[
-      'student-terms.js?v=20261120-push-layout-v5',
+      'student-terms.js?v=20261120-push-controls-under-link-v6',
       './student-push-admin.js?v=20261120-term-count-warning-v4',
       './student-exercises.js?v=20261120-term-count-warning-v4'
     ];
