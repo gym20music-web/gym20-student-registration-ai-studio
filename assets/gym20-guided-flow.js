@@ -154,7 +154,7 @@
     pop.style.setProperty('transform','none');
     pop.style.setProperty('z-index','2147483647');
     place();
-    requestAnimationFrame(()=>{if(activeTarget!==anchor||adminIsOpen()||document.body.classList.contains('region-sheet-open'))return;place();pop.classList.add('is-visible');});
+    requestAnimationFrame(()=>{if(activeTarget!==anchor||adminIsOpen())return;place();pop.classList.add('is-visible');});
     if(scroll)requestAnimationFrame(()=>anchor.scrollIntoView({behavior:'smooth',block:'center',inline:'nearest'}));
     // Highlighting the styles step must not start the timer: preselected styles are not user confirmation.
     return true;
