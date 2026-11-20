@@ -459,7 +459,15 @@
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
             feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';
             Array.from(list.querySelectorAll('[data-exercise-row]')).sort((a,b)=>Number(!!a.querySelector('input')?.checked)-Number(!!b.querySelector('input')?.checked)||Number(b.dataset.createdAt||0)-Number(a.dataset.createdAt||0)).forEach(el=>list.appendChild(el));
-            if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
+            if(completed){
+              const exerciseTitle=row.querySelector('.exercise-title')?.textContent||'تمرین';
+              celebrateExercise(exerciseTitle);
+              if(shortCode){
+                client.functions.invoke('student-push',{body:{action:'exercise-completed',code:shortCode,exercise_id:id}})
+                  .then(({data,error})=>{if(error||!data?.ok)console.warn('GYM20 admin exercise notification was not delivered:',error||data?.error||'unknown error');})
+                  .catch(err=>console.warn('GYM20 admin exercise notification failed:',err));
+              }
+            }
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
             if(mark)mark.textContent=!completed?'✓':'';
