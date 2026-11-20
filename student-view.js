@@ -452,8 +452,6 @@
     const token=params.get('t');
     const pathCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||'';
     let shortCode=pathCode||params.get('c')||'';
-    // iOS Home Screen can relaunch without the query string. Recover the
-    // last valid student code opened on this device.
     try{
       if(/^[0-9a-f]{12}$/i.test(shortCode)){
         shortCode=shortCode.toLowerCase();
@@ -466,6 +464,12 @@
     viewStorageKey='gym20-session-view-'+(shortCode||'token');
     try{const saved=localStorage.getItem(viewStorageKey);if(['grid','list'].includes(saved))activeView=saved;}catch(_){}
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
+    const cacheKey='gym20-student-schedule-v1-'+(shortCode||('token-'+token.slice(0,16)));
+    let cachedData=null,hasRenderedData=false,pushStarted=false,exercisesStarted=false,pickerReady=false;
+    try{
+      const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
+      if(cached&&cached.student&&Array.isArray(cached.terms))cachedData=cached;
+    }catch(_){}
     try{
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
       const getSchedule=async()=>{
@@ -476,12 +480,6 @@
         if(!result.data||!result.data.student)throw Error('لینک برنامه معتبر نیست یا غیرفعال شده است.');
         return result.data;
       };
-      const data=await getSchedule();
-      $('studentName').textContent='هنرجو: '+data.student.full_name;
-      if(shortCode)setupPush(shortCode,client);loadStudentExercises(shortCode,token,client);
-      terms=Array.isArray(data.terms)?data.terms:[];
-      if(!terms.length){$('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';return;}
-      $('termPanel').classList.remove('hide');
       const updateTermOptions=(selectedId)=>{
         const select=$('termSelect');
         select.innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
@@ -489,37 +487,62 @@
         select._gym20RenderWheel?.();
         select.dispatchEvent(new Event('change',{bubbles:true}));
       };
-      updateTermOptions(terms[0].id);
-      enhanceTermPicker($('termSelect'));
-      $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
-      showTerm(terms[0].id);
+      const applyScheduleData=(data)=>{
+        if(!data||!data.student)throw Error('اطلاعات برنامه معتبر نیست.');
+        $('studentName').textContent='هنرجو: '+data.student.full_name;
+        if(shortCode&&!pushStarted){pushStarted=true;setupPush(shortCode,client);}
+        if(!exercisesStarted){exercisesStarted=true;loadStudentExercises(shortCode,token,client);}
+        const selectedId=$('termSelect')?.value||terms[0]?.id;
+        terms=Array.isArray(data.terms)?data.terms:[];
+        if(!terms.length){
+          $('termPanel').classList.add('hide');
+          $('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';
+          hasRenderedData=true;
+          return;
+        }
+        $('termPanel').classList.remove('hide');
+        updateTermOptions(selectedId);
+        if(!pickerReady){
+          enhanceTermPicker($('termSelect'));
+          $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
+          pickerReady=true;
+        }
+        showTerm($('termSelect').value||terms[0].id);
+        hasRenderedData=true;
+      };
+      // Show the last successfully loaded schedule immediately, then refresh it from the server.
+      if(cachedData){
+        try{applyScheduleData(cachedData);}catch(cacheError){console.warn('GYM20 cached schedule could not be rendered:',cacheError);}
+      }
+      const data=await getSchedule();
+      try{localStorage.setItem(cacheKey,JSON.stringify(data));}catch(_){}
+      applyScheduleData(data);
 
-      // IMPORTANT: fetch the latest published schedule, not just repaint stale data.
-      // Previously this timer only called showTerm() on the old in-memory terms array.
-      let refreshInFlight=false;
-      const refreshPublishedSchedule=async()=>{
+      let refreshInFlight=false,lastRefreshAt=Date.now();
+      const refreshPublishedSchedule=async(force=false)=>{
         if(refreshInFlight||document.visibilityState==='hidden')return;
+        if(!force&&Date.now()-lastRefreshAt<10000)return;
         refreshInFlight=true;
         try{
           const fresh=await getSchedule();
-          const selectedId=$('termSelect')?.value||terms[0]?.id;
-          terms=Array.isArray(fresh.terms)?fresh.terms:[];
-          $('studentName').textContent='هنرجو: '+(fresh.student?.full_name||'');
-          if(!terms.length){
-            $('schedule').textContent='هنوز برنامه‌ای برای شما منتشر نشده است.';
-            return;
-          }
-          updateTermOptions(selectedId);
-          const currentId=$('termSelect')?.value||terms[0].id;
-          showTerm(currentId);
+          try{localStorage.setItem(cacheKey,JSON.stringify(fresh));}catch(_){}
+          applyScheduleData(fresh);
+          lastRefreshAt=Date.now();
         }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
         finally{refreshInFlight=false;}
       };
-      window.setInterval(refreshPublishedSchedule,5000);
+      // Poll less aggressively; returning to the page still triggers a fresh check.
+      window.setInterval(()=>refreshPublishedSchedule(false),30000);
       document.addEventListener('visibilitychange',()=>{
-        if(document.visibilityState==='visible')refreshPublishedSchedule();
+        if(document.visibilityState==='visible')refreshPublishedSchedule(false);
       });
-    }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='بارگذاری برنامه ناموفق بود. لطفاً صفحه را دوباره باز کنید؛ اگر مشکل ادامه داشت به مربی اطلاع دهید.';}
+    }catch(e){
+      console.error(e);
+      if(!hasRenderedData){
+        $('studentName').textContent='دریافت برنامه با خطا مواجه شد.';
+        $('schedule').textContent='بارگذاری برنامه ناموفق بود. لطفاً صفحه را دوباره باز کنید؛ اگر مشکل ادامه داشت به مربی اطلاع دهید.';
+      }
+    }
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
