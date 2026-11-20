@@ -1135,7 +1135,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   }
 
   async function loadStudents(){
-    try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
+    try{say('در حال دریافت هنرجویان…');const {data,error}=await db().from('students').select('id,full_name,phone,birth_date,is_active').eq('is_active',true).order('full_name');if(error)throw error;S.students=data||[];if(!S.pushTemplatesLoaded)loadPushSettings().catch(e=>console.warn('Push template settings unavailable:',e));
       $('stStudentMenu').innerHTML=S.students.map(x=>'<button type="button" class="st-student-option '+(x.id===S.studentId?'selected':'')+'" data-student-id="'+x.id+'"><span>'+esc(x.full_name)+'</span><small>'+esc(x.phone||'بدون شماره')+'</small></button>').join('')||'<div class="st-muted">هنرجویی ثبت نشده است.</div>';
       const selected=S.students.find(x=>String(x.id)===String(S.studentId));$('stStudentSelected').textContent=selected?(selected.full_name||'انتخاب هنرجو…'):'انتخاب هنرجو…';
       if(S.studentId&&S.students.some(x=>x.id===S.studentId)){await loadStudent(S.studentId);}else {const status=$('stStudentLoadStatus');if(status)status.textContent=fa(S.students.length)+' هنرجوی فعال دریافت شد.';say('');}
