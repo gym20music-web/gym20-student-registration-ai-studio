@@ -1423,7 +1423,6 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
           pop.querySelector('[data-prev]').onclick=()=>{if(jm>1)jm--;else{jm=12;jy--;}draw();};
           pop.querySelector('[data-next]').onclick=()=>{if(jm<12)jm++;else{jm=1;jy++;}draw();};
           pop.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{const d=jy+'/'+String(jm).padStart(2,'0')+'/'+String(Number(b.dataset.day)).padStart(2,'0'),iso=gregorianInput(d);if(chosen.has(iso))chosen.delete(iso);else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso);draw();});
-          pop.querySelector('[data-day]').parentElement;pop.querySelectorAll('[data-day]').forEach(()=>{});const countLabel=pop.querySelector('[data-calendar-count]');if(countLabel)countLabel.innerHTML='تعداد جلسات انتخابی: <b>'+fa(currentTermDates.size+chosen.size)+'</b>';
           pop.querySelector('[data-confirm]').onclick=async()=>{
             if(!chosen.size)return;const dates=Array.from(chosen).sort();pop.remove();
             if(!addingToExisting){stageNewTerm(dates);return;}
