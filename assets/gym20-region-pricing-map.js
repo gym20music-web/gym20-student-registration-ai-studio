@@ -97,12 +97,12 @@ function applyAreaSelection(area,fromScroll){
 function startAreaSelectionFlow(target){
  if(!target)return;
  const token=++areaFlowToken;
+ window.__gym20AreaFlowActive=true;
  if(areaFlowTimer)clearTimeout(areaFlowTimer);
  areaFlowTimer=null;
  const areas=allAreas();
  const targetIndex=areas.findIndex(a=>a.id===target.id);
- let startIndex=areas.findIndex(a=>a.id===activeAreaId);
- if(startIndex<0)startIndex=targetIndex;
+ let startIndex=0; // Every explicit map/list tap animates visibly from area 1 to the chosen area.
  const direction=targetIndex>=startIndex?1:-1;
  const steps=[];
  for(let i=startIndex;i!==targetIndex;i+=direction)steps.push(i);
@@ -118,7 +118,9 @@ function startAreaSelectionFlow(target){
    return;
   }
   applyAreaSelection(target,true);
-  // مکث پس از رسیدن نشانگر به محدوده لمس‌شده
+  // محدوده بدون تعرفه انتخاب می‌شود اما وارد مرحله قیمت‌گذاری نمی‌شویم.
+  if(!ownerOf(target.id)){window.__gym20AreaFlowActive=false;return;}
+  // مکث ۲.۵ ثانیه‌ای پس از رسیدن نشانگر به محدوده لمس‌شده
   areaFlowTimer=setTimeout(()=>{
    if(token!==areaFlowToken)return;
    const content=document.getElementById('regionDependentContent');
@@ -137,10 +139,11 @@ function startAreaSelectionFlow(target){
      const trigger=document.getElementById('customRegionTrigger');
      if(menu){menu.classList.remove('open');menu.style.display='none';menu.style.visibility='hidden';menu.style.pointerEvents='none';}
      if(trigger){trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');}
+     window.__gym20AreaFlowActive=false;
     },10000);
    };
    requestAnimationFrame(waitForArrival);
-  },3500);
+  },2500);
  };
  paintNext();
 }
