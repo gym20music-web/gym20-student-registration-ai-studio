@@ -177,7 +177,29 @@ function renderAreaPicker(){
   renderAreaList(root);applyMapEmphasis(root);
  });
  const list=root.querySelector('.gym20-area-list');
- // Scrolling the list only browses areas; selection happens only after an explicit tap.
+ // Select the item nearest the list viewport center while scrolling; paintSelection
+ // keeps the corresponding map region and list row highlighted together.
+ if(list){
+  const syncCenteredArea=()=>{
+   if(scrollFrame)return;
+   scrollFrame=requestAnimationFrame(()=>{
+    scrollFrame=0;
+    const items=[...list.querySelectorAll('.gym20-area-item')];
+    if(!items.length)return;
+    const box=list.getBoundingClientRect(),center=box.top+box.height/2;
+    let nearest=null,minDistance=Infinity;
+    items.forEach(item=>{
+     const r=item.getBoundingClientRect(),d=Math.abs((r.top+r.height/2)-center);
+     if(d<minDistance){minDistance=d;nearest=item;}
+    });
+    if(nearest){
+     const area=allAreas().find(a=>a.id===nearest.dataset.areaId);
+     if(area&&area.id!==activeAreaId)applyAreaSelection(area,true);
+    }
+   });
+  };
+  list.addEventListener('scroll',syncCenteredArea,{passive:true});
+ }
  updateAreaChrome(root);renderZones(root);renderMap(root);renderAreaList(root);paintSelection();
 }
 function updateAreaChrome(root){
