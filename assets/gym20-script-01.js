@@ -689,9 +689,9 @@ function loadGym20Module(src){
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     const modules=[
-      'student-terms.js?v=20261119-admin-modal-v3',
-      './student-push-admin.js?v=20261119-admin-modal-v3',
-      './student-exercises.js?v=20261119-admin-modal-v3'
+      'student-terms.js?v=20261120-term-count-warning-v4',
+      './student-push-admin.js?v=20261120-term-count-warning-v4',
+      './student-exercises.js?v=20261120-term-count-warning-v4'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
