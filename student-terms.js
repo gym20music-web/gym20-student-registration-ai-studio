@@ -1075,6 +1075,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     };
     $('stSendCustomPush').addEventListener('click',sendCustomPush);$('stPushTestAdmin').addEventListener('click',sendTestPush);
     b.addEventListener('click',()=>{if(gym20OwnerAuthorized)loadStudents();else say('ابتدا وارد پنل مدیر شوید.',true);});
+    window.gym20StudentTermsReady=true;
+    window.gym20StudentTermsError='';
   }
 
 
@@ -1534,8 +1536,6 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     try{const {data:{user},error:ue}=await gym20AdminClient.auth.getUser();if(ue)throw ue;const records=Array.from(document.querySelectorAll('[data-att]')).map(el=>({session_id:el.dataset.att,student_id:S.studentId,enrollment_id:null,status:el.value,confirmed_by:user?.id||null,confirmed_at:new Date().toISOString()}));
       say('در حال ذخیره حضور و غیاب…');const {error}=await db().from('attendance').upsert(records,{onConflict:'session_id,student_id'});if(error)throw error;await loadAttendance();say('حضور و غیاب ذخیره شد.');
     }catch(e){say(e.message||'ذخیره حضور و غیاب ناموفق بود.',true);}
-    window.gym20StudentTermsReady=true;
-    window.gym20StudentTermsError='';
   }
   function init(){
     window.gym20StudentTermsReady=false;
