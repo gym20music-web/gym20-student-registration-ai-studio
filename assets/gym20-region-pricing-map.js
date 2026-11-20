@@ -68,6 +68,7 @@ function paintSelection(){
  document.querySelectorAll('#customRegionMenu .gym20-area-item').forEach(n=>n.classList.toggle('active',n.dataset.areaId===activeAreaId));
  const area=areas.find(a=>a.id===activeAreaId)||null;
  updateSelectedTitle(area);updatePricingStatus(area);
+ const root=document.querySelector('#customRegionMenu .gym20-area-picker');if(root)updateAreaChrome(root);
 }
 function applyAreaSelection(area,fromScroll){
  if(!area)return;
