@@ -43,7 +43,7 @@
       const {data, error} = await db().from('students').select('id,full_name,is_active').order('full_name');
       if (error) throw error;
       students = data || [];
-      select.innerHTML = '<option value="">انتخاب هنرجو…</option>' + students.map(s =>
+      select.innerHTML = '<option value=""></option>' + students.map(s =>
         '<option value="' + esc(s.id) + '">' + esc(s.full_name) + (s.is_active ? '' : ' · غیرفعال') + '</option>'
       ).join('');
       if (currentStudentId && students.some(s => s.id === currentStudentId)) select.value = currentStudentId;
@@ -159,7 +159,7 @@
     style.textContent = `
       :is(#gym20ExercisesTab,.gym20-exercises-panel) .hint{font-size:9px;line-height:1.5;margin:4px 0 7px}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-grid-2{gap:6px;margin-bottom:6px}
-      :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:none!important}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:block!important;margin:0 0 3px!important;color:#d8bd78!important;font-size:9px!important;font-weight:800!important;line-height:1.4!important}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseStudentSelect,
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseInput{min-height:30px!important;height:32px!important;padding:4px 8px!important;font-size:10px!important}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
