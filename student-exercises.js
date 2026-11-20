@@ -32,8 +32,8 @@
     try {
       const day = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year:'numeric', month:'2-digit', day:'2-digit'}).format(date);
       const time = new Intl.DateTimeFormat('fa-IR', {hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).format(date);
-      return day + ' · ساعت ' + time;
-    } catch (_) { return date.toLocaleString('fa-IR'); }
+      return {day, time};
+    } catch (_) { return {day:date.toLocaleDateString('fa-IR'), time:date.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}; }
   }
   async function loadExerciseStudents() {
     const select = $('gym20ExerciseStudentSelect');
@@ -76,11 +76,12 @@
       if (error) throw error;
       const rows = data || [];
       list.innerHTML = rows.length ? rows.map(x => {
-        const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : '';
-        return '<article class="gym20-ex-admin-row"><div><strong>' + esc(x.title) +
-          (completed ? ' <span style="color:#55c58a">✓ انجام‌شده</span>' : ' <span style="color:#d5b66b">در انتظار انجام</span>') +
-          (stamp ? '<small class="gym20-ex-meta">' + esc(stamp) + '</small>' : '') +
-          '</div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">' +
+        const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
+        return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">' + esc(x.title) + '</strong>' +
+          '<span class="gym20-ex-status ' + (completed ? 'is-completed' : 'is-pending') + '">' +
+          (completed ? '✓ انجام‌شده' : 'در انتظار انجام') + '</span>' +
+          (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
+          '</div><div class="gym20-ex-actions">' +
           '<button type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
           '<button type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین">🗑️</button></div></article>';
       }).join('') : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
@@ -103,6 +104,21 @@
       input.value = '';
       await loadStudentExercisesAdmin();
       say('تمرین با موفقیت اضافه شد ✓');
+      try {
+        const auth = authContext();
+        const {data:pushData, error:pushError} = await auth.client.functions.invoke('student-push-admin', {
+          body:{student_id:currentStudentId, message:'پاشو تمرین داری 💪🏻🔥'}
+        });
+        if (pushError) throw pushError;
+        if (!pushData?.ok) throw new Error(pushData?.error || 'ارسال اعلان انجام نشد.');
+        if (Number(pushData.total || 0) > 0 && Number(pushData.sent || 0) > 0) {
+          say('تمرین با موفقیت اضافه شد ✓ · اعلان به ' + Number(pushData.sent).toLocaleString('fa-IR') + ' دستگاه ارسال شد.');
+        } else {
+          say('تمرین ثبت شد ✓ · برای این هنرجو دستگاه اعلان فعالی پیدا نشد.', true);
+        }
+      } catch (pushError) {
+        say('تمرین ثبت شد ✓ · ارسال اعلان ناموفق بود: ' + (pushError.message || 'خطای اعلان'), true);
+      }
     } catch (e) { say(e.message || 'افزودن تمرین ناموفق بود.', true); }
     finally { button.disabled = false; }
   }
@@ -138,6 +154,30 @@
       return;
     }
     mounted = true;
+    const style = document.createElement('style');
+    style.id = 'gym20ExerciseCompactStyle';
+    style.textContent = `
+      #gym20ExercisesTab .hint{font-size:9px;line-height:1.5;margin:4px 0 7px}
+      #gym20ExercisesTab .admin-grid-2{gap:6px;margin-bottom:6px}
+      #gym20ExercisesTab .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:none!important}
+      #gym20ExercisesTab #gym20ExerciseStudentSelect,
+      #gym20ExercisesTab #gym20ExerciseInput{min-height:30px!important;height:32px!important;padding:4px 8px!important;font-size:10px!important}
+      #gym20ExercisesTab #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
+      #gym20ExerciseFeedback{font-size:9px!important;line-height:1.5;margin:3px 0 6px}
+      #gym20ExerciseList{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+      #gym20ExerciseList .gym20-ex-admin-row{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px!important;margin:0!important;border:1px solid rgba(214,179,90,.16);border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.012));min-width:0}
+      #gym20ExerciseList .gym20-ex-info{display:flex;flex:1 1 auto;min-width:0;flex-direction:column;align-items:flex-start;gap:2px}
+      #gym20ExerciseList .gym20-ex-title{font-size:10px!important;line-height:1.5;color:var(--text-primary,#eee);font-weight:800;overflow-wrap:anywhere}
+      #gym20ExerciseList .gym20-ex-status{font-size:8px;line-height:1.45;font-weight:700}
+      #gym20ExerciseList .gym20-ex-status.is-completed{color:#55c58a}
+      #gym20ExerciseList .gym20-ex-status.is-pending{color:#d5b66b}
+      #gym20ExerciseList .gym20-ex-date,#gym20ExerciseList .gym20-ex-time{display:block;font-size:8px;line-height:1.5;color:var(--text-secondary,#aab0b9);font-weight:500}
+      #gym20ExerciseList .gym20-ex-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex:0 0 auto}
+      #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box;min-height:23px!important;height:23px!important;padding:0 6px!important;margin:0!important;border-radius:5px!important;font-size:8px!important;line-height:1!important;white-space:nowrap}
+      #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px;padding:0!important}
+      @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{gap:3px}#gym20ExerciseList .gym20-ex-actions button{font-size:7px!important;padding:0 5px!important}}
+    `;
+    document.head.appendChild(style);
     window.loadExerciseStudents = loadExerciseStudents;
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.gym20ExerciseTabReady = true;
