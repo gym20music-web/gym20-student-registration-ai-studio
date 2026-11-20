@@ -1445,10 +1445,10 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
     const payload=collectDraftPayload();if(!payload.length)throw Error('برای این ترم هنوز جلسه‌ای از تقویم انتخاب نشده است.');
     const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;
-    S.term.total_sessions=payload.length;await loadDraftRows();drawDraft();return data;
+    await loadDraftRows();drawDraft();return data;
   }
   async function saveDraft(){
-    try{say('در حال ذخیره پیش‌نویس…');const count=await persistDraft();say(fa(count)+' جلسه ذخیره شد. تعداد جلسات از روی برنامه شما ثبت شد؛ سبک‌ها و مدت‌ها مستقل هستند.');}
+    try{say('در حال ذخیره پیش‌نویس…');const count=await persistDraft();say(fa(count)+' جلسه ذخیره شد. تعداد جلسات اصلی ترم همان عددی است که تعیین کرده‌ای؛ اختلاف تعداد فقط هشدار است.');}
     catch(e){say(e.message||'ذخیره ناموفق بود.',true);}
   }
   async function publish(){
