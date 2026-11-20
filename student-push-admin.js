@@ -41,7 +41,7 @@
       '#stPushCard .st-push-toggle.is-on{border-color:#16a34a!important;color:#4ade80!important}'+
       '#stPushCard .st-push-toggle.is-off{border-color:rgba(239,68,68,.65)!important;color:#f87171!important}'+
       '#stPushCard .st-push-active-count{display:inline-flex;align-items:center;height:auto;min-height:0;padding:0;border:0;background:transparent;font-size:9px;font-weight:900;line-height:1.4;color:#f87171;white-space:nowrap;flex:0 0 auto}'+
-      '#stPushCard .st-push-active-count.is-active{color:#4ade80!important}'+
+      '#stPushCard .st-push-active-count.is-active{color:#4ade80!important;-webkit-text-fill-color:#4ade80!important}'+
       '#stPushCard .st-push-active-count.is-inactive{color:#f87171!important}'+
       '#stPushCard #stPushAdminStatus{font-size:9px;line-height:1.4;margin:0;flex:0 1 auto}'+
       '#stPushCard #stPushTestAdmin{flex:0 0 auto}'+
