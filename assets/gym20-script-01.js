@@ -88,6 +88,7 @@ function renderCustomRegionDropdown(){
     }));
     customRegionMenuEl.appendChild(wheel);
     updateRegionDependentVisibility();
+    if(typeof window.gym20RenderAreaPicker==='function')window.gym20RenderAreaPicker();
 }
 
 function selectRegion(id){currentRegionId=id;document.body.classList.remove('region-sheet-open');customRegionMenuEl.classList.remove('open');customRegionMenuEl.style.display='none';customRegionMenuEl.style.visibility='hidden';customRegionMenuEl.style.pointerEvents='none';customRegionTriggerEl.classList.remove('open');customRegionTriggerEl.setAttribute('aria-expanded','false');renderCustomRegionDropdown();updateRegionDependentVisibility();if(currentRegionId){updateClassStatusAndStylesFlow();calculatePrice();regionDependentContentEl.scrollIntoView({behavior:'smooth'});requestAnimationFrame(()=>requestAnimationFrame(()=>{if(typeof window.gym20GuidedFlowStart==='function')window.gym20GuidedFlowStart();else window.dispatchEvent(new CustomEvent('gym20:region-selected',{detail:{regionId:currentRegionId}}));}));}}
@@ -340,7 +341,7 @@ function deleteActiveRegion(){
 function saveNewRegionFromCard(){
     const n=document.getElementById('newRegNameInput').value.trim(),k=parsePureNumber(document.getElementById('newRegKidsInput').value),a=parsePureNumber(document.getElementById('newRegAdultInput').value),e=parsePureNumber(document.getElementById('newRegExtraInput').value);
     if(!n||!k||!a){alert('مشخصات و قیمت‌های پایه را کامل وارد کنید.');return;}
-    const id="reg_"+Date.now();if(!Array.isArray(appData.regions))appData.regions=[];appData.regions.push({id,name:n,kidsBase:k,adultBase:a,extraStylePrice:e||500000});
+    const id="reg_"+Date.now();if(!Array.isArray(appData.regions))appData.regions=[];appData.regions.push({id,name:n,kidsBase:k,adultBase:a,extraStylePrice:e||500000,areas:[]});
     document.getElementById('newRegNameInput').value="";document.getElementById('newRegKidsInput').value="";document.getElementById('newRegAdultInput').value="";document.getElementById('newRegExtraInput').value="";
     adminActiveRegionId=id;renderAdminRegionsNav();renderCustomRegionDropdown();calculatePrice();
 }
@@ -947,7 +948,7 @@ document.getElementById('autoCommitBtn').onclick=async()=>{
             const storedRegions=Array.isArray(verifiedRow?.value?.regions)?verifiedRow.value.regions:[];
             const regionCheck=expectedRegions.every(expected=>{
                 const actual=storedRegions.find(item=>String(item.id)===String(expected.id));
-                return actual&&actual.name===expected.name&&Number(actual.kidsBase)===Number(expected.kidsBase)&&Number(actual.adultBase)===Number(expected.adultBase)&&Number(actual.extraStylePrice)===Number(expected.extraStylePrice);
+                return actual&&actual.name===expected.name&&Number(actual.kidsBase)===Number(expected.kidsBase)&&Number(actual.adultBase)===Number(expected.adultBase)&&Number(actual.extraStylePrice)===Number(expected.extraStylePrice)&&JSON.stringify([...(actual.areas||[])].sort())===JSON.stringify([...(expected.areas||[])].sort());
             });
             if(!regionCheck||storedRegions.length!==expectedRegions.length){
                 throw new Error('ذخیره انجام شد اما تأیید نهایی مناطق با اطلاعات پنل یکسان نیست؛ دوباره تلاش کنید.');
@@ -1339,7 +1340,7 @@ registrationForm.addEventListener('submit',async e=>{
     if(fn.length<2||!ph||!styles.length){setRegistrationStatus('نام، موبایل و حداقل یک سبک لازم است.','error');return;}
     
     let gB=null,sTag='';if(rB){const p=rB.split(/[\/\-\.]/);if(p.length===3)gB=jalaliToGregorian(p[0],p[1],p[2]);sTag=`[تولد شمسی: ${rB}]\n`;}
-    const act=(appData.regions||[]).find(r=>r.id===currentRegionId),rTag=act?`[منطقه: ${act.name}]\n`:'',cNotes=(rTag+sTag+(notes||'')).trim()||null;
+    const act=(appData.regions||[]).find(r=>r.id===currentRegionId),rTag=act?`[گروه تعرفه: ${act.name}]\n`:'',areaInfo=window.gym20SelectedAreaInfo,areaTag=areaInfo?`[محدوده سکونت: ${areaInfo.city} - ${areaInfo.name} | ${areaInfo.hoods}]\n`:'',cNotes=(areaTag+rTag+sTag+(notes||'')).trim()||null;
     
     registrationSubmit.disabled=true;registrationSubmit.textContent='در حال ارسال…';setRegistrationStatus('');
     try{
@@ -1368,7 +1369,7 @@ registrationForm.addEventListener('submit',async e=>{
             fullName: fn,
             phone: ph,
             birthDate: rB,
-            regionName: act ? act.name : '',
+            regionName: window.gym20SelectedAreaInfo ? (window.gym20SelectedAreaInfo.city+' - '+window.gym20SelectedAreaInfo.name+' | '+(act?act.name:'')) : (act ? act.name : ''),
             styles: styles.join('، '),
             ageGroup: currentAge,
             classTypeName: cNMap[currentClassType] || currentClassType,
@@ -1397,6 +1398,7 @@ function isValidGym20SiteConfig(data){
 function normalizeGym20SiteConfig(data){
   appData=data&&typeof data==='object'?data:{};
   if(!Array.isArray(appData.regions))appData.regions=[];
+  if(typeof window.gym20EnsureAreaPricing==='function')window.gym20EnsureAreaPricing();
   if(!Array.isArray(appData.styles))appData.styles=[];
   if(!appData.rules)appData.rules={};
   Object.keys(appData.rules).forEach(key=>{appData.rules[key]=normalizeRuleText(appData.rules[key]);});

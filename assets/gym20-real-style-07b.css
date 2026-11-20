@@ -376,3 +376,80 @@ body[data-theme="light"] #adminBtn{
   border-color:rgba(31,45,61,.16)!important;
   box-shadow:0 2px 8px rgba(31,45,61,.07)!important;
 }
+
+/* GYM20 region pricing map + multi-area tariff assignment */
+#customRegionMenu{max-height:min(78vh,680px)!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+#customRegionMenu .region-wheel-list{display:none!important}
+.gym20-area-picker{direction:rtl;color:var(--text-primary);font-family:Vazirmatn,Tahoma,sans-serif}
+.gym20-area-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
+.gym20-city-switch{display:flex;gap:4px;padding:3px;border:1px solid var(--border);border-radius:9px;background:var(--surface-card)}
+.gym20-city-btn{border:0;border-radius:7px;padding:5px 15px;background:transparent;color:var(--text-secondary);font:700 .68rem Vazirmatn;cursor:pointer}
+.gym20-city-btn.active{background:linear-gradient(135deg,#d7bd8d,#a98751);color:#17191b;box-shadow:0 2px 8px #0005}
+.gym20-area-counter{font-size:.62rem;color:var(--text-secondary);border:1px solid var(--border);border-radius:20px;padding:3px 8px}
+.gym20-area-layout{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:8px;align-items:stretch}
+.gym20-area-map-side{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gym20-area-zones{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:1px 0 3px}
+.gym20-area-zones::-webkit-scrollbar{display:none}
+.gym20-area-zone{flex:none;white-space:nowrap;border:1px solid var(--border);background:var(--surface-card);color:var(--text-secondary);border-radius:7px;padding:4px 9px;font:600 .6rem Vazirmatn;cursor:pointer}
+.gym20-area-zone.active{background:var(--btn-active);border-color:var(--neon-blue);color:#111827;font-weight:800}
+.gym20-area-viewport{position:relative;min-height:290px;border:1px solid var(--border);border-radius:10px;background:radial-gradient(ellipse at 48% 40%,#34393d 0,#202428 48%,#15181b 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:8px}
+.gym20-area-viewport:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 25%,#ffffff05 50%,transparent 70%);pointer-events:none}
+.gym20-area-map{width:100%;max-width:470px;height:auto;overflow:visible;filter:drop-shadow(0 15px 14px #0009);touch-action:manipulation}
+.gym20-map-node{cursor:pointer;transition:transform .18s ease;transform-box:fill-box;transform-origin:center}
+.gym20-map-node.active{transform:translateY(-5px)}
+.gym20-map-under{fill:#080a0b;opacity:.72;stroke:#080a0b;stroke-width:1}
+.gym20-map-wall{fill:#111416;stroke:#080a0b;stroke-width:.8}
+.gym20-map-top{fill:#343a3e;stroke:#8b9295;stroke-opacity:.55;stroke-width:1.4;transition:fill .18s,stroke .18s}
+.gym20-map-node:hover .gym20-map-top{fill:#555d61}
+.gym20-map-node.active .gym20-map-top{fill:var(--neon-blue);stroke:#fff;stroke-width:2}
+.gym20-map-node.dim{opacity:.2;filter:saturate(.25)}
+.gym20-map-node.search-hit .gym20-map-top{stroke:#fff;stroke-width:2.4}
+.gym20-map-label{font:800 18px Vazirmatn,Tahoma;fill:#f4f1eb;text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.gym20-map-node.active .gym20-map-label{fill:#141719}
+.gym20-area-compass{position:absolute;top:8px;right:9px;border:1px solid var(--border);border-radius:7px;padding:3px 7px;font-size:9px;color:var(--neon-blue);background:#101316c9;z-index:2}
+.gym20-area-hud{position:absolute;left:8px;top:8px;max-width:170px;background:#101316df;border:1px solid color-mix(in srgb,var(--neon-blue) 55%,transparent);border-radius:8px;padding:6px 8px;z-index:2}
+.gym20-area-hud b{display:block;color:var(--neon-blue);font-size:10px}
+.gym20-area-hud span{display:block;color:#e5e5e5;font-size:9px;line-height:1.5;margin-top:2px}
+.gym20-area-legend{position:absolute;bottom:7px;right:9px;left:9px;display:flex;justify-content:space-between;color:#858b90;font-size:8px;pointer-events:none}
+.gym20-area-side{display:flex;flex-direction:column;gap:6px;min-width:0}
+.gym20-area-search{width:100%;height:33px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);color:var(--text-primary);padding:0 9px;font:.65rem Vazirmatn;outline:none}
+.gym20-area-search:focus{border-color:var(--neon-blue)}
+.gym20-area-list{height:290px;overflow:auto;display:flex;flex-direction:column;gap:5px;scrollbar-width:thin;scrollbar-color:#626a72 transparent;padding-left:2px;overscroll-behavior:contain;touch-action:pan-y}
+.gym20-area-item{position:relative;flex:none;width:100%;text-align:right;border:1px solid var(--border);border-radius:8px;background:linear-gradient(135deg,var(--surface-card),var(--surface));padding:6px 8px 6px 26px;cursor:pointer;color:var(--text-primary);font-family:Vazirmatn}
+.gym20-area-item.active{border-color:var(--neon-blue);background:color-mix(in srgb,var(--neon-blue) 12%,var(--surface-card));box-shadow:inset -2px 0 var(--neon-blue)}
+.gym20-area-item-top{display:block;font-size:.68rem;font-weight:800}
+.gym20-area-item-sub{display:block;font-size:.55rem;color:var(--text-secondary);line-height:1.55;margin-top:2px}
+.gym20-area-item-check{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--neon-blue);opacity:0}
+.gym20-area-item.active .gym20-area-item-check{opacity:1}
+.gym20-area-status{margin-top:7px;padding:7px 9px;border:1px solid var(--border);border-radius:8px;background:var(--surface-card);font-size:.63rem;line-height:1.7;color:var(--text-secondary)}
+.gym20-area-status.is-ready{border-color:rgba(34,197,94,.38);color:#86efac}
+.gym20-area-status.is-missing{border-color:rgba(248,113,113,.42);color:#fca5a5}
+.gym20-area-foot{font-size:.53rem;line-height:1.6;color:var(--text-secondary);margin-top:5px}
+.gym20-admin-area-assignment{margin-top:9px;padding:8px;border:1px solid var(--border);border-radius:10px;background:var(--surface-card)}
+.gym20-admin-area-title{font-size:.7rem;font-weight:800;color:var(--neon-blue);margin-bottom:3px}
+.gym20-admin-area-hint{font-size:.57rem;line-height:1.7;color:var(--text-secondary);margin-bottom:7px}
+.gym20-admin-area-city{margin-top:7px}
+.gym20-admin-area-city-title{font-size:.64rem;font-weight:800;color:var(--neon-blue);padding-bottom:4px;border-bottom:1px solid var(--border);margin-bottom:5px}
+.gym20-admin-area-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}
+.gym20-admin-area-option{display:grid;grid-template-columns:14px minmax(0,1fr);grid-template-rows:auto auto;align-items:center;gap:1px 5px;padding:5px 6px;border:1px solid var(--border);border-radius:7px;background:var(--surface);cursor:pointer;min-width:0}
+.gym20-admin-area-option.selected{border-color:var(--neon-blue);background:color-mix(in srgb,var(--neon-blue) 10%,var(--surface))}
+.gym20-admin-area-option input{grid-row:1/3;width:13px;height:13px;margin:0;accent-color:var(--neon-blue)}
+.gym20-admin-area-option span{font-size:.61rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gym20-admin-area-option small{font-size:.5rem;color:var(--text-secondary);grid-column:2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gym20-admin-area-count{margin-top:7px;font-size:.6rem;color:var(--neon-blue);font-weight:800}
+html[data-theme="light"] #adminModal .gym20-admin-area-assignment{background:#fff!important;color:#344253!important;border-color:#dce3eb!important}
+html[data-theme="light"] #adminModal .gym20-admin-area-option{background:#f7f9fb!important;color:#344253!important;border-color:#dce3eb!important}
+html[data-theme="light"] #adminModal .gym20-admin-area-option.selected{background:#f8f1df!important;border-color:#d8bd7c!important}
+html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){color:#344253!important;-webkit-text-fill-color:#344253!important}
+@media(max-width:620px){
+ #customRegionMenu{max-height:78vh!important}
+ .gym20-area-layout{grid-template-columns:minmax(0,1fr)}
+ .gym20-area-map-side{grid-row:1}
+ .gym20-area-side{grid-row:2}
+ .gym20-area-viewport{min-height:255px}
+ .gym20-area-map{max-width:370px}
+ .gym20-area-list{height:170px}
+ .gym20-area-hud{max-width:145px}
+ .gym20-area-hud span{font-size:8px}
+ .gym20-admin-area-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

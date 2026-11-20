@@ -23,7 +23,7 @@
 (function(){
  document.documentElement.classList.add('gym20-raw-loading');
  const base='https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/';
- const assetVersion='gym20-guided-flow-fix-20261119-v32';
+ const assetVersion='gym20-area-pricing-20261120-v1';
  const cssFiles=["assets/gym20-real-style-01a.css","assets/gym20-real-style-01b.css","assets/gym20-real-style-01c.css","assets/gym20-real-style-02.css","assets/gym20-real-style-03.css","assets/gym20-real-style-04.css","assets/gym20-real-style-05.css","assets/gym20-real-style-06.css","assets/gym20-real-style-07a.css","assets/gym20-real-style-07b.css"];
  window.__gym20FetchAsset=async function(path){
   const response=await fetch(base+path+'?v='+assetVersion,{cache:'no-store'});
@@ -244,7 +244,7 @@
             <button class="admin-tab-btn" onclick="switchAdminTab('telegramTab')">✈️ اعلان تلگرام</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('textsTab')">✍️ متن‌ها و دکمه‌ها</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('stylesTab')">🥋 سبک‌ها و کلاس‌ها</button>
-            <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 مناطق تهران</button>
+            <button class="admin-tab-btn" onclick="switchAdminTab('regionsTab')">📍 تعرفه و مناطق</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('themesTab')">🎨 تم سایت</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('rulesTab')">📜 قوانین</button>
             <button class="admin-tab-btn" onclick="switchAdminTab('bannerTab')">🏷️ بنر بالا</button>
@@ -373,7 +373,7 @@
         </div>
 
         <div class="admin-panel-tab" id="regionsTab">
-            <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
+            <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب گروه تعرفه برای تنظیم یا افزودن:</div>
             <div id="adminRegionToolbar" style="display:grid;grid-template-columns:minmax(0,1fr) auto;direction:rtl;align-items:center;gap:6px;width:100%;margin-bottom:6px;box-sizing:border-box;">
                 <div id="adminRegionWheelDropdown" class="admin-region-wheel-dropdown" style="min-width:0;width:100%;margin:0;">
                     <button type="button" id="adminRegionWheelTrigger" aria-expanded="false" onclick="toggleAdminRegionWheel(event)" style="justify-content:flex-start;">
@@ -381,10 +381,10 @@
                     </button>
                     <div id="adminRegionWheelMenu" aria-label="انتخاب منطقه برای مدیریت"></div>
                 </div>
-                <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')" style="width:75px;min-width:75px;max-width:75px;height:36px;min-height:36px;margin:0;padding:5px 2px;white-space:nowrap;">منطقه جدید</button>
+                <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')" style="width:75px;min-width:75px;max-width:75px;height:36px;min-height:36px;margin:0;padding:5px 2px;white-space:nowrap;">تعرفه جدید</button>
             </div>
             <div class="admin-region-box" id="adminRegionEditCard">
-                <div class="admin-input-group"><label>نام و محله‌های منطقه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
+                <div class="admin-input-group"><label>نام گروه تعرفه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
                     <div class="admin-input-group"><label>شهریه کودکان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
@@ -397,10 +397,11 @@
                     </div>
                     <button type="button" class="delete-style-btn" onclick="deleteActiveRegion()" aria-label="حذف منطقه" title="حذف منطقه" style="grid-column:2;grid-row:2;width:34px;height:34px;min-width:34px;max-width:34px;padding:0;margin:0;align-self:stretch;display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;box-sizing:border-box;">🗑️</button>
                 </div>
+                <div id="adminRegionAreasContainer" class="gym20-admin-area-assignment" style="display:none;"></div>
             </div>
             <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
-                <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف منطقه جدید:</div>
-                <div class="admin-input-group"><label>نام منطقه جدید:</label><input type="text" id="newRegNameInput" placeholder="مثلاً: منطقه ۲۲ - چیتگر"></div>
+                <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف گروه تعرفه جدید:</div>
+                <div class="admin-input-group"><label>نام گروه تعرفه:</label><input type="text" id="newRegNameInput" placeholder="مثلاً: منطقه ۲۲ - چیتگر"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
                     <div class="admin-input-group"><label>شهریه کودکان:</label><div class="price-input-wrapper"><input type="text" id="newRegKidsInput" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان:</label><div class="price-input-wrapper"><input type="text" id="newRegAdultInput" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)"><span class="price-currency-tag">تومان</span></div></div>
@@ -631,7 +632,7 @@
 <script src="/assets/gym20-admin-tab-sort.js?v=20261119-3"></script>
 <script>
 (async function(){
- const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
+ const files=["supabase-auth.js","assets/gym20-script-01.js","assets/gym20-region-pricing-map.js","assets/gym20-script-02.js","assets/gym20-script-03.js","assets/gym20-script-04.js","assets/gym20-script-05.js","assets/gym20-script-06.js","assets/gym20-script-07.js"];
  async function loadScriptAsset(path){
   const source=await window.__gym20FetchAsset(path);
   const blob=new Blob([source],{type:'text/javascript'});
