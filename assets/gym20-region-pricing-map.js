@@ -64,11 +64,11 @@ function updatePricingStatus(area){
 }
 function paintSelection(){
  const areas=allAreas();
- document.querySelectorAll('#customRegionMenu .gym20-map-node').forEach(n=>n.classList.toggle('active',n.dataset.areaId===activeAreaId));
- document.querySelectorAll('#customRegionMenu .gym20-area-item').forEach(n=>n.classList.toggle('active',n.dataset.areaId===activeAreaId));
+ document.querySelectorAll('#gym20AreaPickerHost .gym20-map-node').forEach(n=>n.classList.toggle('active',n.dataset.areaId===activeAreaId));
+ document.querySelectorAll('#gym20AreaPickerHost .gym20-area-item').forEach(n=>n.classList.toggle('active',n.dataset.areaId===activeAreaId));
  const area=areas.find(a=>a.id===activeAreaId)||null;
  updateSelectedTitle(area);updatePricingStatus(area);
- const root=document.querySelector('#customRegionMenu .gym20-area-picker');if(root)updateAreaChrome(root);
+ const root=document.querySelector('#gym20AreaPickerHost .gym20-area-picker');if(root)updateAreaChrome(root);
 }
 function applyAreaSelection(area,fromScroll){
  if(!area)return;
@@ -142,11 +142,17 @@ function renderAreaList(root){
 }
 function renderAreaPicker(){
  const menu=document.getElementById('customRegionMenu');if(!menu)return;
- const old=menu.querySelector('.gym20-area-picker');if(old)old.remove();
+ const dropdown=document.getElementById('customRegionDropdown');if(!dropdown)return;
+ let host=document.getElementById('gym20AreaPickerHost');
+ if(!host){host=document.createElement('div');host.id='gym20AreaPickerHost';host.className='gym20-area-picker-host';dropdown.insertAdjacentElement('afterend',host);}
+ const old=host.querySelector('.gym20-area-picker');if(old)old.remove();
  const wheel=menu.querySelector('#customRegionWheelList');if(wheel)wheel.style.display='none';
  const root=document.createElement('section');root.className='gym20-area-picker';
  root.innerHTML='<div class="gym20-area-head"><div class="gym20-city-switch" role="group" aria-label="انتخاب شهر"><button type="button" data-city="tehran" class="gym20-city-btn">تهران</button><button type="button" data-city="andisheh" class="gym20-city-btn">اندیشه</button></div><span class="gym20-area-counter"></span></div><div class="gym20-area-layout"><aside class="gym20-area-side"><input class="gym20-area-search" type="search" placeholder="جستجوی منطقه یا محله..." autocomplete="off"><div class="gym20-area-list"></div></aside><div class="gym20-area-map-side"><div class="gym20-area-zones"></div><div class="gym20-area-viewport"><div class="gym20-area-compass"></div><div class="gym20-area-hud"><b></b><span></span></div><svg class="gym20-area-map" viewBox="0 0 920 600" role="img" aria-label="نقشه شماتیک مناطق تهران و فازهای اندیشه"></svg><div class="gym20-area-legend"><span>نقشه شماتیک نمایشی</span><span>برای انتخاب روی محدوده بزنید</span></div></div></div></div><div id="gym20AreaPricingStatus" class="gym20-area-status">ابتدا شهر و محدوده مورد نظر را انتخاب کنید.</div><div class="gym20-area-foot">مرزبندی نقشه شماتیک و راهنمای انتخاب است؛ محدوده‌ها و تعرفه‌ها از پنل مدیریت تنظیم می‌شوند.</div>';
- menu.prepend(root);
+ host.appendChild(root);
+ const syncHost=()=>{host.style.display=menu.classList.contains('open')?'block':'none';};
+ if(!host._gym20Observe){new MutationObserver(syncHost).observe(menu,{attributes:true,attributeFilter:['class']});host._gym20Observe=true;}
+ syncHost();
  const cityButtons=root.querySelectorAll('[data-city]');
  cityButtons.forEach(b=>{b.classList.toggle('active',b.dataset.city===city);b.addEventListener('click',()=>{
   if(city===b.dataset.city)return;
