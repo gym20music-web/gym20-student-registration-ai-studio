@@ -39,7 +39,7 @@
     const select = $('gym20ExerciseStudentSelect');
     if (!select) return;
     try {
-      select.innerHTML = '<option value="">در حال دریافت هنرجویان…</option>';
+      select.innerHTML = '<option value=""></option>';
       const {data, error} = await db().from('students').select('id,full_name,is_active').order('full_name');
       if (error) throw error;
       students = data || [];
@@ -107,7 +107,7 @@
       try {
         const auth = authContext();
         const {data:pushData, error:pushError} = await auth.client.functions.invoke('student-push-admin', {
-          body:{student_id:currentStudentId, message:'پاشو تمرین داری 💪🏻🔥'}
+          body:{student_id:currentStudentId, title:'CLASS NOTIFICATION', message:'پیام کلاس شما\nپاشو تمرین داری 💪🏻🔥'}
         });
         if (pushError) throw pushError;
         if (!pushData?.ok) throw new Error(pushData?.error || 'ارسال اعلان انجام نشد.');
@@ -159,7 +159,7 @@
     style.textContent = `
       :is(#gym20ExercisesTab,.gym20-exercises-panel) .hint{font-size:9px;line-height:1.5;margin:4px 0 7px}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-grid-2{gap:6px;margin-bottom:6px}
-      :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:block!important;margin:0 0 3px!important;color:#d8bd78!important;font-size:9px!important;font-weight:800!important;line-height:1.4!important}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) :is(.admin-input-group,.field) label[for="gym20ExerciseStudentSelect"]{display:block!important;margin:0 0 4px!important;color:#d8bd78!important;font-size:9px!important;font-weight:800!important;line-height:1.4!important}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseStudentSelect,
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseInput{min-height:30px!important;height:32px!important;padding:4px 8px!important;font-size:10px!important}
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
