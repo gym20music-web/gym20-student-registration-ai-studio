@@ -76,6 +76,8 @@ function applyAreaSelection(area,fromScroll){
  window.gym20SelectedAreaInfo={id:area.id,city:city==='tehran'?'تهران':'اندیشه',name:area.name,hoods:area.hoods};
  const group=ownerOf(area.id);
  currentRegionId=group?group.id:'';
+ const dependent=document.getElementById('regionDependentContent');
+ if(dependent)dependent.style.display=group?'':'none';
  if(typeof updateRegionDependentVisibility==='function')updateRegionDependentVisibility();
  if(group&&typeof updateClassStatusAndStylesFlow==='function'){updateClassStatusAndStylesFlow();if(typeof calculatePrice==='function')calculatePrice();}
  else if(typeof calculatePrice==='function')calculatePrice();
@@ -149,8 +151,9 @@ function renderAreaPicker(){
  if(host.parentElement!==regionCard.parentElement||host.previousElementSibling!==regionCard)regionCard.insertAdjacentElement('afterend',host);
  const old=host.querySelector('.gym20-area-picker');if(old)old.remove();
  const wheel=menu.querySelector('#customRegionWheelList');if(wheel)wheel.style.display='none';
+ const dependent=document.getElementById('regionDependentContent');if(dependent){const initial=allAreas().find(a=>a.id===activeAreaId);dependent.style.display=initial&&ownerOf(initial.id)?'':'none';}
  const root=document.createElement('section');root.className='gym20-area-picker';
- root.innerHTML='<div class="gym20-area-head"><div class="gym20-city-switch" role="group" aria-label="انتخاب شهر"><button type="button" data-city="tehran" class="gym20-city-btn">تهران</button><button type="button" data-city="andisheh" class="gym20-city-btn">اندیشه</button></div><span class="gym20-area-counter"></span></div><div class="gym20-area-layout"><aside class="gym20-area-side"><input class="gym20-area-search" type="search" placeholder="جستجوی منطقه یا محله..." autocomplete="off"><div class="gym20-area-list"></div></aside><div class="gym20-area-map-side"><div class="gym20-area-zones"></div><div class="gym20-area-viewport"><div class="gym20-area-compass"></div><div class="gym20-area-hud"><b></b><span></span></div><svg class="gym20-area-map" viewBox="0 0 920 600" role="img" aria-label="نقشه شماتیک مناطق تهران و فازهای اندیشه"></svg><div class="gym20-area-legend"><span>نقشه شماتیک نمایشی</span><span>برای انتخاب روی محدوده بزنید</span></div></div></div></div><div id="gym20AreaPricingStatus" class="gym20-area-status">ابتدا شهر و محدوده مورد نظر را انتخاب کنید.</div><div class="gym20-area-foot">مرزبندی نقشه شماتیک و راهنمای انتخاب است؛ محدوده‌ها و تعرفه‌ها از پنل مدیریت تنظیم می‌شوند.</div>';
+ root.innerHTML='<div class="gym20-area-head"><div class="gym20-city-switch" role="group" aria-label="انتخاب شهر"><button type="button" data-city="tehran" class="gym20-city-btn">تهران</button><button type="button" data-city="andisheh" class="gym20-city-btn">اندیشه</button></div><span class="gym20-area-counter"></span></div><div class="gym20-area-layout"><aside class="gym20-area-side"><input class="gym20-area-search" type="search" placeholder="جستجوی منطقه یا محله..." autocomplete="off"><div class="gym20-area-list"></div></aside><div class="gym20-area-map-side"><div class="gym20-area-zones"></div><div class="gym20-area-viewport"><div class="gym20-area-compass"></div><div class="gym20-area-hud"><b></b><span></span></div><svg class="gym20-area-map" viewBox="0 0 920 600" role="img" aria-label="نقشه شماتیک مناطق تهران و فازهای اندیشه"></svg><div class="gym20-area-legend"><span>نقشه شماتیک نمایشی</span><span>برای انتخاب روی محدوده بزنید</span></div></div></div></div><div id="gym20AreaPricingStatus" class="gym20-area-status">ابتدا شهر و محدوده مورد نظر را انتخاب کنید.</div>';
  host.appendChild(root);
  const syncHost=()=>{host.style.display=menu.classList.contains('open')?'block':'none';};
  if(!host._gym20Observe){new MutationObserver(syncHost).observe(menu,{attributes:true,attributeFilter:['class']});host._gym20Observe=true;}
@@ -159,6 +162,7 @@ function renderAreaPicker(){
  cityButtons.forEach(b=>{b.classList.toggle('active',b.dataset.city===city);b.addEventListener('click',()=>{
   if(city===b.dataset.city)return;
   city=b.dataset.city;activeAreaId='';activeZone='همه';mapSearch='';window.gym20SelectedAreaInfo=null;currentRegionId='';
+  const dependent=document.getElementById('regionDependentContent');if(dependent)dependent.style.display='none';
   if(typeof updateRegionDependentVisibility==='function')updateRegionDependentVisibility();
   root.querySelector('.gym20-area-search').value='';
   cityButtons.forEach(x=>x.classList.toggle('active',x===b));
@@ -173,14 +177,7 @@ function renderAreaPicker(){
   renderAreaList(root);applyMapEmphasis(root);
  });
  const list=root.querySelector('.gym20-area-list');
- list.addEventListener('scroll',()=>{
-  if(scrollFrame)return;
-  scrollFrame=requestAnimationFrame(()=>{
-   scrollFrame=0;const box=list.getBoundingClientRect(),center=box.top+box.height/2;let nearest=null,dist=Infinity;
-   list.querySelectorAll('.gym20-area-item').forEach(el=>{const r=el.getBoundingClientRect(),d=Math.abs((r.top+r.bottom)/2-center);if(d<dist){dist=d;nearest=el;}});
-   if(nearest){const a=allAreas().find(x=>x.id===nearest.dataset.areaId);if(a&&a.id!==activeAreaId)applyAreaSelection(a,true);}
-  });
- },{passive:true});
+ // Scrolling the list only browses areas; selection happens only after an explicit tap.
  updateAreaChrome(root);renderZones(root);renderMap(root);renderAreaList(root);paintSelection();
 }
 function updateAreaChrome(root){
