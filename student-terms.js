@@ -833,20 +833,29 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       '<div id="stPushFeedback" class="st-muted" role="status" aria-live="polite"></div>';
     const quickActions=document.createElement('div');quickActions.className='st-push-quick-actions';
     const pushToolbar=pushCard.querySelector('.st-push-toolbar'),customPushRow=pushCard.querySelector('.st-custom-push-row'),pushHeading=pushCard.querySelector('.st-push-heading');
-    if(pushToolbar&&customPushRow&&pushHeading){quickActions.append(pushToolbar,customPushRow);pushHeading.after(quickActions);}
+    if(pushToolbar&&customPushRow&&pushHeading){
+      quickActions.append(pushToolbar,customPushRow);
+      pushHeading.after(quickActions);
+      const placeQuickActionsBelowClassLink=()=>{const link=$('stPublicLinkBox'),summary=$('stSummary');if(link&&summary&&quickActions.parentNode!==summary)link.after(quickActions);};
+      const summaryLinkObserver=new MutationObserver(placeQuickActionsBelowClassLink);
+      const summaryForLink=$('stSummary');if(summaryForLink)summaryLinkObserver.observe(summaryForLink,{childList:true,subtree:true});
+      placeQuickActionsBelowClassLink();
+    }
     const quickActionsCss=document.createElement('style');quickActionsCss.id='stPushQuickActionsCss';quickActionsCss.textContent=`
-      #stPushCard .st-push-quick-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;width:100%!important;margin:4px 0 7px!important}
-      #stPushCard .st-push-quick-actions .st-push-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important;gap:6px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-width:0!important}
-      #stPushCard .st-push-quick-actions #stPushStatusControls{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;min-width:0!important;flex:1 1 auto!important}
-      #stPushCard .st-push-quick-actions #stPushTestAdmin{flex:0 0 auto!important}
-      #stPushCard .st-push-quick-actions .st-custom-push-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:end!important;gap:6px!important;margin:0!important;padding:0!important;width:100%!important}
-      #stPushCard .st-push-quick-actions .st-custom-push-row>.st-field{min-width:0!important;margin:0!important}
-      #stPushCard .st-push-quick-actions .st-custom-push-row .st-send-push-field{width:auto!important;min-width:76px!important;flex:0 0 auto!important}
-      #stPushCard .st-push-quick-actions .st-custom-push-row label{display:none!important}
-      #stPushCard .st-push-quick-actions #stCustomPushText{width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important}
-      #stPushCard .st-push-quick-actions #stSendCustomPush{width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 8px!important}
-      #stPushCard .st-push-quick-actions .st-push-toolbar button,
-      #stPushCard .st-push-quick-actions .st-push-toolbar #stPushStatusControls>*{white-space:nowrap!important}
+      #stSummary .st-push-quick-actions{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;width:100%!important;margin:6px 0 8px!important;padding:7px!important;box-sizing:border-box!important;border:1px solid rgba(214,179,90,.18)!important;border-radius:9px!important;background:rgba(214,179,90,.025)!important}
+      #stSummary .st-push-quick-actions .st-push-toolbar{display:flex!important;align-items:center!important;justify-content:space-between!important;flex-wrap:nowrap!important;gap:6px!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;min-width:0!important}
+      #stSummary .st-push-quick-actions #stPushStatusControls{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:6px!important;min-width:0!important;flex:1 1 auto!important}
+      #stSummary .st-push-quick-actions .st-push-toggle,#stSummary .st-push-quick-actions #stPushTestAdmin{box-sizing:border-box!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 7px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:8px!important;line-height:1!important;margin:0!important;border-radius:6px!important;flex:0 0 auto!important}
+      #stSummary .st-push-quick-actions #stPushTestAdmin{flex:0 0 auto!important}
+      #stSummary .st-push-quick-actions .st-push-active-count{display:inline-flex!important;align-items:center!important;height:24px!important;font-size:9px!important;font-weight:900!important;white-space:nowrap!important;flex:0 0 auto!important}
+      #stSummary .st-push-quick-actions .st-custom-push-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;align-items:center!important;gap:6px!important;margin:0!important;padding:0!important;width:100%!important}
+      #stSummary .st-push-quick-actions .st-custom-push-row>.st-field{min-width:0!important;margin:0!important}
+      #stSummary .st-push-quick-actions .st-custom-push-row .st-send-push-field{width:auto!important;min-width:76px!important;flex:0 0 auto!important}
+      #stSummary .st-push-quick-actions .st-custom-push-row label{display:none!important}
+      #stSummary .st-push-quick-actions #stCustomPushText{box-sizing:border-box!important;width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 7px!important;font-size:9px!important}
+      #stSummary .st-push-quick-actions #stSendCustomPush{box-sizing:border-box!important;width:100%!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 8px!important;font-size:8px!important}
+      #stSummary .st-push-quick-actions .st-push-toolbar button,
+      #stSummary .st-push-quick-actions .st-push-toolbar #stPushStatusControls>*{white-space:nowrap!important}
     `;document.head.appendChild(quickActionsCss);
     const summary=$('stSummary');if(summary?.parentNode)summary.parentNode.insertBefore(pushCard,summary);else $('stMain').appendChild(pushCard);
     const noStudentPushCss=document.createElement('style');noStudentPushCss.id='stNoStudentPushCss';noStudentPushCss.textContent=
