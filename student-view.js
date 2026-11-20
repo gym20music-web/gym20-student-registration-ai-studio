@@ -2,6 +2,23 @@
   const SUPABASE_URL='https://ubrafxjpnqtjnjdaskba.supabase.co';
   const SUPABASE_KEY='sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3';
   const $=id=>document.getElementById(id);
+  const exerciseScrollStyle=document.createElement('style');
+  exerciseScrollStyle.textContent=`
+    #exercisePanel #exerciseList{
+      display:grid!important;gap:7px!important;
+      max-height:min(42vh,340px)!important;
+      overflow-y:auto!important;overflow-x:hidden!important;
+      overscroll-behavior:contain!important;
+      scrollbar-width:thin;scrollbar-color:rgba(210,177,105,.55) rgba(255,255,255,.045);
+      padding:2px 4px 2px 1px!important;
+      -webkit-overflow-scrolling:touch!important;
+    }
+    #exercisePanel #exerciseList::-webkit-scrollbar{width:5px}
+    #exercisePanel #exerciseList::-webkit-scrollbar-track{background:rgba(255,255,255,.04);border-radius:8px}
+    #exercisePanel #exerciseList::-webkit-scrollbar-thumb{background:rgba(210,177,105,.55);border-radius:8px}
+  `;
+  document.head.appendChild(exerciseScrollStyle);
+
   let pendingClassNotice="";
   try{
     const url=new URL(location.href);
@@ -418,6 +435,8 @@
       if(error)throw error;
       const items=Array.isArray(data)?data:[];
       if(!items.length){panel.classList.add('hide');return;}
+      const dateValue=item=>{const value=item.created_at||item.assigned_at||item.updated_at||item.inserted_at||'';const time=Date.parse(value);return Number.isFinite(time)?time:0;};
+      items.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||dateValue(b)-dateValue(a));
       list.innerHTML=items.map(item=>{
         const done=!!item.is_completed;
         return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
@@ -438,7 +457,9 @@
             const {data,error}=updateResult;
             if(error)throw error;
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
-            feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
+            feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';
+            Array.from(list.querySelectorAll('[data-exercise-row]')).sort((a,b)=>Number(!!a.querySelector('input')?.checked)-Number(!!b.querySelector('input')?.checked)).forEach(el=>list.appendChild(el));
+            if(completed)celebrateExercise(row.querySelector('.exercise-title')?.textContent||'تمرین');
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
             if(mark)mark.textContent=!completed?'✓':'';
