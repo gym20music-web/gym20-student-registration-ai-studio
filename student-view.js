@@ -515,10 +515,13 @@
         }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
         finally{refreshInFlight=false;}
       };
-      window.setInterval(refreshPublishedSchedule,5000);
+      // Refresh every 10 seconds while visible; resume immediately after returning online or to the tab.
+      // The in-flight guard prevents overlapping RPC calls on slow mobile connections.
+      window.setInterval(refreshPublishedSchedule,10000);
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible')refreshPublishedSchedule();
       });
+      window.addEventListener('online',refreshPublishedSchedule,{passive:true});
     }catch(e){console.error(e);$('studentName').textContent='دریافت برنامه با خطا مواجه شد.';$('schedule').textContent='بارگذاری برنامه ناموفق بود. لطفاً صفحه را دوباره باز کنید؛ اگر مشکل ادامه داشت به مربی اطلاع دهید.';}
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
