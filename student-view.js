@@ -472,7 +472,7 @@
     try{const saved=localStorage.getItem(viewStorageKey);if(['grid','list'].includes(saved))activeView=saved;}catch(_){}
     if((!token||!/^[0-9a-f]{64}$/.test(token))&&(!shortCode||!/^[0-9a-f]{12}$/.test(shortCode))){$('studentName').textContent='لینک معتبر نیست یا ناقص است.';$('schedule').textContent='لطفاً لینک اختصاصی را از مربی دریافت کنید.';return;}
     const cacheKey='gym20-student-schedule-v1-'+(shortCode||('token-'+token.slice(0,16)));
-    let cachedData=null,hasRenderedData=false,pushStarted=false,exercisesStarted=false,pickerReady=false;
+    let cachedData=null,hasRenderedData=false,pushStarted=false,pickerReady=false;
     try{
       const cached=JSON.parse(localStorage.getItem(cacheKey)||'null');
       if(cached&&cached.student&&Array.isArray(cached.terms))cachedData=cached;
@@ -487,6 +487,19 @@
         if(!result.data||!result.data.student)throw Error('لینک برنامه معتبر نیست یا غیرفعال شده است.');
         return result.data;
       };
+      let exerciseRefreshInFlight=false;
+      const refreshStudentExercises=async()=>{
+        if(exerciseRefreshInFlight||document.visibilityState==='hidden')return;
+        exerciseRefreshInFlight=true;
+        try{await loadStudentExercises(shortCode,token,client);}
+        finally{exerciseRefreshInFlight=false;}
+      };
+      // Keep the exercise card in sync with assignments made from the admin panel.
+      refreshStudentExercises();
+      window.setInterval(refreshStudentExercises,8000);
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState==='visible')refreshStudentExercises();
+      });
       const updateTermOptions=(selectedId)=>{
         const select=$('termSelect');
         select.innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
@@ -498,7 +511,7 @@
         if(!data||!data.student)throw Error('اطلاعات برنامه معتبر نیست.');
         $('studentName').textContent='هنرجو: '+data.student.full_name;
         if(shortCode&&!pushStarted){pushStarted=true;setupPush(shortCode,client);}
-        if(!exercisesStarted){exercisesStarted=true;loadStudentExercises(shortCode,token,client);}
+
         const selectedId=$('termSelect')?.value||terms[0]?.id;
         terms=Array.isArray(data.terms)?data.terms:[];
         if(!terms.length){
