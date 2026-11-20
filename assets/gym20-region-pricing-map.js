@@ -81,6 +81,9 @@ function applyAreaSelection(area,fromScroll){
  else if(typeof calculatePrice==='function')calculatePrice();
  paintSelection();
  if(!fromScroll&&group){
+  const menu=document.getElementById('customRegionMenu'),trigger=document.getElementById('customRegionTrigger');
+  if(menu){menu.classList.remove('open');menu.style.display='none';menu.style.visibility='hidden';menu.style.pointerEvents='none';}
+  if(trigger){trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');}
   const content=document.getElementById('regionDependentContent');
   if(content)content.scrollIntoView({behavior:'smooth',block:'start'});
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
