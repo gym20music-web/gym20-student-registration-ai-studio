@@ -114,6 +114,10 @@
   };
   document.addEventListener('click',e=>{
     const x=getEls();if(!x.trigger||!x.menu)return;
+    // The map/list picker is intentionally rendered outside the legacy dropdown wrapper.
+    // A tap inside it is part of the same open selection flow, not an outside click.
+    const areaHost=e.target&&e.target.closest?e.target.closest('#gym20AreaPickerHost'):null;
+    if(areaHost||window.__gym20AreaFlowActive)return;
     if(x.wrap&&!x.wrap.contains(e.target)){
       clearTimeout((wheelOf(x.menu)||{})._gym20SettleTimer);
       x.menu.classList.remove('open');x.trigger.classList.remove('open');document.body.classList.remove('region-sheet-open');
