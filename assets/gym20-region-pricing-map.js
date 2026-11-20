@@ -142,9 +142,11 @@ function renderAreaList(root){
 }
 function renderAreaPicker(){
  const menu=document.getElementById('customRegionMenu');if(!menu)return;
- const dropdown=document.getElementById('customRegionDropdown');if(!dropdown)return;
+ const regionCard=document.getElementById('regionSelectionCard');if(!regionCard)return;
  let host=document.getElementById('gym20AreaPickerHost');
- if(!host){host=document.createElement('div');host.id='gym20AreaPickerHost';host.className='gym20-area-picker-host';dropdown.insertAdjacentElement('afterend',host);}
+ if(!host){host=document.createElement('div');host.id='gym20AreaPickerHost';host.className='gym20-area-picker-host';}
+ /* Keep the map as a true sibling of the whole region card, not inside the card or dropdown. */
+ if(host.parentElement!==regionCard.parentElement||host.previousElementSibling!==regionCard)regionCard.insertAdjacentElement('afterend',host);
  const old=host.querySelector('.gym20-area-picker');if(old)old.remove();
  const wheel=menu.querySelector('#customRegionWheelList');if(wheel)wheel.style.display='none';
  const root=document.createElement('section');root.className='gym20-area-picker';
