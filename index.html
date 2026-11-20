@@ -373,7 +373,7 @@
         </div>
 
         <div class="admin-panel-tab" id="regionsTab">
-            <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب منطقه جهت تنظیم یا افزودن:</div>
+            <div style="font-size:.67rem;color:var(--neon-blue);font-weight:bold;margin-bottom:4px;">انتخاب گروه تعرفه برای تنظیم یا افزودن:</div>
             <div id="adminRegionToolbar" style="display:grid;grid-template-columns:minmax(0,1fr) auto;direction:rtl;align-items:center;gap:6px;width:100%;margin-bottom:6px;box-sizing:border-box;">
                 <div id="adminRegionWheelDropdown" class="admin-region-wheel-dropdown" style="min-width:0;width:100%;margin:0;">
                     <button type="button" id="adminRegionWheelTrigger" aria-expanded="false" onclick="toggleAdminRegionWheel(event)" style="justify-content:flex-start;">
@@ -381,10 +381,10 @@
                     </button>
                     <div id="adminRegionWheelMenu" aria-label="انتخاب منطقه برای مدیریت"></div>
                 </div>
-                <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')" style="width:75px;min-width:75px;max-width:75px;height:36px;min-height:36px;margin:0;padding:5px 2px;white-space:nowrap;">منطقه جدید</button>
+                <button type="button" id="adminRegionNewButton" onclick="switchAdminRegion('new')" style="width:75px;min-width:75px;max-width:75px;height:36px;min-height:36px;margin:0;padding:5px 2px;white-space:nowrap;">تعرفه جدید</button>
             </div>
             <div class="admin-region-box" id="adminRegionEditCard">
-                <div class="admin-input-group"><label>نام و محله‌های منطقه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
+                <div class="admin-input-group"><label>نام گروه تعرفه:</label><input type="text" id="activeRegionNameInput" oninput="onActiveRegionFieldInput()"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
                     <div class="admin-input-group"><label>شهریه کودکان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionKidsInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان (۸ جلسه):</label><div class="price-input-wrapper"><input type="text" id="activeRegionAdultInput" oninput="this.value=formatNumberEn(this.value);onActiveRegionFieldInput();"><span class="price-currency-tag">تومان</span></div></div>
@@ -400,8 +400,8 @@
                 <div id="adminRegionAreasContainer" class="gym20-admin-area-assignment" style="display:none;"></div>
             </div>
             <div class="admin-region-box" id="adminRegionNewCard" style="display:none;">
-                <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف منطقه جدید:</div>
-                <div class="admin-input-group"><label>نام منطقه جدید:</label><input type="text" id="newRegNameInput" placeholder="مثلاً: منطقه ۲۲ - چیتگر"></div>
+                <div style="font-size:.67rem;color:var(--neon-green);font-weight:bold;margin-bottom:5px;">➕ تعریف گروه تعرفه جدید:</div>
+                <div class="admin-input-group"><label>نام گروه تعرفه:</label><input type="text" id="newRegNameInput" placeholder="مثلاً: منطقه ۲۲ - چیتگر"></div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
                     <div class="admin-input-group"><label>شهریه کودکان:</label><div class="price-input-wrapper"><input type="text" id="newRegKidsInput" placeholder="۱,۵۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)"><span class="price-currency-tag">تومان</span></div></div>
                     <div class="admin-input-group"><label>شهریه بزرگسالان:</label><div class="price-input-wrapper"><input type="text" id="newRegAdultInput" placeholder="۲,۰۰۰,۰۰۰" oninput="this.value=formatNumberEn(this.value)"><span class="price-currency-tag">تومان</span></div></div>
