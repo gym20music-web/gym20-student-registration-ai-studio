@@ -38,7 +38,7 @@ reg_west:['tehran_5','tehran_22'],
 reg_center:['tehran_6','tehran_7'],
 reg_east:['tehran_4','tehran_8']
 };
-let city='tehran',activeAreaId='',activeZone='همه',mapSearch='',scrollFrame=0;
+let city='tehran',activeAreaId='',activeZone='همه',mapSearch='',scrollFrame=0,areaFlowTimer=null,areaFlowToken=0;
 const allAreas=()=>city==='tehran'?TEHRAN:ANDISHEH;
 const fa=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]);
 const normalize=s=>String(s||'').replace(/[يى]/g,'ی').replace(/ك/g,'ک').replace(/[\u064B-\u065F\u0670]/g,'').replace(/[\u200c\u200f\u200e]/g,' ').replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/\s+/g,' ').trim().toLowerCase();
@@ -94,6 +94,56 @@ function applyAreaSelection(area,fromScroll){
   }));
  }
 }
+function startAreaSelectionFlow(target){
+ if(!target)return;
+ const token=++areaFlowToken;
+ if(areaFlowTimer)clearTimeout(areaFlowTimer);
+ areaFlowTimer=null;
+ const areas=allAreas();
+ const targetIndex=areas.findIndex(a=>a.id===target.id);
+ let startIndex=areas.findIndex(a=>a.id===activeAreaId);
+ if(startIndex<0)startIndex=targetIndex;
+ const direction=targetIndex>=startIndex?1:-1;
+ const steps=[];
+ for(let i=startIndex;i!==targetIndex;i+=direction)steps.push(i);
+ steps.push(targetIndex);
+ let step=0;
+ const paintNext=()=>{
+  if(token!==areaFlowToken)return;
+  const area=areas[steps[step]];
+  if(area){activeAreaId=area.id;paintSelection();}
+  step++;
+  if(step<steps.length){
+   areaFlowTimer=setTimeout(paintNext,85);
+   return;
+  }
+  applyAreaSelection(target,true);
+  // مکث پس از رسیدن نشانگر به محدوده لمس‌شده
+  areaFlowTimer=setTimeout(()=>{
+   if(token!==areaFlowToken)return;
+   const content=document.getElementById('regionDependentContent');
+   if(content)content.scrollIntoView({behavior:'smooth',block:'start'});
+   const started=Date.now();
+   const waitForArrival=()=>{
+    if(token!==areaFlowToken)return;
+    const reached=!content||content.getBoundingClientRect().top<=140||Date.now()-started>=2600;
+    if(!reached){requestAnimationFrame(waitForArrival);return;}
+    if(typeof window.gym20GuidedFlowStart==='function')window.gym20GuidedFlowStart();
+    else window.dispatchEvent(new CustomEvent('gym20:region-selected',{detail:{regionId:currentRegionId,areaId:target.id}}));
+    // ده ثانیه پس از رسیدن اسکرول به بخش بزرگسالان، کشو بسته می‌شود
+    areaFlowTimer=setTimeout(()=>{
+     if(token!==areaFlowToken)return;
+     const menu=document.getElementById('customRegionMenu');
+     const trigger=document.getElementById('customRegionTrigger');
+     if(menu){menu.classList.remove('open');menu.style.display='none';menu.style.visibility='hidden';menu.style.pointerEvents='none';}
+     if(trigger){trigger.classList.remove('open');trigger.setAttribute('aria-expanded','false');}
+    },10000);
+   };
+   requestAnimationFrame(waitForArrival);
+  },3500);
+ };
+ paintNext();
+}
 function renderZones(root){
  const bar=root.querySelector('.gym20-area-zones');if(!bar)return;
  const zones=city==='tehran'?['همه','شمال','غرب','مرکز','شرق','جنوب']:['همه','فاز ۱','فاز ۲','فاز ۳','فاز ۴','فاز ۵','فاز ۶'];
@@ -113,7 +163,7 @@ function renderMap(root){
    const p=document.createElementNS(svg.namespaceURI,'path');p.setAttribute('d',a.path);p.setAttribute('transform','translate(0 '+pair[0]+')');p.setAttribute('class',pair[1]);g.appendChild(p);
   });
   const t=document.createElementNS(svg.namespaceURI,'text');t.setAttribute('x',a.x);t.setAttribute('y',a.y);t.setAttribute('class','gym20-map-label');t.textContent=city==='tehran'?a.id.split('_')[1]:a.zone.replace('فاز ','');g.appendChild(t);
-  g.addEventListener('click',()=>applyAreaSelection(a,false));
+  g.addEventListener('click',()=>startAreaSelectionFlow(a));
   svg.appendChild(g);
  });
  applyMapEmphasis(root);
@@ -138,7 +188,7 @@ function renderAreaList(root){
   const top=document.createElement('span');top.className='gym20-area-item-top';top.textContent=a.name;
   const sub=document.createElement('span');sub.className='gym20-area-item-sub';sub.textContent=a.zone+' · '+a.hoods;
   const mark=document.createElement('span');mark.className='gym20-area-item-check';mark.textContent='✓';
-  b.append(top,sub,mark);b.addEventListener('click',()=>applyAreaSelection(a,false));list.appendChild(b);
+  b.append(top,sub,mark);b.addEventListener('click',()=>startAreaSelectionFlow(a));list.appendChild(b);
  });
  applyMapEmphasis(root);
 }
