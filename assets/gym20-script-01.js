@@ -95,7 +95,7 @@ function selectRegion(id){currentRegionId=id;document.body.classList.remove('reg
 function toggleCustomRegionMenu(e){if(e){e.preventDefault();e.stopPropagation();}if(!customRegionMenuEl||!customRegionTriggerEl)return;const o=!customRegionMenuEl.classList.contains('open');customRegionMenuEl.classList.toggle('open',o);customRegionTriggerEl.classList.toggle('open',o);}
 window.gym20SelectRegion=selectRegion;
 // Region dropdown interaction is handled by the independent fallback script below.
-document.addEventListener('click',e=>{if(customRegionDropdownEl&&!customRegionDropdownEl.contains(e.target)){customRegionMenuEl.classList.remove('open');customRegionTriggerEl.classList.remove('open');}});
+document.addEventListener('click',e=>{if(e.target&&e.target.closest&&e.target.closest('#gym20AreaPickerHost'))return;if(window.__gym20AreaFlowActive)return;if(customRegionDropdownEl&&!customRegionDropdownEl.contains(e.target)){customRegionMenuEl.classList.remove('open');customRegionTriggerEl.classList.remove('open');}});
 function updateRegionDependentVisibility(){regionDependentContentEl.style.display=currentRegionId?'block':'none';}
 
 function updateClassStatusAndStylesFlow(){
