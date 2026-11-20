@@ -244,7 +244,9 @@ function renderAreaPicker(){
     });
     if(nearest){
      const area=allAreas().find(a=>a.id===nearest.dataset.areaId);
-     if(area&&area.id!==activeAreaId)applyAreaSelection(area,true);
+     // Scrolling the list is preview-only: highlight the centered row/map area,
+     // but do not commit a region or reveal the adult section until an explicit tap.
+     if(area&&area.id!==activeAreaId){activeAreaId=area.id;paintSelection();}
     }
    });
   };
