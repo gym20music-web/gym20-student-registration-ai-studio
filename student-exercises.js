@@ -157,12 +157,12 @@
     const style = document.createElement('style');
     style.id = 'gym20ExerciseCompactStyle';
     style.textContent = `
-      #gym20ExercisesTab .hint{font-size:9px;line-height:1.5;margin:4px 0 7px}
-      #gym20ExercisesTab .admin-grid-2{gap:6px;margin-bottom:6px}
-      #gym20ExercisesTab .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:none!important}
-      #gym20ExercisesTab #gym20ExerciseStudentSelect,
-      #gym20ExercisesTab #gym20ExerciseInput{min-height:30px!important;height:32px!important;padding:4px 8px!important;font-size:10px!important}
-      #gym20ExercisesTab #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) .hint{font-size:9px;line-height:1.5;margin:4px 0 7px}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-grid-2{gap:6px;margin-bottom:6px}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) .admin-input-group label[for="gym20ExerciseStudentSelect"]{display:none!important}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseStudentSelect,
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseInput{min-height:30px!important;height:32px!important;padding:4px 8px!important;font-size:10px!important}
+      :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
       #gym20ExerciseFeedback{font-size:9px!important;line-height:1.5;margin:3px 0 6px}
       #gym20ExerciseList{display:flex;flex-direction:column;gap:5px;margin-top:5px}
       #gym20ExerciseList .gym20-ex-admin-row{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px!important;margin:0!important;border:1px solid rgba(214,179,90,.16);border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.012));min-width:0}
