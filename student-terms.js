@@ -1470,6 +1470,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   async function persistDraft(){
     if(!S.draftId)throw Error('پیش‌نویس فعال وجود ندارد.');
     const payload=collectDraftPayload();if(!payload.length)throw Error('برای این ترم هنوز جلسه‌ای از تقویم انتخاب نشده است.');
+    const expected=Number(S.term?.total_sessions)||0;
+    if(expected>0&&payload.length!==expected)throw Error('تعداد تاریخ‌های انتخاب‌شده ('+fa(payload.length)+') با تعداد کل جلسات ترم ('+fa(expected)+') برابر نیست. برای هر جلسه فقط یک ردیف ثبت می‌شود؛ تعداد سبک‌ها در تعداد جلسات ضرب نمی‌شود. تعداد تاریخ‌ها را با عدد ترم یکسان کن.');
+    if(expected>0&&payload.some((row,index)=>Number(row.session_number)!==index+1))throw Error('شماره جلسات باید از ۱ تا '+fa(expected)+' پشت سر هم باشد.');
     const {data,error}=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(error)throw error;
     await loadDraftRows();drawDraft();return data;
   }
@@ -1492,14 +1495,15 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
         if(duplicate){await loadStudent(S.studentId);$('stTerm').value=duplicate.id;await loadTerm(duplicate.id);throw Error('این ترم از قبل وجود دارد؛ از فهرست ترم‌ها انتخابش کن.');}
         const ids=S.enrollments.filter(e=>e.status==='active'||e.status==='paused').map(e=>e.id);
         if(!ids.length)throw Error('برای این هنرجو سبک فعالی پیدا نشد.');
+        const payload=collectDraftPayload();
+        if(payload.length!==requestedSessions)throw Error('تعداد تاریخ‌های انتخاب‌شده ('+fa(payload.length)+') باید دقیقاً برابر تعداد کل جلسات ترم ('+fa(requestedSessions)+') باشد. هر تاریخ یک جلسه است؛ تعداد سبک‌ها در این عدد ضرب نمی‌شود.');
+        if(payload.some((row,index)=>Number(row.session_number)!==index+1))throw Error('شماره جلسات باید از ۱ تا '+fa(requestedSessions)+' پشت سر هم باشد.');
         say('در حال ثبت ترم و برنامه جلسات…');
         const created=await db().rpc('create_student_term',{p_student_id:S.studentId,p_term_name:termName,p_start_date:startDate,p_end_date:endDate,p_total_sessions:requestedSessions,p_duration_minutes:60,p_default_venue:null,p_schedule_mode:'manual',p_enrollment_ids:ids});
         if(created.error)throw created.error;const x=Array.isArray(created.data)?created.data[0]:created.data;
         if(!x?.term_id||!x?.draft_version_id)throw Error('ترم یا پیش‌نویس برنامه ساخته نشد.');
         S.termId=x.term_id;S.draftId=x.draft_version_id;
-        const payload=collectDraftPayload();
         const saved=await db().rpc('replace_term_draft_sessions',{p_version_id:S.draftId,p_sessions:payload});if(saved.error)throw saved.error;
-        if(payload.length!==requestedSessions)say('هشدار: '+fa(payload.length)+' جلسه در تقویم ثبت شده اما تعداد جلسات ترم '+fa(requestedSessions)+' است؛ ثبت بدون محدودیت ادامه پیدا می‌کند.');
         const pub=await db().rpc('publish_term_schedule',{p_term_id:S.termId,p_version_id:S.draftId});if(pub.error)throw pub.error;
         await loadStudent(S.studentId);
         S.termId='';S.term=null;S.draftId='';S.rows=[];S.manualDates=[];S.publishedId=null;S.publishedReadOnly=false;
