@@ -642,3 +642,22 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
   #customRegionMenu .gym20-area-viewport{min-height:260px!important}
   #customRegionMenu .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
 }
+
+
+/* Area map/list is a sibling below the region trigger, never nested inside the dropdown box. */
+#gym20AreaPickerHost{display:none;width:100%;margin:10px 0 0;position:relative;overflow:visible;box-sizing:border-box}
+#gym20AreaPickerHost .gym20-area-picker{width:100%;box-sizing:border-box}
+#gym20AreaPickerHost .gym20-area-layout{width:100%;min-width:0}
+#gym20AreaPickerHost .gym20-area-side,#gym20AreaPickerHost .gym20-area-map-side{min-width:0}
+@media(max-width:720px){
+ #gym20AreaPickerHost{margin-top:8px}
+ #gym20AreaPickerHost .gym20-area-layout{grid-template-columns:minmax(0,1fr)!important;gap:8px!important}
+ #gym20AreaPickerHost .gym20-area-map-side{grid-row:1}
+ #gym20AreaPickerHost .gym20-area-side{grid-row:2}
+ #gym20AreaPickerHost .gym20-area-viewport{min-height:260px!important}
+ #gym20AreaPickerHost .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
+}
+
+
+/* The legacy empty dropdown shell stays hidden; only the sibling picker is visible. */
+#customRegionMenu,#customRegionMenu.open{display:none!important;visibility:hidden!important;pointer-events:none!important}
