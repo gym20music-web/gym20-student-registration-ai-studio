@@ -657,3 +657,7 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
  #gym20AreaPickerHost .gym20-area-viewport{min-height:260px!important}
  #gym20AreaPickerHost .gym20-area-list{height:178px!important;max-height:178px!important;overflow-y:auto!important}
 }
+
+
+/* The legacy empty dropdown shell stays hidden; only the sibling picker is visible. */
+#customRegionMenu,#customRegionMenu.open{display:none!important;visibility:hidden!important;pointer-events:none!important}
