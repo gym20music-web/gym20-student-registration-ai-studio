@@ -667,3 +667,19 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
 #gym20AreaPickerHost{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;margin:10px 0 14px!important;}
 #gym20AreaPickerHost .gym20-area-picker{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;}
 @media(max-width:720px){#gym20AreaPickerHost{margin:8px 0 12px!important}}
+
+
+/* Restore natural touch scrolling for the area map and the independently scrolling area list.
+   Taps on SVG regions and list items remain clickable; vertical gestures are left to the browser. */
+#gym20AreaPickerHost .gym20-area-viewport,
+#gym20AreaPickerHost .gym20-area-map{
+  touch-action:pan-y!important;
+}
+#gym20AreaPickerHost .gym20-area-list{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  overscroll-behavior-y:contain!important;
+  touch-action:pan-y!important;
+  scrollbar-width:thin;
+}
