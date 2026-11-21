@@ -432,7 +432,7 @@
   const tehranDayLabel=value=>{
     const date=new Date(value);
     const weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(date);
-    const parts=Object.fromEntries(new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
     return weekday+' - '+parts.year+'/'+parts.month+'/'+parts.day;
   };
   function exerciseRowsMarkup(items){
@@ -461,7 +461,7 @@
       const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
       const archivedItems=items.filter(item=>!!item.is_completed&&!!item.completed_at&&tehranDateKey(item.completed_at)!==today);
       mainItems.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
-      const countHint=$('exerciseCountHint');if(countHint)countHint.textContent=mainItems.length+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻';
+      const countHint=$('exerciseCountHint');if(countHint)countHint.textContent=new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻';
       list.innerHTML=mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>';
       const groups=new Map();
       archivedItems.forEach(item=>{
