@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090c11">
+<title>اعلان GYM20</title>
+<style>
+:root{color-scheme:dark;font-family:Vazirmatn,Arial,sans-serif;background:#080b10;color:#edf0f4}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#30291a 0,transparent 55%),linear-gradient(145deg,#111820,#07090d)}
+main{width:min(100%,480px);padding:24px;border:1px solid rgba(220,190,120,.28);border-radius:18px;background:linear-gradient(145deg,rgba(34,39,46,.96),rgba(13,17,23,.98));box-shadow:0 22px 70px #0009}
+.brand{font:800 11px Montserrat,Arial,sans-serif;letter-spacing:2px;color:#d9bd79}
+h1{font-size:18px;margin:12px 0;color:#f2d992}
+#message{font-size:14px;line-height:2.1;white-space:pre-wrap;overflow-wrap:anywhere;color:#e7eaf0;min-height:72px}
+a{display:inline-flex;align-items:center;justify-content:center;margin-top:20px;min-height:42px;padding:0 18px;border-radius:9px;background:linear-gradient(120deg,#e8c979,#b88a38);color:#19150c;text-decoration:none;font-size:12px;font-weight:800}
+.small{margin-top:14px;color:#8e99a7;font-size:10px}
+</style>
+</head>
+<body>
+<main>
+<div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
+<h1>پیام اعلان</h1>
+<div id="message" role="status" aria-live="polite"></div>
+<a id="back" href="/">بازگشت به GYM20</a>
+<div class="small">برای دیدن پیام‌های بعدی، اعلان‌های سایت را فعال نگه دار.</div>
+</main>
+<script>
+(function(){
+ const params=new URLSearchParams(location.search);
+ const message=String(params.get("gym20_notice")||"").trim();
+ document.getElementById("message").textContent=message||"متن این اعلان در دسترس نیست.";
+ const back=params.get("return");
+ if(back==="/admin"||back==="/admin.html")document.getElementById("back").textContent="بازگشت به پنل مدیریت";
+})();
+</script>
+</body>
+</html>

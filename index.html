@@ -14,7 +14,7 @@
 <!-- Warm admin-only modules at low priority so all admin tabs are ready together without executing them on the public page. -->
 <link rel="prefetch" href="/assets/student-terms.js?v=20261121-admin-tabs-assets-v1" as="script">
 <link rel="prefetch" href="/student-push-admin.js?v=20261120-push-size-green-v6" as="script">
-<link rel="prefetch" href="/student-exercises.js?v=20261121-admin-lazy-exercises-v1" as="script">
+<link rel="prefetch" href="/student-exercises.js?v=20261121-exercise-empty-state-v2" as="script">
 <link rel="preconnect" href="https://ubrafxjpnqtjnjdaskba.supabase.co" crossorigin>
 <link rel="dns-prefetch" href="//ubrafxjpnqtjnjdaskba.supabase.co">
 <title>آکادمی تخصصی ورزش GYM20🤸</title>
@@ -582,7 +582,7 @@
             </div>
             <button type="button" class="copy-btn" id="gym20ExerciseAdd">＋ افزودن تمرین</button>
             <div id="gym20ExerciseFeedback" class="gym20-ex-meta" role="status" aria-live="polite"></div>
-            <div id="gym20ExerciseList" class="request-list"><p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p></div>
+            <div id="gym20ExerciseList" class="request-list"></div>
           </div>
         </section>
         <button class="copy-btn" id="autoCommitBtn" style="background:var(--btn-active);color:#fff;font-size:.8rem;padding:10px;margin-top:14px;font-weight:800;width:100%;">💾 ذخیره تنظیمات</button>

@@ -261,7 +261,7 @@
     if(!window.isSecureContext){button.disabled=true;status.textContent="اعلان فقط روی اتصال امن HTTPS فعال می‌شود. آدرس gym20.ir را باز کن.";return;}
     if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){button.disabled=true;status.textContent="این مرورگر اعلان وب را پشتیبانی نمی‌کند. صفحه را در نسخه به‌روز Chrome، Firefox، Edge یا Safari باز کن.";return;}
     const endpoint=SUPABASE_URL+"/functions/v1/student-push";
-    let registration=null,publicKey="",configReady=false;
+    let registration=null,publicKey="",configReady=false,existingSubscription=null,existingSubscriptionActive=false;
     const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;};
     const friendlyError=error=>{
       const name=String(error?.name||""),raw=String(error?.message||error||"");
@@ -272,8 +272,9 @@
       return raw&&raw.length<220?raw:"فعال‌سازی اعلان انجام نشد. دوباره تلاش کن.";
     };
     const withTimeout=(promise,ms,message)=>new Promise((resolve,reject)=>{const timer=setTimeout(()=>reject(new Error(message)),ms);Promise.resolve(promise).then(value=>{clearTimeout(timer);resolve(value);},error=>{clearTimeout(timer);reject(error);});});
-    const requestPush=async(method,body)=>{
-      const response=await withTimeout(fetch(endpoint+(method==="GET"?"?code="+encodeURIComponent(shortCode):""),{method,headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined}),12000,"ارتباط با سرویس اعلان بیش از حد طول کشید.");
+    const requestPush=async(method,body,deviceEndpoint="")=>{
+      const query=method==="GET"?"?code="+encodeURIComponent(shortCode)+(deviceEndpoint?"&endpoint="+encodeURIComponent(deviceEndpoint):""):"";
+      const response=await withTimeout(fetch(endpoint+query,{method,headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined}),12000,"ارتباط با سرویس اعلان بیش از حد طول کشید.");
       const data=await response.json().catch(()=>({}));
       if(!response.ok||data.ok===false)throw new Error(data.error||"سرویس اعلان پاسخ معتبر نداد.");
       return data;
@@ -310,13 +311,19 @@
         let subscription=null;
         if(isIOS&&!hadPermission){
           subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
+        }else if(existingSubscription&&!existingSubscriptionActive){
+          // The server has disabled this exact endpoint (for example after a push-service rejection).
+          // Replace it instead of re-registering the known-stale endpoint.
+          try{await withTimeout(existingSubscription.unsubscribe(),7000,"اشتراک قبلی اعلان آزاد نشد.");}catch(unsubscribeError){console.warn("GYM20 inactive push subscription could not be removed:",unsubscribeError);}
+          existingSubscription=null;
+          subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         }else{
           // Some browsers throw when reading a stale local subscription.
           // Do not let that read failure block creating a fresh subscription.
           try{subscription=await readSubscription();}catch(readError){console.warn("GYM20 old push subscription could not be read; creating a fresh subscription:",readError);}
           if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:decodePushKey(publicKey)});
         }
-        await saveSubscription(subscription);paint(true);status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
+        await saveSubscription(subscription);existingSubscription=subscription;existingSubscriptionActive=true;paint(true);status.textContent="اعلان کلاس‌ها برای این دستگاه فعال شد ✓";
       }catch(error){status.textContent=friendlyError(error);paint(false);}
       finally{button.disabled=false;}
     });
@@ -341,10 +348,20 @@
         }
         catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent="وضعیت اشتراک قبلی قابل خواندن نیست؛ با زدن دکمه، اشتراک تازه ساخته می‌شود.";console.warn("GYM20 existing push subscription read failed:",subscriptionError);return;}
       }
-      if(Notification.permission==="granted"&&existing){
-        try{await saveSubscription(existing);paint(true);status.textContent="✓ اعلان فعال";}
-        catch(saveError){paint(false);status.textContent="اشتراک مرورگر پیدا شد، اما ثبت آن در سرور انجام نشد. دوباره فعال‌سازی را بزن.";}
-      }else{paint(false);status.textContent=Notification.permission==="denied"?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن.":"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";}
+      existingSubscription=existing;
+      existingSubscriptionActive=false;
+      if(Notification.permission==="granted"&&existingSubscription){
+        const deviceStatus=await requestPush("GET",null,existingSubscription.endpoint);
+        existingSubscriptionActive=deviceStatus.subscription_active===true;
+      }
+      if(Notification.permission==="granted"&&existingSubscription&&existingSubscriptionActive){
+        paint(true);status.textContent="✓ اعلان فعال";
+      }else{
+        paint(false);
+        status.textContent=existingSubscription
+          ?"اشتراک این دستگاه در سرور غیرفعال است؛ برای ساخت اشتراک تازه، اعلان را دوباره فعال کن."
+          :(Notification.permission==="denied"?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن.":"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.");
+      }
       configReady=true;button.disabled=false;button.textContent="فعال‌سازی اعلان کلاس‌ها";
     }catch(error){configReady=true;button.disabled=false;paint(false);button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(error);}
   }

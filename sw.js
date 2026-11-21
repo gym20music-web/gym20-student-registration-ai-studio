@@ -13,11 +13,18 @@ self.addEventListener("notificationclick",event=>{
   const notificationData=event.notification.data||{};
   const target=notificationData.url;
   const url=typeof target==="string"&&target.startsWith("https://gym20.ir/")?target:"https://gym20.ir/";
-  const launchUrl=new URL(url);
+  let launchUrl=new URL(url);
   const notice=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
   if(notice){
-    // Query survives the /s/<code> -> student.html fallback on Android PWAs;
-    // hash remains as a compatibility fallback for older student pages.
+    const studentTarget=/^\/s\/[0-9a-f]{12}\/?$/i.test(launchUrl.pathname);
+    if(!studentTarget && (launchUrl.pathname==="/" || launchUrl.pathname==="/index.html")){
+      // Admin exercise-completion notices open a dedicated reader; the
+      // homepage itself does not render the gym20_notice query parameter.
+      launchUrl=new URL("/notification.html",self.location.origin);
+      launchUrl.searchParams.set("return","/");
+    }
+    // Student pages render the message from this query; the dedicated reader
+    // renders admin notices that otherwise land on the homepage.
     launchUrl.searchParams.set("gym20_notice",notice);
     launchUrl.hash="gym20-notice="+encodeURIComponent(notice);
   }

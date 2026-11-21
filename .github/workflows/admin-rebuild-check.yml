@@ -46,7 +46,8 @@ jobs:
                   if attrs.get("id"):
                       self.ids.append(attrs["id"])
                   if tag == "script" and attrs.get("src"):
-                      self.scripts.append(attrs["src"])
+                      # Ignore cache-busting query strings when checking module paths.
+                      self.scripts.append(attrs["src"].split("?", 1)[0])
 
           parser = Check()
           parser.feed(Path("admin.html").read_text(encoding="utf-8"))
