@@ -43,7 +43,7 @@
     if (Number.isNaN(date.getTime())) return '';
     try {
       const day = tehranDayLabel(date);
-      const time = new Intl.DateTimeFormat('fa-IR', {hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).format(date);
+      const time = new Intl.DateTimeFormat('fa-IR', {timeZone:'Asia/Tehran',hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).format(date);
       return {day, time};
     } catch (_) { return {day:date.toLocaleDateString('fa-IR'), time:date.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}; }
   }
