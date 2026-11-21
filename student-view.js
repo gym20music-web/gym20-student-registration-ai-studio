@@ -434,14 +434,16 @@
       const {data,error}=exerciseResult;
       if(error)throw error;
       const items=Array.isArray(data)?data:[];
-      if(!items.length){panel.classList.add('hide');return;}
+      if(!items.length){list.innerHTML='';list.dataset.loaded='1';panel.classList.add('hide');feedback.textContent='';return;}
       const dateValue=item=>{const value=item.created_at||item.assigned_at||item.updated_at||item.inserted_at||'';const time=Date.parse(value);return Number.isFinite(time)?time:0;};
       items.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||dateValue(b)-dateValue(a));
       list.innerHTML=items.map(item=>{
         const done=!!item.is_completed;
         return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+dateValue(item)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
       }).join('');
+      list.dataset.loaded='1';
       panel.classList.remove('hide');
+      feedback.textContent='';
       if(!list.dataset.bound){
         list.dataset.bound='1';
         list.addEventListener('change',async e=>{
@@ -478,9 +480,18 @@
       }
     }catch(err){
       panel.classList.remove('hide');
-      list.innerHTML='<div class="empty">بارگذاری تمرین‌ها انجام نشد.</div>';
-      feedback.textContent='اتصال برای دریافت تمرین‌ها برقرار نشد.';
-      console.warn('GYM20 exercise load failed:',err);
+      // Keep the last successful exercise list visible during a temporary network/API failure.
+      if(list.dataset.loaded!=='1'){
+        list.innerHTML='<div class="empty">در حال تلاش دوباره برای دریافت تمرین‌ها…</div>';
+      }
+      feedback.textContent='اتصال موقتاً برقرار نشد؛ دریافت تمرین‌ها دوباره تلاش می‌شود.';
+      console.warn('GYM20 exercise load failed:',{
+        message:err?.message||String(err),
+        code:err?.code||null,
+        details:err?.details||null,
+        hint:err?.hint||null,
+        status:err?.status||null
+      });
     }
   }
   async function init(){
