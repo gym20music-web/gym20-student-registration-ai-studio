@@ -380,6 +380,9 @@
     window.addEventListener('gym20:owner-authorized', () => {
       if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
+    window.addEventListener('gym20:students-loaded', () => {
+      if (authContext().authorized && panel.classList.contains('active')) loadExerciseStudents();
+    });
     window.addEventListener('gym20:exercise-tab-opened', () => {
       if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
