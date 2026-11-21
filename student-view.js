@@ -444,13 +444,21 @@
       // Keep the student exercise box compact: show every item up to five,
       // then constrain longer lists to exactly four visible rows with scrolling.
       const exerciseRows=Array.from(list.querySelectorAll('.exercise-row'));
+      // Flex layout gives the list a reliable four-row viewport on mobile and desktop.
+      list.style.display='flex';
+      list.style.flexDirection='column';
+      list.style.gap='7px';
+      exerciseRows.forEach(row=>{row.style.flex='0 0 auto';});
       if(items.length>5){
-        const rowGap=parseFloat(getComputedStyle(list).rowGap)||7;
         const visibleRows=exerciseRows.slice(0,4);
-        const visibleHeight=visibleRows.reduce((height,row)=>height+row.getBoundingClientRect().height,0)+rowGap*Math.max(0,visibleRows.length-1);
+        const visibleHeight=visibleRows.reduce((height,row)=>height+row.getBoundingClientRect().height,0)+7*Math.max(0,visibleRows.length-1);
+        list.style.height=Math.ceil(visibleHeight)+'px';
         list.style.maxHeight=Math.ceil(visibleHeight)+'px';
         list.style.overflowY='auto';
+        list.style.overscrollBehavior='contain';
+        list.style.webkitOverflowScrolling='touch';
       }else{
+        list.style.height='auto';
         list.style.maxHeight='none';
         list.style.overflowY='visible';
       }
