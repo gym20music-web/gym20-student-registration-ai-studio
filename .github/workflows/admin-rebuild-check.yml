@@ -74,11 +74,9 @@ jobs:
           calendar_start = root.index("function initManualMultiCalendar")
           calendar_end = root.index("async function persistDraft", calendar_start)
           calendar = root[calendar_start:calendar_end]
-          assert re.search(
-              r"baseCount=addingToExisting\?S\.rows\.length:currentTermDates\.size,remaining=Math\.max\(0,expected-baseCount\)",
-              calendar
-          ), "Calendar must calculate the remaining selectable session count before rendering days"
-          assert "chosen.size<remaining" in calendar, "Calendar day availability must use the computed remaining count"
+          assert "canAdd=inRange&&!inTable" in calendar, "Calendar must allow every in-range date that is not already occupied"
+          assert "else if(iso>=minKey&&iso<=maxKey&&!existingDates.has(iso))chosen.add(iso)" in calendar, "Calendar must allow adding dates beyond the reference session count"
+          assert "chosen.size<" not in calendar, "The reference session count must not cap date selection"
 
           stage_start = root.index("async function stageNewTerm")
           stage_end = root.index("async function deleteSelectedTerm", stage_start)
@@ -91,7 +89,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          version = "20261121-calendar-drawer-fix-v1"
+          version = "20261122-calendar-unlimited-selection-v2"
           for path in ("admin.html", "index.html", "assets/gym20-script-01.js"):
               source = Path(path).read_text(encoding="utf-8")
               assert version in source, f"{path} is missing the updated calendar module cache key"

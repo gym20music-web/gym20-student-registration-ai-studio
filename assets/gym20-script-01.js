@@ -705,7 +705,7 @@ function loadGym20AdminModules(){
     window.gym20StudentTermsReady=false;
     window.gym20StudentTermsError='';
     const modules=[
-      '/assets/student-terms.js?v=20261121-calendar-drawer-fix-v1',
+      '/assets/student-terms.js?v=20261122-calendar-unlimited-selection-v2',
       './student-push-admin.js?v=20261120-push-size-green-v6',
       '/student-exercises.js?v=20261121-admin-lazy-exercises-v1'
     ];
