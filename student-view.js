@@ -99,7 +99,7 @@
     }`;
   document.head.appendChild(studentFieldCenterStyle);
   const faDate=v=>{if(!v)return '—';const p=String(v).slice(0,10).split('-').map(Number);if(p.length!==3||!p.every(Number.isFinite))return '—';if(p[0]<1700)return p.map((x,i)=>String(x).padStart(i===0?4:2,'0')).join('/');const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(v)).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));return parts.year+'/'+parts.month+'/'+parts.day;};
-  const faDateTime=v=>{if(!v)return '—';const d=new Date(v),fmt=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}),p=Object.fromEntries(fmt.formatToParts(d).filter(x=>x.type!=='literal').map(x=>[x.type,x.value])),weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(d);return weekday+' · '+p.year+'/'+p.month+'/'+p.day;};
+  const faDateTime=v=>{if(!v)return '—';const d=new Date(v),fmt=new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}),p=Object.fromEntries(fmt.formatToParts(d).filter(x=>x.type!=='literal').map(x=>[x.type,x.value])),weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(d);return weekday+' · '+p.year+'/'+p.month+'/'+p.day;};
   const faTime=v=>v?new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Tehran',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(v)):'—';
   const latinDigits=v=>String(v).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
   const num=v=>Number(v||0).toLocaleString('en-US');
@@ -253,13 +253,13 @@
   async function setupPush(shortCode,client){
     const box=$("pushControls"),button=$("pushToggle"),status=$("pushStatus");
     if(!box||!button||!status||!shortCode)return;
-    box.classList.remove("hide");button.disabled=true;button.textContent="در حال آماده‌سازی اعلان…";
+    status.textContent="";button.disabled=true;button.textContent="فعال‌سازی اعلان کلاس‌ها";
     const ua=navigator.userAgent||"";
     const isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
     const isStandalone=!!(navigator.standalone||(window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches));
-    if(isIOS&&!isStandalone){button.hidden=true;status.textContent="برای اعلان در آیفون، صفحه را در Safari با Share و سپس Add to Home Screen به صفحه اصلی اضافه کن و از آیکون GYM20 باز کن.";return;}
-    if(!window.isSecureContext){button.disabled=true;status.textContent="اعلان فقط روی اتصال امن HTTPS فعال می‌شود. آدرس gym20.ir را باز کن.";return;}
-    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){button.disabled=true;status.textContent="این مرورگر اعلان وب را پشتیبانی نمی‌کند. صفحه را در نسخه به‌روز Chrome، Firefox، Edge یا Safari باز کن.";return;}
+    if(isIOS&&!isStandalone){box.classList.add("hide");return;}
+    if(!window.isSecureContext){box.classList.add("hide");return;}
+    if(!("serviceWorker" in navigator)||!("PushManager" in window)||!("Notification" in window)){box.classList.add("hide");return;}
     const endpoint=SUPABASE_URL+"/functions/v1/student-push";
     let registration=null,publicKey="",configReady=false;
     const paint=active=>{button.dataset.active=active?"1":"0";button.hidden=!!active;};
@@ -339,14 +339,14 @@
             }
           }
         }
-        catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent="وضعیت اشتراک قبلی قابل خواندن نیست؛ با زدن دکمه، اشتراک تازه ساخته می‌شود.";console.warn("GYM20 existing push subscription read failed:",subscriptionError);return;}
+        catch(subscriptionError){configReady=true;paint(false);button.disabled=false;button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent="";box.classList.remove("hide");console.warn("GYM20 existing push subscription read failed:",subscriptionError);return;}
       }
       if(Notification.permission==="granted"&&existing){
         try{await saveSubscription(existing);paint(true);status.textContent="✓ اعلان فعال";}
         catch(saveError){paint(false);status.textContent="اشتراک مرورگر پیدا شد، اما ثبت آن در سرور انجام نشد. دوباره فعال‌سازی را بزن.";}
-      }else{paint(false);status.textContent=Notification.permission==="denied"?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن.":"برای دریافت یادآوری کلاس، دکمه فعال‌سازی را بزن.";}
-      configReady=true;button.disabled=false;button.textContent="فعال‌سازی اعلان کلاس‌ها";
-    }catch(error){configReady=true;button.disabled=false;paint(false);button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(error);}
+      }else{paint(false);status.textContent=Notification.permission==="denied"?"اجازه اعلان برای این سایت مسدود است؛ از تنظیمات مرورگر آن را فعال کن.":"";}
+      configReady=true;button.disabled=false;button.textContent="فعال‌سازی اعلان کلاس‌ها";box.classList.remove("hide");
+    }catch(error){configReady=true;button.disabled=false;paint(false);button.textContent="تلاش دوباره برای فعال‌سازی اعلان";status.textContent=friendlyError(error);box.classList.remove("hide");}
   }
   let terms=[];
   let activeView="grid";
@@ -432,8 +432,8 @@
   const tehranDayLabel=value=>{
     const date=new Date(value);
     const weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(date);
-    const parts=Object.fromEntries(new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
-    return weekday+' '+parts.day+'.'+parts.month+'.'+parts.year;
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    return weekday+' - '+parts.year+'/'+parts.month+'/'+parts.day;
   };
   function exerciseRowsMarkup(items){
     return items.map(item=>{
@@ -447,6 +447,7 @@
     if(!panel||!list||!archive)return;
     const selectedTermId=$('termSelect')?.value||'';
     if(!selectedTermId){panel.classList.add('hide');return;}
+    if(list.dataset.loaded!=='1'){panel.classList.remove('hide');list.innerHTML='<div class="exercise-loading">در حال دریافت تمرین‌ها…</div>';}
     try{
       const exerciseResult=shortCode
         ?await client.rpc('get_student_exercises_by_code',{p_code:shortCode})
@@ -460,6 +461,7 @@
       const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
       const archivedItems=items.filter(item=>!!item.is_completed&&!!item.completed_at&&tehranDateKey(item.completed_at)!==today);
       mainItems.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
+      const countHint=$('exerciseCountHint');if(countHint)countHint.textContent=new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻';
       list.innerHTML=mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>';
       const groups=new Map();
       archivedItems.forEach(item=>{
@@ -470,7 +472,7 @@
       archive.innerHTML=Array.from(groups.entries()).sort((a,b)=>b[0].localeCompare(a[0])).map(([day,rows])=>{
         rows.sort((a,b)=>Date.parse(b.completed_at)-Date.parse(a.completed_at));
         const opened=openDays.has(day)?' open':'';
-        return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من '+tehranDayLabel(rows[0].completed_at)+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
+        return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من ـ '+tehranDayLabel(rows[0].completed_at)+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
       }).join('');
       if(!items.length){list.innerHTML='<div class="empty">برای این ترم تمرینی ثبت نشده است.</div>';}
       const mainRows=Array.from(list.querySelectorAll('.exercise-row'));
@@ -599,6 +601,7 @@
           pickerReady=true;
         }
         showTerm($('termSelect').value||terms[0].id);
+        refreshStudentExercises();
         hasRenderedData=true;
       };
       // Show the last successfully loaded schedule immediately, then refresh it from the server.
