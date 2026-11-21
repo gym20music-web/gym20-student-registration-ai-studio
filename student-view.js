@@ -525,7 +525,7 @@
       };
       // Keep the exercise card in sync with assignments made from the admin panel.
       refreshStudentExercises();
-      window.setInterval(refreshStudentExercises,8000);
+      window.setInterval(refreshStudentExercises,5000);
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible')refreshStudentExercises();
       });
@@ -570,7 +570,7 @@
       let refreshInFlight=false,lastRefreshAt=Date.now();
       const refreshPublishedSchedule=async(force=false)=>{
         if(refreshInFlight||document.visibilityState==='hidden')return;
-        if(!force&&Date.now()-lastRefreshAt<10000)return;
+        if(!force&&Date.now()-lastRefreshAt<4000)return;
         refreshInFlight=true;
         try{
           const fresh=await getSchedule();
@@ -580,10 +580,21 @@
         }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
         finally{refreshInFlight=false;}
       };
-      // Poll less aggressively; returning to the page still triggers a fresh check.
-      window.setInterval(()=>refreshPublishedSchedule(false),30000);
+      // Keep the published schedule and exercises close to real time without requiring a manual reload.
+      window.setInterval(()=>refreshPublishedSchedule(false),5000);
       document.addEventListener('visibilitychange',()=>{
-        if(document.visibilityState==='visible')refreshPublishedSchedule(false);
+        if(document.visibilityState==='visible'){
+          refreshPublishedSchedule(true);
+          refreshStudentExercises();
+        }
+      });
+      window.addEventListener('focus',()=>{
+        refreshPublishedSchedule(true);
+        refreshStudentExercises();
+      });
+      window.addEventListener('pageshow',()=>{
+        refreshPublishedSchedule(true);
+        refreshStudentExercises();
       });
     }catch(e){
       console.error(e);
