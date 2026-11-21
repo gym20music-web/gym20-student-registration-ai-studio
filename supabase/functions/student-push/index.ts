@@ -122,7 +122,15 @@ Deno.serve(async (req: Request) => {
       if (error) throw error;
       if (setting?.value?.enabled === false) return reply({ ok: true, enabled: false });
       const keys = await getVapid();
-      return reply({ ok: true, enabled: true, public_key: keys.public_key });
+      const deviceEndpoint = new URL(req.url).searchParams.get("endpoint") || "";
+      let subscriptionActive = false;
+      if (deviceEndpoint) {
+        const { data: subscription, error: subscriptionError } = await gym.from("student_push_subscriptions")
+          .select("id").eq("student_id", studentId).eq("endpoint", deviceEndpoint).eq("is_active", true).maybeSingle();
+        if (subscriptionError) throw subscriptionError;
+        subscriptionActive = !!subscription;
+      }
+      return reply({ ok: true, enabled: true, public_key: keys.public_key, subscription_active: subscriptionActive });
     }
     if (req.method !== "POST") return reply({ ok: false, error: "Method not allowed" }, 405);
     const body = await req.json();
