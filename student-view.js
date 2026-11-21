@@ -6,7 +6,7 @@
   exerciseScrollStyle.textContent=`
     #exercisePanel #exerciseList{
       display:grid!important;gap:7px!important;
-      max-height:min(46vh,380px)!important;min-height:0!important;
+      max-height:none!important;min-height:0!important;
       overflow-y:auto!important;overflow-x:hidden!important;
       overscroll-behavior:contain!important;
       scrollbar-width:thin;scrollbar-color:rgba(210,177,105,.55) rgba(255,255,255,.045);
@@ -441,6 +441,19 @@
         const done=!!item.is_completed;
         return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+dateValue(item)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
       }).join('');
+      // Keep the student exercise box compact: show every item up to five,
+      // then constrain longer lists to exactly four visible rows with scrolling.
+      const exerciseRows=Array.from(list.querySelectorAll('.exercise-row'));
+      if(items.length>5){
+        const rowGap=parseFloat(getComputedStyle(list).rowGap)||7;
+        const visibleRows=exerciseRows.slice(0,4);
+        const visibleHeight=visibleRows.reduce((height,row)=>height+row.getBoundingClientRect().height,0)+rowGap*Math.max(0,visibleRows.length-1);
+        list.style.maxHeight=Math.ceil(visibleHeight)+'px';
+        list.style.overflowY='auto';
+      }else{
+        list.style.maxHeight='none';
+        list.style.overflowY='visible';
+      }
       list.dataset.loaded='1';
       panel.classList.remove('hide');
       feedback.textContent='';
