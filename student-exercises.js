@@ -47,30 +47,42 @@
       return {day, time};
     } catch (_) { return {day:date.toLocaleDateString('fa-IR'), time:date.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}; }
   }
+  function renderExerciseStudentOptions(select) {
+    const selected = currentStudentId || select.value;
+    select.innerHTML = '<option value="">انتخاب هنرجو…</option>' + students.map(s =>
+      '<option value="' + esc(s.id) + '">' + esc(s.full_name) + (s.is_active ? '' : ' · غیرفعال') + '</option>'
+    ).join('');
+    if (selected && students.some(s => String(s.id) === String(selected))) select.value = selected;
+    else if (students.length === 1) { currentStudentId = String(students[0].id); select.value = currentStudentId; }
+    else select.value = '';
+  }
   async function loadExerciseStudents() {
     const select = $('gym20ExerciseStudentSelect');
     if (!select) return;
+    select.innerHTML = '<option value="">در حال دریافت فهرست هنرجویان…</option>';
     try {
-      select.innerHTML = '<option value=""></option>';
       const {data, error} = await db().from('students').select('id,full_name,is_active').order('full_name');
       if (error) throw error;
-      students = data || [];
-      select.innerHTML = '<option value=""></option>' + students.map(s =>
-        '<option value="' + esc(s.id) + '">' + esc(s.full_name) + (s.is_active ? '' : ' · غیرفعال') + '</option>'
-      ).join('');
-      if (currentStudentId && students.some(s => s.id === currentStudentId)) select.value = currentStudentId;
-      else if (students.length === 1) { currentStudentId = students[0].id; select.value = currentStudentId; }
+      students = Array.isArray(data) ? data : [];
+      if (!students.length && Array.isArray(window.gym20Students) && window.gym20Students.length) students = window.gym20Students;
+      renderExerciseStudentOptions(select);
       if (select.value) {
         await loadStudentTermsForExercises(select.value);
         await loadStudentExercisesAdmin();
       } else {
         currentStudentId = '';
         $('gym20ExerciseList').innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
-        say(students.length ? 'هنرجو را برای مشاهده یا ثبت تمرین انتخاب کنید.' : 'هنوز هنرجویی ثبت نشده است.');
+        say(students.length ? 'هنرجو را برای مشاهده یا ثبت تمرین انتخاب کنید.' : 'فهرست هنرجویان خالی است؛ ابتدا بخش پرونده هنرجویان را بروزرسانی کنید.');
       }
     } catch (e) {
-      select.innerHTML = '<option value="">دریافت فهرست هنرجویان ناموفق بود</option>';
-      say(e.message || 'دریافت فهرست هنرجویان ناموفق بود.', true);
+      students = Array.isArray(window.gym20Students) ? window.gym20Students : [];
+      if (students.length) {
+        renderExerciseStudentOptions(select);
+        say('فهرست هنرجویان از پرونده‌های مدیریت دریافت شد.');
+      } else {
+        select.innerHTML = '<option value="">دریافت فهرست هنرجویان ناموفق بود</option>';
+        say(e.message || 'دریافت فهرست هنرجویان ناموفق بود.', true);
+      }
     }
   }
   async function loadStudentTermsForExercises(studentId) {
@@ -240,16 +252,16 @@
       await navigator.serviceWorker.ready;
       const subscription=await registration.pushManager.getSubscription();
       if(!subscription){
-        button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+        button.dataset.active='0';button.textContent='اعلان خاموش';
         exercisePushStatus(Notification.permission==='denied'?'اجازه اعلان برای سایت مسدود است. از تنظیمات مرورگر فعالش کن.':'برای دریافت گزارش انجام تمرین، اعلان این گوشی را فعال کن.');
         return;
       }
       const state=await invokeExercisePush({action:'admin-status',endpoint:subscription.endpoint});
       button.dataset.active=state.active?'1':'0';
-      button.textContent=state.active?'غیرفعال‌سازی اعلان':'فعال‌سازی اعلان روی این گوشی';
+      button.textContent=state.active?'اعلان فعال':'اعلان خاموش';
       exercisePushStatus(state.active?'اعلان انجام تمرین برای این گوشی فعال است.':'اشتراک اعلان این گوشی هنوز برای مدیر فعال نشده است.');
     }catch(e){
-      button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+      button.dataset.active='0';button.textContent='اعلان خاموش';
       exercisePushStatus('بررسی وضعیت اعلان ناموفق بود: '+(e.message||'خطای ارتباط'),true);
     }
   }
@@ -258,14 +270,14 @@
     if(!button)return;
     const wasActive=button.dataset.active==='1';
     button.disabled=true;
-    const old=button.textContent;button.textContent='در حال انجام…';
+    const old=wasActive?'اعلان فعال':'اعلان خاموش';
     try{
       const registration=await navigator.serviceWorker.register('/sw.js',{scope:'/'});
       await navigator.serviceWorker.ready;
       let subscription=await registration.pushManager.getSubscription();
       if(wasActive){
         if(subscription)await invokeExercisePush({action:'admin-unsubscribe',endpoint:subscription.endpoint});
-        button.dataset.active='0';button.textContent='فعال‌سازی اعلان روی این گوشی';
+        button.dataset.active='0';button.textContent='اعلان خاموش';
         exercisePushStatus('اعلان انجام تمرین برای این گوشی غیرفعال شد.');
       }else{
         if(!('Notification' in window)||!('PushManager' in window))throw new Error('این مرورگر از اعلان گوشی پشتیبانی نمی‌کند.');
@@ -275,7 +287,7 @@
         const config=await invokeExercisePush({action:'admin-config'});
         if(!subscription)subscription=await registration.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushKeyBytes(config.public_key)});
         await invokeExercisePush({action:'admin-subscribe',subscription:subscription.toJSON(),user_agent:navigator.userAgent});
-        button.dataset.active='1';button.textContent='غیرفعال‌سازی اعلان';
+        button.dataset.active='1';button.textContent='اعلان فعال';
         const test=await invokeExercisePush({action:'admin-test',endpoint:subscription.endpoint});
         exercisePushStatus(test.sent>0?'اعلان فعال شد؛ پیام آزمایشی هم به این گوشی ارسال شد.':'اشتراک ثبت شد، اما پیام آزمایشی به گوشی نرسید.',test.sent<=0);
       }
@@ -298,13 +310,13 @@
     mounted = true;
     const pushBar=document.createElement('div');
     pushBar.id='gym20ExercisePushBar';
-    pushBar.innerHTML='<div class="gym20-ex-push-copy"><strong>🔔 اعلان انجام تمرین</strong><small id="gym20ExercisePushStatus" role="status" aria-live="polite">برای دریافت اعلان روی گوشی، این دستگاه را فعال کن.</small></div><button type="button" id="gym20ExercisePushToggle">فعال‌سازی اعلان روی این گوشی</button>';
+    pushBar.innerHTML='<button type="button" id="gym20ExercisePushToggle" aria-live="polite" data-active="0">اعلان خاموش</button>';
     const pushHost=embedded?$('gym20ExercisesTab'):panel;
     const pushHeading=pushHost?.querySelector('.admin-section-subhead');
     if(pushHeading)pushHeading.insertAdjacentElement('afterend',pushBar);else pushHost?.prepend(pushBar);
     const pushStyle=document.createElement('style');
     pushStyle.id='gym20ExercisePushStyle';
-    pushStyle.textContent='#gym20ExercisePushBar{display:flex;align-items:center;justify-content:space-between;gap:9px;margin:8px 0 10px;padding:9px 10px;border:1px solid rgba(214,179,90,.22);border-radius:10px;background:linear-gradient(135deg,rgba(214,179,90,.075),rgba(255,255,255,.018));min-width:0}#gym20ExercisePushBar .gym20-ex-push-copy{display:flex;flex-direction:column;gap:3px;min-width:0}#gym20ExercisePushBar strong{font-size:10px;color:#e8c46b;font-weight:800}#gym20ExercisePushBar small{font-size:8px;line-height:1.6;color:#9aa6b6}#gym20ExercisePushBar button{box-sizing:border-box;flex:0 0 auto;min-height:26px;height:26px;padding:0 9px;border:1px solid rgba(214,179,90,.5);border-radius:7px;background:rgba(214,179,90,.12);color:#e8c46b;font:800 8px Vazirmatn,sans-serif;white-space:nowrap}#gym20ExercisePushBar button:disabled{opacity:.55}@media(max-width:420px){#gym20ExercisePushBar{gap:6px;padding:7px}#gym20ExercisePushBar button{padding:0 6px;font-size:7px}}';
+    pushStyle.textContent='#gym20ExercisePushBar{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin:8px 0 10px;padding:0;border:0;background:transparent;min-width:0}#gym20ExercisePushBar button{box-sizing:border-box;min-height:26px;height:26px;padding:0 10px;border:1px solid rgba(214,179,90,.5);border-radius:7px;background:rgba(214,179,90,.12);color:#e8c46b;font:800 9px Vazirmatn,sans-serif;white-space:nowrap}#gym20ExercisePushBar button[data-active="1"]{border-color:rgba(85,197,138,.55);background:rgba(85,197,138,.10);color:#55c58a}#gym20ExercisePushBar button:disabled{opacity:.65}@media(max-width:420px){#gym20ExercisePushBar button{padding:0 8px;font-size:8px}}';
     document.head.appendChild(pushStyle);
     const style = document.createElement('style');
     style.id = 'gym20ExerciseCompactStyle';
@@ -367,6 +379,9 @@
     $('gym20ExercisePushToggle').addEventListener('click',toggleExercisePush);
     window.addEventListener('gym20:owner-authorized', () => {
       if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
+    });
+    window.addEventListener('gym20:students-loaded', () => {
+      if (authContext().authorized && panel.classList.contains('active')) loadExerciseStudents();
     });
     window.addEventListener('gym20:exercise-tab-opened', () => {
       if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
