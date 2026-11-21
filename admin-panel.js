@@ -299,7 +299,7 @@
     $('studentsList').innerHTML='<p class="muted">در حال دریافت هنرجویان…</p>';
     try{
       const {data,error}=await client.schema('gym20').from('students').select('id,full_name,phone,birth_date,notes,is_active,created_at').order('full_name');
-      if(error)throw error;students=data||[];renderStudents();
+      if(error)throw error;students=data||[];window.gym20Students=students;window.dispatchEvent(new Event('gym20:students-loaded'));renderStudents();
     }catch(e){$('studentsList').innerHTML='<p class="muted">'+escapeHtml(e.message||'دریافت هنرجویان ناموفق بود.')+'</p>';}
   }
   function renderStudents(){
