@@ -63,8 +63,8 @@
     const overlay=document.createElement("div");
     overlay.id="gym20ClassNotice";overlay.setAttribute("role","dialog");overlay.setAttribute("aria-modal","true");overlay.setAttribute("aria-label","متن اعلان کلاس");
     const card=document.createElement("section");card.className="notice-card";
-    const kicker=document.createElement("div");kicker.className="notice-kicker";kicker.textContent="GYM20 · CLASS NOTIFICATION";
-    const heading=document.createElement("div");heading.className="notice-title";heading.textContent="پیام کلاس شما";
+    const kicker=document.createElement("div");kicker.className="notice-kicker";kicker.textContent="GYM20";
+    const heading=document.createElement("div");heading.className="notice-title";heading.textContent="وقت قدرته! وقت تمرینه.";
     const body=document.createElement("div");body.className="notice-body";body.textContent=text;
     const close=document.createElement("button");close.type="button";close.className="notice-close";close.textContent="متوجه شدم";
     const dismiss=()=>{overlay.remove();document.removeEventListener("keydown",onKey);};
