@@ -434,14 +434,16 @@
       const {data,error}=exerciseResult;
       if(error)throw error;
       const items=Array.isArray(data)?data:[];
-      if(!items.length){panel.classList.add('hide');return;}
+      if(!items.length){list.innerHTML='';list.dataset.loaded='1';panel.classList.add('hide');feedback.textContent='';return;}
       const dateValue=item=>{const value=item.created_at||item.assigned_at||item.updated_at||item.inserted_at||'';const time=Date.parse(value);return Number.isFinite(time)?time:0;};
       items.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||dateValue(b)-dateValue(a));
       list.innerHTML=items.map(item=>{
         const done=!!item.is_completed;
         return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+dateValue(item)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
       }).join('');
+      list.dataset.loaded='1';
       panel.classList.remove('hide');
+      feedback.textContent='';
       if(!list.dataset.bound){
         list.dataset.bound='1';
         list.addEventListener('change',async e=>{
@@ -478,9 +480,18 @@
       }
     }catch(err){
       panel.classList.remove('hide');
-      list.innerHTML='<div class="empty">بارگذاری تمرین‌ها انجام نشد.</div>';
-      feedback.textContent='اتصال برای دریافت تمرین‌ها برقرار نشد.';
-      console.warn('GYM20 exercise load failed:',err);
+      // Keep the last successful exercise list visible during a temporary network/API failure.
+      if(list.dataset.loaded!=='1'){
+        list.innerHTML='<div class="empty">در حال تلاش دوباره برای دریافت تمرین‌ها…</div>';
+      }
+      feedback.textContent='اتصال موقتاً برقرار نشد؛ دریافت تمرین‌ها دوباره تلاش می‌شود.';
+      console.warn('GYM20 exercise load failed:',{
+        message:err?.message||String(err),
+        code:err?.code||null,
+        details:err?.details||null,
+        hint:err?.hint||null,
+        status:err?.status||null
+      });
     }
   }
   async function init(){
@@ -525,7 +536,7 @@
       };
       // Keep the exercise card in sync with assignments made from the admin panel.
       refreshStudentExercises();
-      window.setInterval(refreshStudentExercises,8000);
+      window.setInterval(refreshStudentExercises,5000);
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible')refreshStudentExercises();
       });
@@ -570,7 +581,7 @@
       let refreshInFlight=false,lastRefreshAt=Date.now();
       const refreshPublishedSchedule=async(force=false)=>{
         if(refreshInFlight||document.visibilityState==='hidden')return;
-        if(!force&&Date.now()-lastRefreshAt<10000)return;
+        if(!force&&Date.now()-lastRefreshAt<4000)return;
         refreshInFlight=true;
         try{
           const fresh=await getSchedule();
@@ -580,10 +591,21 @@
         }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
         finally{refreshInFlight=false;}
       };
-      // Poll less aggressively; returning to the page still triggers a fresh check.
-      window.setInterval(()=>refreshPublishedSchedule(false),30000);
+      // Keep the published schedule and exercises close to real time without requiring a manual reload.
+      window.setInterval(()=>refreshPublishedSchedule(false),5000);
       document.addEventListener('visibilitychange',()=>{
-        if(document.visibilityState==='visible')refreshPublishedSchedule(false);
+        if(document.visibilityState==='visible'){
+          refreshPublishedSchedule(true);
+          refreshStudentExercises();
+        }
+      });
+      window.addEventListener('focus',()=>{
+        refreshPublishedSchedule(true);
+        refreshStudentExercises();
+      });
+      window.addEventListener('pageshow',()=>{
+        refreshPublishedSchedule(true);
+        refreshStudentExercises();
       });
     }catch(e){
       console.error(e);
