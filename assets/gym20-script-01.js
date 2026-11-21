@@ -705,7 +705,7 @@ function loadGym20AdminModules(){
     window.gym20StudentTermsReady=false;
     window.gym20StudentTermsError='';
     const modules=[
-      '/student-terms.js?v=20261120-calendar-count-colors-v13',
+      '/assets/student-terms.js?v=20261121-admin-tabs-assets-v1',
       './student-push-admin.js?v=20261120-push-size-green-v6'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
