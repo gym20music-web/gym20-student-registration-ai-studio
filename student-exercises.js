@@ -4,6 +4,7 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let students = [];
   let currentStudentId = '';
+  let currentTermId = '';
   let mounted = false;
 
   function authContext() {
@@ -48,8 +49,10 @@
       ).join('');
       if (currentStudentId && students.some(s => s.id === currentStudentId)) select.value = currentStudentId;
       else if (students.length === 1) { currentStudentId = students[0].id; select.value = currentStudentId; }
-      if (select.value) await loadStudentExercisesAdmin();
-      else {
+      if (select.value) {
+        await loadStudentTermsForExercises(select.value);
+        await loadStudentExercisesAdmin();
+      } else {
         currentStudentId = '';
         $('gym20ExerciseList').innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
         say(students.length ? 'هنرجو را برای مشاهده یا ثبت تمرین انتخاب کنید.' : 'هنوز هنرجویی ثبت نشده است.');
@@ -57,6 +60,33 @@
     } catch (e) {
       select.innerHTML = '<option value="">دریافت فهرست هنرجویان ناموفق بود</option>';
       say(e.message || 'دریافت فهرست هنرجویان ناموفق بود.', true);
+    }
+  }
+  async function loadStudentTermsForExercises(studentId) {
+    const termSelect = $('gym20ExerciseTermSelect');
+    if (!termSelect) return;
+    currentTermId = '';
+    termSelect.innerHTML = '<option value="">در حال دریافت ترم‌ها…</option>';
+    termSelect.disabled = true;
+    try {
+      const {data,error} = await db().from('student_terms')
+        .select('id,term_name,start_date,end_date,status,created_at')
+        .eq('student_id',studentId).order('created_at',{ascending:false});
+      if(error) throw error;
+      const terms = data || [];
+      termSelect.innerHTML = terms.length ? terms.map(t =>
+        '<option value="'+esc(t.id)+'">'+esc(t.term_name)+(t.status==='active'?' · فعال':'')+'</option>'
+      ).join('') : '<option value="">ترمی برای این هنرجو ثبت نشده</option>';
+      const preferred = terms.find(t=>t.status==='active') || terms[0];
+      currentTermId = preferred ? String(preferred.id) : '';
+      termSelect.value = currentTermId;
+      termSelect.disabled = !terms.length;
+      if(!terms.length) say('برای این هنرجو هنوز ترمی ثبت نشده است.',true);
+    } catch(e) {
+      termSelect.innerHTML = '<option value="">دریافت ترم‌ها ناموفق بود</option>';
+      termSelect.disabled = true;
+      currentTermId = '';
+      say(e.message || 'دریافت ترم‌های هنرجو ناموفق بود.',true);
     }
   }
   async function loadStudentExercisesAdmin() {
@@ -70,9 +100,15 @@
     }
     say('در حال دریافت تمرین‌ها…');
     try {
+      currentTermId = $('gym20ExerciseTermSelect')?.value || currentTermId;
+      if (!currentTermId) {
+        list.innerHTML = '<p class="hint">برای این هنرجو ترمی وجود ندارد؛ ابتدا ترم او را ایجاد کنید.</p>';
+        say('');
+        return;
+      }
       const {data, error} = await db().from('student_exercises')
-        .select('id,title,is_completed,completed_at,created_at')
-        .eq('student_id', currentStudentId).order('created_at', {ascending:true});
+        .select('id,term_id,title,is_completed,completed_at,created_at')
+        .eq('student_id', currentStudentId).eq('term_id',currentTermId).order('created_at', {ascending:true});
       if (error) throw error;
       const rows = data || [];
       list.innerHTML = rows.length ? rows.map(x => {
@@ -99,7 +135,9 @@
     if (title.length > 120) { say('عنوان تمرین حداکثر ۱۲۰ نویسه باشد.', true); return; }
     button.disabled = true;
     try {
-      const {error} = await db().from('student_exercises').insert({student_id:currentStudentId, title});
+      currentTermId = $('gym20ExerciseTermSelect')?.value || currentTermId;
+      if (!currentTermId) { say('ابتدا ترم تمرین را انتخاب کنید.',true); return; }
+      const {error} = await db().from('student_exercises').insert({student_id:currentStudentId, term_id:currentTermId, title});
       if (error) throw error;
       input.value = '';
       await loadStudentExercisesAdmin();
@@ -264,7 +302,15 @@
     window.loadExerciseStudents = loadExerciseStudents;
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.gym20ExerciseTabReady = true;
-    select.addEventListener('change', () => { currentStudentId = select.value; loadStudentExercisesAdmin(); });
+    select.addEventListener('change', async () => {
+      currentStudentId = select.value;
+      await loadStudentTermsForExercises(currentStudentId);
+      await loadStudentExercisesAdmin();
+    });
+    $('gym20ExerciseTermSelect').addEventListener('change', () => {
+      currentTermId = $('gym20ExerciseTermSelect').value;
+      loadStudentExercisesAdmin();
+    });
     add.type = 'button';
     add.addEventListener('click', addExercise);
     input.addEventListener('keydown', event => {
