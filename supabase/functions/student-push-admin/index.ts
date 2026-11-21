@@ -32,7 +32,7 @@ async function sendStudent(studentId: string, message: string, tag: string) {
     try {
       await webpush.sendNotification(
         { endpoint: sub.endpoint, keys: { p256dh: sub.p256dh, auth: sub.auth } },
-        JSON.stringify({ title: "آکادمی GYM20", body: message, tag, url: targetUrl }),
+        JSON.stringify({ title: "وقت تمرینه! 💪🔥", body: message, tag, url: targetUrl }),
         { TTL: 3600, urgency: "normal" }
       );
       sent++;

@@ -107,7 +107,7 @@
       try {
         const auth = authContext();
         const {data:pushData, error:pushError} = await auth.client.functions.invoke('student-push-admin', {
-          body:{student_id:currentStudentId, message:'CLASS NOTIFICATION\nپیام کلاس شما\nپاشو تمرین داری 💪🏻🔥'}
+          body:{student_id:currentStudentId, message:'امروز وقت قوی‌تر شدنه. آماده‌ای؟'}
         });
         if (pushError) throw pushError;
         if (!pushData?.ok) throw new Error(pushData?.error || 'ارسال اعلان انجام نشد.');
