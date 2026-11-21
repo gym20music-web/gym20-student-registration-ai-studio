@@ -5,22 +5,19 @@ self.addEventListener("push",event=>{
   let data={};
   try{data=event.data?event.data.json():{};}catch(_){data={body:event.data?event.data.text():"یادآوری کلاس GYM20"};}
   const title=data.title||"وقت تمرینه! 💪🔥";
-  const options={body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟",icon:"/favicon.svg",badge:"/favicon.svg",dir:"rtl",lang:"fa",tag:data.tag||"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/",body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟"}};
+  const options={body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟",icon:"/favicon.svg",badge:"/favicon.svg",dir:"rtl",lang:"fa",tag:data.tag||"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/",title:title,body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟"}};
   event.waitUntil(self.registration.showNotification(title,options));
 });
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
   const notificationData=event.notification.data||{};
-  const target=notificationData.url;
-  const url=typeof target==="string"&&target.startsWith("https://gym20.ir/")?target:"https://gym20.ir/";
-  const launchUrl=new URL(url);
-  const notice=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
-  if(notice){
-    // Query survives the /s/<code> -> student.html fallback on Android PWAs;
-    // hash remains as a compatibility fallback for older student pages.
-    launchUrl.searchParams.set("gym20_notice",notice);
-    launchUrl.hash="gym20-notice="+encodeURIComponent(notice);
-  }
+  const body=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
+  const title=typeof notificationData.title==="string"?notificationData.title.trim().slice(0,160):"GYM20";
+  const original=typeof notificationData.url==="string"&&notificationData.url.startsWith("https://gym20.ir/")?notificationData.url:"https://gym20.ir/";
+  const launchUrl=new URL("https://gym20.ir/notification.html");
+  if(body)launchUrl.searchParams.set("gym20_notice",body);
+  launchUrl.searchParams.set("gym20_title",title);
+  launchUrl.searchParams.set("return_to",original);
   event.waitUntil((async()=>{
     const list=await clients.matchAll({type:"window",includeUncontrolled:true});
     const existing=list.find(client=>client.url.startsWith("https://gym20.ir/"));
