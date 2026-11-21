@@ -26,12 +26,23 @@
     el.textContent = message || '';
     el.style.color = error ? '#e47777' : '#55c58a';
   }
+  function tehranDateKey(value) {
+    if (!value) return '';
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(value)).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    return parts.year + '-' + parts.month + '-' + parts.day;
+  }
+  function tehranDayLabel(value) {
+    const date = new Date(value);
+    const weekday = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {timeZone:'Asia/Tehran',weekday:'long'}).format(date);
+    const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', {timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    return weekday + ' - ' + parts.year + '/' + parts.month + '/' + parts.day;
+  }
   function formatCompletedAt(value) {
     if (!value) return '';
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) return '';
     try {
-      const day = new Intl.DateTimeFormat('fa-IR-u-ca-persian', {year:'numeric', month:'2-digit', day:'2-digit'}).format(date);
+      const day = tehranDayLabel(date);
       const time = new Intl.DateTimeFormat('fa-IR', {hour:'2-digit', minute:'2-digit', hourCycle:'h23'}).format(date);
       return {day, time};
     } catch (_) { return {day:date.toLocaleDateString('fa-IR'), time:date.toLocaleTimeString('fa-IR',{hour:'2-digit',minute:'2-digit'})}; }
@@ -111,7 +122,11 @@
         .eq('student_id', currentStudentId).eq('term_id',currentTermId).order('created_at', {ascending:true});
       if (error) throw error;
       const rows = data || [];
-      list.innerHTML = rows.length ? rows.map(x => {
+      const today = tehranDateKey(Date.now());
+      const openDays = new Set(Array.from(list.querySelectorAll('details[data-exercise-day][open]')).map(node => node.dataset.exerciseDay || ''));
+      const currentRows = rows.filter(x => !x.is_completed || !x.completed_at || tehranDateKey(x.completed_at) === today);
+      const archivedRows = rows.filter(x => !!x.is_completed && !!x.completed_at && tehranDateKey(x.completed_at) !== today);
+      const renderExercise = x => {
         const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">' + esc(x.title) + '</strong>' +
           '<span class="gym20-ex-status ' + (completed ? 'is-completed' : 'is-pending') + '">' +
@@ -120,8 +135,24 @@
           '</div><div class="gym20-ex-actions">' +
           '<button type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
           '<button type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین">🗑️</button></div></article>';
-      }).join('') : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
-      say(rows.length.toLocaleString('fa-IR') + ' تمرین ثبت شده است.');
+      };
+      const groups = new Map();
+      archivedRows.forEach(x => {
+        const key = tehranDateKey(x.completed_at);
+        if (!groups.has(key)) groups.set(key, []);
+        groups.get(key).push(x);
+      });
+      const archiveMarkup = Array.from(groups.entries()).sort((a,b)=>b[0].localeCompare(a[0])).map(([day,items]) => {
+        items.sort((a,b)=>Date.parse(b.completed_at)-Date.parse(a.completed_at));
+        const opened = openDays.has(day) ? ' open' : '';
+        return '<details class="gym20-ex-archive-day" data-exercise-day="' + esc(day) + '"' + opened + '><summary>تمرینات من ـ ' + esc(tehranDayLabel(items[0].completed_at)) + ' <span>' + items.length.toLocaleString('fa-IR') + ' تمرین</span></summary><div class="gym20-ex-archive-list">' + items.map(renderExercise).join('') + '</div></details>';
+      }).join('');
+      list.innerHTML = rows.length
+        ? '<div class="gym20-ex-count"><strong>' + currentRows.length.toLocaleString('fa-IR') + ' تمرین جاری</strong><small>مجموع این ترم: ' + rows.length.toLocaleString('fa-IR') + ' تمرین</small></div>' +
+          (currentRows.length ? currentRows.map(renderExercise).join('') : '<p class="hint">تمرین جاری برای امروز باقی نمانده است.</p>') +
+          (groups.size ? '<details class="gym20-ex-archive" ' + (Array.from(list.querySelectorAll('details.gym20-ex-archive[open]')).length ? 'open' : '') + '><summary>آرشیو تمرینات انجام‌شده <span>' + archivedRows.length.toLocaleString('fa-IR') + ' تمرین</span></summary><div class="gym20-ex-archive-days">' + archiveMarkup + '</div></details>' : '')
+        : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
+      say(rows.length.toLocaleString('fa-IR') + ' تمرین در ترم انتخاب‌شده ثبت شده است.');
     } catch (e) {
       list.innerHTML = '<p class="hint">دریافت تمرین‌ها ناموفق بود.</p>';
       say(e.message || 'دریافت تمرین‌ها ناموفق بود.', true);
@@ -286,6 +317,17 @@
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
       #gym20ExerciseFeedback{font-size:9px!important;line-height:1.5;margin:3px 0 6px}
       #gym20ExerciseList{display:flex;flex-direction:column;gap:5px;margin-top:5px}
+      #gym20ExerciseList .gym20-ex-count{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid rgba(214,179,90,.2);border-radius:8px;background:rgba(214,179,90,.055)}
+      #gym20ExerciseList .gym20-ex-count strong{font-size:9px;color:#e8c46b}
+      #gym20ExerciseList .gym20-ex-count small{font-size:8px;color:var(--text-secondary,#aab0b9)}
+      #gym20ExerciseList .gym20-ex-archive{margin-top:5px;border:1px solid rgba(214,179,90,.2);border-radius:9px;background:rgba(255,255,255,.018);overflow:hidden}
+      #gym20ExerciseList .gym20-ex-archive>summary,#gym20ExerciseList .gym20-ex-archive-day>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;padding:6px 9px;cursor:pointer;list-style:none;color:#e8c46b;font-size:9px;font-weight:800}
+      #gym20ExerciseList summary::-webkit-details-marker{display:none}
+      #gym20ExerciseList .gym20-ex-archive summary span{font-size:8px;color:var(--text-secondary,#aab0b9);font-weight:600}
+      #gym20ExerciseList .gym20-ex-archive-days{display:flex;flex-direction:column;gap:5px;padding:0 6px 6px}
+      #gym20ExerciseList .gym20-ex-archive-day{border:1px solid rgba(255,255,255,.07);border-radius:7px;background:rgba(0,0,0,.12);overflow:hidden}
+      #gym20ExerciseList .gym20-ex-archive-day>summary{color:#d7dce4;font-size:8px}
+      #gym20ExerciseList .gym20-ex-archive-list{display:flex;flex-direction:column;gap:5px;padding:0 5px 5px}
       #gym20ExerciseList .gym20-ex-admin-row{box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 8px!important;margin:0!important;border:1px solid rgba(214,179,90,.16);border-radius:8px;background:linear-gradient(135deg,rgba(255,255,255,.035),rgba(255,255,255,.012));min-width:0}
       #gym20ExerciseList .gym20-ex-info{display:flex;flex:1 1 auto;min-width:0;flex-direction:column;align-items:flex-start;gap:2px}
       #gym20ExerciseList .gym20-ex-title{font-size:10px!important;line-height:1.5;color:var(--text-primary,#eee);font-weight:800;overflow-wrap:anywhere}
