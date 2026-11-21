@@ -267,6 +267,15 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .exercise-row.completed .exercise-checkmark{color:#4ade80}
 .exercise-row:has(input:disabled){opacity:.75}
 .exercise-feedback{min-height:18px;margin-top:8px;color:#86efac;font-size:10px;line-height:1.7}
+.exercise-archive{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.exercise-archive-day{border:1px solid rgba(214,179,90,.25);border-radius:9px;background:linear-gradient(135deg,rgba(214,179,90,.07),rgba(255,255,255,.018));overflow:hidden}
+.exercise-archive-day summary{padding:9px 11px;color:#e8c46b;font-size:10px;font-weight:800;cursor:pointer;list-style:none}
+.exercise-archive-day summary::-webkit-details-marker{display:none}
+.exercise-archive-day summary:after{content:'⌄';float:left;color:#d7c28e;font-size:14px;line-height:1}
+.exercise-archive-day[open] summary:after{content:'⌃'}
+.exercise-archive-list{display:flex;flex-direction:column;gap:7px;padding:0 8px 8px;max-height:238px;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+.exercise-archive-list .exercise-row{flex:0 0 auto}
+.exercise-archive-day:not([open]) .exercise-archive-list{display:none}
 
 /* GYM20 premium 3D milestone celebration */
 .exercise-celebration{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;align-content:center;gap:0;padding:18px;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 42%,rgba(34,38,31,.78),rgba(4,7,11,.96) 66%);backdrop-filter:blur(13px) saturate(1.15);-webkit-backdrop-filter:blur(13px) saturate(1.15);opacity:0;animation:exOverlayIn .45s ease-out forwards}
@@ -496,7 +505,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status">برای دریافت یادآوری، اعلان گوشی را فعال کن.</span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
-<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
+<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div class="muted" style="margin-bottom:8px">تمرین‌ها را پس از انجام، تیک بزن.</div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
 <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script><script>
 (function(){
@@ -548,7 +557,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     history.replaceState(null,"","/s/"+code+location.hash);
   }
 })();;
-</script><script defer src="/student-view.js?v=20261122-exercise-scroll-v2"></script>
+</script><script defer src="/student-view.js?v=20261122-term-exercise-archive-v1"></script>
 
 </body></html>
 
