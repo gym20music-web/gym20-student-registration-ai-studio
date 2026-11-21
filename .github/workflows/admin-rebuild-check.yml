@@ -89,7 +89,7 @@ jobs:
           python3 - <<'PY'
           from pathlib import Path
 
-          version = "20261122-calendar-unlimited-selection-v2"
+          version = "20261122-term-session-count-sync-v1"
           for path in ("admin.html", "index.html", "assets/gym20-script-01.js"):
               source = Path(path).read_text(encoding="utf-8")
               assert version in source, f"{path} is missing the updated calendar module cache key"
