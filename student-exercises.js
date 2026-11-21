@@ -51,7 +51,7 @@
       if (select.value) await loadStudentExercisesAdmin();
       else {
         currentStudentId = '';
-        $('gym20ExerciseList').innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
+        $('gym20ExerciseList').innerHTML = '';
         say(students.length ? 'هنرجو را برای مشاهده یا ثبت تمرین انتخاب کنید.' : 'هنوز هنرجویی ثبت نشده است.');
       }
     } catch (e) {
@@ -64,7 +64,7 @@
     if (!select || !list) return;
     currentStudentId = select.value;
     if (!currentStudentId) {
-      list.innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
+      list.innerHTML = '';
       say('');
       return;
     }
