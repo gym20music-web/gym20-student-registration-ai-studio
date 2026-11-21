@@ -16,7 +16,7 @@ self.addEventListener("notificationclick",event=>{
   let launchUrl=new URL(url);
   const notice=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
   if(notice){
-    const studentTarget=/^\\/s\\/[0-9a-f]{12}\\/?$/i.test(launchUrl.pathname);
+    const studentTarget=/^\/s\/[0-9a-f]{12}\/?$/i.test(launchUrl.pathname);
     if(!studentTarget && (launchUrl.pathname==="/" || launchUrl.pathname==="/index.html")){
       // Admin exercise-completion notices open a dedicated reader; the
       // homepage itself does not render the gym20_notice query parameter.
