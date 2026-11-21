@@ -423,51 +423,70 @@
     close.focus({preventScroll:true});
     window.setTimeout(()=>{if(overlay.isConnected)closeCelebration();},5200);
   }
+  const tehranDateKey=value=>{
+    if(!value)return '';
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(value)).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    return parts.year+'-'+parts.month+'-'+parts.day;
+  };
+  const tehranTodayKey=()=>tehranDateKey(Date.now());
+  const tehranDayLabel=value=>{
+    const date=new Date(value);
+    const weekday=new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',weekday:'long'}).format(date);
+    const parts=Object.fromEntries(new Intl.DateTimeFormat('fa-IR-u-ca-persian',{timeZone:'Asia/Tehran',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).filter(x=>x.type!=='literal').map(x=>[x.type,x.value]));
+    return weekday+' '+parts.day+'.'+parts.month+'.'+parts.year;
+  };
+  function exerciseRowsMarkup(items){
+    return items.map(item=>{
+      const done=!!item.is_completed;
+      const stamp=Date.parse(item.created_at||'');
+      return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+(Number.isFinite(stamp)?stamp:0)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
+    }).join('');
+  }
   async function loadStudentExercises(shortCode,token,client){
-    const panel=$('exercisePanel'),list=$('exerciseList'),feedback=$('exerciseFeedback');
-    if(!panel||!list)return;
-    panel.classList.remove('hide');
+    const panel=$('exercisePanel'),list=$('exerciseList'),archive=$('exerciseArchive'),feedback=$('exerciseFeedback');
+    if(!panel||!list||!archive)return;
+    const selectedTermId=$('termSelect')?.value||'';
+    if(!selectedTermId){panel.classList.add('hide');return;}
     try{
       const exerciseResult=shortCode
         ?await client.rpc('get_student_exercises_by_code',{p_code:shortCode})
         :await client.schema('gym20').rpc('get_student_exercises_by_token',{p_token:token});
       const {data,error}=exerciseResult;
       if(error)throw error;
-      const items=Array.isArray(data)?data:[];
-      if(!items.length){list.innerHTML='';list.dataset.loaded='1';panel.classList.add('hide');feedback.textContent='';return;}
-      const dateValue=item=>{const value=item.created_at||item.assigned_at||item.updated_at||item.inserted_at||'';const time=Date.parse(value);return Number.isFinite(time)?time:0;};
-      items.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||dateValue(b)-dateValue(a));
-      list.innerHTML=items.map(item=>{
-        const done=!!item.is_completed;
-        return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+dateValue(item)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
+      const allItems=Array.isArray(data)?data:[];
+      const items=allItems.filter(item=>String(item.term_id||'')===String(selectedTermId));
+      const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
+      const today=tehranTodayKey();
+      const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
+      const archivedItems=items.filter(item=>!!item.is_completed&&!!item.completed_at&&tehranDateKey(item.completed_at)!==today);
+      mainItems.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
+      list.innerHTML=mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>';
+      const groups=new Map();
+      archivedItems.forEach(item=>{
+        const key=tehranDateKey(item.completed_at);
+        if(!groups.has(key))groups.set(key,[]);
+        groups.get(key).push(item);
+      });
+      archive.innerHTML=Array.from(groups.entries()).sort((a,b)=>b[0].localeCompare(a[0])).map(([day,rows])=>{
+        rows.sort((a,b)=>Date.parse(b.completed_at)-Date.parse(a.completed_at));
+        const opened=openDays.has(day)?' open':'';
+        return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من '+tehranDayLabel(rows[0].completed_at)+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
       }).join('');
-      // Keep the student exercise box compact: show every item up to five,
-      // then constrain longer lists to exactly four visible rows with scrolling.
-      const exerciseRows=Array.from(list.querySelectorAll('.exercise-row'));
-      // Flex layout gives the list a reliable four-row viewport on mobile and desktop.
-      list.style.display='flex';
-      list.style.flexDirection='column';
-      list.style.gap='7px';
-      exerciseRows.forEach(row=>{row.style.flex='0 0 auto';});
-      if(items.length>5){
-        const visibleRows=exerciseRows.slice(0,4);
-        const visibleHeight=visibleRows.reduce((height,row)=>height+row.getBoundingClientRect().height,0)+7*Math.max(0,visibleRows.length-1);
-        list.style.height=Math.ceil(visibleHeight)+'px';
-        list.style.maxHeight=Math.ceil(visibleHeight)+'px';
-        list.style.overflowY='auto';
-        list.style.overscrollBehavior='contain';
-        list.style.webkitOverflowScrolling='touch';
-      }else{
-        list.style.height='auto';
-        list.style.maxHeight='none';
-        list.style.overflowY='visible';
-      }
-      list.dataset.loaded='1';
-      panel.classList.remove('hide');
-      feedback.textContent='';
-      if(!list.dataset.bound){
-        list.dataset.bound='1';
-        list.addEventListener('change',async e=>{
+      if(!items.length){list.innerHTML='<div class="empty">برای این ترم تمرینی ثبت نشده است.</div>';}
+      const mainRows=Array.from(list.querySelectorAll('.exercise-row'));
+      list.style.display='flex';list.style.flexDirection='column';list.style.gap='7px';
+      mainRows.forEach(row=>{row.style.flex='0 0 auto';});
+      if(mainRows.length>5){
+        const visible=mainRows.slice(0,4);
+        const height=visible.reduce((sum,row)=>sum+row.getBoundingClientRect().height,0)+7*Math.max(0,visible.length-1);
+        list.style.height=Math.ceil(height)+'px';list.style.maxHeight=Math.ceil(height)+'px';list.style.overflowY='auto';list.style.overscrollBehavior='contain';list.style.webkitOverflowScrolling='touch';
+      }else{list.style.height='auto';list.style.maxHeight='none';list.style.overflowY='visible';}
+      archive.classList.toggle('hide',groups.size===0);
+      panel.classList.toggle('hide',items.length===0);
+      list.dataset.loaded='1';feedback.textContent='';
+      if(!panel.dataset.bound){
+        panel.dataset.bound='1';
+        panel.addEventListener('change',async e=>{
           const input=e.target.closest('input[data-exercise-id]');if(!input)return;
           const row=input.closest('[data-exercise-row]'),id=input.dataset.exerciseId,completed=input.checked;
           input.disabled=true;row.classList.toggle('completed',completed);
@@ -481,7 +500,6 @@
             if(error)throw error;
             if(data!==true)throw new Error('ثبت وضعیت تمرین انجام نشد.');
             feedback.textContent=completed?'آفرین! تمرینت ثبت شد 💪':'وضعیت تمرین به‌روزرسانی شد.';
-            Array.from(list.querySelectorAll('[data-exercise-row]')).sort((a,b)=>Number(!!a.querySelector('input')?.checked)-Number(!!b.querySelector('input')?.checked)||Number(b.dataset.createdAt||0)-Number(a.dataset.createdAt||0)).forEach(el=>list.appendChild(el));
             if(completed){
               const exerciseTitle=row.querySelector('.exercise-title')?.textContent||'تمرین';
               celebrateExercise(exerciseTitle);
@@ -491,6 +509,7 @@
                   .catch(err=>console.warn('GYM20 admin exercise notification failed:',err));
               }
             }
+            await loadStudentExercises(shortCode,token,client);
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
             if(mark)mark.textContent=!completed?'✓':'';
@@ -501,18 +520,9 @@
       }
     }catch(err){
       panel.classList.remove('hide');
-      // Keep the last successful exercise list visible during a temporary network/API failure.
-      if(list.dataset.loaded!=='1'){
-        list.innerHTML='<div class="empty">در حال تلاش دوباره برای دریافت تمرین‌ها…</div>';
-      }
+      if(list.dataset.loaded!=='1')list.innerHTML='<div class="empty">در حال تلاش دوباره برای دریافت تمرین‌ها…</div>';
       feedback.textContent='اتصال موقتاً برقرار نشد؛ دریافت تمرین‌ها دوباره تلاش می‌شود.';
-      console.warn('GYM20 exercise load failed:',{
-        message:err?.message||String(err),
-        code:err?.code||null,
-        details:err?.details||null,
-        hint:err?.hint||null,
-        status:err?.status||null
-      });
+      console.warn('GYM20 exercise load failed:',{message:err?.message||String(err),code:err?.code||null,details:err?.details||null,hint:err?.hint||null,status:err?.status||null});
     }
   }
   async function init(){
@@ -585,7 +595,7 @@
         updateTermOptions(selectedId);
         if(!pickerReady){
           enhanceTermPicker($('termSelect'));
-          $('termSelect').addEventListener('change',e=>showTerm(e.target.value));
+          $('termSelect').addEventListener('change',e=>{showTerm(e.target.value);refreshStudentExercises();});
           pickerReady=true;
         }
         showTerm($('termSelect').value||terms[0].id);
