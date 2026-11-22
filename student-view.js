@@ -497,7 +497,7 @@
       if(error)throw error;
       const allItems=Array.isArray(data)?data:[];
       const items=selectedTermId?allItems.filter(item=>item.kind!=='group'&&String(item.term_id||'')===String(selectedTermId)):[];
-      const groupItems=allItems.filter(item=>item.kind==='group');
+      const groupItems=selectedTermId?allItems.filter(item=>item.kind==='group'&&String(item.term_id||'')===String(selectedTermId)):[];
       const groupBox=$('groupExerciseBox');
       const individualBox=$('individualExerciseBox');
       const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
