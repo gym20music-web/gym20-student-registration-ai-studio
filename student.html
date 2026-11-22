@@ -528,11 +528,21 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 .group-exercise-archive-day>summary{padding:6px 8px;color:#cbd5e1;font-size:8px;cursor:pointer}
 .group-exercise-archive-day .group-exercise-set{padding:0 6px 6px}
 @media(prefers-reduced-motion:reduce){.exercise-panel-chevron{transition:none}}
+
+ .exercise-box{display:flex;flex-direction:column;gap:7px;margin:0 0 9px;padding:8px;border:1px solid rgba(214,179,90,.16);border-radius:11px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012))}
+ .exercise-box:last-of-type{margin-bottom:0}
+ .exercise-section-toggle{min-height:34px!important;height:34px!important;padding:5px 10px!important;border-color:rgba(214,179,90,.28)!important;border-radius:9px!important;background:linear-gradient(180deg,#202a39,#141b27)!important;color:#f1e8d4!important;font-size:10px!important;font-weight:750!important}
+ .exercise-section-toggle>span:first-child{display:flex;align-items:center;gap:6px;min-width:0}
+ .exercise-section-count{margin-inline-start:auto;color:#e8c46b;font:700 9px Montserrat,Vazirmatn,sans-serif;white-space:nowrap}
+ .exercise-panel-chevron{flex:0 0 22px}
+ .exercise-section-content{padding:2px 1px 1px}
+ .group-exercise-title{justify-content:flex-start}
+ @media(max-width:520px){.exercise-box{padding:6px;gap:6px}.exercise-section-toggle{height:32px!important;min-height:32px!important;font-size:9px!important}}
 </style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status" aria-live="polite"></span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
-<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><button type="button" id="exercisePanelToggle" class="exercise-panel-toggle" aria-expanded="false" aria-controls="exerciseContent"><span>🤸🏻‍♂️ تمرین‌های من</span><span id="exerciseGroupHint" class="exercise-group-hint"></span><span class="exercise-panel-chevron">⌄</span></button><div id="exerciseContent" hidden><div id="exerciseCountHint" class="muted" style="margin-bottom:8px" aria-live="polite"></div><div id="groupExerciseList" class="group-exercise-list hide"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></div></section>
+<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><div id="groupExerciseBox" class="exercise-box hide"><button type="button" id="groupExerciseToggle" class="term-select-trigger exercise-section-toggle" aria-expanded="false" aria-controls="groupExerciseContent"><span>👥 تمرین‌های گروهی</span><span id="groupExerciseCount" class="exercise-section-count">۰ تمرین</span><span class="exercise-panel-chevron">⌄</span></button><div id="groupExerciseContent" class="exercise-section-content" hidden><div id="groupExerciseList" class="group-exercise-list"></div></div></div><div id="individualExerciseBox" class="exercise-box"><button type="button" id="individualExerciseToggle" class="term-select-trigger exercise-section-toggle" aria-expanded="false" aria-controls="individualExerciseContent"><span>🤸🏻‍♂️ تمرین‌های انفرادی</span><span class="exercise-panel-chevron">⌄</span></button><div id="individualExerciseContent" class="exercise-section-content" hidden><div id="exerciseCountHint" class="muted" style="margin-bottom:8px" aria-live="polite"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div></div></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
 <script>
 (function(){
@@ -585,7 +595,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     history.replaceState(null,"","/s/"+code+location.hash);
   }
 })();;
-</script><script defer src="/student-view.js?v=20261122-group-exercise-live-v3"></script>
+</script><script defer src="/student-view.js?v=20261122-group-exercise-separated-v4"></script>
 
 </body></html>
 
