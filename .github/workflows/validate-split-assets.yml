@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - 'index.html'
+      - 'student.html'
+      - 'student-view.js'
       - 'assets/**'
       - '.github/workflows/validate-split-assets.yml'
 
@@ -26,6 +28,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           set -e
+          node --check student-view.js
           for file in assets/*.js; do
             echo "Checking $file"
             node --check "$file"
