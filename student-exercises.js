@@ -481,23 +481,30 @@
     groupCard.className='gym20-exercise-card gym20-exercise-group-card';
     const individualCard=document.createElement('section');
     individualCard.className='gym20-exercise-card gym20-exercise-individual-card';
-    const individualTitle=document.createElement('h3');
-    individualTitle.className='gym20-exercise-card-title';
-    individualTitle.textContent='تمرین انفرادی هنرجو';
+    const individualToggle=document.createElement('button');
+    individualToggle.type='button';individualToggle.id='gym20ExerciseIndividualToggle';individualToggle.className='gym20-group-toggle';
+    individualToggle.setAttribute('aria-expanded','false');individualToggle.textContent='🥋 تمرین انفرادی هنرجو';
+    const individualPanel=document.createElement('div');
+    individualPanel.id='gym20ExerciseIndividualPanel';individualPanel.className='gym20-group-panel';individualPanel.hidden=true;
     const individualGrid=exerciseHost.querySelector('.admin-grid-2');
     const feedback=$('gym20ExerciseFeedback');
     if(pushHeading)notifyCard.appendChild(pushHeading);
     notifyCard.appendChild(pushBar);
     groupCard.append(groupToggle,groupPanel);
-    individualCard.appendChild(individualTitle);
-    if(individualGrid)individualCard.appendChild(individualGrid);
-    if(add)individualCard.appendChild(add);
-    if(feedback)individualCard.appendChild(feedback);
-    if(list)individualCard.appendChild(list);
+    individualCard.append(individualToggle,individualPanel);
+    if(individualGrid)individualPanel.appendChild(individualGrid);
+    if(add)individualPanel.appendChild(add);
+    if(feedback)individualPanel.appendChild(feedback);
+    if(list)individualPanel.appendChild(list);
     exerciseHost.prepend(individualCard);
     exerciseHost.prepend(groupCard);
     exerciseHost.prepend(notifyCard);
     groupToggle.addEventListener('click',toggleGroupManager);
+    individualToggle.addEventListener('click',()=>{
+      const open=individualPanel.hidden;
+      individualPanel.hidden=!open;
+      individualToggle.setAttribute('aria-expanded',String(open));
+    });
     groupPanel.querySelector('#gym20ExerciseGroupMembersToggle').addEventListener('click',()=>{
       const button=$('gym20ExerciseGroupMembersToggle'),wrap=$('gym20ExerciseGroupStudentsWrap');
       const open=wrap.hidden;wrap.hidden=!open;button.setAttribute('aria-expanded',String(open));
