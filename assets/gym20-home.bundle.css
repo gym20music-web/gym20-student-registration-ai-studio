@@ -2558,3 +2558,31 @@ html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
   background:rgba(226,232,240,.08)!important;
   border-color:rgba(148,163,184,.32)!important;
 }
+
+
+/* Remaining admin chrome accents: sidebar, active tab, dropdowns and status. */
+#adminModal .admin-sidebar-brand{
+  border-color:rgba(148,163,184,.20)!important;
+  background:rgba(148,163,184,.045)!important;
+}
+#adminModal .admin-sidebar-brand strong{color:#e2e8f0!important}
+#adminModal .admin-tab-btn.active{
+  background:rgba(226,232,240,.08)!important;
+  color:#f8fafc!important;
+  border-color:rgba(148,163,184,.32)!important;
+  box-shadow:inset -3px 0 0 #94a3b8!important;
+}
+#adminModal .admin-workspace{scrollbar-color:rgba(148,163,184,.42) transparent!important}
+#adminModal .admin-workspace .admin-dropdown-trigger:focus-visible{
+  outline-color:rgba(226,232,240,.55)!important;
+}
+#adminModal .admin-workspace .admin-dropdown-trigger .admin-dropdown-arrow{color:#94a3b8!important}
+#adminModal .admin-workspace .admin-dropdown-menu{
+  border-color:rgba(148,163,184,.24)!important;
+}
+#adminModal .admin-workspace .admin-dropdown-option:hover,
+#adminModal .admin-workspace .admin-dropdown-option.selected{
+  background:rgba(100,116,139,.22)!important;
+  color:#f8fafc!important;
+}
+#adminModal #adminModulesStatus{color:#e2e8f0!important}
