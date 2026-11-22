@@ -729,7 +729,7 @@ function openAuthorizedAdminPanel(){
   if(modal)modal.style.display='flex';
   loadAdminForm();
   const status=document.getElementById('adminModulesStatus');
-  if(status){status.textContent='پنل مدیریت باز شد؛ بخش‌های تخصصی در پس‌زمینه آماده می‌شوند…';status.style.color='#d6b35a';}
+  if(status){status.textContent='پنل مدیریت باز شد؛ بخش‌های تخصصی در پس‌زمینه آماده می‌شوند…';status.style.color='#e2e8f0';}
   loadGym20AdminModules().then(()=>{
     if(!gym20OwnerAuthorized)return;
     if(status)status.textContent='';
