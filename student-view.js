@@ -616,7 +616,7 @@
                   .catch(err=>console.warn('GYM20 admin exercise notification failed:',err));
               }
             }
-            await loadStudentExercises(shortCode,token,client);
+            await loadStudentExercises(shortCode,token,client,selectedTerm);
           }catch(err){
             input.checked=!completed;row.classList.toggle('completed',!completed);
             if(mark)mark.textContent=!completed?'✓':'';
