@@ -508,8 +508,8 @@
       const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
       const archivedItems=items.filter(item=>!!item.is_completed&&!!item.completed_at&&tehranDateKey(item.completed_at)!==today);
       mainItems.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
-      const countHint=$('exerciseCountHint');if(countHint)countHint.textContent=new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻';
-      list.innerHTML=mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>';
+      const countHint=$('exerciseCountHint');if(countHint)countHint.textContent=selectedTermId?new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻':'';
+      list.innerHTML=!selectedTermId?'':(mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>');
       const groups=new Map();
       archivedItems.forEach(item=>{
         const key=tehranDateKey(item.completed_at);
@@ -521,7 +521,7 @@
         const opened=openDays.has(day)?' open':'';
         return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من ـ '+tehranDayLabel(rows[0].completed_at)+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
       }).join('');
-      if(!items.length){list.innerHTML='<div class="empty">برای این ترم تمرینی ثبت نشده است.</div>';}
+      if(!items.length&&selectedTermId){list.innerHTML='<div class="empty">برای این ترم تمرینی ثبت نشده است.</div>';}
       const mainRows=Array.from(list.querySelectorAll('.exercise-row'));
       list.style.display='flex';list.style.flexDirection='column';list.style.gap='7px';
       mainRows.forEach(row=>{row.style.flex='0 0 auto';});
