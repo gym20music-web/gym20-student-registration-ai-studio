@@ -89,6 +89,11 @@
     const termSelect = $('gym20ExerciseTermSelect');
     if (!termSelect) return;
     currentTermId = '';
+    if (!studentId) {
+      termSelect.innerHTML = '<option value="">ابتدا هنرجو را انتخاب کنید</option>';
+      termSelect.disabled = true;
+      return;
+    }
     termSelect.innerHTML = '<option value="">در حال دریافت ترم‌ها…</option>';
     termSelect.disabled = true;
     try {
@@ -356,13 +361,21 @@
     window.loadExerciseStudents = loadExerciseStudents;
     window.loadStudentExercisesAdmin = loadStudentExercisesAdmin;
     window.gym20ExerciseTabReady = true;
+    const termSelect = $('gym20ExerciseTermSelect');
     select.addEventListener('change', async () => {
       currentStudentId = select.value;
+      currentTermId = '';
+      if (!currentStudentId) {
+        if (termSelect) { termSelect.innerHTML = '<option value="">ابتدا هنرجو را انتخاب کنید</option>'; termSelect.disabled = true; }
+        if (list) list.innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
+        say('');
+        return;
+      }
       await loadStudentTermsForExercises(currentStudentId);
       await loadStudentExercisesAdmin();
     });
-    $('gym20ExerciseTermSelect').addEventListener('change', () => {
-      currentTermId = $('gym20ExerciseTermSelect').value;
+    termSelect?.addEventListener('change', () => {
+      currentTermId = termSelect.value;
       loadStudentExercisesAdmin();
     });
     add.type = 'button';
