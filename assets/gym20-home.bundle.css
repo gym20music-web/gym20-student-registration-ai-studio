@@ -2511,6 +2511,8 @@ html[data-theme="light"] #adminModal .gym20-admin-area-option :is(span,small){co
   --adm-bg:#0f1115!important;
   --adm-card:#191c23!important;
   --adm-border:rgba(148,163,184,.20)!important;
+  --adm-control-bg:#0f1115!important;
+  --adm-control-border:rgba(148,163,184,.20)!important;
 }
 #adminModal .admin-workspace :is(input,textarea,select):focus{
   border-color:rgba(226,232,240,.55)!important;
