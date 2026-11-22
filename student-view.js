@@ -476,7 +476,7 @@
         if(member.is_self)return '<label class="group-member-self"><input type="checkbox" data-group-exercise-id="'+esc(item.id)+'" '+(member.is_completed?'checked':'')+'><span>'+name+' (شما)</span></label>';
         return '<span class="group-member-status '+(member.is_completed?'done':'pending')+'"><i>'+(member.is_completed?'✓':'×')+'</i><span>'+name+'</span></span>';
       }).join('');
-      return '<article class="group-exercise-card"><div class="group-exercise-title"><strong>'+esc(item.title)+'</strong><small>تمرین گروهی · '+esc(item.group_name||'گروه')+'</small></div><div class="group-exercise-members">'+memberMarkup+'</div></article>';
+      return '<article class="group-exercise-card"><div class="group-exercise-title"><strong>'+esc(item.title)+'</strong></div><div class="group-exercise-members">'+memberMarkup+'</div></article>';
     }).join('');
   }
   function groupExerciseDayMarkup(items){
@@ -498,11 +498,8 @@
       const allItems=Array.isArray(data)?data:[];
       const items=selectedTermId?allItems.filter(item=>item.kind!=='group'&&String(item.term_id||'')===String(selectedTermId)):[];
       const groupItems=allItems.filter(item=>item.kind==='group');
-      const groupHint=$('exerciseGroupHint');
-      const panelToggle=$('exercisePanelToggle');
-      const panelTitle=panelToggle?.querySelector('span:first-child');
-      if(panelTitle)panelTitle.textContent=groupItems.length?'تمرین‌های گروهی':'تمرین‌های من';
-      if(groupHint){groupHint.textContent='';groupHint.hidden=true;}
+      const groupBox=$('groupExerciseBox');
+      const individualBox=$('individualExerciseBox');
       const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
       const today=tehranTodayKey();
       const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
@@ -533,8 +530,11 @@
       archive.classList.toggle('hide',groups.size===0);
       const todayGroupItems=groupItems.filter(item=>tehranDateKey(item.created_at)===today);
       if(countHint){
-        const totalTodayExercises=(selectedTermId?mainItems.length:0)+todayGroupItems.length;
-        countHint.textContent=totalTodayExercises?new Intl.NumberFormat('fa-IR').format(totalTodayExercises)+' تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻':'۰ تا تمرین داری 💪🏻 انجام دادی تیک بزن👊🏻';
+        countHint.textContent=mainItems.length?new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تمرین انفرادی داری 💪🏻':'۰ تمرین انفرادی برای امروز داری 💪🏻';
+      }
+      const groupCountHint=$('groupExerciseCount');
+      if(groupCountHint){
+        groupCountHint.textContent=new Intl.NumberFormat('fa-IR').format(todayGroupItems.length)+' تمرین';
       }
       const oldGroupDays=new Map();
       groupItems.filter(item=>tehranDateKey(item.created_at)!==today).forEach(item=>{
@@ -546,8 +546,9 @@
       if(groupList){
         groupList.innerHTML=(todayGroupItems.length?'<div class="group-exercise-today">'+groupExerciseDayMarkup(todayGroupItems)+'</div>':'')+
           (oldGroupDays.size?'<details class="group-exercise-archive"><summary>تمرین‌های روزهای قبل <span>'+groupItems.length.toLocaleString('fa-IR')+' تمرین گروهی</span></summary><div class="group-exercise-archive-days">'+groupArchiveMarkup+'</div></details>':'');
-        groupList.classList.toggle('hide',groupItems.length===0);
       }
+      groupBox?.classList.toggle('hide',groupItems.length===0);
+      individualBox?.classList.toggle('hide',items.length===0);
       panel.classList.toggle('hide',items.length===0&&groupItems.length===0);
       list.dataset.loaded='1';if(feedback)feedback.textContent='';
       if(!panel.dataset.bound){
@@ -611,15 +612,18 @@
     }
   }
   async function init(){
-    const exerciseToggle=$('exercisePanelToggle'),exerciseContent=$('exerciseContent');
-    if(exerciseToggle&&exerciseContent&&!exerciseToggle.dataset.bound){
-      exerciseToggle.dataset.bound='1';
-      exerciseToggle.addEventListener('click',()=>{
-        const expanded=exerciseToggle.getAttribute('aria-expanded')==='true';
-        exerciseToggle.setAttribute('aria-expanded',String(!expanded));
-        exerciseContent.hidden=expanded;
+    const bindExerciseToggle=(buttonId,contentId)=>{
+      const button=$(buttonId),content=$(contentId);
+      if(!button||!content||button.dataset.bound)return;
+      button.dataset.bound='1';
+      button.addEventListener('click',()=>{
+        const expanded=button.getAttribute('aria-expanded')==='true';
+        button.setAttribute('aria-expanded',String(!expanded));
+        content.hidden=expanded;
       });
-    }
+    };
+    bindExerciseToggle('groupExerciseToggle','groupExerciseContent');
+    bindExerciseToggle('individualExerciseToggle','individualExerciseContent');
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
     const pathCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||'';
