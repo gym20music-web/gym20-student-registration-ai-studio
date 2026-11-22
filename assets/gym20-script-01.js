@@ -707,7 +707,7 @@ function loadGym20AdminModules(){
     const modules=[
       '/assets/student-terms.js?v=20261122-term-session-count-sync-v1',
       './student-push-admin.js?v=20261120-push-size-green-v6',
-      '/student-exercises.js?v=20261122-exercise-admin-cards-v7'
+      '/student-exercises.js?v=20261122-exercise-admin-cards-v8'
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
