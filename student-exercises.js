@@ -497,7 +497,6 @@
     exerciseHost.prepend(individualCard);
     exerciseHost.prepend(groupCard);
     exerciseHost.prepend(notifyCard);
-    pushBar.insertAdjacentElement('afterend',groupToggle);
     groupToggle.addEventListener('click',toggleGroupManager);
     groupPanel.querySelector('#gym20ExerciseGroupMembersToggle').addEventListener('click',()=>{
       const button=$('gym20ExerciseGroupMembersToggle'),wrap=$('gym20ExerciseGroupStudentsWrap');
