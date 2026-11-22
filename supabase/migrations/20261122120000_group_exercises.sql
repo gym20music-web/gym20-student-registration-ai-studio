@@ -54,6 +54,8 @@ revoke all on gym20.exercise_groups, gym20.exercise_group_members,
 grant select, insert, update, delete on gym20.exercise_groups,
   gym20.exercise_group_members, gym20.group_exercises,
   gym20.group_exercise_completions to authenticated;
+grant all on gym20.exercise_groups, gym20.exercise_group_members,
+  gym20.group_exercises, gym20.group_exercise_completions to service_role;
 revoke all on gym20.admin_group_exercise_push_deliveries from public, anon, authenticated;
 grant all on gym20.admin_group_exercise_push_deliveries to service_role;
 
