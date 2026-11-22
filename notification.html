@@ -20,18 +20,19 @@ a{display:flex;align-items:center;justify-content:center;min-height:42px;margin-
 <body>
 <main>
 <div class="brand">GYM20</div>
-<h1 id="title">پیام جدید</h1>
-<div id="message">پیامی برای نمایش وجود ندارد.</div>
-<a id="back" href="https://gym20.ir/">بازگشت به GYM20</a>
+<h1 id="title">وقتِ ارتقاست ⚡</h1>
+<div id="message">امروز یک قدم جلوتر از دیروزی؛ آماده‌ای؟</div>
+<a id="back" href="https://gym20.ir/">ورود به GYM20  ←</a>
 </main>
 <script>
 (function(){
  const params=new URL(location.href).searchParams;
- const title=(params.get("gym20_title")||"پیام GYM20").slice(0,160);
- const message=(params.get("gym20_notice")||"متن پیام در دسترس نیست.").slice(0,1200);
+ const title=(params.get("gym20_title")||"وقتِ ارتقاست ⚡").slice(0,160);
+ const message=(params.get("gym20_notice")||"امروز یک قدم جلوتر از دیروزی؛ آماده‌ای؟").slice(0,1200);
  const back=params.get("return_to")||"https://gym20.ir/";
- document.getElementById("title").textContent=title;
- document.getElementById("message").textContent=message;
+ const sameText=title.trim().replace(/[؟?!،؛.\s]/g,"").toLocaleLowerCase("fa")===message.trim().replace(/[؟?!،؛.\s]/g,"").toLocaleLowerCase("fa");
+ document.getElementById("title").textContent=sameText?"وقتِ ارتقاست ⚡":title;
+ document.getElementById("message").textContent=sameText?"امروز یک قدم جلوتر از دیروزی؛ آماده‌ای؟":message;
  try{const u=new URL(back);document.getElementById("back").href=u.origin==="https://gym20.ir"?u.href:"https://gym20.ir/";}catch(_){}
 })();
 </script>
