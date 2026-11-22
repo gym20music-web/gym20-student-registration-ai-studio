@@ -587,7 +587,7 @@
                   .then(({data,error})=>{if(error||!data?.ok)console.warn('GYM20 group exercise notification was not delivered:',error||data?.error||'unknown error');})
                   .catch(err=>console.warn('GYM20 group exercise notification failed:',err));
               }
-              await loadStudentExercises(shortCode,token,client,terms.find(term=>String(term.id)===String($('termSelect')?.value||''))||null);
+              await loadStudentExercises(shortCode,token,client,selectedTerm);
             }catch(err){groupInput.checked=!completed;if(feedback)feedback.textContent='ثبت تمرین گروهی انجام نشد؛ دوباره تلاش کن.';console.warn('GYM20 group exercise update failed:',err);}
             finally{groupInput.disabled=false;}
             return;
@@ -679,7 +679,7 @@
       const refreshStudentExercises=async()=>{
         if(exerciseRefreshInFlight||document.visibilityState==='hidden')return;
         exerciseRefreshInFlight=true;
-        try{await loadStudentExercises(shortCode,token,client);}
+        try{await loadStudentExercises(shortCode,token,client,terms.find(term=>String(term.id)===String($('termSelect')?.value||''))||null);}
         finally{exerciseRefreshInFlight=false;}
       };
       // Exercise loading starts after the schedule has selected the active term.
