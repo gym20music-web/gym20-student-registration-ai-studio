@@ -484,7 +484,7 @@
     items.forEach(item=>{const key=String(item.group_name||'گروه');if(!byGroup.has(key))byGroup.set(key,[]);byGroup.get(key).push(item);});
     return Array.from(byGroup.entries()).map(([name,rows])=>'<section class="group-exercise-set"><div class="group-exercise-set-title">تمرین گروهی · '+esc(name)+'</div>'+groupExerciseRowsMarkup(rows)+'</section>').join('');
   }
-  async function loadStudentExercises(shortCode,token,client){
+  async function loadStudentExercises(shortCode,token,client,selectedTerm){
     const panel=$('exercisePanel'),list=$('exerciseList'),archive=$('exerciseArchive'),feedback=$('exerciseFeedback'),groupList=$('groupExerciseList');
     if(!panel||!list||!archive)return;
     const selectedTermId=$('termSelect')?.value||'';
@@ -497,7 +497,7 @@
       if(error)throw error;
       const allItems=Array.isArray(data)?data:[];
       const items=selectedTermId?allItems.filter(item=>item.kind!=='group'&&String(item.term_id||'')===String(selectedTermId)):[];
-      const groupItems=selectedTermId?allItems.filter(item=>item.kind==='group'&&String(item.term_id||'')===String(selectedTermId)):[];
+      const termStart=selectedTerm?.start_date?String(selectedTerm.start_date).slice(0,10):'';\n      const termEnd=selectedTerm?.end_date?String(selectedTerm.end_date).slice(0,10):'';\n      const groupItems=selectedTermId?allItems.filter(item=>{if(item.kind!=='group')return false;const day=tehranDateKey(item.created_at);return !!day&&(!termStart||day>=termStart)&&(!termEnd||day<=termEnd);}):[];
       const groupBox=$('groupExerciseBox');
       const individualBox=$('individualExerciseBox');
       const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
@@ -587,7 +587,7 @@
                   .then(({data,error})=>{if(error||!data?.ok)console.warn('GYM20 group exercise notification was not delivered:',error||data?.error||'unknown error');})
                   .catch(err=>console.warn('GYM20 group exercise notification failed:',err));
               }
-              await loadStudentExercises(shortCode,token,client);
+              await loadStudentExercises(shortCode,token,client,terms.find(term=>String(term.id)===String($('termSelect')?.value||''))||null);
             }catch(err){groupInput.checked=!completed;if(feedback)feedback.textContent='ثبت تمرین گروهی انجام نشد؛ دوباره تلاش کن.';console.warn('GYM20 group exercise update failed:',err);}
             finally{groupInput.disabled=false;}
             return;
