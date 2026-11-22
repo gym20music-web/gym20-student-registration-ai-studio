@@ -126,7 +126,7 @@
     if (!select || !list) return;
     currentStudentId = select.value;
     if (!currentStudentId) {
-      list.innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
+      list.innerHTML = '';
       say('');
       return;
     }
@@ -559,7 +559,7 @@
       currentTermId = '';
       if (!currentStudentId) {
         if (termSelect) { termSelect.innerHTML = '<option value="">ابتدا هنرجو را انتخاب کنید</option>'; termSelect.disabled = true; }
-        if (list) list.innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
+        if (list) list.innerHTML = '';
         say('');
         return;
       }
