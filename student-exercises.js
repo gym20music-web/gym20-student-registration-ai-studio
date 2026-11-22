@@ -504,7 +504,7 @@
     individualToggle.setAttribute('aria-expanded','false');individualToggle.textContent='🥋 تمرین انفرادی هنرجو';
     const individualPanel=document.createElement('div');
     individualPanel.id='gym20ExerciseIndividualPanel';individualPanel.className='gym20-group-panel';individualPanel.hidden=true;
-    const individualGrid=exerciseHost.querySelector('.admin-grid-2');
+    const individualGrid=exerciseHost.querySelector('.admin-grid-2,.field-grid');
     const feedback=$('gym20ExerciseFeedback');
     if(pushHeading)notifyCard.appendChild(pushHeading);
     notifyCard.appendChild(pushBar);
