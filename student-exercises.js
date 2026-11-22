@@ -6,6 +6,9 @@
   let currentStudentId = '';
   let currentTermId = '';
   let mounted = false;
+  let groupManagerLoaded = false;
+  let selectedGroupId = '';
+  let groupMembers = [];
 
   function authContext() {
     let authorized = false, client = null;
@@ -66,6 +69,7 @@
       students = Array.isArray(data) ? data : [];
       if (!students.length && Array.isArray(window.gym20Students) && window.gym20Students.length) students = window.gym20Students;
       renderExerciseStudentOptions(select);
+      if (groupManagerLoaded) renderGroupStudentChecklist(groupMembers.map(x=>x.student_id));
       if (select.value) {
         await loadStudentTermsForExercises(select.value);
         await loadStudentExercisesAdmin();
@@ -302,6 +306,135 @@
     }finally{button.disabled=false;}
   }
 
+  function renderGroupStudentChecklist(selectedIds=[]) {
+    const host=$('gym20ExerciseGroupStudents');
+    if(!host)return;
+    const selected=new Set((selectedIds||[]).map(String));
+    host.innerHTML=students.length?students.map(student=>
+      '<label class="gym20-group-student"><input type="checkbox" data-group-student value="'+esc(student.id)+'" '+(selected.has(String(student.id))?'checked':'')+'><span>'+esc(student.full_name)+(student.is_active?'':' · غیرفعال')+'</span></label>'
+    ).join(''):'<div class="gym20-group-empty">فهرست هنرجویان هنوز بارگذاری نشده است.</div>';
+  }
+  function selectedGroupStudentIds(){
+    return Array.from(document.querySelectorAll('#gym20ExerciseGroupStudents [data-group-student]:checked')).map(x=>x.value);
+  }
+  function renderGroupExerciseRows(rows){
+    const host=$('gym20ExerciseGroupExercises');
+    if(!host)return;
+    host.innerHTML=rows.length?rows.map(row=>
+      '<div class="gym20-group-exercise-row"><strong>'+esc(row.title)+'</strong><small>'+esc(tehranDayLabel(row.created_at))+'</small></div>'
+    ).join(''):'<div class="gym20-group-empty">برای این گروه هنوز تمرینی ثبت نشده است.</div>';
+  }
+  async function loadSelectedExerciseGroup(){
+    const select=$('gym20ExerciseGroupSelect'),summary=$('gym20ExerciseGroupMembersSummary');
+    if(!select)return;
+    selectedGroupId=select.value||'';
+    if(!selectedGroupId){
+      groupMembers=[];
+      renderGroupStudentChecklist([]);
+      if(summary)summary.textContent='ابتدا گروه را انتخاب کنید.';
+      renderGroupExerciseRows([]);
+      return;
+    }
+    const [membersResult,exercisesResult]=await Promise.all([
+      db().from('exercise_group_members').select('student_id').eq('group_id',selectedGroupId),
+      db().from('group_exercises').select('id,title,created_at').eq('group_id',selectedGroupId).order('created_at',{ascending:false})
+    ]);
+    if(membersResult.error)throw membersResult.error;
+    if(exercisesResult.error)throw exercisesResult.error;
+    groupMembers=membersResult.data||[];
+    renderGroupStudentChecklist(groupMembers.map(x=>x.student_id));
+    if(summary)summary.textContent=groupMembers.length.toLocaleString('fa-IR')+' هنرجو در این گروه عضو هستند.';
+    renderGroupExerciseRows(exercisesResult.data||[]);
+  }
+  async function loadExerciseGroups(preferredId=''){
+    const select=$('gym20ExerciseGroupSelect');
+    if(!select)return;
+    select.innerHTML='<option value="">در حال دریافت گروه‌ها…</option>';
+    const {data,error}=await db().from('exercise_groups').select('id,name').order('created_at',{ascending:false});
+    if(error)throw error;
+    const groups=data||[];
+    select.innerHTML='<option value="">انتخاب گروه…</option>'+groups.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.name)+'</option>').join('');
+    const desired=preferredId||selectedGroupId;
+    selectedGroupId=groups.some(g=>String(g.id)===String(desired))?String(desired):(groups[0]?.id||'');
+    select.value=selectedGroupId;
+    await loadSelectedExerciseGroup();
+  }
+  async function createExerciseGroup(){
+    const name=($('gym20ExerciseGroupName')?.value||'').trim();
+    const memberIds=selectedGroupStudentIds();
+    if(!name){say('نام گروه را وارد کنید.',true);$('gym20ExerciseGroupName')?.focus();return;}
+    if(name.length>80){say('نام گروه حداکثر ۸۰ نویسه باشد.',true);return;}
+    if(!memberIds.length){say('حداقل یک هنرجو برای گروه انتخاب کنید.',true);return;}
+    const button=$('gym20ExerciseGroupCreate');button.disabled=true;
+    try{
+      const auth=authContext();
+      const {data:userData,error:userError}=await auth.client.auth.getUser();
+      if(userError||!userData?.user)throw userError||new Error('نشست مدیر معتبر نیست.');
+      const {data:group,error}=await db().from('exercise_groups').insert({name,created_by:userData.user.id}).select('id,name').single();
+      if(error)throw error;
+      const {error:membersError}=await db().from('exercise_group_members').insert(memberIds.map(student_id=>({group_id:group.id,student_id})));
+      if(membersError){
+        await db().from('exercise_groups').delete().eq('id',group.id);
+        throw membersError;
+      }
+      $('gym20ExerciseGroupName').value='';
+      groupManagerLoaded=true;
+      await loadExerciseGroups(group.id);
+      say('گروه «'+group.name+'» با '+memberIds.length.toLocaleString('fa-IR')+' هنرجو ساخته شد ✓');
+    }catch(e){say(e.message||'ساخت گروه ناموفق بود.',true);}
+    finally{button.disabled=false;}
+  }
+  async function saveExerciseGroupMembers(){
+    if(!selectedGroupId){say('ابتدا گروه را انتخاب کنید.',true);return;}
+    const next=selectedGroupStudentIds(),previous=groupMembers.map(x=>String(x.student_id));
+    if(!next.length){say('گروه باید حداقل یک هنرجو داشته باشد.',true);return;}
+    const added=next.filter(id=>!previous.includes(String(id)));
+    const removed=previous.filter(id=>!next.includes(String(id)));
+    const button=$('gym20ExerciseGroupSaveMembers');button.disabled=true;
+    try{
+      if(removed.length){
+        const {error}=await db().from('exercise_group_members').delete().eq('group_id',selectedGroupId).in('student_id',removed);
+        if(error)throw error;
+      }
+      if(added.length){
+        const {error}=await db().from('exercise_group_members').insert(added.map(student_id=>({group_id:selectedGroupId,student_id})));
+        if(error)throw error;
+      }
+      await loadSelectedExerciseGroup();
+      say('اعضای گروه به‌روزرسانی شدند ✓');
+    }catch(e){say(e.message||'ذخیره اعضای گروه ناموفق بود.',true);}
+    finally{button.disabled=false;}
+  }
+  async function addGroupExercise(){
+    const title=($('gym20ExerciseGroupInput')?.value||'').trim();
+    if(!selectedGroupId){say('ابتدا گروه را انتخاب کنید.',true);return;}
+    if(!title){say('عنوان تمرین گروهی را وارد کنید.',true);$('gym20ExerciseGroupInput')?.focus();return;}
+    if(title.length>120){say('عنوان تمرین حداکثر ۱۲۰ نویسه باشد.',true);return;}
+    const button=$('gym20ExerciseGroupAdd');button.disabled=true;
+    try{
+      const {error}=await db().from('group_exercises').insert({group_id:selectedGroupId,title});
+      if(error)throw error;
+      $('gym20ExerciseGroupInput').value='';
+      await loadSelectedExerciseGroup();
+      const message='تمرین گروهی «'+title+'» برای گروه شما ثبت شد. آماده‌ای؟ 💪';
+      const results=await Promise.allSettled(groupMembers.map(member=>authContext().client.functions.invoke('student-push-admin',{body:{student_id:member.student_id,message}})));
+      const sent=results.filter(x=>x.status==='fulfilled'&&!x.value.error&&x.value.data?.ok&&Number(x.value.data.sent)>0).length;
+      say('تمرین گروهی ثبت شد ✓ · اعلان برای '+sent.toLocaleString('fa-IR')+' نفر ارسال شد.');
+    }catch(e){say(e.message||'افزودن تمرین گروهی ناموفق بود.',true);}
+    finally{button.disabled=false;}
+  }
+  async function toggleGroupManager(){
+    const panel=$('gym20ExerciseGroupPanel'),button=$('gym20ExerciseGroupToggle');
+    if(!panel||!button)return;
+    const open=panel.hidden;
+    panel.hidden=!open;
+    button.setAttribute('aria-expanded',String(open));
+    if(open&&!groupManagerLoaded){
+      try{groupManagerLoaded=true;renderGroupStudentChecklist([]);await loadExerciseGroups();}
+      catch(e){groupManagerLoaded=false;say(e.message||'دریافت گروه‌ها ناموفق بود.',true);}
+    }
+  }
+
   function mount() {
     if (mounted) return;
     const embedded = !!document.querySelector('#adminModal .admin-tabs');
@@ -323,6 +456,23 @@
     pushStyle.id='gym20ExercisePushStyle';
     pushStyle.textContent='#gym20ExercisePushBar{display:flex;align-items:center;justify-content:flex-start;gap:9px;margin:8px 0 10px;padding:0;border:0;background:transparent;min-width:0}#gym20ExercisePushBar button{box-sizing:border-box;min-height:26px;height:26px;padding:0 10px;border:1px solid rgba(214,179,90,.5);border-radius:7px;background:rgba(214,179,90,.12);color:#e8c46b;font:800 9px Vazirmatn,sans-serif;white-space:nowrap}#gym20ExercisePushBar button[data-active="1"]{border-color:rgba(85,197,138,.55);background:rgba(85,197,138,.10);color:#55c58a}#gym20ExercisePushBar button:disabled{opacity:.65}@media(max-width:420px){#gym20ExercisePushBar button{padding:0 8px;font-size:8px}}';
     document.head.appendChild(pushStyle);
+    const groupToggle=document.createElement('button');
+    groupToggle.type='button';groupToggle.id='gym20ExerciseGroupToggle';groupToggle.className='gym20-group-toggle';
+    groupToggle.setAttribute('aria-expanded','false');groupToggle.textContent='👥 تمرین گروهی';
+    const groupPanel=document.createElement('div');
+    groupPanel.id='gym20ExerciseGroupPanel';groupPanel.className='gym20-group-panel';groupPanel.hidden=true;
+    groupPanel.innerHTML='<div class="gym20-group-field"><label for="gym20ExerciseGroupName">نام گروه جدید</label><input id="gym20ExerciseGroupName" maxlength="80" placeholder="مثلاً قدرت"></div><div class="gym20-group-field"><label>انتخاب هنرجوها</label><div id="gym20ExerciseGroupStudents" class="gym20-group-students"></div></div><button type="button" id="gym20ExerciseGroupCreate" class="gym20-group-action">＋ ساخت گروه با هنرجوهای انتخاب‌شده</button><div class="gym20-group-divider"></div><div class="gym20-group-field"><label for="gym20ExerciseGroupSelect">گروه‌های ثبت‌شده</label><select id="gym20ExerciseGroupSelect"><option value="">انتخاب گروه…</option></select><small id="gym20ExerciseGroupMembersSummary" class="gym20-group-summary">ابتدا گروه را انتخاب کنید.</small></div><button type="button" id="gym20ExerciseGroupSaveMembers" class="gym20-group-action secondary">ذخیره اعضای انتخاب‌شده</button><div class="gym20-group-field"><label for="gym20ExerciseGroupInput">عنوان تمرین گروهی</label><input id="gym20ExerciseGroupInput" maxlength="120" placeholder="مثلاً Push up 30"></div><button type="button" id="gym20ExerciseGroupAdd" class="gym20-group-action">＋ افزودن تمرین به همه اعضای گروه</button><div id="gym20ExerciseGroupExercises" class="gym20-group-exercises"></div>';
+    pushBar.insertAdjacentElement('afterend',groupToggle);
+    groupToggle.insertAdjacentElement('afterend',groupPanel);
+    groupToggle.addEventListener('click',toggleGroupManager);
+    groupPanel.querySelector('#gym20ExerciseGroupCreate').addEventListener('click',createExerciseGroup);
+    groupPanel.querySelector('#gym20ExerciseGroupSaveMembers').addEventListener('click',saveExerciseGroupMembers);
+    groupPanel.querySelector('#gym20ExerciseGroupAdd').addEventListener('click',addGroupExercise);
+    groupPanel.querySelector('#gym20ExerciseGroupSelect').addEventListener('change',()=>loadSelectedExerciseGroup().catch(e=>say(e.message||'دریافت گروه ناموفق بود.',true)));
+    const groupStyle=document.createElement('style');
+    groupStyle.id='gym20ExerciseGroupStyle';
+    groupStyle.textContent='.gym20-group-toggle{display:inline-flex;align-items:center;justify-content:center;min-height:27px;height:27px;margin:0 0 7px;padding:0 10px;border:1px solid rgba(214,179,90,.5);border-radius:7px;background:rgba(214,179,90,.12);color:#e8c46b;font:800 9px Vazirmatn,sans-serif}.gym20-group-toggle[aria-expanded="true"]{background:rgba(214,179,90,.2)}.gym20-group-panel{display:flex;flex-direction:column;gap:7px;margin:0 0 10px;padding:9px;border:1px solid rgba(214,179,90,.22);border-radius:9px;background:rgba(255,255,255,.025)}.gym20-group-panel[hidden]{display:none!important}.gym20-group-field{display:flex;flex-direction:column;gap:4px}.gym20-group-field label{color:#d8bd78;font-size:9px;font-weight:800}.gym20-group-field input,.gym20-group-field select{box-sizing:border-box;width:100%;height:30px;min-height:30px;padding:4px 8px;border:1px solid #394456;border-radius:7px;background:#121a25;color:#edf1f7;font:10px Vazirmatn,sans-serif}.gym20-group-students{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-height:190px;overflow:auto;padding:5px;border:1px solid #ffffff12;border-radius:7px}.gym20-group-student{display:flex;align-items:center;gap:5px;min-width:0;padding:4px 5px;border-radius:5px;background:#ffffff06;color:#dce2eb;font-size:9px}.gym20-group-student input{width:13px;height:13px;flex:0 0 13px;margin:0;accent-color:#d6b35a}.gym20-group-student span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gym20-group-action{align-self:flex-start;min-height:26px;height:26px;padding:0 9px;border:1px solid #a4864a66;border-radius:6px;background:#d6b35a16;color:#e8c46b;font:800 8px Vazirmatn,sans-serif}.gym20-group-action.secondary{background:#ffffff08;border-color:#ffffff22;color:#d7dce4}.gym20-group-action:disabled{opacity:.55}.gym20-group-divider{height:1px;background:#ffffff16;margin:3px 0}.gym20-group-summary,.gym20-group-empty{color:#96a2b3;font-size:8px}.gym20-group-exercises{display:flex;flex-direction:column;gap:4px}.gym20-group-exercise-row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:6px 7px;border:1px solid #ffffff14;border-radius:7px;background:#ffffff05}.gym20-group-exercise-row strong{font-size:9px;color:#e8eaf0}.gym20-group-exercise-row small{font-size:8px;color:#9aa6b6}@media(max-width:420px){.gym20-group-students{grid-template-columns:repeat(2,minmax(0,1fr))}}';
+    document.head.appendChild(groupStyle);
     const style = document.createElement('style');
     style.id = 'gym20ExerciseCompactStyle';
     style.textContent = `

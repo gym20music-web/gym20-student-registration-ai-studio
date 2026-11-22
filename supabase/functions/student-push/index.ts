@@ -45,13 +45,41 @@ function validSubscription(sub: any) {
 async function sendExerciseCompletion(code: string, exerciseId: string) {
   const studentId = await findStudent(code);
   if (!studentId) return reply({ ok: false, error: "لینک هنرجو معتبر نیست." }, 404);
-  const { data: exercise, error: exerciseError } = await gym.from("student_exercises")
+
+  const { data: personalExercise, error: personalError } = await gym.from("student_exercises")
     .select("id,title,is_completed,completed_at")
     .eq("id", exerciseId).eq("student_id", studentId).maybeSingle();
-  if (exerciseError) throw exerciseError;
-  if (!exercise || exercise.is_completed !== true || !exercise.completed_at) {
-    return reply({ ok: false, error: "انجام تمرین در سامانه ثبت نشده است." }, 409);
+  if (personalError) throw personalError;
+
+  let exerciseTitle = "", completedAt = "", groupName = "", isGroupExercise = false;
+  if (personalExercise) {
+    if (personalExercise.is_completed !== true || !personalExercise.completed_at) {
+      return reply({ ok: false, error: "انجام تمرین در سامانه ثبت نشده است." }, 409);
+    }
+    exerciseTitle = String(personalExercise.title || "تمرین");
+    completedAt = String(personalExercise.completed_at);
+  } else {
+    const { data: groupExercise, error: groupError } = await gym.from("group_exercises")
+      .select("id,title,group_id").eq("id", exerciseId).maybeSingle();
+    if (groupError) throw groupError;
+    if (!groupExercise) return reply({ ok: false, error: "تمرین پیدا نشد." }, 404);
+    const { data: membership, error: membershipError } = await gym.from("exercise_group_members")
+      .select("group_id").eq("group_id", groupExercise.group_id).eq("student_id", studentId).maybeSingle();
+    if (membershipError) throw membershipError;
+    if (!membership) return reply({ ok: false, error: "عضویت گروه تأیید نشد." }, 403);
+    const { data: completion, error: completionError } = await gym.from("group_exercise_completions")
+      .select("completed_at").eq("exercise_id", exerciseId).eq("student_id", studentId).maybeSingle();
+    if (completionError) throw completionError;
+    if (!completion?.completed_at) return reply({ ok: false, error: "انجام تمرین گروهی در سامانه ثبت نشده است." }, 409);
+    const { data: group, error: groupNameError } = await gym.from("exercise_groups")
+      .select("name").eq("id", groupExercise.group_id).maybeSingle();
+    if (groupNameError) throw groupNameError;
+    exerciseTitle = String(groupExercise.title || "تمرین گروهی");
+    groupName = String(group?.name || "گروهی");
+    completedAt = String(completion.completed_at);
+    isGroupExercise = true;
   }
+
   const { data: student, error: studentError } = await gym.from("students")
     .select("full_name").eq("id", studentId).maybeSingle();
   if (studentError) throw studentError;
@@ -65,8 +93,11 @@ async function sendExerciseCompletion(code: string, exerciseId: string) {
   if (subError) throw subError;
   if (!subs?.length) return reply({ ok: true, sent: 0, total: 0, reason: "no_admin_device" });
 
-  const { error: claimError } = await gym.from("admin_exercise_push_deliveries")
-    .insert({ exercise_id: exercise.id, completed_at: exercise.completed_at });
+  const deliveryTable = isGroupExercise ? "admin_group_exercise_push_deliveries" : "admin_exercise_push_deliveries";
+  const deliveryPayload = isGroupExercise
+    ? { exercise_id: exerciseId, student_id: studentId, completed_at: completedAt }
+    : { exercise_id: exerciseId, completed_at: completedAt };
+  const { error: claimError } = await gym.from(deliveryTable).insert(deliveryPayload);
   if (claimError) {
     if (claimError.code === "23505" || /duplicate|unique/i.test(claimError.message || "")) {
       return reply({ ok: true, duplicate: true, sent: 0, total: subs.length });
@@ -77,11 +108,12 @@ async function sendExerciseCompletion(code: string, exerciseId: string) {
   const vapid = await getVapid();
   webpush.setVapidDetails(vapid.subject || "mailto:admin@gym20.ir", vapid.public_key, vapid.private_key);
   const studentName = String(student?.full_name || "هنرجو").slice(0, 120);
-  const exerciseTitle = String(exercise.title || "تمرین").slice(0, 120);
+  const safeTitle = exerciseTitle.slice(0, 120);
+  const groupText = isGroupExercise ? " (گروه " + groupName.slice(0, 80) + ")" : "";
   const payload = JSON.stringify({
     title: "GYM20 | انجام تمرین",
-    body: studentName + " تمرین «" + exerciseTitle + "» را انجام داد. 💪",
-    tag: "gym20-exercise-" + exercise.id + "-" + new Date(exercise.completed_at).getTime(),
+    body: studentName + " تمرین «" + safeTitle + "»" + groupText + " را انجام داد. 💪",
+    tag: "gym20-exercise-" + exerciseId + "-" + new Date(completedAt).getTime() + (isGroupExercise ? "-" + studentId : ""),
     url: "https://gym20.ir/"
   });
   let sent = 0, failed = 0;
@@ -104,8 +136,9 @@ async function sendExerciseCompletion(code: string, exerciseId: string) {
     }
   }
   if (sent === 0) {
-    await gym.from("admin_exercise_push_deliveries")
-      .delete().eq("exercise_id", exercise.id).eq("completed_at", exercise.completed_at);
+    let cleanup = gym.from(deliveryTable).delete().eq("exercise_id", exerciseId).eq("completed_at", completedAt);
+    if (isGroupExercise) cleanup = cleanup.eq("student_id", studentId);
+    await cleanup;
   }
   return reply({ ok: true, sent, failed, total: subs.length });
 }
