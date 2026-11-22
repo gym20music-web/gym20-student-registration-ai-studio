@@ -543,3 +543,15 @@ html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
   background-color:#191c23!important;border-color:rgba(148,163,184,.20)!important;color:#f8fafc!important;
 }
 /* Semantic states intentionally remain green/red/yellow/blue. */
+
+
+/* GYM20 exercise status labels — semantic colors only */
+#adminModal #exercisesTab .gym20-ex-status.is-completed{
+  color:#22c55e!important;-webkit-text-fill-color:#22c55e!important;
+}
+#adminModal #exercisesTab .gym20-ex-status.is-pending{
+  color:#eab308!important;-webkit-text-fill-color:#eab308!important;
+}
+#adminModal #exercisesTab .gym20-ex-status.is-overdue{
+  color:#ef4444!important;-webkit-text-fill-color:#ef4444!important;
+}
