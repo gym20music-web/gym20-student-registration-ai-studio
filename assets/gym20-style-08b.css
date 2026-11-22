@@ -555,3 +555,18 @@ html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
 #adminModal #exercisesTab .gym20-ex-status.is-overdue{
   color:#ef4444!important;-webkit-text-fill-color:#ef4444!important;
 }
+
+
+/* Final override: keep exercise status text semantic in both themes. */
+html[data-theme] #adminModal #exercisesTab #gym20ExerciseList .gym20-ex-status.is-completed{
+  color:#22c55e!important;
+  -webkit-text-fill-color:#22c55e!important;
+}
+html[data-theme] #adminModal #exercisesTab #gym20ExerciseList .gym20-ex-status.is-pending{
+  color:#eab308!important;
+  -webkit-text-fill-color:#eab308!important;
+}
+html[data-theme] #adminModal #exercisesTab #gym20ExerciseList .gym20-ex-status.is-overdue{
+  color:#ef4444!important;
+  -webkit-text-fill-color:#ef4444!important;
+}
