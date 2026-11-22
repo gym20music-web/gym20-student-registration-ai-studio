@@ -729,6 +729,11 @@
       const data=await getSchedule();
       try{localStorage.setItem(cacheKey,JSON.stringify(data));}catch(_){}
       applyScheduleData(data);
+      // Start periodic exercise refresh only after the active term is available.
+      window.setInterval(refreshStudentExercises,5000);
+      document.addEventListener('visibilitychange',()=>{
+        if(document.visibilityState==='visible')refreshStudentExercises();
+      });
 
       let refreshInFlight=false,lastRefreshAt=Date.now();
       const refreshPublishedSchedule=async(force=false)=>{
