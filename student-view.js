@@ -2,6 +2,32 @@
   const SUPABASE_URL='https://ubrafxjpnqtjnjdaskba.supabase.co';
   const SUPABASE_KEY='sb_publishable_hqqbaInJ5kXtySlybUdwjA_i0QHxpV3';
   const $=id=>document.getElementById(id);
+  function createStudentClient(){
+    const baseHeaders={apikey:SUPABASE_KEY,Authorization:'Bearer '+SUPABASE_KEY,'Content-Type':'application/json'};
+    const rpc=async(schema,name,args)=>{
+      try{
+        const headers={...baseHeaders,'Accept-Profile':schema,'Content-Profile':schema};
+        const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/'+encodeURIComponent(name),{method:'POST',headers,body:JSON.stringify(args||{}),cache:'no-store'});
+        const payload=await response.json().catch(()=>null);
+        if(!response.ok)return {data:null,error:{message:payload?.message||payload?.error||('HTTP '+response.status),code:payload?.code,details:payload?.details,hint:payload?.hint,status:response.status}};
+        return {data:payload,error:null};
+      }catch(error){return {data:null,error};}
+    };
+    return {
+      rpc:(name,args)=>rpc('gym20',name,args),
+      schema:schema=>({rpc:(name,args)=>rpc(schema,name,args)}),
+      functions:{
+        invoke:async(name,options={})=>{
+          try{
+            const response=await fetch(SUPABASE_URL+'/functions/v1/'+encodeURIComponent(name),{method:'POST',headers:baseHeaders,body:JSON.stringify(options.body||{}),cache:'no-store'});
+            const data=await response.json().catch(()=>null);
+            if(!response.ok)return {data,error:new Error(data?.error||data?.message||('HTTP '+response.status))};
+            return {data,error:null};
+          }catch(error){return {data:null,error};}
+        }
+      }
+    };
+  }
   const exerciseScrollStyle=document.createElement('style');
   exerciseScrollStyle.textContent=`
     #exercisePanel #exerciseList{
@@ -613,9 +639,7 @@
       if(cached&&cached.student&&Array.isArray(cached.terms))cachedData=cached;
     }catch(_){}
     try{
-      if(window.gym20SupabaseReady)await window.gym20SupabaseReady;
-      if(!window.supabase?.createClient)throw new Error('سرویس برنامه بارگذاری نشد.');
-      const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
+      const client=createStudentClient();
       const getSchedule=async()=>{
         const result=shortCode
           ?await client.rpc('get_student_public_schedule_by_code',{p_code:shortCode})
