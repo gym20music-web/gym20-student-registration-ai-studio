@@ -531,8 +531,8 @@
     style.id='gym20AdminTabSortingStyle';
     style.textContent=`
       .admin-tabs>.nav-item,.admin-tabs>.admin-tab-btn{-webkit-user-select:none!important;user-select:none!important;touch-action:none!important}
-      .admin-tabs .gym20-nav-dragging{opacity:.55!important;outline:1px solid rgba(218,190,126,.85)!important;position:relative!important;z-index:20!important}
-      .admin-tabs .gym20-nav-over{outline:1px dashed rgba(218,190,126,.85)!important;outline-offset:-2px}
+      .admin-tabs .gym20-nav-dragging{opacity:.55!important;outline:1px solid rgba(148,163,184,.55)!important;position:relative!important;z-index:20!important}
+      .admin-tabs .gym20-nav-over{outline:1px dashed rgba(148,163,184,.55)!important;outline-offset:-2px}
     `;
     document.head.appendChild(style);
     // Remove legacy six-dot drag handles left by older cached scripts.
