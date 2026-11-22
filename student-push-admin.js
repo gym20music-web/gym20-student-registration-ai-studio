@@ -35,7 +35,7 @@
       '<span id="stPushActiveCount" class="st-push-active-count" aria-live="polite"></span>'+
       '<span id="stPushAdminStatus" class="st-muted" role="status" aria-live="polite"></span>';
     const style=document.createElement('style');style.id='stPushCompactCss';style.textContent=
-      '#stPushCard .st-push-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;margin:2px 0 8px;padding:6px 7px;border:1px solid rgba(214,179,90,.18);border-radius:9px;background:rgba(214,179,90,.025)}'+
+      '#stPushCard .st-push-toolbar{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex-wrap:wrap;margin:2px 0 8px;padding:6px 7px;border:1px solid rgba(226,232,240,.18);border-radius:9px;background:rgba(226,232,240,.025)}'+
       '#stPushCard #stPushStatusControls{display:flex;align-items:center;justify-content:flex-start;gap:6px;flex:1 1 auto;min-width:0;flex-wrap:wrap;margin:0;padding:0;border:0}'+
       '#stPushCard .st-push-toggle,#stPushCard #stPushTestAdmin{box-sizing:border-box!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0 7px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important;font-size:8px!important;line-height:1!important;margin:0!important;border-radius:6px!important;flex:0 0 auto!important;vertical-align:middle!important}'+
       '#stPushCard .st-push-toggle.is-on{border-color:#16a34a!important;color:#4ade80!important}'+

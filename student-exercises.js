@@ -553,11 +553,11 @@
       :is(#gym20ExercisesTab,.gym20-exercises-panel) #gym20ExerciseAdd{min-height:26px!important;height:26px!important;padding:0 10px!important;font-size:9px!important;margin:2px 0 4px}
       #gym20ExerciseFeedback{font-size:9px!important;line-height:1.5;margin:3px 0 6px}
       #gym20ExerciseList{display:flex;flex-direction:column;gap:5px;margin-top:5px}
-      #gym20ExerciseList .gym20-ex-count{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid rgba(214,179,90,.2);border-radius:8px;background:rgba(214,179,90,.055)}
-      #gym20ExerciseList .gym20-ex-count strong{font-size:9px;color:#e8c46b}
+      #gym20ExerciseList .gym20-ex-count{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid rgba(226,232,240,.2);border-radius:8px;background:rgba(226,232,240,.055)}
+      #gym20ExerciseList .gym20-ex-count strong{font-size:9px;color:#e2e8f0}
       #gym20ExerciseList .gym20-ex-count small{font-size:8px;color:var(--text-secondary,#aab0b9)}
-      #gym20ExerciseList .gym20-ex-archive{margin-top:5px;border:1px solid rgba(214,179,90,.2);border-radius:9px;background:rgba(255,255,255,.018);overflow:hidden}
-      #gym20ExerciseList .gym20-ex-archive>summary,#gym20ExerciseList .gym20-ex-archive-day>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;padding:6px 9px;cursor:pointer;list-style:none;color:#e8c46b;font-size:9px;font-weight:800}
+      #gym20ExerciseList .gym20-ex-archive{margin-top:5px;border:1px solid rgba(226,232,240,.2);border-radius:9px;background:rgba(255,255,255,.018);overflow:hidden}
+      #gym20ExerciseList .gym20-ex-archive>summary,#gym20ExerciseList .gym20-ex-archive-day>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:32px;padding:6px 9px;cursor:pointer;list-style:none;color:#e2e8f0;font-size:9px;font-weight:800}
       #gym20ExerciseList summary::-webkit-details-marker{display:none}
       #gym20ExerciseList .gym20-ex-archive summary span{font-size:8px;color:var(--text-secondary,#aab0b9);font-weight:600}
       #gym20ExerciseList .gym20-ex-archive-days{display:flex;flex-direction:column;gap:5px;padding:0 6px 6px}
