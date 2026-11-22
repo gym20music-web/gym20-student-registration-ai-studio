@@ -149,9 +149,11 @@
       const archivedRows = rows.filter(x => !!x.is_completed && !!x.completed_at && tehranDateKey(x.completed_at) !== today);
       const renderExercise = x => {
         const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
+        const overdue = !completed && !!x.created_at && tehranDateKey(x.created_at) < today;
+        const statusClass = completed ? 'is-completed' : overdue ? 'is-overdue' : 'is-pending';
+        const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">' + esc(x.title) + '</strong>' +
-          '<span class="gym20-ex-status ' + (completed ? 'is-completed' : 'is-pending') + '">' +
-          (completed ? '✓ انجام‌شده' : 'در انتظار انجام') + '</span>' +
+          '<span class="gym20-ex-status ' + statusClass + '">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
           '</div><div class="gym20-ex-actions">' +
           '<button type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
@@ -569,7 +571,8 @@
       #gym20ExerciseList .gym20-ex-title{font-size:10px!important;line-height:1.5;color:var(--text-primary,#eee);font-weight:800;overflow-wrap:anywhere}
       #gym20ExerciseList .gym20-ex-status{font-size:8px;line-height:1.45;font-weight:700}
       #gym20ExerciseList .gym20-ex-status.is-completed{color:#55c58a}
-      #gym20ExerciseList .gym20-ex-status.is-pending{color:#d5b66b}
+      #gym20ExerciseList .gym20-ex-status.is-pending{color:#eab308}
+      #gym20ExerciseList .gym20-ex-status.is-overdue{color:#ef4444}
       #gym20ExerciseList .gym20-ex-date,#gym20ExerciseList .gym20-ex-time{display:block;font-size:8px;line-height:1.5;color:var(--text-secondary,#aab0b9);font-weight:500}
       #gym20ExerciseList .gym20-ex-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex:0 0 auto}
       #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box;min-height:23px!important;height:23px!important;padding:0 6px!important;margin:0!important;border-radius:5px!important;font-size:8px!important;line-height:1!important;white-space:nowrap}
