@@ -711,6 +711,14 @@ function loadGym20AdminModules(){
     ];
     gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
+      .then(()=>{
+        // The exercise tab may be opened while lazy admin modules are still loading.
+        // Replay its load event after the module has registered its listener.
+        const exerciseTab=document.getElementById('exercisesTab');
+        if(exerciseTab&&exerciseTab.classList.contains('active')){
+          window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
+        }
+      })
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
   return gym20AdminModulesPromise;
