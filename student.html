@@ -6,7 +6,6 @@
 <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="no-referrer">
 <title>برنامه کلاس‌های من | GYM20</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preconnect" href="https://ubrafxjpnqtjnjdaskba.supabase.co" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
 <noscript><link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet"></noscript>
@@ -536,23 +535,6 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 <section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><button type="button" id="exercisePanelToggle" class="exercise-panel-toggle" aria-expanded="false" aria-controls="exerciseContent"><span>🤸🏻‍♂️ تمرین‌های من</span><span id="exerciseGroupHint" class="exercise-group-hint"></span><span class="exercise-panel-chevron">⌄</span></button><div id="exerciseContent" hidden><div id="exerciseCountHint" class="muted" style="margin-bottom:8px" aria-live="polite"></div><div id="groupExerciseList" class="group-exercise-list hide"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
 <script>
-window.gym20SupabaseReady = new Promise((resolve,reject)=>{
-  const sources=[
-    'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0',
-    'https://unpkg.com/@supabase/supabase-js@2.118.0/dist/umd/supabase.js'
-  ];
-  let index=0,settled=false;
-  const loadNext=()=>{
-    if(index>=sources.length){if(!settled){settled=true;reject(new Error('بارگذاری سرویس برنامه ناموفق بود.'));}return;}
-    const script=document.createElement('script');script.src=sources[index++];script.async=true;
-    let finished=false;
-    const timer=setTimeout(()=>{if(finished)return;finished=true;script.remove();loadNext();},3800);
-    script.onload=()=>{if(finished)return;finished=true;clearTimeout(timer);if(window.supabase?.createClient){settled=true;resolve();}else{script.remove();loadNext();}};
-    script.onerror=()=>{if(finished)return;finished=true;clearTimeout(timer);script.remove();loadNext();};
-    document.head.appendChild(script);
-  };
-  loadNext();
-});
 (function(){
 (function(){
   var params=new URLSearchParams(location.search);
