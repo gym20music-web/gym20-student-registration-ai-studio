@@ -24,11 +24,11 @@
 @media(max-width:520px){.top-actions{gap:6px}.exercise-top-shortcut{height:28px;padding:0 7px;font-size:9px}.connection{display:none}}
 
 
-/* GYM20 exercise tab — match the core premium charcoal admin theme */
+/* GYM20 exercise tab — exact Stealth palette used by the public site */
 #view-exercises{width:100%;min-width:0;color:var(--text);font-family:Vazirmatn,Tahoma,sans-serif}
 #view-exercises .gym20-exercises-panel{border:1px solid var(--line)!important;background:linear-gradient(145deg,#191c23,#15181f)!important;border-radius:12px!important;padding:15px!important;color:var(--text)!important;box-shadow:none!important}
 #view-exercises .panel-head h2{color:#f8fafc;font:700 14px Vazirmatn,sans-serif}
-#view-exercises .tag{background:rgba(200,170,105,.07);border-color:rgba(148,163,184,.32);color:var(--gold)}
+#view-exercises .tag{background:rgba(226,232,240,.07);border-color:rgba(148,163,184,.32);color:var(--gold)}
 #view-exercises .field label{color:#cbd5e1;font-size:11px}
 #view-exercises .field input,#view-exercises .field select{height:35px;background:#0f1115;border:1px solid var(--line);border-radius:8px;color:var(--text);font:11px Vazirmatn,sans-serif;padding:7px 9px;outline:none}
 #view-exercises .field input:focus,#view-exercises .field select:focus{border-color:var(--gold)}
