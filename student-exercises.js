@@ -75,8 +75,8 @@
         await loadStudentExercisesAdmin();
       } else {
         currentStudentId = '';
-        $('gym20ExerciseList').innerHTML = '<p class="hint">برای نمایش تمرین‌ها، یک هنرجو انتخاب کنید.</p>';
-        say(students.length ? 'هنرجو را برای مشاهده یا ثبت تمرین انتخاب کنید.' : 'فهرست هنرجویان خالی است؛ ابتدا بخش پرونده هنرجویان را بروزرسانی کنید.');
+        $('gym20ExerciseList').innerHTML = '';
+        say('');
       }
     } catch (e) {
       students = Array.isArray(window.gym20Students) ? window.gym20Students : [];
@@ -483,7 +483,7 @@
     individualCard.className='gym20-exercise-card gym20-exercise-individual-card';
     const individualTitle=document.createElement('h3');
     individualTitle.className='gym20-exercise-card-title';
-    individualTitle.textContent='تمرین انفرادی هنرجو به هنرجو';
+    individualTitle.textContent='تمرین انفرادی هنرجو';
     const individualGrid=exerciseHost.querySelector('.admin-grid-2');
     const feedback=$('gym20ExerciseFeedback');
     if(pushHeading)notifyCard.appendChild(pushHeading);
