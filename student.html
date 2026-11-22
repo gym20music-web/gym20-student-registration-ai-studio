@@ -500,13 +500,42 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
 }
 @media(max-width:520px){.term-wheel-list{padding:89px 9px!important}}
 
-.exercise-loading{min-height:116px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #303a49;border-radius:9px;background:linear-gradient(135deg,#18212d,#111722);color:#8492a5;font-size:10px}.exercise-loading:before{content:"";width:13px;height:13px;border:2px solid #4b5563;border-top-color:#e8c46b;border-radius:50%;animation:g20ExerciseSpin .8s linear infinite}@keyframes g20ExerciseSpin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.exercise-loading:before{animation:none}}\n</style></head>
+.exercise-loading{min-height:116px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid #303a49;border-radius:9px;background:linear-gradient(135deg,#18212d,#111722);color:#8492a5;font-size:10px}.exercise-loading:before{content:"";width:13px;height:13px;border:2px solid #4b5563;border-top-color:#e8c46b;border-radius:50%;animation:g20ExerciseSpin .8s linear infinite}@keyframes g20ExerciseSpin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){.exercise-loading:before{animation:none}}\n 
+.exercise-panel-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:34px;padding:2px 1px;border:0;background:transparent;color:var(--gold);font:800 13px Vazirmatn,sans-serif;text-align:right;cursor:pointer}
+.exercise-group-hint{margin-inline-start:auto;color:#a9d7b9;font-size:8px;font-weight:700}.exercise-panel-chevron{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #8d713e66;border-radius:7px;background:#d6b35a12;color:#e8c46b;font-size:17px;transition:transform .18s ease}
+.exercise-panel-toggle[aria-expanded="true"] .exercise-panel-chevron{transform:rotate(180deg)}
+#exerciseContent{padding-top:5px}
+.group-exercise-list{display:flex;flex-direction:column;gap:7px;margin:0 0 8px}
+.group-exercise-day-title{padding:5px 8px;border:1px solid #d6b35a35;border-radius:8px;background:#d6b35a0c;color:#e8c46b;font-size:9px;font-weight:800}
+.group-exercise-set{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+.group-exercise-set-title{color:#e8c46b;font-size:10px;font-weight:800}
+.group-exercise-card{display:flex;flex-direction:column;gap:7px;padding:8px;border:1px solid #354052;border-radius:9px;background:linear-gradient(135deg,#1a2230,#111722)}
+.group-exercise-title{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.group-exercise-title strong{font-size:10px;color:#f4f5f7;overflow-wrap:anywhere}
+.group-exercise-title small{flex:0 0 auto;color:#d8bd78;font-size:8px}
+.group-exercise-members{display:flex;flex-wrap:wrap;gap:5px}
+.group-member-status,.group-member-self{display:inline-flex;align-items:center;gap:5px;min-height:25px;padding:3px 7px;border:1px solid #ffffff18;border-radius:7px;background:#ffffff07;color:#cbd5e1;font-size:8px}
+.group-member-status i{font-style:normal;font-size:12px;font-weight:900}
+.group-member-status.done{border-color:#22c55e55;background:#14532d33;color:#86efac}
+.group-member-status.pending{border-color:#ef444455;background:#7f1d1d25;color:#fca5a5}
+.group-member-self{border-color:#d6b35a66;color:#f4e4b9}
+.group-member-self input{width:14px;height:14px;margin:0;accent-color:#22c55e}
+.group-exercise-archive{border:1px solid #ffffff18;border-radius:8px;overflow:hidden}
+.group-exercise-archive>summary{padding:7px 9px;color:#c8d0dc;font-size:9px;font-weight:700;cursor:pointer}
+.group-exercise-archive summary span{float:left;color:#9aa6b6;font-size:8px}
+.group-exercise-archive-days{display:flex;flex-direction:column;gap:5px;padding:0 7px 7px}
+.group-exercise-archive-day{border:1px solid #ffffff12;border-radius:7px;overflow:hidden}
+.group-exercise-archive-day>summary{padding:6px 8px;color:#cbd5e1;font-size:8px;cursor:pointer}
+.group-exercise-archive-day .group-exercise-set{padding:0 6px 6px}
+@media(prefers-reduced-motion:reduce){.exercise-panel-chevron{transition:none}}
+</style></head>
 <body><main><div class="brand">GYM20 · POWER · FOCUS · ENERGY</div>
 <header><h1>برنامه کلاس‌های من</h1><div id="studentName" class="muted">در حال دریافت برنامه…</div><div id="pushControls" class="push-controls hide"><button type="button" id="pushToggle" class="push-toggle">فعال‌سازی اعلان کلاس‌ها</button><span id="pushStatus" class="push-status" aria-live="polite"></span></div></header>
 <section id="termPanel" class="card hide"><label for="termSelect">انتخاب ترم</label><select id="termSelect"></select><p id="termMeta" class="muted"></p></section>
-<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><h2 style="font-size:13px;color:var(--gold);margin:0 0 8px">🤸🏻‍♂️ تمرین‌های من</h2><div id="exerciseCountHint" class="muted" style="margin-bottom:8px" aria-live="polite"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></section>
+<section class="card"><div id="schedule" class="empty">در حال بارگذاری…</div></section><section id="exercisePanel" class="card hide"><button type="button" id="exercisePanelToggle" class="exercise-panel-toggle" aria-expanded="false" aria-controls="exerciseContent"><span>🤸🏻‍♂️ تمرین‌های من</span><span id="exerciseGroupHint" class="exercise-group-hint"></span><span class="exercise-panel-chevron">⌄</span></button><div id="exerciseContent" hidden><div id="exerciseCountHint" class="muted" style="margin-bottom:8px" aria-live="polite"></div><div id="groupExerciseList" class="group-exercise-list hide"></div><div id="exerciseList" class="exercise-list"></div><div id="exerciseArchive" class="exercise-archive"></div><div id="exerciseFeedback" class="exercise-feedback" aria-live="polite"></div></div></section>
 <footer class="muted" style="text-align:center">آکادمی ورزشی GYM20</footer></main>
 <script>
+(function(){
 (function(){
   var params=new URLSearchParams(location.search);
   var parts=location.pathname.split("/");
@@ -556,7 +585,7 @@ label{font-size:10px;color:var(--gold);font-weight:700}select{width:100%;height:
     history.replaceState(null,"","/s/"+code+location.hash);
   }
 })();;
-</script><script defer src="/student-view.js?v=20261122-fast-rest-cache-fix-v1"></script>
+</script><script defer src="/student-view.js?v=20261122-group-exercise-speed-v2"></script>
 
 </body></html>
 
