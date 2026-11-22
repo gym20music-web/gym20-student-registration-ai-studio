@@ -107,6 +107,7 @@ as $function$
         'members',coalesce((
           select jsonb_agg(jsonb_build_object(
             'student_id',s.id,'full_name',s.full_name,
+            'is_self',s.id=(select student_id from target),
             'is_completed',c.completed_at is not null,
             'completed_at',c.completed_at
           ) order by s.full_name)
