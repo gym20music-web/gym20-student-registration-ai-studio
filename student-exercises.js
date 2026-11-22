@@ -151,9 +151,10 @@
         const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
         const overdue = !completed && !!x.created_at && tehranDateKey(x.created_at) < today;
         const statusClass = completed ? 'is-completed' : overdue ? 'is-overdue' : 'is-pending';
+        const statusColor = completed ? '#22c55e' : overdue ? '#ef4444' : '#eab308';
         const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">' + esc(x.title) + '</strong>' +
-          '<span class="gym20-ex-status ' + statusClass + '">' + statusLabel + '</span>' +
+          '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
           '</div><div class="gym20-ex-actions">' +
           '<button type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
@@ -171,7 +172,7 @@
         return '<details class="gym20-ex-archive-day" data-exercise-day="' + esc(day) + '"' + opened + '><summary>تمرینات من ـ ' + esc(tehranDayLabel(items[0].completed_at)) + ' <span>' + items.length.toLocaleString('fa-IR') + ' تمرین</span></summary><div class="gym20-ex-archive-list">' + items.map(renderExercise).join('') + '</div></details>';
       }).join('');
       list.innerHTML = rows.length
-        ? '<div class="gym20-ex-count"><strong>' + currentRows.length.toLocaleString('fa-IR') + ' تمرین جاری</strong><small>مجموع این ترم: ' + rows.length.toLocaleString('fa-IR') + ' تمرین</small></div>' +
+        ? '<div class="gym20-ex-count"><strong style="color:#22c55e !important;-webkit-text-fill-color:#22c55e !important">' + currentRows.length.toLocaleString('fa-IR') + ' تمرین جاری</strong><small>مجموع این ترم: ' + rows.length.toLocaleString('fa-IR') + ' تمرین</small></div>' +
           (currentRows.length ? currentRows.map(renderExercise).join('') : '<p class="hint">تمرین جاری برای امروز باقی نمانده است.</p>') +
           (groups.size ? '<details class="gym20-ex-archive" ' + (Array.from(list.querySelectorAll('details.gym20-ex-archive[open]')).length ? 'open' : '') + '><summary>آرشیو تمرینات انجام‌شده <span>' + archivedRows.length.toLocaleString('fa-IR') + ' تمرین</span></summary><div class="gym20-ex-archive-days">' + archiveMarkup + '</div></details>' : '')
         : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
