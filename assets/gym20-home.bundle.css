@@ -2588,3 +2588,99 @@ html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
   color:#f8fafc!important;
 }
 #adminModal #adminModulesStatus{color:#e2e8f0!important}
+
+
+/* GYM20 ADMIN — COMPLETE STEALTH COLOR PALETTE
+   Color-only overrides. No sizing, spacing, typography, layout or behavior changes. */
+#adminModal .admin-content{
+  background:#0f1115!important;color:#f8fafc!important;
+  border-color:rgba(148,163,184,.20)!important;
+  --adm-gold:#e2e8f0!important;
+  --adm-gold-soft:rgba(226,232,240,.08)!important;
+  --adm-control-bg:#191c23!important;
+  --adm-control-border:rgba(148,163,184,.20)!important;
+}
+#adminModal .admin-header{background:#191c23!important;border-color:rgba(148,163,184,.20)!important}
+#adminModal .admin-header h3 span{color:#e2e8f0!important}
+#adminModal .admin-sidebar{background:#191c23!important;border-color:rgba(148,163,184,.20)!important}
+#adminModal .admin-sidebar-brand{background:rgba(148,163,184,.045)!important;border-color:rgba(148,163,184,.20)!important}
+#adminModal .admin-sidebar-brand strong{color:#e2e8f0!important}
+#adminModal .admin-tab-btn.active{
+  background:rgba(226,232,240,.08)!important;color:#f8fafc!important;
+  border-color:rgba(148,163,184,.32)!important;box-shadow:inset -3px 0 0 #94a3b8!important;
+}
+#adminModal .admin-workspace{background:#0f1115!important;color:#f8fafc!important;scrollbar-color:rgba(148,163,184,.42) transparent!important}
+#adminModal .admin-workspace :is(.admin-section-subhead,.admin-input-group label){color:#cbd5e1!important}
+#adminModal .admin-workspace :is(input,textarea,select,.admin-select,[contenteditable="true"]){
+  background-color:#191c23!important;border-color:rgba(148,163,184,.20)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(input,textarea,select,.admin-select,[contenteditable="true"]):focus{
+  border-color:rgba(226,232,240,.55)!important;box-shadow:0 0 0 2px rgba(226,232,240,.08)!important;
+}
+#adminModal .admin-workspace :is(input,textarea)::placeholder{color:#94a3b8!important}
+#adminModal .admin-workspace button:not(.danger):not(.request-action-btn):not(.st-btn.danger){
+  background:#232732!important;border-color:rgba(148,163,184,.24)!important;color:#cbd5e1!important;
+}
+#adminModal .admin-workspace button:not(.danger):not(.request-action-btn):not(.st-btn.danger):hover:not(:disabled){
+  background:#2b303b!important;border-color:rgba(226,232,240,.42)!important;
+}
+#adminModal .admin-workspace :is(button.primary,button.save,.btn-primary,#autoCommitBtn,.st-btn.primary,#gym20ExerciseAdd){
+  background:linear-gradient(135deg,#cbd5e1,#64748b)!important;
+  border-color:#94a3b8!important;color:#0f1115!important;
+}
+#adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.admin-style-row,
+ .theme-card-option,.promo-settings-shell,.promo-toggle-row,.promo-channel-preview,
+ .request-summary,.request-detail-panel,.request-card,.requests-toolbar,
+ .requests-table-wrap,.requests-empty,.sub-text-panel,.sub-tab-group,
+ .st-card,.st-session-card,.st-session-fields,.gym20-ex-admin-row,
+ .gym20-admin-area-assignment){
+  background-color:#191c23!important;border-color:rgba(148,163,184,.20)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(.admin-card-section,.admin-region-box,.admin-style-row,
+ .theme-card-option,.promo-settings-shell,.promo-toggle-row,.promo-channel-preview,
+ .request-summary,.request-detail-panel,.request-card,.requests-toolbar,
+ .requests-table-wrap,.requests-empty,.sub-text-panel,.sub-tab-group,
+ .st-card,.st-session-card,.st-session-fields,.gym20-ex-admin-row,
+ .gym20-admin-area-assignment) :is(p,span,strong,b,label,small,h1,h2,h3,h4,div){
+  color:inherit;
+}
+#adminModal .admin-workspace :is(.sub-tab-btn.active,.admin-dropdown-option.selected,
+ .st-custom-option.selected,.st-student-option.selected,.theme-card-option.selected,
+ .gym20-admin-area-option.selected){
+  background:rgba(100,116,139,.22)!important;border-color:rgba(148,163,184,.35)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(.admin-dropdown-trigger,.st-custom-select-trigger,.st-student-trigger){
+  background:#191c23!important;border-color:rgba(148,163,184,.24)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(.admin-dropdown-menu,.st-custom-select-menu,.st-student-menu){
+  background:#191c23!important;border-color:rgba(148,163,184,.24)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(.admin-dropdown-option,.st-custom-option,.st-student-option){
+  color:#cbd5e1!important;border-color:rgba(148,163,184,.12)!important;
+}
+#adminModal .admin-workspace :is(.admin-dropdown-trigger:focus-visible,.st-custom-select-trigger:focus-visible){
+  outline-color:rgba(226,232,240,.55)!important;
+}
+#adminModal .admin-workspace :is(.admin-dropdown-arrow,.st-custom-select-arrow){color:#94a3b8!important}
+#adminModal .admin-workspace :is(.promo-settings-icon,.promo-channel-preview,.promo-fetch-btn){
+  border-color:rgba(148,163,184,.24)!important;background:rgba(148,163,184,.08)!important;color:#cbd5e1!important;
+}
+#adminModal .admin-workspace .promo-channel-name{color:#e2e8f0!important}
+#adminModal .admin-workspace :is(#adminClassStylesChips .style-item.selected,
+ #adminStylesListContainer .admin-style-row,#adminTgRecipientsContainer .admin-style-row){
+  background:#232732!important;border-color:rgba(148,163,184,.24)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(#adminRegionNewButton,#adminRegionWheelTrigger,#ruleWheelTrigger){
+  background:rgba(148,163,184,.08)!important;border-color:rgba(148,163,184,.38)!important;color:#e2e8f0!important;
+}
+#adminModal .admin-workspace :is(#adminRegionWheelTrigger .admin-region-wheel-arrow,#ruleWheelTrigger .rule-wheel-arrow){color:#94a3b8!important}
+#adminModal .admin-workspace :is(#adminRegionWheelList .admin-region-wheel-item.wheel-focus,
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus,
+ #customRegionWheelList .region-wheel-item.wheel-focus){
+  background:rgba(100,116,139,.22)!important;border-color:rgba(148,163,184,.28)!important;color:#f8fafc!important;
+}
+#adminModal .admin-workspace :is(#adminRegionWheelList .admin-region-wheel-item.wheel-focus>span,
+ #ruleWheelMenu #ruleWheelList>.rule-wheel-item.wheel-focus>span){color:#f8fafc!important;text-shadow:none!important}
+#adminModal .admin-workspace #gym20ExerciseAdd{background:linear-gradient(135deg,#cbd5e1,#64748b)!important;border-color:#94a3b8!important;color:#0f1115!important}
+#adminModal .admin-workspace #adminModulesStatus{color:#e2e8f0!important}
+/* Preserve semantic status colors: success, error, pending/session states and danger actions. */
