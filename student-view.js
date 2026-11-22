@@ -576,6 +576,15 @@
     }
   }
   async function init(){
+    const exerciseToggle=$('exercisePanelToggle'),exerciseContent=$('exerciseContent');
+    if(exerciseToggle&&exerciseContent&&!exerciseToggle.dataset.bound){
+      exerciseToggle.dataset.bound='1';
+      exerciseToggle.addEventListener('click',()=>{
+        const expanded=exerciseToggle.getAttribute('aria-expanded')==='true';
+        exerciseToggle.setAttribute('aria-expanded',String(!expanded));
+        exerciseContent.hidden=expanded;
+      });
+    }
     const params=new URLSearchParams(location.search);
     const token=params.get('t');
     const pathCode=(location.pathname.match(/\/s\/([0-9a-f]{12})\/?$/i)||[])[1]||'';
@@ -599,6 +608,8 @@
       if(cached&&cached.student&&Array.isArray(cached.terms))cachedData=cached;
     }catch(_){}
     try{
+      if(window.gym20SupabaseReady)await window.gym20SupabaseReady;
+      if(!window.supabase?.createClient)throw new Error('سرویس برنامه بارگذاری نشد.');
       const client=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{db:{schema:'gym20'},auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false}});
       const getSchedule=async()=>{
         const result=shortCode
