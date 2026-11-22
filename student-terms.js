@@ -260,7 +260,7 @@
       .st-jcal-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px}
       .st-jcal-head button,.st-jcal-day{border:1px solid #64748b;border-radius:7px;background:#232732;color:#fff;padding:6px 7px}
       .st-jcal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;text-align:center}
-      .st-jcal-grid span{font-size:11px;color:#d8bc78;padding:5px 0}
+      .st-jcal-grid span{font-size:11px;color:#94a3b8;padding:5px 0}
       .st-jcal-grid i{min-height:30px}
       .st-jcal-day{width:100%;min-height:30px;font-size:11px;padding:4px 0;cursor:pointer}
       .st-jcal-day.selected{background:#64748b;color:#111;font-weight:800}
@@ -2161,7 +2161,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       align-items:center!important;justify-content:center!important;border-radius:6px!important;
       font-family:Vazirmatn,Arial,sans-serif!important;font-size:9px!important;line-height:1!important;
     }
-    .st-jcal .st-jcal-grid>span{border:0!important;background:transparent!important;color:#d8bc78!important;font-weight:800!important}
+    .st-jcal .st-jcal-grid>span{border:0!important;background:transparent!important;color:#94a3b8!important;font-weight:800!important}
     .st-jcal .st-jcal-grid>i{border:0!important;background:transparent!important}
     .st-jcal .st-jcal-day{cursor:pointer!important}
     .st-jcal .st-jcal-day.term-range-start,
