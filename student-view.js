@@ -534,7 +534,7 @@
       const individualPending=items.length-individualDone;
       const individualCountHint=$('individualExerciseCount');
       if(individualCountHint){
-        individualCountHint.textContent=numberFa(items.length)+' تمرین · '+numberFa(individualDone)+' انجام‌شده';
+        individualCountHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
       }
       if(countHint){
         countHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی‌مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
@@ -544,7 +544,7 @@
       const groupPending=Math.max(0,ownGroupItems.length-groupDone);
       const groupCountHint=$('groupExerciseCount');
       if(groupCountHint){
-        groupCountHint.textContent=numberFa(ownGroupItems.length)+' تمرین · '+numberFa(groupDone)+' انجام‌شده';
+        groupCountHint.textContent=groupPending?numberFa(groupPending)+' تمرین باقی مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
       }
       const syncSection=(buttonId,contentId,pending)=>{
         const button=$(buttonId),content=$(contentId);
