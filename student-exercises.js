@@ -467,8 +467,37 @@
     const groupPanel=document.createElement('div');
     groupPanel.id='gym20ExerciseGroupPanel';groupPanel.className='gym20-group-panel';groupPanel.hidden=true;
     groupPanel.innerHTML='<div class="gym20-group-field"><label for="gym20ExerciseGroupName">نام گروه جدید</label><input id="gym20ExerciseGroupName" maxlength="80" placeholder="مثلاً قدرت"></div><div class="gym20-group-field"><button type="button" id="gym20ExerciseGroupMembersToggle" class="gym20-group-members-toggle" aria-expanded="false">اعضا <span id="gym20ExerciseGroupSelectedCount">۰ هنرجو انتخاب‌شده</span> <span aria-hidden="true">⌄</span></button><div id="gym20ExerciseGroupStudentsWrap" hidden><div id="gym20ExerciseGroupStudents" class="gym20-group-students"></div></div></div><button type="button" id="gym20ExerciseGroupCreate" class="gym20-group-action">ثبت گروه</button><div class="gym20-group-divider"></div><div class="gym20-group-field"><label for="gym20ExerciseGroupSelect">گروه‌های ثبت‌شده</label><select id="gym20ExerciseGroupSelect"><option value="">انتخاب گروه…</option></select><small id="gym20ExerciseGroupMembersSummary" class="gym20-group-summary">ابتدا گروه را انتخاب کنید.</small></div><button type="button" id="gym20ExerciseGroupSaveMembers" class="gym20-group-action secondary">ذخیره اعضای انتخاب‌شده</button><div class="gym20-group-field"><label for="gym20ExerciseGroupInput">عنوان تمرین گروهی</label><input id="gym20ExerciseGroupInput" maxlength="120" placeholder="مثلاً Push up 30"></div><button type="button" id="gym20ExerciseGroupAdd" class="gym20-group-action">＋ افزودن تمرین به همه اعضای گروه</button><div id="gym20ExerciseGroupExercises" class="gym20-group-exercises"></div>';
+
+    // Keep the notification header, group tools, and individual tools in three
+    // distinct cards so their controls never visually blend together.
+    const exerciseHost=embedded?$('gym20ExercisesTab'):panel;
+    const exerciseCardsStyle=document.createElement('style');
+    exerciseCardsStyle.id='gym20ExerciseCardsStyle';
+    exerciseCardsStyle.textContent='.gym20-exercise-card{box-sizing:border-box;display:flex;flex-direction:column;gap:8px;min-width:0;margin:0 0 10px;padding:10px;border:1px solid rgba(214,179,90,.2);border-radius:11px;background:linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012));box-shadow:0 5px 16px rgba(0,0,0,.10)}.gym20-exercise-card-title{margin:0;color:#e8c46b;font:800 10px Vazirmatn,sans-serif;line-height:1.7}.gym20-exercise-notify-card{flex-direction:row;align-items:center;justify-content:space-between;gap:8px}.gym20-exercise-notify-card .admin-section-subhead{flex:1;min-width:0;margin:0!important}.gym20-exercise-group-card .gym20-group-toggle{margin:0;align-self:flex-start}.gym20-exercise-individual-card .admin-grid-2{margin:0}.gym20-exercise-individual-card #gym20ExerciseList{margin-top:2px}';
+    document.head.appendChild(exerciseCardsStyle);
+    const notifyCard=document.createElement('section');
+    notifyCard.className='gym20-exercise-card gym20-exercise-notify-card';
+    const groupCard=document.createElement('section');
+    groupCard.className='gym20-exercise-card gym20-exercise-group-card';
+    const individualCard=document.createElement('section');
+    individualCard.className='gym20-exercise-card gym20-exercise-individual-card';
+    const individualTitle=document.createElement('h3');
+    individualTitle.className='gym20-exercise-card-title';
+    individualTitle.textContent='تمرین انفرادی هنرجو به هنرجو';
+    const individualGrid=exerciseHost.querySelector('.admin-grid-2');
+    const feedback=$('gym20ExerciseFeedback');
+    if(pushHeading)notifyCard.appendChild(pushHeading);
+    notifyCard.appendChild(pushBar);
+    groupCard.append(groupToggle,groupPanel);
+    individualCard.appendChild(individualTitle);
+    if(individualGrid)individualCard.appendChild(individualGrid);
+    if(add)individualCard.appendChild(add);
+    if(feedback)individualCard.appendChild(feedback);
+    if(list)individualCard.appendChild(list);
+    exerciseHost.prepend(individualCard);
+    exerciseHost.prepend(groupCard);
+    exerciseHost.prepend(notifyCard);
     pushBar.insertAdjacentElement('afterend',groupToggle);
-    groupToggle.insertAdjacentElement('afterend',groupPanel);
     groupToggle.addEventListener('click',toggleGroupManager);
     groupPanel.querySelector('#gym20ExerciseGroupMembersToggle').addEventListener('click',()=>{
       const button=$('gym20ExerciseGroupMembersToggle'),wrap=$('gym20ExerciseGroupStudentsWrap');
