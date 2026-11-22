@@ -682,12 +682,8 @@
         try{await loadStudentExercises(shortCode,token,client);}
         finally{exerciseRefreshInFlight=false;}
       };
-      // Keep the exercise card in sync with assignments made from the admin panel.
-      refreshStudentExercises();
-      window.setInterval(refreshStudentExercises,5000);
-      document.addEventListener('visibilitychange',()=>{
-        if(document.visibilityState==='visible')refreshStudentExercises();
-      });
+      // Exercise loading starts after the schedule has selected the active term.
+      // This avoids an initial request with no term ID, which used to delay individual tasks.
       const updateTermOptions=(selectedId)=>{
         const select=$('termSelect');
         select.innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
