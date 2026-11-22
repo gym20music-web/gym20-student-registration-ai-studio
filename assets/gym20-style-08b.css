@@ -240,3 +240,60 @@ html[data-theme="light"] #adminModal #exercisesTab #gym20ExerciseFeedback{
 }
 
 
+
+
+/* GYM20 ADMIN MODAL — STEALTH THEME OVERRIDE
+   Scoped to the in-page admin modal only. Preserve dimensions, layout and behavior. */
+#adminModal .admin-content{
+  --adm-gold:#e2e8f0!important;
+  --adm-gold-soft:rgba(226,232,240,.08)!important;
+  --adm-bg:#0f1115!important;
+  --adm-card:#191c23!important;
+  --adm-border:rgba(148,163,184,.20)!important;
+}
+#adminModal .admin-workspace :is(input,textarea,select):focus{
+  border-color:rgba(226,232,240,.55)!important;
+  box-shadow:0 0 0 2px rgba(226,232,240,.08)!important;
+}
+#adminModal .admin-workspace button:not(.st-custom-option){
+  border-color:rgba(148,163,184,.24)!important;
+  background:#232732!important;
+  color:#cbd5e1!important;
+}
+#adminModal .admin-workspace button:not(.st-custom-option):hover:not(:disabled){
+  background:#2b303b!important;
+  border-color:rgba(226,232,240,.42)!important;
+}
+#adminModal .admin-workspace button.primary,
+#adminModal .admin-workspace button.st-btn.primary,
+#adminModal .admin-workspace #autoCommitBtn{
+  background:linear-gradient(135deg,#cbd5e1,#64748b)!important;
+  color:#0f1115!important;
+  border-color:#cbd5e1!important;
+}
+#adminModal .admin-workspace input[type=checkbox],
+#adminModal .admin-workspace input[type=radio]{accent-color:#94a3b8!important}
+#adminModal #studentTermsTab .st-custom-select-trigger{
+  border-color:rgba(148,163,184,.24)!important;
+  background:#191c23!important;
+  color:#f8fafc!important;
+}
+#adminModal #studentTermsTab .st-custom-select-menu{
+  border-color:rgba(148,163,184,.24)!important;
+  background:#191c23!important;
+}
+#adminModal #studentTermsTab .st-custom-option.selected{
+  background:rgba(100,116,139,.22)!important;
+  color:#f8fafc!important;
+}
+#adminModal #exercisesTab .admin-section-subhead{color:#e2e8f0!important}
+#adminModal #exercisesTab #gym20ExerciseAdd{
+  border-color:rgba(148,163,184,.28)!important;
+  background:linear-gradient(135deg,#cbd5e1,#64748b)!important;
+  color:#0f1115!important;
+}
+html:not([data-theme="light"]) #adminModal .admin-workspace .sub-tab-btn.active{
+  color:#f8fafc!important;
+  background:rgba(226,232,240,.08)!important;
+  border-color:rgba(148,163,184,.32)!important;
+}
