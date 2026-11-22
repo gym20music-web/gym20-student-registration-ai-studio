@@ -529,13 +529,32 @@
       }else{list.style.height='auto';list.style.maxHeight='none';list.style.overflowY='visible';}
       archive.classList.toggle('hide',groups.size===0);
       const todayGroupItems=groupItems.filter(item=>tehranDateKey(item.created_at)===today);
-      if(countHint){
-        countHint.textContent=mainItems.length?new Intl.NumberFormat('fa-IR').format(mainItems.length)+' تمرین انفرادی داری 💪🏻':'۰ تمرین انفرادی برای امروز داری 💪🏻';
+      const numberFa=value=>new Intl.NumberFormat('fa-IR').format(value);
+      const individualDone=items.filter(item=>!!item.is_completed).length;
+      const individualPending=items.length-individualDone;
+      const individualCountHint=$('individualExerciseCount');
+      if(individualCountHint){
+        individualCountHint.textContent=numberFa(items.length)+' تمرین · '+numberFa(individualDone)+' انجام‌شده';
       }
+      if(countHint){
+        countHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی‌مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
+      }
+      const ownGroupItems=groupItems.filter(item=>(Array.isArray(item.members)?item.members:[]).some(member=>member.is_self));
+      const groupDone=ownGroupItems.filter(item=>(item.members||[]).some(member=>member.is_self&&member.is_completed)).length;
+      const groupPending=Math.max(0,ownGroupItems.length-groupDone);
       const groupCountHint=$('groupExerciseCount');
       if(groupCountHint){
-        groupCountHint.textContent=new Intl.NumberFormat('fa-IR').format(todayGroupItems.length)+' تمرین';
+        groupCountHint.textContent=numberFa(ownGroupItems.length)+' تمرین · '+numberFa(groupDone)+' انجام‌شده';
       }
+      const syncSection=(buttonId,contentId,pending)=>{
+        const button=$(buttonId),content=$(contentId);
+        if(!button||!content)return;
+        const expanded=pending>0;
+        button.setAttribute('aria-expanded',String(expanded));
+        content.hidden=!expanded;
+      };
+      syncSection('groupExerciseToggle','groupExerciseContent',groupPending);
+      syncSection('individualExerciseToggle','individualExerciseContent',individualPending);
       const oldGroupDays=new Map();
       groupItems.filter(item=>tehranDateKey(item.created_at)!==today).forEach(item=>{
         const day=tehranDateKey(item.created_at);if(!oldGroupDays.has(day))oldGroupDays.set(day,[]);oldGroupDays.get(day).push(item);
