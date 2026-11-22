@@ -414,10 +414,10 @@
           if(error)throw error;
         }
         changed=true;
-        const {data,error}=await db().from('exercise_group_members').select('student_id,students(id,full_name)').eq('group_id',selectedGroupId);
+        const {data,error}=await db().from('exercise_group_members').select('student_id').eq('group_id',selectedGroupId);
         if(error)throw error;
+        // Keep the live checkbox selection intact while coalescing rapid taps.
         groupMembers=data||[];
-        renderGroupStudentChecklist(groupMembers.map(x=>x.student_id));
         const summary=$('gym20ExerciseGroupMembersSummary');
         if(summary)summary.textContent=groupMembers.length.toLocaleString('fa-IR')+' هنرجو در این گروه عضو هستند.';
       }
