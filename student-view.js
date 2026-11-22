@@ -551,7 +551,9 @@
       const syncSection=(buttonId,contentId,pending)=>{
         const button=$(buttonId),content=$(contentId);
         if(!button||!content)return;
-        const expanded=pending>0;
+        button.dataset.pendingCount=String(pending);
+        const manualUntil=Number(button.dataset.manualOpenUntil||0);
+        const expanded=manualUntil>Date.now()||pending>0;
         button.setAttribute('aria-expanded',String(expanded));
         content.hidden=!expanded;
       };
@@ -639,8 +641,24 @@
       button.dataset.bound='1';
       button.addEventListener('click',()=>{
         const expanded=button.getAttribute('aria-expanded')==='true';
-        button.setAttribute('aria-expanded',String(!expanded));
-        content.hidden=expanded;
+        if(expanded){
+          button.dataset.manualOpenUntil='0';
+          button.setAttribute('aria-expanded','false');
+          content.hidden=true;
+          return;
+        }
+        const until=Date.now()+60000;
+        button.dataset.manualOpenUntil=String(until);
+        button.setAttribute('aria-expanded','true');
+        content.hidden=false;
+        window.setTimeout(()=>{
+          if(Number(button.dataset.manualOpenUntil||0)!==until)return;
+          button.dataset.manualOpenUntil='0';
+          const pending=Number(button.dataset.pendingCount||0);
+          const shouldStayOpen=pending>0;
+          button.setAttribute('aria-expanded',String(shouldStayOpen));
+          content.hidden=!shouldStayOpen;
+        },60000);
       });
     };
     bindExerciseToggle('groupExerciseToggle','groupExerciseContent');
