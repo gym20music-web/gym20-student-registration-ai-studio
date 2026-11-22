@@ -48,10 +48,19 @@ jobs:
             'assets/gym20-script-03.js','assets/gym20-script-04.js',
             'assets/gym20-script-05.js','assets/gym20-script-06.js','assets/gym20-script-07.js'
           ];
-          const all = [...css, ...scripts];
-          const missing = all.filter(path => !fs.existsSync(path) || !html.includes(path));
-          if (missing.length) {
-            console.error('Missing or unreferenced loader assets:', missing.join(', '));
+          const bundlePath = 'assets/gym20-home.bundle.css';
+          const missing = [...css, ...scripts, bundlePath].filter(path => !fs.existsSync(path));
+          const unreferencedScripts = scripts.filter(path => !html.includes(path));
+          if (missing.length || unreferencedScripts.length || !html.includes(bundlePath)) {
+            console.error('Missing assets, unreferenced scripts, or missing CSS bundle:', {
+              missing, unreferencedScripts, bundleReferenced: html.includes(bundlePath)
+            });
+            process.exit(1);
+          }
+          const bundle = fs.readFileSync(bundlePath, 'utf8');
+          const cssOrder = css.map(path => bundle.indexOf(fs.readFileSync(path, 'utf8')));
+          if (cssOrder.some((position, i) => position < 0 || (i && position <= cssOrder[i - 1]))) {
+            console.error('CSS bundle does not preserve the original stylesheet order:', cssOrder);
             process.exit(1);
           }
           const ordered = scripts.map(path => html.indexOf(path));
@@ -63,7 +72,7 @@ jobs:
             console.error('Raw GitHub loader endpoint not found');
             process.exit(1);
           }
-          console.log('Validated ' + css.length + ' CSS assets and ' + scripts.length + ' ordered JavaScript assets.');
+          console.log('Validated ordered CSS bundle from ' + css.length + ' source files and ' + scripts.length + ' ordered JavaScript assets.');
           NODE
 
       - name: Check CSS brace balance
