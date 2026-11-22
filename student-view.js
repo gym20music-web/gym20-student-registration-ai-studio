@@ -578,7 +578,6 @@
         select.innerHTML=terms.map(t=>'<option value="'+esc(t.id)+'">'+esc(t.term_name)+'</option>').join('');
         select.value=terms.some(t=>String(t.id)===String(selectedId))?selectedId:terms[0].id;
         select._gym20RenderWheel?.();
-        select.dispatchEvent(new Event('change',{bubbles:true}));
       };
       const applyScheduleData=(data)=>{
         if(!data||!data.student)throw Error('اطلاعات برنامه معتبر نیست.');
@@ -604,9 +603,17 @@
         refreshStudentExercises();
         hasRenderedData=true;
       };
+      let lastAppliedScheduleSnapshot='';
+      const applyScheduleIfChanged=(data)=>{
+        const snapshot=JSON.stringify(data);
+        if(snapshot===lastAppliedScheduleSnapshot)return false;
+        applyScheduleIfChanged(data);
+        lastAppliedScheduleSnapshot=snapshot;
+        return true;
+      };
       // Show the last successfully loaded schedule immediately, then refresh it from the server.
       if(cachedData){
-        try{applyScheduleData(cachedData);}catch(cacheError){console.warn('GYM20 cached schedule could not be rendered:',cacheError);}
+        try{applyScheduleIfChanged(cachedData);}catch(cacheError){console.warn('GYM20 cached schedule could not be rendered:',cacheError);}
       }
       const data=await getSchedule();
       try{localStorage.setItem(cacheKey,JSON.stringify(data));}catch(_){}
@@ -620,7 +627,7 @@
         try{
           const fresh=await getSchedule();
           try{localStorage.setItem(cacheKey,JSON.stringify(fresh));}catch(_){}
-          applyScheduleData(fresh);
+          applyScheduleIfChanged(fresh);
           lastRefreshAt=Date.now();
         }catch(err){console.warn('GYM20 student schedule live refresh failed:',err);}
         finally{refreshInFlight=false;}
