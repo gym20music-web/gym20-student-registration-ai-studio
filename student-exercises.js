@@ -173,7 +173,7 @@
           (currentRows.length ? currentRows.map(renderExercise).join('') : '<p class="hint">تمرین جاری برای امروز باقی نمانده است.</p>') +
           (groups.size ? '<details class="gym20-ex-archive" ' + (Array.from(list.querySelectorAll('details.gym20-ex-archive[open]')).length ? 'open' : '') + '><summary>آرشیو تمرینات انجام‌شده <span>' + archivedRows.length.toLocaleString('fa-IR') + ' تمرین</span></summary><div class="gym20-ex-archive-days">' + archiveMarkup + '</div></details>' : '')
         : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
-      say(rows.length.toLocaleString('fa-IR') + ' تمرین در ترم انتخاب‌شده ثبت شده است.');
+      say('');
     } catch (e) {
       list.innerHTML = '<p class="hint">دریافت تمرین‌ها ناموفق بود.</p>';
       say(e.message || 'دریافت تمرین‌ها ناموفق بود.', true);
@@ -362,7 +362,7 @@
     const {data,error}=await db().from('exercise_groups').select('id,name').order('created_at',{ascending:false});
     if(error)throw error;
     const groups=data||[];
-    select.innerHTML='<option value="">انتخاب گروه…</option>'+groups.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.name)+'</option>').join('');
+    select.innerHTML='<option value=""></option>'+groups.map(g=>'<option value="'+esc(g.id)+'">'+esc(g.name)+'</option>').join('');
     const desired=preferredId||selectedGroupId;
     selectedGroupId=groups.some(g=>String(g.id)===String(desired))?String(desired):(groups[0]?.id||'');
     select.value=selectedGroupId;
