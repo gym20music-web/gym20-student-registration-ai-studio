@@ -472,6 +472,11 @@
       const allItems=Array.isArray(data)?data:[];
       const items=selectedTermId?allItems.filter(item=>item.kind!=='group'&&String(item.term_id||'')===String(selectedTermId)):[];
       const groupItems=allItems.filter(item=>item.kind==='group');
+      const groupHint=$('exerciseGroupHint');
+      if(groupHint){
+        const names=Array.from(new Set(groupItems.map(item=>String(item.group_name||'')).filter(Boolean)));
+        groupHint.textContent=names.length?names.map(name=>'گروه '+name).join(' · '):'';
+      }
       const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
       const today=tehranTodayKey();
       const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
