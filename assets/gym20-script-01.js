@@ -708,11 +708,11 @@ function loadGym20AdminModules(){
     // The student/term workspace is required; push notifications and exercises
     // are optional enhancements and must never block the core admin tabs.
     const requiredModules=[
-      '/assets/student-terms.js?v=20261122-term-session-count-sync-v1'
+      '/student-terms.js?v=20261125-student-terms-canonical-v1'
     ];
     const optionalModules=[
       '/student-push-admin.js?v=20261125-push-independent-v1',
-      '/student-exercises.js?v=20261122-status-colors-v9'
+      '/student-exercises.js?v=20261125-integrated-student-exercises-v2'
     ];
     const optionalLoads=optionalModules.map(src=>loadGym20Module(src).catch(err=>{
       console.warn('GYM20 optional admin module failed:',src,err);
