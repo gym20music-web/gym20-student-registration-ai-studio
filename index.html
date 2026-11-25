@@ -3,6 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function(){
+  var ua = navigator.userAgent || '';
+  var isIOS = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS) document.documentElement.classList.add('ios-input-nozoom');
+})();
+</script>
+<style>
+.ios-input-nozoom #publicRegistrationForm .reg-field input {
+  font-size: 16px !important;
+}
+</style>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="preload" href="./data.json" as="fetch" crossorigin>
 <link rel="preload" href="https://raw.githubusercontent.com/gym20music-web/gym20-student-registration-ai-studio/main/music.webp" as="image" fetchpriority="high">
