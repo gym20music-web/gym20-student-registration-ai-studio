@@ -704,20 +704,30 @@ function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     window.gym20StudentTermsReady=false;
     window.gym20StudentTermsError='';
-    const modules=[
-      '/assets/student-terms.js?v=20261122-term-session-count-sync-v1',
-      './student-push-admin.js?v=20261120-push-size-green-v6',
+    // The student/term workspace is required; push notifications and exercises
+    // are optional enhancements and must never block the core admin tabs.
+    const requiredModules=[
+      '/assets/student-terms.js?v=20261122-term-session-count-sync-v1'
+    ];
+    const optionalModules=[
+      '/student-push-admin.js?v=20261125-push-independent-v1',
       '/student-exercises.js?v=20261122-status-colors-v9'
     ];
-    gym20AdminModulesPromise=Promise.all(modules.map(loadGym20Module))
+    const optionalLoads=optionalModules.map(src=>loadGym20Module(src).catch(err=>{
+      console.warn('GYM20 optional admin module failed:',src,err);
+      return null;
+    }));
+    gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
       .then(()=>{
-        // The exercise tab may be opened while lazy admin modules are still loading.
-        // Replay its load event after the module has registered its listener.
-        const exerciseTab=document.getElementById('exercisesTab');
-        if(exerciseTab&&exerciseTab.classList.contains('active')){
-          window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
-        }
+        // Optional modules finish independently. Replay the exercise event
+        // only after its module has had a chance to register its listener.
+        Promise.all(optionalLoads).then(()=>{
+          const exerciseTab=document.getElementById('exercisesTab');
+          if(exerciseTab&&exerciseTab.classList.contains('active')){
+            window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
+          }
+        });
       })
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
