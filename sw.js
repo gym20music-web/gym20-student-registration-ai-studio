@@ -4,15 +4,16 @@ self.addEventListener('activate', event => event.waitUntil(clients.claim()));
 self.addEventListener("push",event=>{
   let data={};
   try{data=event.data?event.data.json():{};}catch(_){data={body:event.data?event.data.text():"یادآوری کلاس GYM20"};}
-  const title=data.title||"وقت تمرینه! 💪🔥";
-  const options={body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟",icon:"/favicon.svg",badge:"/favicon.svg",dir:"rtl",lang:"fa",tag:data.tag||"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/",title:title,body:data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟"}};
+  const title="GYM20";
+  const body=data.body||"امروز وقت قوی‌تر شدنه. آماده‌ای؟";
+  const options={body,icon:"/favicon.svg",badge:"/favicon.svg",dir:"rtl",lang:"fa",tag:data.tag||"gym20-class-reminder",renotify:true,data:{url:data.url||"https://gym20.ir/",title,body}};
   event.waitUntil(self.registration.showNotification(title,options));
 });
 self.addEventListener("notificationclick",event=>{
   event.notification.close();
   const notificationData=event.notification.data||{};
   const body=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
-  const title=typeof notificationData.title==="string"?notificationData.title.trim().slice(0,160):"GYM20";
+  const title="GYM20";
   const original=typeof notificationData.url==="string"&&notificationData.url.startsWith("https://gym20.ir/")?notificationData.url:"https://gym20.ir/";
   const launchUrl=new URL("https://gym20.ir/notification.html");
   if(body)launchUrl.searchParams.set("gym20_notice",body);
