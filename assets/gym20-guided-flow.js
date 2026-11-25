@@ -37,8 +37,6 @@
   document.head.appendChild(style);
 
   let pop=null,activeTarget=null,styleAdvanceTimer=null,regionGuideRetryTimer=null,formGuideStage=0;
-  document.addEventListener('DOMContentLoaded',watchAdminModal,{once:true});
-  if(document.readyState!=='loading')watchAdminModal();
   function ensurePop(){
     if(pop&&pop.isConnected)return pop;
     pop=document.createElement('div');pop.className='gym20-flow-pop';pop.textContent='انتخاب کن';
@@ -96,6 +94,9 @@
     if(modal)adminObserver.observe(modal,{attributes:true,attributeFilter:['class','style','aria-hidden']});
     syncAdminVisibility();
   }
+  // Register only after adminWasOpen and adminObserver have been initialized.
+  document.addEventListener('DOMContentLoaded',watchAdminModal,{once:true});
+  if(document.readyState!=='loading')watchAdminModal();
   function visible(el){
     if(!el||el.hidden||el.getAttribute('aria-hidden')==='true')return false;
     const c=getComputedStyle(el);
