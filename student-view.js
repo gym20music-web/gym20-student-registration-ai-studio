@@ -540,9 +540,6 @@
       if(individualCountHint){
         individualCountHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
       }
-      if(countHint){
-        countHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی‌مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
-      }
       const ownGroupItems=groupItems.filter(item=>(Array.isArray(item.members)?item.members:[]).some(member=>member.is_self));
       const groupDone=ownGroupItems.filter(item=>(item.members||[]).some(member=>member.is_self&&member.is_completed)).length;
       const groupPending=Math.max(0,ownGroupItems.length-groupDone);
@@ -566,12 +563,12 @@
         const day=tehranDateKey(item.created_at);if(!oldGroupDays.has(day))oldGroupDays.set(day,[]);oldGroupDays.get(day).push(item);
       });
       const archivedGroupCount=groupItems.filter(isGroupArchived).length;
+      const openGroupArchiveDays=new Set(Array.from(groupList?.querySelectorAll('.group-exercise-archive-day[open]')||[]).map(node=>node.dataset.groupDay||''));
       const groupArchiveMarkup=Array.from(oldGroupDays.entries()).sort((a,b)=>b[0].localeCompare(a[0])).map(([day,rows])=>
-        '<details class="group-exercise-archive-day" data-group-day="'+esc(day)+'"><summary>'+esc(tehranDayLabel(rows[0].created_at))+' <span>'+rows.length.toLocaleString('fa-IR')+' تمرین</span></summary>'+groupExerciseDayMarkup(rows)+'</details>'
+        '<details class="group-exercise-archive-day" data-group-day="'+esc(day)+'"'+(openGroupArchiveDays.has(day)?' open':'')+'><summary>'+esc(tehranDayLabel(rows[0].created_at))+' <span>'+rows.length.toLocaleString('fa-IR')+' تمرین</span></summary>'+groupExerciseDayMarkup(rows)+'</details>'
       ).join('');
       if(groupList){
-        groupList.innerHTML=(todayGroupItems.length?'<div class="group-exercise-today">'+groupExerciseDayMarkup(todayGroupItems)+'</div>':'')+
-          (oldGroupDays.size?'<details class="group-exercise-archive"><summary>بایگانی تمرین‌های گروهی <span>'+archivedGroupCount.toLocaleString('fa-IR')+' تمرین</span></summary><div class="group-exercise-archive-days">'+groupArchiveMarkup+'</div></details>':'');
+        groupList.innerHTML=(todayGroupItems.length?'<div class="group-exercise-today">'+groupExerciseDayMarkup(todayGroupItems)+'</div>':'')+groupArchiveMarkup;
       }
       groupBox?.classList.toggle('hide',groupItems.length===0);
       individualBox?.classList.toggle('hide',items.length===0);
