@@ -629,6 +629,7 @@ const adminLoginEmail=document.getElementById('adminLoginEmail');
 const adminLoginPassword=document.getElementById('adminLoginPassword');
 const adminLoginError=document.getElementById('adminLoginError');
 let gym20AdminAuth=null,gym20AdminClient=null,gym20OwnerAuthorized=false,gym20AppDataLoaded=false;
+let gym20AdminLoginOpener=null;
 let gym20SupabaseSdkPromise=null,gym20AdminModulesPromise=null,gym20UserInteracted=false;
 document.addEventListener('input',e=>{if(e.target&&e.target.closest&&e.target.closest('#publicRegistrationForm,#adminModal'))gym20UserInteracted=true;},true);
 document.addEventListener('change',e=>{if(e.target&&e.target.closest&&e.target.closest('#publicRegistrationForm,#adminModal'))gym20UserInteracted=true;},true);
@@ -772,6 +773,9 @@ async function ensureGym20AdminAuth(){
   return gym20AdminAuth;
 }
 async function openAdminLogin(){
+  gym20AdminLoginOpener=document.activeElement&&document.activeElement!==document.body?document.activeElement:adminBtn;
+  adminLoginModal.inert=false;
+  adminLoginModal.setAttribute('aria-hidden','false');
   setAdminLoginStatus('');
   // Warm the delayed admin tabs while the manager enters credentials.
   // This overlaps network loading with authentication instead of waiting
@@ -785,7 +789,14 @@ async function openAdminLogin(){
   try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner().catch(()=>{});}
   catch(e){setAdminLoginStatus(e.message,true);}
 }
-function closeAdminLogin(){if(adminLoginModal.contains(document.activeElement)){adminBtn?.focus({preventScroll:true});}adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');adminLoginModal.inert=true;}
+function closeAdminLogin(){
+  if(adminLoginModal.contains(document.activeElement))document.activeElement.blur();
+  adminLoginModal.classList.remove('open');
+  adminLoginModal.inert=true;
+  adminLoginModal.setAttribute('aria-hidden','true');
+  const target=gym20AdminLoginOpener&&gym20AdminLoginOpener.isConnected?gym20AdminLoginOpener:adminBtn;
+  if(target&&typeof target.focus==='function')requestAnimationFrame(()=>{if(!adminLoginModal.classList.contains('open'))target.focus({preventScroll:true});});
+}
 adminBtn.onclick=openAdminLogin;
 document.getElementById('closeAdminLogin').onclick=closeAdminLogin;
 adminLoginForm.addEventListener('submit',async e=>{
