@@ -9,6 +9,7 @@
   let groupManagerLoaded = false;
   let selectedGroupId = '';
   let groupMembers = [];
+  let selectionRevision = 0;
 
   function authContext() {
     let authorized = false, client = null;
@@ -89,7 +90,48 @@
       }
     }
   }
+  async function syncIntegratedStudent(detail={}) {
+    const select=$('gym20ExerciseStudentSelect'),termSelect=$('gym20ExerciseTermSelect'),list=$('gym20ExerciseList');
+    if(!select||!termSelect||!list)return;
+    const studentId=String(detail.studentId||''),termId=String(detail.termId||'');
+    const revision=++selectionRevision;
+    if(!students.length)await loadExerciseStudents();
+    if(revision!==selectionRevision)return;
+    currentStudentId=studentId;
+    select.value=studentId;
+    currentTermId='';
+    if(!studentId){
+      termSelect.innerHTML='<option value="">ابتدا هنرجو را از بخش بالا انتخاب کنید</option>';
+      termSelect.disabled=true;list.innerHTML='';say('');
+      const individual=$('gym20ExerciseIndividualPanel'),toggle=$('gym20ExerciseIndividualToggle');
+      if(individual)individual.hidden=true;if(toggle)toggle.setAttribute('aria-expanded','false');
+      return;
+    }
+    await loadStudentTermsForExercises(studentId);
+    if(revision!==selectionRevision)return;
+    const hasTopTerm=!!termId&&Array.from(termSelect.options).some(option=>String(option.value)===termId);
+    termSelect.value=hasTopTerm?termId:'';
+    currentTermId=hasTopTerm?termId:'';
+    const individual=$('gym20ExerciseIndividualPanel'),toggle=$('gym20ExerciseIndividualToggle');
+    if(individual)individual.hidden=false;if(toggle)toggle.setAttribute('aria-expanded','true');
+    if(hasTopTerm)await loadStudentExercisesAdmin();
+    else{list.innerHTML='<p class="hint">ابتدا ترم موردنظر را از بخش بالای صفحه انتخاب کنید.</p>';say('');}
+  }
+  async function syncIntegratedTerm(detail={}) {
+    const studentId=String(detail.studentId||''),termId=String(detail.termId||'');
+    const select=$('gym20ExerciseStudentSelect'),termSelect=$('gym20ExerciseTermSelect'),list=$('gym20ExerciseList');
+    if(!select||!termSelect||!list||!studentId||studentId!==String(select.value||currentStudentId||''))return;
+    const revision=++selectionRevision;
+    const exists=!!termId&&Array.from(termSelect.options).some(option=>String(option.value)===termId);
+    termSelect.value=exists?termId:'';
+    currentStudentId=studentId;currentTermId=exists?termId:'';
+    if(exists)await loadStudentExercisesAdmin();
+    else{list.innerHTML='<p class="hint">ابتدا ترم موردنظر را از بخش بالای صفحه انتخاب کنید.</p>';say('');}
+    if(revision!==selectionRevision)return;
+  }
+
   async function loadStudentTermsForExercises(studentId) {
+    const requestedStudentId=String(studentId||'');
     const termSelect = $('gym20ExerciseTermSelect');
     if (!termSelect) return;
     currentTermId = '';
@@ -105,6 +147,7 @@
         .select('id,term_name,start_date,end_date,status,created_at')
         .eq('student_id',studentId).order('created_at',{ascending:false});
       if(error) throw error;
+      if(String($('gym20ExerciseStudentSelect')?.value||currentStudentId)!==requestedStudentId)return;
       const terms = data || [];
       termSelect.innerHTML = terms.length ? terms.map(t =>
         '<option value="'+esc(t.id)+'">'+esc(t.term_name)+(t.status==='active'?' · فعال':'')+'</option>'
@@ -124,7 +167,8 @@
   async function loadStudentExercisesAdmin() {
     const select = $('gym20ExerciseStudentSelect'), list = $('gym20ExerciseList');
     if (!select || !list) return;
-    currentStudentId = select.value;
+    const requestedStudentId=String(select.value||''),requestedTermId=String($('gym20ExerciseTermSelect')?.value||currentTermId||''),revision=selectionRevision;
+    currentStudentId = requestedStudentId;
     if (!currentStudentId) {
       list.innerHTML = '';
       say('');
@@ -142,6 +186,7 @@
         .select('id,term_id,title,is_completed,completed_at,created_at')
         .eq('student_id', currentStudentId).eq('term_id',currentTermId).order('created_at', {ascending:true});
       if (error) throw error;
+      if(revision!==selectionRevision||String(select.value||'')!==requestedStudentId||String($('gym20ExerciseTermSelect')?.value||'')!==requestedTermId)return;
       const rows = data || [];
       const today = tehranDateKey(Date.now());
       const openDays = new Set(Array.from(list.querySelectorAll('details[data-exercise-day][open]')).map(node => node.dataset.exerciseDay || ''));
@@ -178,6 +223,7 @@
         : '<p class="hint">برای این هنرجو هنوز تمرینی ثبت نشده است.</p>';
       say('');
     } catch (e) {
+      if(revision!==selectionRevision)return;
       list.innerHTML = '<p class="hint">دریافت تمرین‌ها ناموفق بود.</p>';
       say(e.message || 'دریافت تمرین‌ها ناموفق بود.', true);
     }
@@ -548,6 +594,22 @@
     exerciseHost.prepend(individualCard);
     exerciseHost.prepend(groupCard);
     exerciseHost.prepend(notifyCard);
+    const integratedTab=$('studentTermsTab');
+    if(integratedTab){
+      const integratedSection=document.createElement('section');
+      integratedSection.id='gym20StudentExercisesIntegrated';
+      integratedSection.className='gym20-exercise-integration';
+      integratedSection.innerHTML='<div class="gym20-exercise-integration-title">🤸🏻‍♂️ تمرین‌های اختصاصی هنرجویان</div>';
+      integratedSection.append(notifyCard,groupCard,individualCard);
+      integratedTab.appendChild(integratedSection);
+      const legacyCard=panel.querySelector('.gym20-exercises-panel');
+      if(legacyCard)legacyCard.hidden=true;
+      panel.hidden=true;
+      const integrationStyle=document.createElement('style');
+      integrationStyle.id='gym20StudentExercisesIntegratedStyle';
+      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .field-grid>.field:nth-child(-n+2){display:none!important}';
+      document.head.appendChild(integrationStyle);
+    }
     groupToggle.addEventListener('click',toggleGroupManager);
     individualToggle.addEventListener('click',()=>{
       const open=individualPanel.hidden;
@@ -644,11 +706,13 @@
     });
     $('gym20ExercisePushToggle').addEventListener('click',toggleExercisePush);
     window.addEventListener('gym20:owner-authorized', () => {
-      if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
+      if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
     window.addEventListener('gym20:students-loaded', () => {
-      if (authContext().authorized && panel.classList.contains('active')) loadExerciseStudents();
+      if (authContext().authorized) loadExerciseStudents();
     });
+    window.addEventListener('gym20:student-selected',event=>syncIntegratedStudent(event.detail||{}));
+    window.addEventListener('gym20:student-term-selected',event=>syncIntegratedTerm(event.detail||{}));
     window.addEventListener('gym20:exercise-tab-opened', () => {
       if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
     });
