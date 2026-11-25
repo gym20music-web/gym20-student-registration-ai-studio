@@ -177,5 +177,9 @@
     </main>
   </div>
 </div>
+<script>
+document.addEventListener('click',event=>{const item=event.target.closest('#stStudentMenu [data-student-id]');if(item)window.dispatchEvent(new CustomEvent('gym20:student-selected',{detail:{studentId:String(item.dataset.studentId||''),termId:''}}));});
+document.addEventListener('change',event=>{if(event.target?.id!=='stTerm')return;const studentId=String(document.getElementById('stStudentSelected')?.dataset.studentId||'');window.dispatchEvent(new CustomEvent('gym20:student-term-selected',{detail:{studentId,termId:String(event.target.value||'')}}));});
+</script>
 </body>
 </html>
