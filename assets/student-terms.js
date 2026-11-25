@@ -1146,6 +1146,9 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       if(S.studentId!==studentId)return;
       const count=Math.max(0,Number(data.active_count)||0);
       status.textContent=fa(count)+' اعلان فعال';
+      const countColor=count>0?'#4ade80':'#f87171';
+      status.style.setProperty('color',countColor,'important');
+      status.style.setProperty('-webkit-text-fill-color',countColor,'important');
       status.classList.toggle('is-active',count>0);status.classList.toggle('is-inactive',count===0);
     }catch(e){if(S.studentId===studentId){status.textContent='';status.classList.remove('is-active','is-inactive');}}
   }
