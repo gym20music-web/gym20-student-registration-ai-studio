@@ -1274,7 +1274,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
   async function loadTerm(id){
     S.manualDates=[];S.termId=id;S.term=S.terms.find(x=>x.id===id)||null;S.reminderDraft={};
     S.draftId='';S.rows=[];S.publishedId=null;S.publishedReadOnly=false;
-    if(S.term){$('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');const termSessions=Number(S.term.total_sessions);if(Number.isInteger(termSessions)&&termSessions>0)$('stTotalSessions').value=String(termSessions);syncTermName();}
+    if(S.term){$('stStart').value=jalaliInput(S.term.start_date||'');$('stEnd').value=jalaliInput(S.term.end_date||'');const termSessions=Number(S.term.total_sessions);syncTermName();}
     $('stSchedule').classList.toggle('st-hide',!id);
     $('stManualCalendar').textContent='▦ انتخاب جلسات از تقویم';
     setTimeout(()=>enhanceAllSelects($('studentTermsTab')),0);
