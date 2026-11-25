@@ -778,13 +778,14 @@ async function openAdminLogin(){
   // until the admin workspace has already opened.
   loadGym20AdminModules().catch(err=>console.warn('GYM20 admin tab preload failed:',err));
   adminLoginEmail.value='';
-  adminLoginModal.classList.add('open');
+  adminLoginModal.inert=false;
   adminLoginModal.setAttribute('aria-hidden','false');
+  adminLoginModal.classList.add('open');
   setTimeout(()=>adminLoginEmail.focus(),80);
   try{const auth=await ensureGym20AdminAuth();await auth.verifyOwner().catch(()=>{});}
   catch(e){setAdminLoginStatus(e.message,true);}
 }
-function closeAdminLogin(){adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');}
+function closeAdminLogin(){if(adminLoginModal.contains(document.activeElement)){adminBtn?.focus({preventScroll:true});}adminLoginModal.classList.remove('open');adminLoginModal.setAttribute('aria-hidden','true');adminLoginModal.inert=true;}
 adminBtn.onclick=openAdminLogin;
 document.getElementById('closeAdminLogin').onclick=closeAdminLogin;
 adminLoginForm.addEventListener('submit',async e=>{
