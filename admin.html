@@ -35,14 +35,14 @@
 <div id="app" class="app" hidden>
   <header class="topbar">
     <div class="brand"><div class="brand-mark small">G<span>20</span></div><div><b>GYM20</b><small>مدیریت آکادمی</small></div></div>
-    <div class="top-actions"><button class="exercise-top-shortcut" type="button" data-go="exercises">🤸🏻‍♂️ تمرین هنرجویان</button><span id="connectionState" class="connection">● متصل</span><button id="logoutBtn" class="ghost">خروج</button></div>
+    <div class="top-actions"><span id="connectionState" class="connection">● متصل</span><button id="logoutBtn" class="ghost">خروج</button></div>
   </header>
   <div class="shell">
     <aside class="sidebar">
       <div class="side-caption">فضای مدیریت</div>
       <nav id="mainNav" class="admin-tabs">
         <button class="nav-item active" data-view="overview">▦ <span>نمای کلی</span></button>
-        <button class="nav-item" data-view="exercises">🤸🏻‍♂️ <span>تمرین هنرجویان</span></button>
+        
         <button class="nav-item" data-view="students">♙ <span>پرونده هنرجویان</span></button>
         <button class="nav-item" data-view="requests">⇥ <span>درخواست‌های ثبت‌نام</span><i id="pendingBadge">—</i></button>
         <button class="nav-item" data-view="classes">✳ <span>سبک‌ها و کلاس‌ها</span></button>
@@ -59,7 +59,7 @@
       <div class="side-foot">نسخه بازسازی‌شده · آزمایشی</div>
     </aside>
     <main class="workspace admin-workspace">
-      <div class="page-head"><div><div class="eyebrow">GYM20 / ADMIN</div><h1 id="pageTitle">نمای کلی</h1><p id="pageSubtitle" class="muted">وضعیت کلی آکادمی و دسترسی سریع</p></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><button class="ghost" type="button" data-go="exercises">🤸🏻‍♂️ تمرین هنرجویان</button><button id="refreshBtn" class="ghost">↻ بروزرسانی</button></div></div>
+      <div class="page-head"><div><div class="eyebrow">GYM20 / ADMIN</div><h1 id="pageTitle">نمای کلی</h1><p id="pageSubtitle" class="muted">وضعیت کلی آکادمی و دسترسی سریع</p></div><div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap"><button id="refreshBtn" class="ghost">↻ بروزرسانی</button></div></div>
       <div id="globalStatus" class="global-status" role="status" aria-live="polite"></div>
       <section class="view admin-panel-tab active" id="view-overview">
         <div class="stats-grid">
