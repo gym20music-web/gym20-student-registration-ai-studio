@@ -396,6 +396,7 @@
     const desired=preferredId||selectedGroupId;
     selectedGroupId=groups.some(g=>String(g.id)===String(desired))?String(desired):(groups[0]?.id||'');
     select.value=selectedGroupId;
+    const deleteButton=$('gym20ExerciseGroupDelete');if(deleteButton)deleteButton.disabled=!selectedGroupId;
     await loadSelectedExerciseGroup();
   }
   async function createExerciseGroup(){
