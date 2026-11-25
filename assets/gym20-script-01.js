@@ -1450,22 +1450,8 @@ async function gym20FetchWithTimeout(url,options,timeoutMs){
   finally{if(timer)clearTimeout(timer);}
 }
 async function fetchLiveGym20SiteConfig(){
-  const headers={
-    'apikey':GYM20_SUPABASE_ANON_KEY,
-    'Authorization':'Bearer '+GYM20_SUPABASE_ANON_KEY,
-    'Content-Type':'application/json',
-    'Content-Profile':'gym20',
-    'Accept-Profile':'gym20'
-  };
-  try{
-    const response=await gym20FetchWithTimeout(GYM20_SUPABASE_URL+'/rest/v1/rpc/get_site_config',{
-      method:'POST',headers,body:'{}',cache:'no-store'
-    },4000);
-    if(response.ok){
-      const data=await response.json();
-      if(isValidGym20SiteConfig(data))return data;
-    }
-  }catch(e){}
+  // تنظیمات عمومی مستقیماً از جدول site_settings خوانده می‌شوند.
+  // RPC قدیمی get_site_config در پروژه فعلی وجود ندارد و پاسخ 404 می‌دهد.
   try{
     const response=await gym20FetchWithTimeout(GYM20_SUPABASE_URL+'/rest/v1/site_settings?key=eq.public_site_config&select=value',{
       headers:{
@@ -1475,13 +1461,13 @@ async function fetchLiveGym20SiteConfig(){
       },
       cache:'no-store'
     },3000);
-    if(response.ok){
-      const rows=await response.json();
-      const data=rows&&rows[0]&&rows[0].value;
-      if(isValidGym20SiteConfig(data))return data;
-    }
-  }catch(e){}
-  return null;
+    if(!response.ok)return null;
+    const rows=await response.json();
+    const data=rows&&rows[0]&&rows[0].value;
+    return isValidGym20SiteConfig(data)?data:null;
+  }catch(e){
+    return null;
+  }
 }
 async function loadDataAndInit(){
   let initialRendered=false,promoTriggered=false;
