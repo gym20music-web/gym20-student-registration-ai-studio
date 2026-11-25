@@ -785,7 +785,6 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       #studentTermsTab .st-create-compact .st-field>label{
         font-size:8px!important;margin-bottom:3px!important;
       }
-      #studentTermsTab .st-create-compact #stTotalSessions{height:24px!important;min-height:24px!important;max-height:24px!important;padding:2px 6px!important;font-size:9px!important;line-height:18px!important;border-radius:6px!important;box-sizing:border-box!important;}
     `;
     document.head.appendChild(termCreateCompactCss);
 
