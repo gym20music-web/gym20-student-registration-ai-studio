@@ -705,8 +705,8 @@ function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     window.gym20StudentTermsReady=false;
     window.gym20StudentTermsError='';
-    // The student/term workspace is required; push notifications and exercises
-    // are optional enhancements and must never block the core admin tabs.
+    // Build the student/term tab first. The exercises module moves its UI into
+    // that tab during mount, so loading it before the tab exists breaks integration.
     const requiredModules=[
       '/student-terms.js?v=20261125-student-terms-canonical-v1'
     ];
@@ -714,21 +714,19 @@ function loadGym20AdminModules(){
       '/student-push-admin.js?v=20261125-push-independent-v1',
       '/student-exercises.js?v=20261125-integrated-student-exercises-v2'
     ];
-    const optionalLoads=optionalModules.map(src=>loadGym20Module(src).catch(err=>{
-      console.warn('GYM20 optional admin module failed:',src,err);
-      return null;
-    }));
     gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
+      .then(()=>Promise.all(optionalModules.map(src=>loadGym20Module(src).catch(err=>{
+        console.warn('GYM20 optional admin module failed:',src,err);
+        return null;
+      }))))
       .then(()=>{
-        // Optional modules finish independently. Replay the exercise event
-        // only after its module has had a chance to register its listener.
-        Promise.all(optionalLoads).then(()=>{
-          const exerciseTab=document.getElementById('exercisesTab');
-          if(exerciseTab&&exerciseTab.classList.contains('active')){
-            window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
-          }
-        });
+        // The exercise module now mounts only after the shared student/term
+        // workspace exists. Replay the open event after listeners are ready.
+        const exerciseTab=document.getElementById('exercisesTab');
+        if(exerciseTab&&exerciseTab.classList.contains('active')){
+          window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
+        }
       })
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
