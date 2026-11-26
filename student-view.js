@@ -750,7 +750,7 @@
       try{localStorage.setItem(cacheKey,JSON.stringify(data));}catch(_){}
       applyScheduleData(data);
       // Start periodic exercise refresh only after the active term is available.
-      window.setInterval(refreshStudentExercises,5000);
+      window.setInterval(refreshStudentExercises,10000)
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible')refreshStudentExercises();
       });
@@ -769,7 +769,7 @@
         finally{refreshInFlight=false;}
       };
       // Keep the published schedule and exercises close to real time without requiring a manual reload.
-      window.setInterval(()=>refreshPublishedSchedule(false),5000);
+      window.setInterval(()=>refreshPublishedSchedule(false),15000)
       document.addEventListener('visibilitychange',()=>{
         if(document.visibilityState==='visible'){
           refreshPublishedSchedule(true);
