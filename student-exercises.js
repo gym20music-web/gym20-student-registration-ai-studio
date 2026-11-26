@@ -165,8 +165,8 @@
       const preferred = uniqueTerms.find(t=>t.status==='active') || uniqueTerms[0];
       currentTermId = preferred ? String(preferred.id) : '';
       termSelect.value = currentTermId;
-      termSelect.disabled = !terms.length;
-      if(!terms.length) say('برای این هنرجو هنوز ترمی ثبت نشده است.',true);
+      termSelect.disabled = !uniqueTerms.length;
+      if(!uniqueTerms.length) say('برای این هنرجو هنوز ترمی ثبت نشده است.',true);
     } catch(e) {
       termSelect.innerHTML = '<option value="">دریافت ترم‌ها ناموفق بود</option>';
       termSelect.disabled = true;
