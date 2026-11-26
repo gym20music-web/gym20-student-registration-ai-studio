@@ -744,7 +744,7 @@ function loadGym20AdminModules(){
     // Build the student/term tab first. The exercises module moves its UI into
     // that tab during mount, so loading it before the tab exists breaks integration.
     const requiredModules=[
-      '/student-terms.js?v=20261125-student-terms-canonical-v1'
+      '/student-terms.js?v=20261126-student-terms-canonical-v2'
     ];
     const optionalModules=[
       '/student-push-admin.js?v=20261125-push-independent-v1'
