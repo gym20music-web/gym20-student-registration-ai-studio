@@ -465,15 +465,29 @@
     return items.map(item=>{
       const done=!!item.is_completed;
       const stamp=Date.parse(item.created_at||'');
-      const parts=String(item.title||'').split(/\s+—\s+/);
-      const movement=parts.shift()||'تمرین';
-      let reps='',seconds='';
+      const normalizeDigits=value=>String(value).replace(/[۰-۹٠-٩]/g,ch=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(ch)>=0?'۰۱۲۳۴۵۶۷۸۹'.indexOf(ch):'٠١٢٣٤٥٦٧٨٩'.indexOf(ch)));
+      const parts=String(item.title||'').trim().split(/\s+—\s+/);
+      let movement=parts.shift()||'تمرین',reps='',seconds='';
       parts.forEach(part=>{
-        const match=String(part).trim().match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
-        if(!match)return;
-        if(/^Reps$/i.test(match[2]))reps=match[1];
-        else seconds=match[1];
+        const text=normalizeDigits(part).trim();
+        let match=text.match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
+        if(match){if(/^Reps$/i.test(match[2]))reps=match[1];else seconds=match[1];return;}
+        match=text.match(/^(?:Reps\s*)?(\d+)\s*(?:Sec|Seconds?)$/i);
+        if(match){seconds=match[1];return;}
       });
+      if(!reps&&!seconds){
+        const normalized=normalizeDigits(movement).trim();
+        const duration=normalized.match(/^(.*?)\s+(\d+(?:\.\d+)?)\s*(min|mins|minute|minutes|sec|secs|second|seconds|s)?$/i);
+        if(duration){
+          const amount=Number(duration[2]),unit=(duration[3]||'').toLowerCase();
+          if(Number.isFinite(amount)&&amount>0){
+            movement=duration[1].trim()||movement;
+            if(/^(min|mins|minute|minutes)$/.test(unit))seconds=String(Math.round(amount*60));
+            else if(/^(sec|secs|second|seconds|s)$/.test(unit))seconds=String(Math.round(amount));
+            else reps=String(Math.round(amount));
+          }
+        }
+      }
       const metrics=(reps?'<span class="exercise-metric"><span class="exercise-unit">Reps</span><b class="exercise-number">'+esc(reps)+'</b></span>':'')+(seconds?'<span class="exercise-metric"><span class="exercise-unit">Sec</span><b class="exercise-number">'+esc(seconds)+'</b></span>':'');
       return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+(Number.isFinite(stamp)?stamp:0)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'>'+metrics+'<span class="exercise-title">'+esc(movement)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
     }).join('');
