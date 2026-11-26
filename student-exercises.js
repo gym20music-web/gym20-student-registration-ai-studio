@@ -20,7 +20,7 @@
       categories.map(category => '<div class="gym20-ex-catalog-category"><div class="gym20-ex-catalog-category-title">' + esc(EXERCISE_CATEGORY_LABELS[category]) + '</div>' +
         EXERCISE_CATALOG.filter(item => item[0] === category).map(item => {
           const name=item[1], timeDefault=!!item[2];
-          return '<label class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="' + esc(name) + '"><span class="gym20-ex-catalog-name">' + esc(name) + '</span><input class="gym20-ex-catalog-value" type="number" min="1" max="9999" inputmode="numeric" placeholder="' + (timeDefault?'ثانیه':'مقدار') + '" aria-label="مقدار ' + esc(name) + '" disabled><select class="gym20-ex-catalog-unit" aria-label="واحد ' + esc(name) + '" disabled><option value="تکرار"' + (timeDefault?'':' selected') + '>تکرار</option><option value="ثانیه"' + (timeDefault?' selected':'') + '>ثانیه</option></select></label>';
+          return '<label class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="' + esc(name) + '"><span class="gym20-ex-catalog-name">' + esc(name) + '</span><input class="gym20-ex-catalog-value" type="number" min="1" max="9999" inputmode="numeric" placeholder="' + (timeDefault?'Sec':'Reps') + '" aria-label="Value for ' + esc(name) + '" disabled><select class="gym20-ex-catalog-unit" aria-label="Unit for ' + esc(name) + '" disabled><option value="Reps"' + (timeDefault?'':' selected') + '>Reps</option><option value="Sec"' + (timeDefault?' selected':'') + '>Sec</option></select></label>';
         }).join('') + '</div>').join('') + '</div><div class="gym20-ex-catalog-foot">برای حرکات قدرتی تعداد تکرار و برای حرکات نگه‌داشتنی زمان را وارد کن.</div></section>';
   }
 
@@ -256,7 +256,7 @@
     const input=$('gym20ExerciseInput'),button=$('gym20ExerciseAdd'),picker=$('gym20ExerciseCatalog');
     const selectedRows=picker?Array.from(picker.querySelectorAll('[data-catalog-exercise]:checked')):[];
     const titles=selectedRows.length?selectedRows.map(check=>{
-      const row=check.closest('.gym20-ex-catalog-row'),amount=String(row?.querySelector('.gym20-ex-catalog-value')?.value||'').trim(),unit=row?.querySelector('.gym20-ex-catalog-unit')?.value||'تکرار';
+      const row=check.closest('.gym20-ex-catalog-row'),amount=String(row?.querySelector('.gym20-ex-catalog-value')?.value||'').trim(),unit=row?.querySelector('.gym20-ex-catalog-unit')?.value||'Reps';
       return check.value+(amount?' — '+amount+' '+unit:'');
     }):((input?.value||'').trim()?[(input.value||'').trim()]:[]);
     if(!currentStudentId){say('ابتدا هنرجو را انتخاب کنید.',true);$('gym20ExerciseStudentSelect')?.focus();return;}
