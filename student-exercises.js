@@ -715,11 +715,12 @@
     window.addEventListener('gym20:student-selected',event=>syncIntegratedStudent(event.detail||{}));
     window.addEventListener('gym20:student-term-selected',event=>syncIntegratedTerm(event.detail||{}));
     window.addEventListener('gym20:exercise-tab-opened', () => {
-      if (authContext().authorized) {
-        if (!students.length) loadExerciseStudents();
-        else if (currentStudentId) { select.value=currentStudentId; }
-        syncExercisePushStatus();
-      }
+      if (!authContext().authorized) return;
+      const topStudentId=String($('stStudentSelected')?.dataset.studentId||'');
+      const topTermId=String($('stTerm')?.value||'');
+      if(topStudentId) syncIntegratedStudent({studentId:topStudentId,termId:topTermId});
+      else if (!students.length) loadExerciseStudents();
+      syncExercisePushStatus();
     });
     if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
   }
