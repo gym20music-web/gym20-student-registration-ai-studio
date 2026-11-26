@@ -15,6 +15,12 @@ self.addEventListener("notificationclick",event=>{
   const notificationData=event.notification.data||{};
   const body=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
   const original=typeof notificationData.url==="string"&&notificationData.url.startsWith("https://gym20.ir/")?notificationData.url:"https://gym20.ir/";
-  // Open the student destination directly without an intermediate page.
-  event.waitUntil(clients.openWindow(original));
+  // Bypass the GitHub Pages /s/<code> 404 rewrite and open the student page directly.
+  const targetUrl=new URL(original);
+  const studentMatch=targetUrl.pathname.match(/^\/s\/([0-9a-f]{12})\/?$/i);
+  if(studentMatch){
+    targetUrl.pathname="/student.html";
+    targetUrl.searchParams.set("c",studentMatch[1].toLowerCase());
+  }
+  event.waitUntil(clients.openWindow(targetUrl.href));
 });
