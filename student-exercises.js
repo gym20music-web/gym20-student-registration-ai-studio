@@ -571,7 +571,7 @@
     });
   }
 
-  function mount() {
+  function mountCore() {
     if (mounted) return;
     const embedded = !!document.querySelector('#adminModal .admin-tabs');
     const panel = embedded ? $('exercisesTab') : $('view-exercises');
@@ -822,6 +822,15 @@
       syncExercisePushStatus();
     }
     window.gym20ExerciseModuleMounted = true;
+  }
+  function mount() {
+    try {
+      mountCore();
+    } catch (error) {
+      const detail=error && (error.stack || error.message) ? String(error.stack || error.message) : String(error);
+      window.gym20ExerciseModuleError='خطای اجرای ماژول تمرین: '+detail.slice(0,900);
+      console.error('[GYM20] Exercise module mount failed:',error);
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
