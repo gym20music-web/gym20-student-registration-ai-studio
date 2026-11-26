@@ -687,6 +687,42 @@ function loadGym20Module(src){
     document.body.appendChild(script);
   });
 }
+function ensureStudentTermsLoadingTab(){
+  const nav=document.querySelector('.admin-tabs');
+  const workspace=document.querySelector('.admin-workspace');
+  if(!nav||!workspace||document.getElementById('studentTermsTab'))return;
+  if(!document.getElementById('studentTermsLoadingButton')){
+    const button=document.createElement('button');
+    button.id='studentTermsLoadingButton';
+    button.type='button';
+    button.className='admin-tab-btn';
+    button.textContent='👥 هنرجویان و ترم‌ها';
+    button.setAttribute('onclick',"switchAdminTab('studentTermsLoadingTab')");
+    nav.insertBefore(button,nav.querySelector('[onclick*="requestsTab"]')||null);
+  }
+  if(!document.getElementById('studentTermsLoadingTab')){
+    const panel=document.createElement('div');
+    panel.id='studentTermsLoadingTab';
+    panel.className='admin-panel-tab';
+    panel.innerHTML='<div class="admin-section-subhead">👥 مدیریت هنرجویان، ترم‌ها و برنامه جلسات</div><div class="admin-card-section" style="text-align:center;padding:18px 10px"><div style="font-size:12px;color:var(--text-secondary)">در حال آماده‌سازی بخش هنرجویان و ترم‌ها…</div></div>';
+    workspace.appendChild(panel);
+  }
+}
+function finishStudentTermsLoadingTab(){
+  const button=document.getElementById('studentTermsLoadingButton');
+  const panel=document.getElementById('studentTermsLoadingTab');
+  const wasActive=!!panel?.classList.contains('active');
+  button?.remove();
+  panel?.remove();
+  if(wasActive&&document.getElementById('studentTermsTab'))switchAdminTab('studentTermsTab');
+}
+function showStudentTermsLoadingError(message){
+  const panel=document.getElementById('studentTermsLoadingTab');
+  if(!panel)return;
+  panel.innerHTML='<div class="admin-section-subhead">👥 هنرجویان و ترم‌ها</div><div class="admin-card-section" style="padding:14px 10px"><div style="font-size:12px;color:#fb7185;line-height:1.9"></div></div>';
+  const detail=panel.querySelector('.admin-card-section div');
+  if(detail)detail.textContent=message||'بارگذاری بخش هنرجویان ناموفق بود. اتصال را بررسی و دوباره تلاش کنید.';
+}
 function waitForGym20StudentTab(){
   return new Promise((resolve,reject)=>{
     const started=Date.now();
@@ -694,7 +730,7 @@ function waitForGym20StudentTab(){
       if(window.gym20StudentTermsError){reject(new Error(window.gym20StudentTermsError));return;}
       const tab=document.getElementById('studentTermsTab');
       const button=document.querySelector('.admin-tabs [onclick*="studentTermsTab"]');
-      if(window.gym20StudentTermsReady&&tab&&button){resolve();return;}
+      if(window.gym20StudentTermsReady&&tab&&button){finishStudentTermsLoadingTab();resolve();return;}
       if(Date.now()-started>12000){reject(new Error('تب «هنرجویان و ترم‌ها» پس از بارگذاری فایل تخصصی ساخته نشد. لطفاً صفحه را یک‌بار تازه‌سازی کنید؛ اگر تکرار شد، خطای اجرای ماژول باید بررسی شود.'));return;}
       setTimeout(check,100);
     };
@@ -737,6 +773,7 @@ function openAuthorizedAdminPanel(){
   const modal=document.getElementById('adminModal');
   if(modal)modal.style.display='flex';
   loadAdminForm();
+  ensureStudentTermsLoadingTab();
   const status=document.getElementById('adminModulesStatus');
   if(status){status.textContent='پنل مدیریت باز شد؛ بخش‌های تخصصی در پس‌زمینه آماده می‌شوند…';status.style.color='#e2e8f0';}
   loadGym20AdminModules().then(()=>{
@@ -745,6 +782,7 @@ function openAuthorizedAdminPanel(){
   }).catch(err=>{
     console.error('GYM20 admin modules failed:',err);
     if(status){status.textContent=err.message||'بارگذاری یکی از بخش‌های مدیریتی ناموفق بود؛ اتصال را بررسی و دوباره تلاش کنید.';status.style.color='#fb7185';}
+    showStudentTermsLoadingError(err.message);
     setAdminLoginStatus(err.message||'بارگذاری پنل مدیریت ناموفق بود.',true);
   });
 }
