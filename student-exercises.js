@@ -20,7 +20,7 @@
       const category=item[0], name=item[1], timeDefault=!!item[2];
       const heading=category!==currentCategory?'<div class="gym20-ex-catalog-category">'+esc(categoryNames[category]||category)+'</div>':'';
       currentCategory=category;
-      return heading+'<div class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="'+esc(name)+'"><span class="gym20-ex-catalog-name">'+esc(name)+'</span><span class="gym20-ex-catalog-unit">'+(timeDefault?'Sec':'Reps')+'</span><input class="gym20-ex-catalog-value" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" data-unit="'+(timeDefault?'Sec':'Reps')+'" aria-label="'+(timeDefault?'Seconds':'Repetitions')+' for '+esc(name)+'"></div>';
+      return heading+'<div class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="'+esc(name)+'"><span class="gym20-ex-catalog-name">'+esc(name)+'</span><input class="gym20-ex-catalog-value gym20-ex-reps" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Reps" aria-label="Repetitions for '+esc(name)+'"><input class="gym20-ex-catalog-value gym20-ex-hold" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Hold Sec" aria-label="Hold seconds for '+esc(name)+'"></div>';
     }).join('');
     return '<section id="gym20ExerciseCatalog" class="gym20-ex-catalog" aria-label="فهرست حرکات کلیستنیکس"><div class="gym20-ex-catalog-scroll">'+rows+'</div></section>';
   }
@@ -257,8 +257,8 @@
     const input=$('gym20ExerciseInput'),button=$('gym20ExerciseAdd'),picker=$('gym20ExerciseCatalog');
     const selectedRows=picker?Array.from(picker.querySelectorAll('[data-catalog-exercise]:checked')):[];
     const titles=selectedRows.length?selectedRows.map(check=>{
-      const row=check.closest('.gym20-ex-catalog-row'),value=row?.querySelector('.gym20-ex-catalog-value'),amount=String(value?.value||'').trim(),unit=value?.dataset.unit||'Reps';
-      return check.value+(amount?' — '+amount+' '+unit:'');
+      const row=check.closest('.gym20-ex-catalog-row'),reps=String(row?.querySelector('.gym20-ex-reps')?.value||'').trim(),hold=String(row?.querySelector('.gym20-ex-hold')?.value||'').trim();
+      return check.value+(reps?' — '+reps+' Reps':'')+(hold?' — '+hold+' Hold Sec':'');
     }):((input?.value||'').trim()?[(input.value||'').trim()]:[]);
     if(!currentStudentId){say('ابتدا هنرجو را انتخاب کنید.',true);$('gym20ExerciseStudentSelect')?.focus();return;}
     if(!titles.length){say('یک حرکت از فهرست انتخاب کنید یا عنوان تمرین را وارد کنید.',true);input?.focus();return;}
@@ -273,7 +273,7 @@
       if(input)input.value='';
       if(picker)picker.querySelectorAll('[data-catalog-exercise]:checked').forEach(check=>{
         check.checked=false;const row=check.closest('.gym20-ex-catalog-row');
-        const value=row?.querySelector('.gym20-ex-catalog-value');if(value)value.value='';row?.classList.remove('is-selected');
+        row?.querySelectorAll('.gym20-ex-catalog-value').forEach(value=>value.value='');row?.classList.remove('is-selected');
       });
       await loadStudentExercisesAdmin();
       say(titles.length>1?titles.length.toLocaleString('fa-IR')+' تمرین با موفقیت اضافه شد ✓':'تمرین با موفقیت اضافه شد ✓');
@@ -671,10 +671,10 @@
       const check=event.target.closest('[data-catalog-exercise]');if(!check)return;
       const row=check.closest('.gym20-ex-catalog-row');
       row?.classList.toggle('is-selected',check.checked);
-      if(check.checked)row?.querySelector('.gym20-ex-catalog-value')?.focus({preventScroll:true});
+      if(check.checked)row?.querySelector('.gym20-ex-reps')?.focus({preventScroll:true});
     });
     catalogPicker?.addEventListener('input',event=>{
-      if(!event.target.matches('.gym20-ex-catalog-value'))return;
+      if(!event.target.matches('.gym20-ex-reps,.gym20-ex-hold'))return;
       const row=event.target.closest('.gym20-ex-catalog-row'),check=row?.querySelector('[data-catalog-exercise]');
       if(check&&!check.checked){check.checked=true;row.classList.add('is-selected');}
     });
@@ -748,14 +748,14 @@
       #gym20ExerciseCatalog .gym20-ex-catalog-scroll{max-height:205px;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:rgba(148,163,184,.4) transparent;padding:0}
       #gym20ExerciseCatalog .gym20-ex-catalog-scroll::-webkit-scrollbar{width:4px}
       #gym20ExerciseCatalog .gym20-ex-catalog-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.38);border-radius:8px}
-      #gym20ExerciseCatalog .gym20-ex-catalog-row{box-sizing:border-box;display:grid;grid-template-columns:16px minmax(0,1fr) auto 56px;align-items:center;gap:5px;min-height:32px;padding:3px 0;border:0;border-bottom:1px solid rgba(148,163,184,.10);border-radius:0;background:transparent;cursor:default}
+      #gym20ExerciseCatalog .gym20-ex-catalog-row{box-sizing:border-box;display:grid;grid-template-columns:16px minmax(0,1fr) 48px 54px;align-items:center;gap:5px;min-height:32px;padding:3px 0;border:0;border-bottom:1px solid rgba(148,163,184,.10);border-radius:0;background:transparent;cursor:default}
       #gym20ExerciseCatalog .gym20-ex-catalog-row.is-selected{border-color:rgba(148,163,184,.18);background:rgba(148,163,184,.07)}
       #gym20ExerciseCatalog .gym20-ex-catalog-row>input[type=checkbox]{box-sizing:border-box;width:15px;height:15px;min-width:15px;min-height:15px;margin:0;accent-color:#cbd5e1;justify-self:center}
       #gym20ExerciseCatalog .gym20-ex-catalog-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e2e8f0;font:8px Montserrat,Vazirmatn,sans-serif;direction:ltr;text-align:left}
-      #gym20ExerciseCatalog .gym20-ex-catalog-unit{display:block!important;visibility:visible!important;white-space:nowrap;color:#aeb8c6;font:700 8px Montserrat,Vazirmatn,sans-serif;direction:ltr;text-align:center}#gym20ExerciseCatalog input.gym20-ex-catalog-value,#gym20ExerciseCatalog .gym20-ex-catalog-row>input.gym20-ex-catalog-value{box-sizing:border-box!important;display:block!important;visibility:visible!important;opacity:1!important;position:static!important;inset:auto!important;float:none!important;flex:none!important;grid-column:4!important;grid-row:1!important;width:56px!important;min-width:56px!important;max-width:56px!important;height:25px!important;min-height:25px!important;margin:0!important;padding:2px 4px!important;border:1px solid #8994a3!important;border-radius:6px!important;background:#101318!important;color:#f8fafc!important;font:800 9px Montserrat,Vazirmatn,sans-serif!important;text-align:center!important;direction:ltr!important;appearance:none!important;-webkit-appearance:none!important}
+      #gym20ExerciseCatalog input.gym20-ex-catalog-value,#gym20ExerciseCatalog .gym20-ex-catalog-row>input.gym20-ex-catalog-value{box-sizing:border-box!important;display:block!important;visibility:visible!important;opacity:1!important;position:static!important;inset:auto!important;float:none!important;flex:none!important;width:100%!important;min-width:0!important;max-width:none!important;height:25px!important;min-height:25px!important;margin:0!important;padding:2px 2px!important;border:1px solid #8994a3!important;border-radius:6px!important;background:#101318!important;color:#f8fafc!important;font:800 8px Montserrat,Vazirmatn,sans-serif!important;text-align:center!important;direction:ltr!important;appearance:none!important;-webkit-appearance:none!important}#gym20ExerciseCatalog input.gym20-ex-reps{grid-column:3!important}#gym20ExerciseCatalog input.gym20-ex-hold{grid-column:4!important}#gym20ExerciseCatalog input.gym20-ex-catalog-value::placeholder{color:#aeb8c6!important;opacity:1!important;font:700 7px Montserrat,Vazirmatn,sans-serif!important}
       
       #gym20ExerciseCatalog input.gym20-ex-catalog-value:focus{outline:1px solid #cbd5e1!important;outline-offset:1px!important;border-color:#cbd5e1!important}
-      @media(max-width:420px){#gym20ExerciseCatalog .gym20-ex-catalog-row{grid-template-columns:16px minmax(0,1fr) auto 56px;gap:4px;min-height:31px}#gym20ExerciseCatalog .gym20-ex-catalog-row>input[type=checkbox]{width:15px;height:15px;min-width:15px;min-height:15px}#gym20ExerciseCatalog .gym20-ex-catalog-name{font-size:7px}#gym20ExerciseCatalog .gym20-ex-catalog-unit{font-size:7px}#gym20ExerciseCatalog .gym20-ex-catalog-value{width:56px!important;min-width:56px!important;max-width:56px!important;height:25px!important;font-size:8px!important}}
+      @media(max-width:420px){#gym20ExerciseCatalog .gym20-ex-catalog-row{grid-template-columns:15px minmax(0,1fr) 45px 50px;gap:3px;min-height:31px}#gym20ExerciseCatalog .gym20-ex-catalog-row>input[type=checkbox]{width:14px;height:14px;min-width:14px;min-height:14px}#gym20ExerciseCatalog .gym20-ex-catalog-name{font-size:7px}#gym20ExerciseCatalog .gym20-ex-catalog-value{height:25px!important;font-size:7px!important}}
     `;
     document.head.appendChild(catalogStyle);
     window.loadExerciseStudents = loadExerciseStudents;
