@@ -433,6 +433,7 @@ function switchAdminTab(tId){
   const saveButton=document.getElementById('autoCommitBtn');
   if(saveButton)saveButton.style.display=tId==='requestsTab'?'none':'block';
   if(tId==='requestsTab')loadRegistrationRequests();
+  if(tId==='studentTermsTab'&&gym20OwnerAuthorized)loadGym20ExerciseAdminModule();
   if(tId==='exercisesTab')window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
 }
 
@@ -737,53 +738,53 @@ function waitForGym20StudentTab(){
     check();
   });
 }
+let gym20ExerciseModulePromise=null;
+function loadGym20ExerciseAdminModule(){
+  if(!gym20ExerciseModulePromise){
+    const src='/student-exercises.js?v=20261126-calisthenics-visible-v7';
+    gym20ExerciseModulePromise=loadGym20Module(src)
+      .then(()=>new Promise((resolve,reject)=>{
+        const started=Date.now();
+        const check=()=>{
+          if(window.gym20ExerciseModuleError){reject(new Error(window.gym20ExerciseModuleError));return;}
+          if(window.gym20ExerciseModuleMounted){resolve();return;}
+          if(Date.now()-started>8000){reject(new Error('ماژول تمرین بارگذاری شد اما رابط تمرین را نصب نکرد.'));return;}
+          setTimeout(check,100);
+        };
+        check();
+      }))
+      .then(()=>{
+        const exerciseTab=document.getElementById('exercisesTab');
+        if(exerciseTab&&exerciseTab.classList.contains('active'))window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
+      })
+      .catch(err=>{
+        gym20ExerciseModulePromise=null;
+        console.warn('GYM20 exercise module will retry when its tab is opened again:',err);
+        return null;
+      });
+  }
+  return gym20ExerciseModulePromise;
+}
 function loadGym20AdminModules(){
   if(!gym20AdminModulesPromise){
     window.gym20StudentTermsReady=false;
     window.gym20StudentTermsError='';
-    // Build the student/term tab first. The exercises module moves its UI into
-    // that tab during mount, so loading it before the tab exists breaks integration.
+    // Keep the student/term tab independent. Exercise tools are mounted lazily
+    // after the student workspace is visible, so they cannot delay this tab.
     const requiredModules=[
       '/student-terms.js?v=20261126-student-terms-canonical-v2'
     ];
     const optionalModules=[
       '/student-push-admin.js?v=20261125-push-independent-v1'
     ];
-    const requiredExerciseModule='/student-exercises.js?v=20261126-calisthenics-visible-v7';
     gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
-      .then(()=>Promise.all([
-        ...optionalModules.map(src=>loadGym20Module(src).catch(err=>{
+      .then(()=>{
+        // Optional notification controls load in the background after the tab is ready.
+        optionalModules.forEach(src=>loadGym20Module(src).catch(err=>{
           console.warn('GYM20 optional admin module failed:',src,err);
           return null;
-        })),
-        loadGym20Module(requiredExerciseModule)
-      ]))
-      .then(()=>new Promise((resolve,reject)=>{
-        const started=Date.now();
-        const check=()=>{
-          if(window.gym20ExerciseModuleError){
-            reject(new Error(window.gym20ExerciseModuleError));
-            return;
-          }
-          if(window.gym20ExerciseModuleMounted){
-            resolve();
-            return;
-          }
-          if(Date.now()-started>8000){
-            reject(new Error('ماژول تمرین بارگذاری شد اما رابط تمرین را نصب نکرد. لطفاً خطای اجرای ماژول بررسی شود.'));
-            return;
-          }
-          setTimeout(check,100);
-        };
-        check();
-      }))
-      .then(()=>{
-        // Replay the open event only after the exercise controls are mounted.
-        const exerciseTab=document.getElementById('exercisesTab');
-        if(exerciseTab&&exerciseTab.classList.contains('active')){
-          window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
-        }
+        }));
       })
       .catch(err=>{gym20AdminModulesPromise=null;throw err;});
   }
