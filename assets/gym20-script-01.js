@@ -748,7 +748,7 @@ function loadGym20AdminModules(){
     ];
     const optionalModules=[
       '/student-push-admin.js?v=20261125-push-independent-v1',
-      '/student-exercises.js?v=20261126-calisthenics-picker-v3'
+      '/student-exercises.js?v=20261126-calisthenics-visible-v4'
     ];
     gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
