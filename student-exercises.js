@@ -1,5 +1,7 @@
 (() => {
   'use strict';
+  window.gym20ExerciseModuleMounted = false;
+  window.gym20ExerciseModuleError = '';
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   let students = [];
@@ -576,7 +578,9 @@
     const select = $('gym20ExerciseStudentSelect'), add = $('gym20ExerciseAdd');
     const input = $('gym20ExerciseInput'), list = $('gym20ExerciseList');
     if (!panel || !select || !add || !input || !list) {
-      console.error('[GYM20] Canonical exercise panel or controls are missing.');
+      const missing=['panel: '+!!panel,'student: '+!!select,'add: '+!!add,'input: '+!!input,'list: '+!!list].join(', ');
+      window.gym20ExerciseModuleError='اجزای لازم برای نمایش تمرین‌ها پیدا نشدند ('+missing+').';
+      console.error('[GYM20] Canonical exercise panel or controls are missing:',missing);
       return;
     }
     mounted = true;
@@ -817,6 +821,7 @@
       loadExerciseStudents().then(syncCurrentStudentContext);
       syncExercisePushStatus();
     }
+    window.gym20ExerciseModuleMounted = true;
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
