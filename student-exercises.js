@@ -157,10 +157,12 @@
         terms=data||[];
       }
       if(String($('gym20ExerciseStudentSelect')?.value||currentStudentId)!==requestedStudentId)return;
-      termSelect.innerHTML = terms.length ? terms.map(t =>
+      // Use the database row ID as identity: repeated copies of the same row must never create repeated options.
+      const uniqueTerms=Array.from(new Map((Array.isArray(terms)?terms:[]).filter(t=>t&&t.id).map(t=>[String(t.id),t])).values());
+      termSelect.innerHTML = uniqueTerms.length ? uniqueTerms.map(t =>
         '<option value="'+esc(t.id)+'">'+esc(t.term_name)+(t.status==='active'?' · فعال':'')+'</option>'
       ).join('') : '<option value="">ترمی برای این هنرجو ثبت نشده</option>';
-      const preferred = terms.find(t=>t.status==='active') || terms[0];
+      const preferred = uniqueTerms.find(t=>t.status==='active') || uniqueTerms[0];
       currentTermId = preferred ? String(preferred.id) : '';
       termSelect.value = currentTermId;
       termSelect.disabled = !terms.length;
@@ -616,7 +618,7 @@
       panel.hidden=true;
       const integrationStyle=document.createElement('style');
       integrationStyle.id='gym20StudentExercisesIntegratedStyle';
-      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .admin-grid-2>.admin-input-group:first-child{display:none!important}';
+      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .admin-grid-2>.admin-input-group:nth-child(-n+2){display:none!important}';
       document.head.appendChild(integrationStyle);
     }
     groupToggle.addEventListener('click',toggleGroupManager);
