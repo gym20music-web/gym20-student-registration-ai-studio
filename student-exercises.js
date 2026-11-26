@@ -255,7 +255,7 @@
           }
         }
         const metrics=(reps?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Reps</span><b class="gym20-ex-admin-number">'+esc(reps)+'</b></span>':'')+(seconds?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Sec</span><b class="gym20-ex-admin-number">'+esc(seconds)+'</b></span>':'');
-        const alignedTitle='<span class="gym20-ex-admin-movement">'+esc(movement)+'</span>'+metrics;
+        const alignedTitle=metrics+'<span class="gym20-ex-admin-movement">'+esc(movement)+'</span>';
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">'+alignedTitle+'</strong>' +
           '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
