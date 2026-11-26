@@ -224,8 +224,16 @@
         const statusColor = completed ? '#22c55e' : overdue ? '#ef4444' : '#eab308';
         const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
         const normalizeDigits=value=>String(value).replace(/[۰-۹٠-٩]/g,ch=>{const fa='۰۱۲۳۴۵۶۷۸۹',ar='٠١٢٣٤٥٦٧٨٩';return String(fa.indexOf(ch)>=0?fa.indexOf(ch):ar.indexOf(ch));});
-        const titleParts=String(x.title||'').trim().split(/\s+—\s+/);
+        const rawTitle=String(x.title||'').trim();
+        const titleParts=rawTitle.split(/\s+—\s+/);
         let movement=titleParts.shift()||'تمرین',reps='',seconds='';
+        // Support both structured titles and older compact titles such as "Reps60Push-Up".
+        const compact=normalizeDigits(movement).match(/^(Reps|Hold\s*Sec|Sec)\s*(\d+(?:\.\d+)?)\s*(.+)$/i);
+        if(compact){
+          if(/^Reps$/i.test(compact[1]))reps=String(Math.round(Number(compact[2])));
+          else seconds=String(Math.round(Number(compact[2])));
+          movement=compact[3].trim()||'تمرین';
+        }
         titleParts.forEach(part=>{
           const value=normalizeDigits(part).trim();
           let match=value.match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
@@ -247,7 +255,7 @@
           }
         }
         const metrics=(reps?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Reps</span><b class="gym20-ex-admin-number">'+esc(reps)+'</b></span>':'')+(seconds?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Sec</span><b class="gym20-ex-admin-number">'+esc(seconds)+'</b></span>':'');
-        const alignedTitle=metrics+'<span class="gym20-ex-admin-movement">'+esc(movement)+'</span>';
+        const alignedTitle='<span class="gym20-ex-admin-movement">'+esc(movement)+'</span>'+metrics;
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">'+alignedTitle+'</strong>' +
           '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
@@ -760,11 +768,11 @@
       #gym20ExerciseList .gym20-ex-status.is-pending{color:#eab308!important;-webkit-text-fill-color:#eab308!important}
       #gym20ExerciseList .gym20-ex-status.is-overdue{color:#ef4444!important;-webkit-text-fill-color:#ef4444!important}
       #gym20ExerciseList .gym20-ex-date,#gym20ExerciseList .gym20-ex-time{display:block;font-size:8px;line-height:1.5;color:var(--text-secondary,#aab0b9);font-weight:500}
-      #gym20ExerciseList .gym20-ex-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex:0 0 auto}
-      #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box;min-height:23px!important;height:23px!important;padding:0 6px!important;margin:0!important;border-radius:5px!important;font-size:8px!important;line-height:1!important;white-space:nowrap}
-      #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px;padding:0!important}
-      #gym20ExerciseList .gym20-ex-actions button.gym20-ex-restore{box-sizing:border-box!important;width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;padding:0!important;border-radius:5px!important;font:700 14px/1 Arial,sans-serif!important;color:#aeb8c6!important}
-      @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{gap:3px}#gym20ExerciseList .gym20-ex-actions button{font-size:7px!important;padding:0 5px!important}}
+      #gym20ExerciseList .gym20-ex-actions{display:flex;flex:0 0 24px;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+      #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box!important;display:grid!important;place-items:center!important;width:24px!important;min-width:24px!important;max-width:24px!important;height:24px!important;min-height:24px!important;max-height:24px!important;padding:0!important;margin:0!important;border-radius:5px!important;font-size:11px!important;line-height:1!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px!important;padding:0!important}
+      #gym20ExerciseList .gym20-ex-actions button.gym20-ex-restore{width:24px!important;min-width:24px!important;height:24px!important;min-height:24px!important;padding:0!important;border-radius:5px!important;font:700 14px/1 Arial,sans-serif!important;color:#aeb8c6!important}
+      @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{flex-basis:24px;gap:3px}#gym20ExerciseList .gym20-ex-actions button{width:24px!important;min-width:24px!important;height:24px!important;min-height:24px!important;padding:0!important;font-size:10px!important}}
       #gym20ExerciseList .gym20-ex-info{width:100%;min-width:0}
       #gym20ExerciseList .gym20-ex-title{display:flex!important;flex-flow:row nowrap!important;direction:ltr!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;width:100%!important;min-width:0!important;font-size:9px!important;white-space:nowrap!important}
       #gym20ExerciseList .gym20-ex-admin-metric{display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;gap:3px!important;white-space:nowrap!important}
