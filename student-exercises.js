@@ -199,6 +199,7 @@
       const today = tehranDateKey(Date.now());
       const openDays = new Set(Array.from(list.querySelectorAll('details[data-exercise-day][open]')).map(node => node.dataset.exerciseDay || ''));
       const currentRows = rows.filter(x => !x.is_completed || !x.completed_at || tehranDateKey(x.completed_at) === today);
+      currentRows.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed));
       const archivedRows = rows.filter(x => !!x.is_completed && !!x.completed_at && tehranDateKey(x.completed_at) !== today);
       const renderExercise = x => {
         const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
