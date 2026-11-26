@@ -741,7 +741,7 @@ function waitForGym20StudentTab(){
 let gym20ExerciseModulePromise=null;
 function loadGym20ExerciseAdminModule(){
   if(!gym20ExerciseModulePromise){
-    const src='/student-exercises.js?v=20261126-reps-hold-two-inputs-v14';
+    const src='/student-exercises.js?v=20261126-reps-hold-mobile-flex-v15';
     gym20ExerciseModulePromise=loadGym20Module(src)
       .then(()=>new Promise((resolve,reject)=>{
         const started=Date.now();
