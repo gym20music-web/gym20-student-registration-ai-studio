@@ -730,7 +730,7 @@ function waitForGym20StudentTab(){
       if(window.gym20StudentTermsError){reject(new Error(window.gym20StudentTermsError));return;}
       const tab=document.getElementById('studentTermsTab');
       const button=document.querySelector('.admin-tabs [onclick*="studentTermsTab"]');
-      if(window.gym20StudentTermsReady&&tab&&button){finishStudentTermsLoadingTab();resolve();return;}
+      if(tab&&button){window.gym20StudentTermsReady=true;finishStudentTermsLoadingTab();resolve();return;}
       if(Date.now()-started>12000){reject(new Error('تب «هنرجویان و ترم‌ها» پس از بارگذاری فایل تخصصی ساخته نشد. لطفاً صفحه را یک‌بار تازه‌سازی کنید؛ اگر تکرار شد، خطای اجرای ماژول باید بررسی شود.'));return;}
       setTimeout(check,100);
     };
