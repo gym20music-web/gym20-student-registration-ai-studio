@@ -747,18 +747,39 @@ function loadGym20AdminModules(){
       '/student-terms.js?v=20261125-student-terms-canonical-v1'
     ];
     const optionalModules=[
-      '/student-push-admin.js?v=20261125-push-independent-v1',
-      '/student-exercises.js?v=20261126-calisthenics-visible-v4'
+      '/student-push-admin.js?v=20261125-push-independent-v1'
     ];
+    const requiredExerciseModule='/student-exercises.js?v=20261126-calisthenics-visible-v5';
     gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
-      .then(()=>Promise.all(optionalModules.map(src=>loadGym20Module(src).catch(err=>{
-        console.warn('GYM20 optional admin module failed:',src,err);
-        return null;
-      }))))
+      .then(()=>Promise.all([
+        ...optionalModules.map(src=>loadGym20Module(src).catch(err=>{
+          console.warn('GYM20 optional admin module failed:',src,err);
+          return null;
+        })),
+        loadGym20Module(requiredExerciseModule)
+      ]))
+      .then(()=>new Promise((resolve,reject)=>{
+        const started=Date.now();
+        const check=()=>{
+          if(window.gym20ExerciseModuleError){
+            reject(new Error(window.gym20ExerciseModuleError));
+            return;
+          }
+          if(window.gym20ExerciseModuleMounted){
+            resolve();
+            return;
+          }
+          if(Date.now()-started>8000){
+            reject(new Error('ماژول تمرین بارگذاری شد اما رابط تمرین را نصب نکرد. لطفاً خطای اجرای ماژول بررسی شود.'));
+            return;
+          }
+          setTimeout(check,100);
+        };
+        check();
+      }))
       .then(()=>{
-        // The exercise module now mounts only after the shared student/term
-        // workspace exists. Replay the open event after listeners are ready.
+        // Replay the open event only after the exercise controls are mounted.
         const exerciseTab=document.getElementById('exercisesTab');
         if(exerciseTab&&exerciseTab.classList.contains('active')){
           window.dispatchEvent(new Event('gym20:exercise-tab-opened'));
