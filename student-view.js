@@ -465,11 +465,11 @@
     return items.map(item=>{
       const done=!!item.is_completed;
       const stamp=Date.parse(item.created_at||'');
-      const parts=String(item.title||'').split(/\\s+—\\s+/);
+      const parts=String(item.title||'').split(/\s+—\s+/);
       const movement=parts.shift()||'تمرین';
       let reps='',seconds='';
       parts.forEach(part=>{
-        const match=String(part).trim().match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);
+        const match=String(part).trim().match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
         if(!match)return;
         if(/^Reps$/i.test(match[2]))reps=match[1];
         else seconds=match[1];
