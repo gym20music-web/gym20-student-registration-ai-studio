@@ -744,6 +744,11 @@
       #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box;min-height:23px!important;height:23px!important;padding:0 6px!important;margin:0!important;border-radius:5px!important;font-size:8px!important;line-height:1!important;white-space:nowrap}
       #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px;padding:0!important}
       @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{gap:3px}#gym20ExerciseList .gym20-ex-actions button{font-size:7px!important;padding:0 5px!important}}
+      #gym20ExerciseList .gym20-ex-info{width:100%;min-width:0}
+      #gym20ExerciseList .gym20-ex-title{display:grid!important;direction:ltr!important;grid-template-columns:30px 24px 22px 24px minmax(0,1fr)!important;align-items:center!important;column-gap:4px!important;width:100%!important;min-width:0!important;font-size:9px!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-admin-unit{font:700 7px Montserrat,Arial,sans-serif!important;color:#aeb8c6!important;text-align:center!important;direction:ltr!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-admin-number{font:800 8px Montserrat,Arial,sans-serif!important;color:#e2e8f0!important;text-align:center!important;direction:ltr!important;font-variant-numeric:tabular-nums!important}
+      #gym20ExerciseList .gym20-ex-admin-movement{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important;direction:ltr!important;font-size:9px!important}
     `;
     document.head.appendChild(style);
     const catalogStyle=document.createElement('style');catalogStyle.id='gym20ExerciseCatalogStyle';
@@ -832,4 +837,4 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
-})()\n      #gym20ExerciseList .gym20-ex-title{display:grid!important;grid-template-columns:30px 24px 22px 24px minmax(0,1fr)!important;align-items:center!important;column-gap:4px!important;width:100%!important;min-width:0!important;font-size:9px!important}\n      #gym20ExerciseList .gym20-ex-admin-unit{font:700 7px Montserrat,Arial,sans-serif!important;color:#aeb8c6!important;text-align:center!important;direction:ltr!important}\n      #gym20ExerciseList .gym20-ex-admin-number{font:800 8px Montserrat,Arial,sans-serif!important;color:#e2e8f0!important;text-align:center!important;direction:ltr!important;font-variant-numeric:tabular-nums!important}\n      #gym20ExerciseList .gym20-ex-admin-movement{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important;direction:ltr!important;font-size:9px!important};
+})()
