@@ -20,7 +20,7 @@
       const category=item[0], name=item[1], timeDefault=!!item[2];
       const heading=category!==currentCategory?'<div class="gym20-ex-catalog-category">'+esc(categoryNames[category]||category)+'</div>':'';
       currentCategory=category;
-      return heading+'<div class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="'+esc(name)+'"><span class="gym20-ex-catalog-name">'+esc(name)+'</span><input class="gym20-ex-catalog-value gym20-ex-reps" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Reps" aria-label="Repetitions for '+esc(name)+'"><input class="gym20-ex-catalog-value gym20-ex-hold" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Hold Sec" aria-label="Hold seconds for '+esc(name)+'"></div>';
+      return heading+'<div class="gym20-ex-catalog-row"><input type="checkbox" data-catalog-exercise value="'+esc(name)+'"><span class="gym20-ex-catalog-name">'+esc(name)+'</span><input class="gym20-ex-catalog-value gym20-ex-reps" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Reps" aria-label="Repetitions for '+esc(name)+'"><input class="gym20-ex-catalog-value gym20-ex-hold" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="Sec" aria-label="Seconds for '+esc(name)+'"></div>';
     }).join('');
     return '<section id="gym20ExerciseCatalog" class="gym20-ex-catalog" aria-label="فهرست حرکات کلیستنیکس"><div class="gym20-ex-catalog-scroll">'+rows+'</div></section>';
   }
@@ -223,7 +223,12 @@
         const statusClass = completed ? 'is-completed' : overdue ? 'is-overdue' : 'is-pending';
         const statusColor = completed ? '#22c55e' : overdue ? '#ef4444' : '#eab308';
         const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
-        return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">' + esc(x.title) + '</strong>' +
+        const titleParts=String(x.title||'').split(/\\s+—\\s+/);
+        const movement=titleParts.shift()||'تمرین';
+        let reps='',seconds='';
+        titleParts.forEach(part=>{const match=String(part).trim().match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);if(!match)return;if(/^Reps$/i.test(match[2]))reps=match[1];else seconds=match[1];});
+        const alignedTitle='<span class="gym20-ex-admin-unit">'+(reps?'Reps':'')+'</span><span class="gym20-ex-admin-number">'+(reps?esc(reps):'')+'</span><span class="gym20-ex-admin-unit">'+(seconds?'Sec':'')+'</span><span class="gym20-ex-admin-number">'+(seconds?esc(seconds):'')+'</span><span class="gym20-ex-admin-movement">'+esc(movement)+'</span>';
+        return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">'+alignedTitle+'</strong>' +
           '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
           '</div><div class="gym20-ex-actions">' +
@@ -258,7 +263,7 @@
     const selectedRows=picker?Array.from(picker.querySelectorAll('[data-catalog-exercise]:checked')):[];
     const titles=selectedRows.length?selectedRows.map(check=>{
       const row=check.closest('.gym20-ex-catalog-row'),reps=String(row?.querySelector('.gym20-ex-reps')?.value||'').trim(),hold=String(row?.querySelector('.gym20-ex-hold')?.value||'').trim();
-      return check.value+(reps?' — '+reps+' Reps':'')+(hold?' — '+hold+' Hold Sec':'');
+      return check.value+(reps?' — '+reps+' Reps':'')+(hold?' — '+hold+' Sec':'');
     }):((input?.value||'').trim()?[(input.value||'').trim()]:[]);
     if(!currentStudentId){say('ابتدا هنرجو را انتخاب کنید.',true);$('gym20ExerciseStudentSelect')?.focus();return;}
     if(!titles.length){say('یک حرکت از فهرست انتخاب کنید یا عنوان تمرین را وارد کنید.',true);input?.focus();return;}
@@ -827,4 +832,4 @@
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
-})();
+})()\n      #gym20ExerciseList .gym20-ex-title{display:grid!important;grid-template-columns:30px 24px 22px 24px minmax(0,1fr)!important;align-items:center!important;column-gap:4px!important;width:100%!important;min-width:0!important;font-size:9px!important}\n      #gym20ExerciseList .gym20-ex-admin-unit{font:700 7px Montserrat,Arial,sans-serif!important;color:#aeb8c6!important;text-align:center!important;direction:ltr!important}\n      #gym20ExerciseList .gym20-ex-admin-number{font:800 8px Montserrat,Arial,sans-serif!important;color:#e2e8f0!important;text-align:center!important;direction:ltr!important;font-variant-numeric:tabular-nums!important}\n      #gym20ExerciseList .gym20-ex-admin-movement{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important;direction:ltr!important;font-size:9px!important};
