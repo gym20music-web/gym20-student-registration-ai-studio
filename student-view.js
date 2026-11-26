@@ -465,7 +465,16 @@
     return items.map(item=>{
       const done=!!item.is_completed;
       const stamp=Date.parse(item.created_at||'');
-      return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+(Number.isFinite(stamp)?stamp:0)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-title">'+esc(item.title)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
+      const parts=String(item.title||'').split(/\\s+—\\s+/);
+      const movement=parts.shift()||'تمرین';
+      let reps='',seconds='';
+      parts.forEach(part=>{
+        const match=String(part).trim().match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);
+        if(!match)return;
+        if(/^Reps$/i.test(match[2]))reps=match[1];
+        else seconds=match[1];
+      });
+      return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+(Number.isFinite(stamp)?stamp:0)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'><span class="exercise-unit exercise-reps-unit">'+(reps?'Reps':'')+'</span><span class="exercise-number exercise-reps-number">'+(reps?esc(reps):'')+'</span><span class="exercise-unit exercise-sec-unit">'+(seconds?'Sec':'')+'</span><span class="exercise-number exercise-sec-number">'+(seconds?esc(seconds):'')+'</span><span class="exercise-title">'+esc(movement)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
     }).join('');
   }
   function groupExerciseRowsMarkup(items){
