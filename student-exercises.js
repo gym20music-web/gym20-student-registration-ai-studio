@@ -95,10 +95,13 @@
     if(!select||!termSelect||!list)return;
     const studentId=String(detail.studentId||''),termId=String(detail.termId||'');
     const revision=++selectionRevision;
-    if(!students.length)await loadExerciseStudents();
-    if(revision!==selectionRevision)return;
     currentStudentId=studentId;
+    if(studentId&&!Array.from(select.options).some(option=>String(option.value)===studentId)){
+      const label=String(detail.studentName||$('stStudentSelected')?.textContent||'هنرجوی انتخاب‌شده').trim();
+      select.add(new Option(label,studentId,true,true));
+    }
     select.value=studentId;
+    if(revision!==selectionRevision)return;
     currentTermId='';
     if(!studentId){
       termSelect.innerHTML='<option value="">ابتدا هنرجو را از بخش بالا انتخاب کنید</option>';
@@ -107,7 +110,7 @@
       if(individual)individual.hidden=true;if(toggle)toggle.setAttribute('aria-expanded','false');
       return;
     }
-    await loadStudentTermsForExercises(studentId);
+    await loadStudentTermsForExercises(studentId,detail.terms);
     if(revision!==selectionRevision)return;
     const hasTopTerm=!!termId&&Array.from(termSelect.options).some(option=>String(option.value)===termId);
     const preferredTerm=hasTopTerm?termId:String(termSelect.value||'');
@@ -131,25 +134,29 @@
     if(revision!==selectionRevision)return;
   }
 
-  async function loadStudentTermsForExercises(studentId) {
+  async function loadStudentTermsForExercises(studentId, preloadedTerms=null) {
     const requestedStudentId=String(studentId||'');
     const termSelect = $('gym20ExerciseTermSelect');
     if (!termSelect) return;
     currentTermId = '';
     if (!studentId) {
-      termSelect.innerHTML = '<option value="">ابتدا هنرجو را انتخاب کنید</option>';
+      termSelect.innerHTML = '<option value="">ابتدا هنرجو را از بخش بالا انتخاب کنید</option>';
       termSelect.disabled = true;
       return;
     }
-    termSelect.innerHTML = '<option value="">در حال دریافت ترم‌ها…</option>';
+    termSelect.innerHTML = '<option value="">در حال آماده‌سازی ترم‌ها…</option>';
     termSelect.disabled = true;
     try {
-      const {data,error} = await db().from('student_terms')
-        .select('id,term_name,start_date,end_date,status,created_at')
-        .eq('student_id',studentId).order('created_at',{ascending:false});
-      if(error) throw error;
+      let terms;
+      if(Array.isArray(preloadedTerms)) terms=preloadedTerms;
+      else {
+        const {data,error} = await db().from('student_terms')
+          .select('id,term_name,start_date,end_date,status,created_at')
+          .eq('student_id',studentId).order('created_at',{ascending:false});
+        if(error) throw error;
+        terms=data||[];
+      }
       if(String($('gym20ExerciseStudentSelect')?.value||currentStudentId)!==requestedStudentId)return;
-      const terms = data || [];
       termSelect.innerHTML = terms.length ? terms.map(t =>
         '<option value="'+esc(t.id)+'">'+esc(t.term_name)+(t.status==='active'?' · فعال':'')+'</option>'
       ).join('') : '<option value="">ترمی برای این هنرجو ثبت نشده</option>';
@@ -716,9 +723,10 @@
     window.addEventListener('gym20:student-term-selected',event=>syncIntegratedTerm(event.detail||{}));
     window.addEventListener('gym20:exercise-tab-opened', () => {
       if (!authContext().authorized) return;
-      const topStudentId=String($('stStudentSelected')?.dataset.studentId||'');
-      const topTermId=String($('stTerm')?.value||'');
-      if(topStudentId) syncIntegratedStudent({studentId:topStudentId,termId:topTermId});
+      const context=window.gym20SelectedStudentContext||{};
+      const topStudentId=String(context.studentId||$('stStudentSelected')?.dataset.studentId||'');
+      const topTermId=String(context.termId||$('stTerm')?.value||'');
+      if(topStudentId) syncIntegratedStudent({studentId:topStudentId,termId:topTermId,terms:context.terms,studentName:context.studentName});
       else if (!students.length) loadExerciseStudents();
       syncExercisePushStatus();
     });
