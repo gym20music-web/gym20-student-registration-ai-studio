@@ -543,6 +543,18 @@
     }
   }
 
+  function syncCurrentStudentContext() {
+    const context = window.gym20SelectedStudentContext || {};
+    const studentId = String(context.studentId || $('stStudentSelected')?.dataset.studentId || '');
+    if (!studentId) return Promise.resolve();
+    return syncIntegratedStudent({
+      ...context,
+      studentId,
+      termId: String(context.termId || $('stTerm')?.value || ''),
+      studentName: String(context.studentName || $('stStudentSelected')?.textContent || '')
+    });
+  }
+
   function mount() {
     if (mounted) return;
     const embedded = !!document.querySelector('#adminModal .admin-tabs');
@@ -610,7 +622,7 @@
       const integratedSection=document.createElement('section');
       integratedSection.id='gym20StudentExercisesIntegrated';
       integratedSection.className='gym20-exercise-integration';
-      integratedSection.innerHTML='<div class="gym20-exercise-integration-title">🤸🏻‍♂️ تمرین‌های اختصاصی هنرجویان</div>';
+      integratedSection.setAttribute('aria-label','تمرین‌های اختصاصی هنرجویان');
       integratedSection.append(notifyCard,groupCard,individualCard);
       integratedTab.appendChild(integratedSection);
       const legacyCard=panel.querySelector('.gym20-exercises-panel');
@@ -717,23 +729,29 @@
     });
     $('gym20ExercisePushToggle').addEventListener('click',toggleExercisePush);
     window.addEventListener('gym20:owner-authorized', () => {
-      if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
+      if (authContext().authorized) {
+        loadExerciseStudents().then(syncCurrentStudentContext);
+        syncExercisePushStatus();
+      }
     });
     window.addEventListener('gym20:students-loaded', () => {
-      if (authContext().authorized) loadExerciseStudents();
+      if (authContext().authorized) loadExerciseStudents().then(syncCurrentStudentContext);
     });
     window.addEventListener('gym20:student-selected',event=>syncIntegratedStudent(event.detail||{}));
     window.addEventListener('gym20:student-term-selected',event=>syncIntegratedTerm(event.detail||{}));
     window.addEventListener('gym20:exercise-tab-opened', () => {
       if (!authContext().authorized) return;
-      const context=window.gym20SelectedStudentContext||{};
-      const topStudentId=String(context.studentId||$('stStudentSelected')?.dataset.studentId||'');
-      const topTermId=String(context.termId||$('stTerm')?.value||'');
-      if(topStudentId) syncIntegratedStudent({studentId:topStudentId,termId:topTermId,terms:context.terms,studentName:context.studentName});
+      if (window.gym20SelectedStudentContext?.studentId) syncCurrentStudentContext();
       else if (!students.length) loadExerciseStudents();
       syncExercisePushStatus();
     });
-    if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
+    // The student/term workspace can be selected before this lazy module finishes loading.
+    // Always hydrate the current selection after the student list is ready, even though the
+    // legacy exercisesTab itself is intentionally hidden inside the integrated workspace.
+    if (authContext().authorized) {
+      loadExerciseStudents().then(syncCurrentStudentContext);
+      syncExercisePushStatus();
+    }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mount, {once:true});
   else mount();
