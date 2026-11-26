@@ -215,7 +215,7 @@
       const today = tehranDateKey(Date.now());
       const openDays = new Set(Array.from(list.querySelectorAll('details[data-exercise-day][open]')).map(node => node.dataset.exerciseDay || ''));
       const currentRows = rows.filter(x => !x.is_completed || !x.completed_at || tehranDateKey(x.completed_at) === today);
-      currentRows.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed));
+      currentRows.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
       const archivedRows = rows.filter(x => !!x.is_completed && !!x.completed_at && tehranDateKey(x.completed_at) !== today);
       const renderExercise = x => {
         const completed = !!x.is_completed, stamp = completed ? formatCompletedAt(x.completed_at) : null;
@@ -223,11 +223,31 @@
         const statusClass = completed ? 'is-completed' : overdue ? 'is-overdue' : 'is-pending';
         const statusColor = completed ? '#22c55e' : overdue ? '#ef4444' : '#eab308';
         const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
-        const titleParts=String(x.title||'').split(/\\s+—\\s+/);
-        const movement=titleParts.shift()||'تمرین';
-        let reps='',seconds='';
-        titleParts.forEach(part=>{const match=String(part).trim().match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);if(!match)return;if(/^Reps$/i.test(match[2]))reps=match[1];else seconds=match[1];});
-        const alignedTitle='<span class="gym20-ex-admin-unit">'+(reps?'Reps':'')+'</span><span class="gym20-ex-admin-number">'+(reps?esc(reps):'')+'</span><span class="gym20-ex-admin-unit">'+(seconds?'Sec':'')+'</span><span class="gym20-ex-admin-number">'+(seconds?esc(seconds):'')+'</span><span class="gym20-ex-admin-movement">'+esc(movement)+'</span>';
+        const normalizeDigits=value=>String(value).replace(/[۰-۹٠-٩]/g,ch=>{const fa='۰۱۲۳۴۵۶۷۸۹',ar='٠١٢٣٤٥٦٧٨٩';return String(fa.indexOf(ch)>=0?fa.indexOf(ch):ar.indexOf(ch));});
+        const titleParts=String(x.title||'').trim().split(/\\s+—\\s+/);
+        let movement=titleParts.shift()||'تمرین',reps='',seconds='';
+        titleParts.forEach(part=>{
+          const value=normalizeDigits(part).trim();
+          let match=value.match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);
+          if(match){if(/^Reps$/i.test(match[2]))reps=match[1];else seconds=match[1];return;}
+          match=value.match(/^(?:Reps\\s*)?(\\d+)\\s*(?:Sec|Seconds?)$/i);
+          if(match){seconds=match[1];return;}
+        });
+        if(!reps&&!seconds){
+          const normalized=normalizeDigits(movement).trim();
+          const match=normalized.match(/^(.*?)\\s+(\\d+(?:\\.\\d+)?)\\s*(min|mins|minute|minutes|sec|secs|second|seconds|s)?$/i);
+          if(match){
+            const amount=Number(match[2]),unit=(match[3]||'').toLowerCase();
+            if(Number.isFinite(amount)&&amount>0){
+              movement=match[1].trim()||movement;
+              if(/^(min|mins|minute|minutes)$/.test(unit))seconds=String(Math.round(amount*60));
+              else if(/^(sec|secs|second|seconds|s)$/.test(unit))seconds=String(Math.round(amount));
+              else reps=String(Math.round(amount));
+            }
+          }
+        }
+        const metrics=(reps?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Reps</span><b class="gym20-ex-admin-number">'+esc(reps)+'</b></span>':'')+(seconds?'<span class="gym20-ex-admin-metric"><span class="gym20-ex-admin-unit">Sec</span><b class="gym20-ex-admin-number">'+esc(seconds)+'</b></span>':'');
+        const alignedTitle=metrics+'<span class="gym20-ex-admin-movement">'+esc(movement)+'</span>';
         return '<article class="gym20-ex-admin-row"><div class="gym20-ex-info"><strong class="gym20-ex-title">'+alignedTitle+'</strong>' +
           '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
@@ -745,10 +765,12 @@
       #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px;padding:0!important}
       @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{gap:3px}#gym20ExerciseList .gym20-ex-actions button{font-size:7px!important;padding:0 5px!important}}
       #gym20ExerciseList .gym20-ex-info{width:100%;min-width:0}
-      #gym20ExerciseList .gym20-ex-title{display:grid!important;direction:ltr!important;grid-template-columns:30px 32px 24px 42px minmax(0,1fr)!important;align-items:center!important;column-gap:4px!important;width:100%!important;min-width:0!important;font-size:9px!important;white-space:nowrap!important}
-      #gym20ExerciseList .gym20-ex-admin-unit{font:700 7px Montserrat,Arial,sans-serif!important;color:#aeb8c6!important;text-align:center!important;direction:ltr!important;white-space:nowrap!important}
-      #gym20ExerciseList .gym20-ex-admin-number{font:800 8px Montserrat,Arial,sans-serif!important;color:#e2e8f0!important;text-align:center!important;direction:ltr!important;font-variant-numeric:tabular-nums!important}
-      #gym20ExerciseList .gym20-ex-admin-movement{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important;direction:ltr!important;font-size:9px!important}
+      #gym20ExerciseList .gym20-ex-title{display:flex!important;flex-flow:row nowrap!important;direction:ltr!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;width:100%!important;min-width:0!important;font-size:9px!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-admin-metric{display:inline-flex!important;flex:0 0 auto!important;align-items:center!important;justify-content:center!important;gap:3px!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-admin-unit{font:700 8px Montserrat,Arial,sans-serif!important;color:#f59e0b!important;text-align:center!important;direction:ltr!important;white-space:nowrap!important}
+      #gym20ExerciseList .gym20-ex-admin-number{font:800 9px Montserrat,Arial,sans-serif!important;color:#f59e0b!important;text-align:center!important;direction:ltr!important;font-variant-numeric:tabular-nums!important}
+      #gym20ExerciseList .gym20-ex-admin-movement{flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;text-align:left!important;direction:ltr!important;font-size:9px!important;color:#fff!important}
+      @media(max-width:480px){#gym20ExerciseList .gym20-ex-title{gap:5px!important}#gym20ExerciseList .gym20-ex-admin-unit{font-size:7px!important}#gym20ExerciseList .gym20-ex-admin-number{font-size:8px!important}}
     `;
     document.head.appendChild(style);
     const catalogStyle=document.createElement('style');catalogStyle.id='gym20ExerciseCatalogStyle';
