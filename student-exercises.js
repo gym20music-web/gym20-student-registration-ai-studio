@@ -634,21 +634,34 @@
     exerciseHost.prepend(individualCard);
     exerciseHost.prepend(groupCard);
     exerciseHost.prepend(notifyCard);
-    const integratedTab=$('studentTermsTab');
-    if(integratedTab){
-      const integratedSection=document.createElement('section');
-      integratedSection.id='gym20StudentExercisesIntegrated';
-      integratedSection.className='gym20-exercise-integration';
-      integratedSection.setAttribute('aria-label','تمرین‌های اختصاصی هنرجویان');
-      integratedSection.append(notifyCard,groupCard,individualCard);
+    const integrationStyle=document.createElement('style');
+    integrationStyle.id='gym20StudentExercisesIntegratedStyle';
+    integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box!important;display:flex!important;visibility:visible!important;flex-direction:column;gap:7px;min-width:0;width:100%;margin:10px 0 14px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc;position:relative;z-index:1}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .admin-grid-2>.admin-input-group:nth-child(-n+2){display:none!important}';
+    document.head.appendChild(integrationStyle);
+    const attachExerciseSection=()=>{
+      const integratedTab=$('studentTermsTab');
+      if(!integratedTab)return false;
+      let integratedSection=$('gym20StudentExercisesIntegrated');
+      if(!integratedSection){
+        integratedSection=document.createElement('section');
+        integratedSection.id='gym20StudentExercisesIntegrated';
+        integratedSection.className='gym20-exercise-integration';
+        integratedSection.setAttribute('aria-label','تمرین‌های اختصاصی هنرجویان');
+      }
+      integratedSection.replaceChildren(notifyCard,groupCard,individualCard);
       integratedTab.appendChild(integratedSection);
       const legacyCard=panel.querySelector('.gym20-exercises-panel');
       if(legacyCard)legacyCard.hidden=true;
       panel.hidden=true;
-      const integrationStyle=document.createElement('style');
-      integrationStyle.id='gym20StudentExercisesIntegratedStyle';
-      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .admin-grid-2>.admin-input-group:nth-child(-n+2){display:none!important}';
-      document.head.appendChild(integrationStyle);
+      return true;
+    };
+    if(!attachExerciseSection()){
+      // If the student/term workspace is still being created, attach as soon as it exists.
+      const integrationObserver=new MutationObserver(()=>{
+        if(attachExerciseSection())integrationObserver.disconnect();
+      });
+      integrationObserver.observe(document.body,{childList:true,subtree:true});
+      window.setTimeout(()=>integrationObserver.disconnect(),15000);
     }
     catalogPicker?.addEventListener('change',event=>{
       const check=event.target.closest('[data-catalog-exercise]');if(!check)return;
