@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#0d0c0a"/>
+  <path d="M32 5 58 20v24L32 59 6 44V20z" fill="none" stroke="#fbbf24" stroke-width="2.5"/>
+  <text x="32" y="39" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" font-weight="900" letter-spacing="-1.5" fill="#fbbf24">G20</text>
+</svg>

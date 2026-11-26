@@ -1,0 +1,22 @@
+{
+  "id": "/student.html?app=1",
+  "name": "GYM20 | برنامه کلاس‌های من",
+  "short_name": "GYM20",
+  "description": "برنامه اختصاصی کلاس‌های هنرجویان GYM20",
+  "lang": "fa",
+  "dir": "rtl",
+  "start_url": "/student.html?app=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#080a0f",
+  "theme_color": "#080a0f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
