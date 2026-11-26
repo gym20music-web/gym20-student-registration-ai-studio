@@ -224,18 +224,18 @@
         const statusColor = completed ? '#22c55e' : overdue ? '#ef4444' : '#eab308';
         const statusLabel = completed ? '✓ انجام‌شده' : overdue ? 'انجام‌نشده' : 'در انتظار انجام';
         const normalizeDigits=value=>String(value).replace(/[۰-۹٠-٩]/g,ch=>{const fa='۰۱۲۳۴۵۶۷۸۹',ar='٠١٢٣٤٥٦٧٨٩';return String(fa.indexOf(ch)>=0?fa.indexOf(ch):ar.indexOf(ch));});
-        const titleParts=String(x.title||'').trim().split(/\\s+—\\s+/);
+        const titleParts=String(x.title||'').trim().split(/\s+—\s+/);
         let movement=titleParts.shift()||'تمرین',reps='',seconds='';
         titleParts.forEach(part=>{
           const value=normalizeDigits(part).trim();
-          let match=value.match(/^(\\d+)\\s*(Reps|Hold\\s+Sec|Sec)$/i);
+          let match=value.match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
           if(match){if(/^Reps$/i.test(match[2]))reps=match[1];else seconds=match[1];return;}
-          match=value.match(/^(?:Reps\\s*)?(\\d+)\\s*(?:Sec|Seconds?)$/i);
+          match=value.match(/^(?:Reps\s*)?(\d+)\s*(?:Sec|Seconds?)$/i);
           if(match){seconds=match[1];return;}
         });
         if(!reps&&!seconds){
           const normalized=normalizeDigits(movement).trim();
-          const match=normalized.match(/^(.*?)\\s+(\\d+(?:\\.\\d+)?)\\s*(min|mins|minute|minutes|sec|secs|second|seconds|s)?$/i);
+          const match=normalized.match(/^(.*?)\s+(\d+(?:\.\d+)?)\s*(min|mins|minute|minutes|sec|secs|second|seconds|s)?$/i);
           if(match){
             const amount=Number(match[2]),unit=(match[3]||'').toLowerCase();
             if(Number.isFinite(amount)&&amount>0){
@@ -252,8 +252,8 @@
           '<span class="gym20-ex-status ' + statusClass + '" style="color:' + statusColor + ' !important;-webkit-text-fill-color:' + statusColor + ' !important">' + statusLabel + '</span>' +
           (stamp ? '<small class="gym20-ex-date">' + esc(stamp.day) + '</small><small class="gym20-ex-time">ساعت ' + esc(stamp.time) + '</small>' : '') +
           '</div><div class="gym20-ex-actions">' +
-          '<button type="button" data-toggle-exercise="' + esc(x.id) + '" data-completed="' + String(completed) + '">' + (completed ? 'بازگردانی' : '✓ انجام شد') + '</button>' +
-          '<button type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین">🗑️</button></div></article>';
+          (completed ? '<button type="button" class="gym20-ex-restore" data-toggle-exercise="' + esc(x.id) + '" data-completed="true" aria-label="بازگردانی تمرین" title="بازگردانی">↶</button>' : '') +
+          '<button type="button" data-delete-exercise="' + esc(x.id) + '" aria-label="حذف تمرین" title="حذف تمرین">🗑️</button></div></article>';
       };
       const groups = new Map();
       archivedRows.forEach(x => {
@@ -763,6 +763,7 @@
       #gym20ExerciseList .gym20-ex-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex:0 0 auto}
       #gym20ExerciseList .gym20-ex-actions button{box-sizing:border-box;min-height:23px!important;height:23px!important;padding:0 6px!important;margin:0!important;border-radius:5px!important;font-size:8px!important;line-height:1!important;white-space:nowrap}
       #gym20ExerciseList .gym20-ex-actions button[data-delete-exercise]{width:24px;padding:0!important}
+      #gym20ExerciseList .gym20-ex-actions button.gym20-ex-restore{box-sizing:border-box!important;width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;padding:0!important;border-radius:5px!important;font:700 14px/1 Arial,sans-serif!important;color:#aeb8c6!important}
       @media(max-width:480px){#gym20ExerciseList .gym20-ex-admin-row{gap:5px;padding:6px!important}#gym20ExerciseList .gym20-ex-title{font-size:9px!important}#gym20ExerciseList .gym20-ex-actions{gap:3px}#gym20ExerciseList .gym20-ex-actions button{font-size:7px!important;padding:0 5px!important}}
       #gym20ExerciseList .gym20-ex-info{width:100%;min-width:0}
       #gym20ExerciseList .gym20-ex-title{display:flex!important;flex-flow:row nowrap!important;direction:ltr!important;align-items:center!important;justify-content:flex-start!important;gap:7px!important;width:100%!important;min-width:0!important;font-size:9px!important;white-space:nowrap!important}
