@@ -741,7 +741,7 @@ function waitForGym20StudentTab(){
 let gym20ExerciseModulePromise=null;
 function loadGym20ExerciseAdminModule(){
   if(!gym20ExerciseModulePromise){
-    const src='/student-exercises.js?v=20261126-calisthenics-visible-v7';
+    const src='/student-exercises.js?v=20261126-calisthenics-visible-v8';
     gym20ExerciseModulePromise=loadGym20Module(src)
       .then(()=>new Promise((resolve,reject)=>{
         const started=Date.now();
@@ -780,6 +780,20 @@ function loadGym20AdminModules(){
     gym20AdminModulesPromise=Promise.all(requiredModules.map(loadGym20Module))
       .then(waitForGym20StudentTab)
       .then(()=>{
+        // Watch the integrated tab as a fallback for mobile tab navigation paths.
+        const studentTab=document.getElementById('studentTermsTab');
+        if(studentTab){
+          let exerciseObserver=null;
+          const ensureExercises=()=>{
+            if(studentTab.classList.contains('active')){
+              exerciseObserver?.disconnect();
+              if(gym20OwnerAuthorized)loadGym20ExerciseAdminModule();
+            }
+          };
+          exerciseObserver=new MutationObserver(ensureExercises);
+          exerciseObserver.observe(studentTab,{attributes:true,attributeFilter:['class']});
+          ensureExercises();
+        }
         // Optional notification controls load in the background after the tab is ready.
         optionalModules.forEach(src=>loadGym20Module(src).catch(err=>{
           console.warn('GYM20 optional admin module failed:',src,err);
