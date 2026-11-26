@@ -890,21 +890,22 @@ async function dispatchTelegramNotification(info, isTest = false) {
     const tg = appData.telegramConfig || {};
     if (!isTest && tg.enabled === false) throw new Error('ارسال تلگرام در تنظیمات پنل غیرفعال است.');
     const endpoint = GYM20_SUPABASE_URL + '/functions/v1/telegram-notify';
-    const payload = isTest ? { isTest: true } : info;
-
-    const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: {
-            'apikey': GYM20_SUPABASE_ANON_KEY,
-            'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-    });
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok || !result.ok) {
-        throw new Error(result.detail || result.error || 'ارسال پیام تلگرام ناموفق بود');
+    const payload = isTest ? { isTest: true } : { request_id: info.request_id };
+    const headers = {
+        'apikey': GYM20_SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + GYM20_SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json'
+    };
+    if (isTest) {
+        const client = window.GYM20AdminAuth?.getClient?.();
+        if (!client) throw new Error('نشست مدیر برای ارسال پیام آزمایشی پیدا نشد.');
+        const { data, error } = await client.auth.getSession();
+        if (error || !data?.session?.access_token) throw new Error('ابتدا وارد پنل مدیریت شوید.');
+        headers.Authorization = 'Bearer ' + data.session.access_token;
     }
+    const response = await fetch(endpoint, { method: 'POST', headers, body: JSON.stringify(payload) });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || !result.ok) throw new Error(result.detail || result.error || 'ارسال پیام تلگرام ناموفق بود');
     return [{ ok: true, recipient: 'تنظیم‌شده در سرور' }];
 }
 
@@ -1464,7 +1465,7 @@ registrationForm.addEventListener('submit',async e=>{
             price: priceText,
             notes: notes
         };
-        dispatchTelegramNotification(regInfo).catch(err => { console.warn('Telegram notification error:', err); setRegistrationStatus('ثبت‌نام انجام شد؛ اما پیام تلگرام ارسال نشد: ' + (err.message || 'خطای نامشخص'), 'error'); });
+        dispatchTelegramNotification({ request_id: resData }).catch(err => { console.warn('Telegram notification error:', err); setRegistrationStatus('ثبت‌نام انجام شد؛ اما پیام تلگرام ارسال نشد: ' + (err.message || 'خطای نامشخص'), 'error'); });
     }catch(err){
         const errorText=String(err?.message||'');
         setRegistrationStatus(errorText||'خطا در ارسال.','error');
