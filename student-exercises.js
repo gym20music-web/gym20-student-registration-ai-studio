@@ -110,12 +110,13 @@
     await loadStudentTermsForExercises(studentId);
     if(revision!==selectionRevision)return;
     const hasTopTerm=!!termId&&Array.from(termSelect.options).some(option=>String(option.value)===termId);
-    termSelect.value=hasTopTerm?termId:'';
-    currentTermId=hasTopTerm?termId:'';
+    const preferredTerm=hasTopTerm?termId:String(termSelect.value||'');
+    termSelect.value=preferredTerm;
+    currentTermId=preferredTerm;
     const individual=$('gym20ExerciseIndividualPanel'),toggle=$('gym20ExerciseIndividualToggle');
     if(individual)individual.hidden=false;if(toggle)toggle.setAttribute('aria-expanded','true');
-    if(hasTopTerm)await loadStudentExercisesAdmin();
-    else{list.innerHTML='<p class="hint">ابتدا ترم موردنظر را از بخش بالای صفحه انتخاب کنید.</p>';say('');}
+    if(preferredTerm)await loadStudentExercisesAdmin();
+    else{list.innerHTML='<p class="hint">برای این هنرجو ترمی ثبت نشده است.</p>';say('');}
   }
   async function syncIntegratedTerm(detail={}) {
     const studentId=String(detail.studentId||''),termId=String(detail.termId||'');
@@ -607,7 +608,7 @@
       panel.hidden=true;
       const integrationStyle=document.createElement('style');
       integrationStyle.id='gym20StudentExercisesIntegratedStyle';
-      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .field-grid>.field:nth-child(-n+2){display:none!important}';
+      integrationStyle.textContent='#gym20StudentExercisesIntegrated{box-sizing:border-box;display:flex;flex-direction:column;gap:7px;min-width:0;margin-top:10px;padding:10px;border:1px solid rgba(148,163,184,.20);border-radius:10px;background:#191c23;color:#f8fafc}#gym20StudentExercisesIntegrated .gym20-exercise-integration-title{font:800 10px Vazirmatn,sans-serif;color:#e2e8f0;line-height:1.8;margin:0 0 2px}#gym20StudentExercisesIntegrated .gym20-exercise-card{margin:0!important}#gym20StudentExercisesIntegrated .gym20-exercise-individual-card .admin-grid-2>.admin-input-group:first-child{display:none!important}';
       document.head.appendChild(integrationStyle);
     }
     groupToggle.addEventListener('click',toggleGroupManager);
@@ -714,7 +715,11 @@
     window.addEventListener('gym20:student-selected',event=>syncIntegratedStudent(event.detail||{}));
     window.addEventListener('gym20:student-term-selected',event=>syncIntegratedTerm(event.detail||{}));
     window.addEventListener('gym20:exercise-tab-opened', () => {
-      if (authContext().authorized) { loadExerciseStudents(); syncExercisePushStatus(); }
+      if (authContext().authorized) {
+        if (!students.length) loadExerciseStudents();
+        else if (currentStudentId) { select.value=currentStudentId; }
+        syncExercisePushStatus();
+      }
     });
     if (authContext().authorized && panel.classList.contains('active')) { loadExerciseStudents(); syncExercisePushStatus(); }
   }
