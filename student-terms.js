@@ -937,7 +937,7 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
     document.addEventListener('pointerdown',e=>{if(!e.target.closest('.st-student-picker')){$('stStudentMenu').hidden=true;$('stStudentTrigger').setAttribute('aria-expanded','false');}});
     $('stSummary').addEventListener('click',e=>{if(e.target.closest('#stPublicLinkBtn'))makeStudentPublicLink();});
     $('stCreate').addEventListener('submit',e=>e.preventDefault());
-    $('stTerm').addEventListener('change',e=>{$('stDeleteTerm').disabled=!e.target.value;loadTerm(e.target.value);window.dispatchEvent(new CustomEvent('gym20:student-term-selected',{detail:{studentId:String(S.studentId||''),termId:String(e.target.value||'')}}));});
+    $('stTerm').addEventListener('change',e=>{$('stDeleteTerm').disabled=!e.target.value;loadTerm(e.target.value);if(window.gym20SelectedStudentContext)window.gym20SelectedStudentContext.termId=String(e.target.value||'');window.dispatchEvent(new CustomEvent('gym20:student-term-selected',{detail:{studentId:String(S.studentId||''),termId:String(e.target.value||'')}}));});
     $('stDeleteTerm').addEventListener('click',deleteSelectedTerm);
     initManualMultiCalendar(p);
     $('stPublish').addEventListener('click',publish);
@@ -1185,7 +1185,8 @@ css.textContent += '#stPushCard .st-reminder-row:not(.st-custom-push-row){displa
       $('stSummary').innerHTML='<div id="stPublicLinkBox" class="st-public-link"><div class="st-actions"><button type="button" class="st-btn primary" id="stPublicLinkBtn">🔗 ساخت لینک اختصاصی</button><span id="stPublicLinkStatus" class="st-muted">در حال بررسی لینک…</span></div></div>';
       loadStudentPublicLink();loadStudentPushCount(id);
       $('stTerm').innerHTML='<option value="">انتخاب ترم…</option>'+S.terms.map(t=>'<option value="'+t.id+'">'+esc(String(t.term_name||'').replace(/^ترم\s*/,''))+'</option>').join('');
-      window.dispatchEvent(new CustomEvent('gym20:student-selected',{detail:{studentId:String(id||''),termId:String($('stTerm').value||'')}}));
+      window.gym20SelectedStudentContext={studentId:String(id||''),termId:String($('stTerm').value||''),studentName:String(student?.full_name||''),terms:S.terms};
+      window.dispatchEvent(new CustomEvent('gym20:student-selected',{detail:window.gym20SelectedStudentContext}));
       say('پرونده هنرجو دریافت شد؛ ترم‌های قبلی: '+fa(S.terms.length));
     }catch(e){say(e.message||'دریافت پرونده ناموفق بود.',true);}
   }
