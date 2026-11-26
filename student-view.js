@@ -44,6 +44,17 @@
     #exercisePanel #exerciseList::-webkit-scrollbar-thumb{background:rgba(210,177,105,.55);border-radius:8px}
   `;
   document.head.appendChild(exerciseScrollStyle);
+  const exerciseOutputFormatStyle=document.createElement('style');
+  exerciseOutputFormatStyle.textContent=\`
+    #exercisePanel .exercise-row{display:flex!important;flex-flow:row nowrap!important;direction:ltr!important;align-items:center!important;gap:3px!important;min-width:0!important}
+    #exercisePanel .exercise-row>.exercise-metric{display:inline-flex!important;flex:0 0 42px!important;width:42px!important;min-width:42px!important;max-width:42px!important;justify-content:space-between!important;gap:2px!important;white-space:nowrap!important}
+    #exercisePanel .exercise-row>.exercise-metric .exercise-unit{font-size:7px!important}
+    #exercisePanel .exercise-row>.exercise-metric .exercise-number{font-size:8px!important}
+    #exercisePanel .exercise-row>.exercise-title{flex:1 1 auto!important;min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+    #exercisePanel .exercise-row>.exercise-checkmark{flex:0 0 10px!important;width:10px!important}
+    @media(max-width:420px){#exercisePanel .exercise-row{gap:2px!important;padding-inline:6px!important}#exercisePanel .exercise-row>.exercise-metric{flex-basis:37px!important;width:37px!important;min-width:37px!important;max-width:37px!important}}
+  \`;
+  document.head.appendChild(exerciseOutputFormatStyle);
 
   let pendingClassNotice="";
   try{
@@ -466,15 +477,31 @@
       const done=!!item.is_completed;
       const stamp=Date.parse(item.created_at||'');
       const parts=String(item.title||'').split(/\s+—\s+/);
-      const movement=parts.shift()||'تمرین';
-      let reps='',seconds='';
-      parts.forEach(part=>{
-        const match=String(part).trim().match(/^(\d+)\s*(Reps|Hold\s+Sec|Sec)$/i);
-        if(!match)return;
-        if(/^Reps$/i.test(match[2]))reps=match[1];
+      let movement=parts.shift()||'تمرین';
+      let reps='',seconds='',minutes='';
+      const readMetric=part=>{
+        const normalized=String(part).trim().replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+        const match=normalized.match(/^(\d+)\s*(Reps?|Hold\s+Sec|Sec|Mins?|Minutes?)$/i);
+        if(!match)return false;
+        const unit=match[2].toLowerCase();
+        if(unit.startsWith('rep'))reps=match[1];
+        else if(unit.startsWith('min'))minutes=match[1];
         else seconds=match[1];
-      });
-      const metrics=(reps?'<span class="exercise-metric"><span class="exercise-unit">Reps</span><b class="exercise-number">'+esc(reps)+'</b></span>':'')+(seconds?'<span class="exercise-metric"><span class="exercise-unit">Sec</span><b class="exercise-number">'+esc(seconds)+'</b></span>':'');
+        return true;
+      };
+      if(parts.length){
+        parts.forEach(readMetric);
+      }else{
+        const plain=String(movement).trim().replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+        const trailing=plain.match(/(?:\s+)(\d+)\s*(Reps?|Hold\s+Sec|Sec|Mins?|Minutes?)?$/i);
+        if(trailing){
+          readMetric(trailing[1]+' '+(trailing[2]||'Reps'));
+          movement=plain.slice(0,trailing.index).trim();
+        }
+      }
+      movement=String(movement||'تمرین').replace(/_/g,' ').trim();
+      const metric=(unit,value)=>'<span class="exercise-metric"><span class="exercise-unit">'+unit+'</span><b class="exercise-number">'+(value?esc(value):'—')+'</b></span>';
+      const metrics=metric('Reps',reps)+metric('Sec',seconds)+metric('Min',minutes);
       return '<label class="exercise-row '+(done?'completed':'')+'" data-exercise-row="'+esc(item.id)+'" data-created-at="'+(Number.isFinite(stamp)?stamp:0)+'"><input type="checkbox" data-exercise-id="'+esc(item.id)+'" '+(done?'checked':'')+'>'+metrics+'<span class="exercise-title">'+esc(movement)+'</span><span class="exercise-checkmark">'+(done?'✓':'')+'</span></label>';
     }).join('');
   }
