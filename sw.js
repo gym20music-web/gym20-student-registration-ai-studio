@@ -15,9 +15,6 @@ self.addEventListener("notificationclick",event=>{
   const notificationData=event.notification.data||{};
   const body=typeof notificationData.body==="string"?notificationData.body.trim().slice(0,1200):"";
   const original=typeof notificationData.url==="string"&&notificationData.url.startsWith("https://gym20.ir/")?notificationData.url:"https://gym20.ir/";
-  const launchUrl=new URL("https://gym20.ir/notification.html");
-  if(body)launchUrl.searchParams.set("gym20_notice",body);
-  launchUrl.searchParams.set("gym20_title","GYM20");
-  launchUrl.searchParams.set("return_to",original);
-  event.waitUntil(clients.openWindow(launchUrl.href));
+  // Open the student destination directly without an intermediate page.
+  event.waitUntil(clients.openWindow(original));
 });
