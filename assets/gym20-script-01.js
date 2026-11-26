@@ -1377,8 +1377,8 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
             finally{scheduleRefreshInFlight=false;}
         };
         // Keep schedule data fresh even if Broadcast is connected but a device misses an event.
-        // Foreground: every 2 seconds; background: every 15 seconds.
-        gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),3000);
+        // Realtime broadcast is primary; polling fallback: 10 seconds foreground, about 20 seconds background.
+        gym20StudentScheduleStateTimer=setInterval(()=>renderTerms(data),5000);
         gym20StudentScheduleRefreshTimer=setInterval(()=>{
             if(document.hidden){
                 if(!gym20StudentScheduleLastHiddenRefresh || Date.now()-gym20StudentScheduleLastHiddenRefresh>=15000){
@@ -1388,7 +1388,7 @@ document.getElementById('viewMySessionsBtn')?.addEventListener('click',async()=>
             }else{
                 refreshSchedule();
             }
-        },2000);
+        },10000);
         document.addEventListener('visibilitychange',()=>{
             if(!document.hidden)refreshSchedule();
         });
