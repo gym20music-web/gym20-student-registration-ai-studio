@@ -625,7 +625,7 @@
     const catalogHost=document.createElement('div');catalogHost.innerHTML=buildExerciseCatalogMarkup();
     const catalogPicker=catalogHost.firstElementChild;
     const individualGrid=exerciseHost.querySelector('.admin-grid-2,.field-grid');
-    if(catalogPicker)individualPanel.insertBefore(catalogPicker,individualGrid||null);
+    if(catalogPicker)individualPanel.appendChild(catalogPicker);
     const feedback=$('gym20ExerciseFeedback');
     if(pushHeading)notifyCard.appendChild(pushHeading);
     notifyCard.appendChild(pushBar);
