@@ -559,7 +559,8 @@
         list.style.height=Math.ceil(height)+'px';list.style.maxHeight=Math.ceil(height)+'px';list.style.overflowY='auto';list.style.overscrollBehavior='contain';list.style.webkitOverflowScrolling='touch';
       }else{list.style.height='auto';list.style.maxHeight='none';list.style.overflowY='visible';}
       archive.classList.toggle('hide',groups.size===0);
-      const nowMs=Date.now();
+      // Reuse nowMs from the individual-exercise archive calculation above.
+
       const isGroupArchived=item=>{const stamp=Date.parse(item.created_at||'');return Number.isFinite(stamp)&&nowMs-stamp>=24*60*60*1000;};
       const todayGroupItems=groupItems.filter(item=>!isGroupArchived(item));
       const numberFa=value=>new Intl.NumberFormat('fa-IR').format(value);
