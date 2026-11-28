@@ -527,22 +527,27 @@
       const groupBox=$('groupExerciseBox');
       const individualBox=$('individualExerciseBox');
       const openDays=new Set(Array.from(archive.querySelectorAll('details[open]')).map(node=>node.dataset.day||''));
-      const today=tehranTodayKey();
-      const mainItems=items.filter(item=>!item.is_completed||!item.completed_at||tehranDateKey(item.completed_at)===today);
-      const archivedItems=items.filter(item=>!!item.is_completed&&!!item.completed_at&&tehranDateKey(item.completed_at)!==today);
+      const nowMs=Date.now();
+      const isIndividualArchived=item=>{
+        const stamp=Date.parse(item.created_at||'');
+        return Number.isFinite(stamp)&&nowMs-stamp>=24*60*60*1000;
+      };
+      const mainItems=items.filter(item=>!isIndividualArchived(item));
+      const archivedItems=items.filter(isIndividualArchived);
       mainItems.sort((a,b)=>Number(!!a.is_completed)-Number(!!b.is_completed)||Date.parse(b.created_at||0)-Date.parse(a.created_at||0));
-      const countHint=$('exerciseCountHint');
       list.innerHTML=!selectedTermId?'':(mainItems.length?exerciseRowsMarkup(mainItems):'<div class="empty">برای امروز تمرین در انتظاری ندارید.</div>');
       const groups=new Map();
       archivedItems.forEach(item=>{
-        const key=tehranDateKey(item.completed_at);
+        const key=tehranDateKey(item.created_at);
         if(!groups.has(key))groups.set(key,[]);
         groups.get(key).push(item);
       });
       archive.innerHTML=Array.from(groups.entries()).sort((a,b)=>b[0].localeCompare(a[0])).map(([day,rows])=>{
-        rows.sort((a,b)=>Date.parse(b.completed_at)-Date.parse(a.completed_at));
+        rows.sort((a,b)=>Date.parse(b.created_at)-Date.parse(a.created_at));
         const opened=openDays.has(day)?' open':'';
-        return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من ـ '+tehranDayLabel(rows[0].completed_at)+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
+        const pendingCount=rows.filter(item=>!item.is_completed).length;
+        const pendingLabel=pendingCount?' <span class="exercise-archive-pending" style="color:#ff6262;font-weight:700">('+pendingCount.toLocaleString('fa-IR')+' تمرین انجام نشده)</span>':'';
+        return '<details class="exercise-archive-day" data-day="'+day+'"'+opened+'><summary>تمرینات من ـ '+tehranDayLabel(rows[0].created_at)+pendingLabel+'</summary><div class="exercise-archive-list">'+exerciseRowsMarkup(rows)+'</div></details>';
       }).join('');
       if(!items.length&&selectedTermId){list.innerHTML='<div class="empty">برای این ترم تمرینی ثبت نشده است.</div>';}
       const mainRows=Array.from(list.querySelectorAll('.exercise-row'));
@@ -554,12 +559,13 @@
         list.style.height=Math.ceil(height)+'px';list.style.maxHeight=Math.ceil(height)+'px';list.style.overflowY='auto';list.style.overscrollBehavior='contain';list.style.webkitOverflowScrolling='touch';
       }else{list.style.height='auto';list.style.maxHeight='none';list.style.overflowY='visible';}
       archive.classList.toggle('hide',groups.size===0);
-      const nowMs=Date.now();
+      // Reuse nowMs from the individual-exercise archive calculation above.
+
       const isGroupArchived=item=>{const stamp=Date.parse(item.created_at||'');return Number.isFinite(stamp)&&nowMs-stamp>=24*60*60*1000;};
       const todayGroupItems=groupItems.filter(item=>!isGroupArchived(item));
       const numberFa=value=>new Intl.NumberFormat('fa-IR').format(value);
-      const individualDone=items.filter(item=>!!item.is_completed).length;
-      const individualPending=items.length-individualDone;
+      const individualDone=mainItems.filter(item=>!!item.is_completed).length;
+      const individualPending=mainItems.length-individualDone;
       const individualCountHint=$('individualExerciseCount');
       if(individualCountHint){
         individualCountHint.textContent=individualPending?numberFa(individualPending)+' تمرین باقی مانده برای انجام 💪🏻':'همه تمرین‌ها انجام شده‌اند ✓';
